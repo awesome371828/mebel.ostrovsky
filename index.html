@@ -3,216 +3,664 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Кухни на Заказ — Ростов, Батайск, Азов | Мастерская Островского</title>
-<meta name="description" content="Проектируем и создаём кухни и корпусную мебель на заказ. Ростов, Батайск, Азов. Полный цикл: замер, проект, изготовление, установка. Гарантия качества.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23b8860b'/><text x='50' y='72' font-size='58' text-anchor='middle'>👨‍🍳</text></svg>">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#14100b;--bg2:#1e1810;--card:#241c12;
-  --gold:#d4a643;--gold2:#f0c86a;--cream:#f5ecd9;
-  --mut:#b8a98e;--line:rgba(212,166,67,.25);
+
+<!-- ===== SEO ===== -->
+<title>Кухни на Заказ | Ростов, Батайск, Азов — Мастерская Островского</title>
+<meta name="description" content="Кухни и корпусная мебель на заказ в Ростове, Батайске, Азове. Полный цикл: замер, проект, производство, монтаж. 8 из 10 клиентов по рекомендации. ☎ +7 (950) 846-53-97">
+<meta name="keywords" content="кухни на заказ, кухни Ростов, кухни Батайск, кухни Азов, корпусная мебель, мебель на заказ, Мастерская Островского">
+<meta name="robots" content="index, follow">
+
+<!-- ===== Open Graph ===== -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:title" content="Кухни на Заказ | Ростов, Батайск, Азов">
+<meta property="og:description" content="Ваша мебель — ваше настроение. Кухни и корпусная мебель по индивидуальным проектам.">
+<meta property="og:site_name" content="Мастерская Островского">
+
+<!-- ===== Микроразметка LocalBusiness ===== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Мастерская Островского",
+  "description": "Кухни и корпусная мебель на заказ в Ростове, Батайске и Азове.",
+  "telephone": "+79508465397",
+  "image": "",
+  "address": {"@type": "PostalAddress", "addressLocality": "Ростов-на-Дону"},
+  "areaServed": ["Ростов-на-Дону", "Батайск", "Азов"],
+  "sameAs": ["https://vk.com/mebel.ostrovsky"]
 }
-html{scroll-behavior:smooth}
-body{background:linear-gradient(160deg,#14100b,#1e1810 40%,#14100b);color:var(--cream);font-family:'Segoe UI',system-ui,Arial,sans-serif;overflow-x:hidden}
-a{color:inherit;text-decoration:none}
-img{max-width:100%;display:block}
-.wrap{max-width:1100px;margin:0 auto;padding:0 24px;position:relative;z-index:2}
+</script>
 
-/* soft warm glow background */
-.glow{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.glow::before{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(212,166,67,.12),transparent 60%);top:-150px;left:-150px}
-.glow::after{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(212,166,67,.08),transparent 60%);bottom:-150px;right:-100px}
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍳</text></svg>">
 
-/* nav */
-nav{position:sticky;top:0;z-index:50;background:rgba(20,16,11,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-.nav-in{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;max-width:1100px;margin:0 auto}
-.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;letter-spacing:.5px}
-.logo-mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--gold),#8a6a1e);display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 0 18px rgba(212,166,67,.4)}
-.menu{display:flex;gap:24px}
-.menu a{color:var(--mut);font-size:14px;font-weight:600;transition:.25s}
-.menu a:hover{color:var(--gold2)}
-.cta-top{padding:9px 18px;border-radius:10px;background:linear-gradient(135deg,var(--gold),#a8832a);color:#14100b;font-weight:800;font-size:13px;transition:.3s}
-.cta-top:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(212,166,67,.4)}
-@media(max-width:700px){.menu{display:none}}
+<style>
+  :root{
+    --gold:#d4a455; --gold-light:#f0cf8f; --cream:#f7efe0;
+    --bg:#12100d; --bg2:#1a1712; --card:#221e17;
+    --text:#efe6d6; --muted:#b5a88f;
+    --radius:18px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+  img{max-width:100%;display:block}
+  a{color:var(--gold);text-decoration:none}
+  .wrap{max-width:1150px;margin:0 auto;padding:0 20px}
 
-/* hero */
-.hero{text-align:center;padding:80px 0 60px;position:relative}
-.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:999px;border:1px solid var(--line);background:rgba(212,166,67,.08);color:var(--gold2);font-size:13px;margin-bottom:26px}
-.hero h1{font-size:clamp(34px,6vw,58px);font-weight:900;line-height:1.08;margin-bottom:18px}
-.hero h1 span{color:var(--gold2)}
-.hero p{color:var(--mut);font-size:18px;max-width:680px;margin:0 auto 32px;line-height:1.6}
-.cta-group{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;gap:10px;padding:16px 34px;border-radius:14px;font-weight:800;font-size:16px;transition:.3s}
-.btn-gold{background:linear-gradient(135deg,var(--gold),#a8832a);color:#14100b}
-.btn-gold:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(212,166,67,.4)}
-.btn-ghost{border:1px solid var(--line);color:var(--cream);background:rgba(212,166,67,.06)}
-.btn-ghost:hover{border-color:var(--gold);transform:translateY(-3px)}
+  /* Секции */
+  section{padding:80px 0;position:relative}
+  .sec-head{text-align:center;max-width:700px;margin:0 auto 50px}
+  .sec-head .tag{color:var(--gold);letter-spacing:3px;text-transform:uppercase;font-size:13px;font-weight:700}
+  .sec-head h2{font-size:clamp(28px,4vw,42px);margin:10px 0 14px;color:var(--cream)}
+  .sec-head p{color:var(--muted)}
 
-/* stats */
-.stats{display:flex;gap:34px;justify-content:center;flex-wrap:wrap;margin-top:52px}
-.stat{text-align:center}
-.stat .num{font-size:36px;font-weight:900;color:var(--gold2)}
-.stat .lab{color:var(--mut);font-size:13px;margin-top:4px}
+  /* NAV */
+  header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(18,16,13,.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(212,164,85,.15)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:68px}
+  .logo{font-size:22px;font-weight:800;color:var(--gold-light)}
+  .logo span{color:var(--cream)}
+  .menu{display:flex;gap:26px;list-style:none}
+  .menu a{color:var(--text);font-size:15px;transition:.3s}
+  .menu a:hover{color:var(--gold)}
+  .burger{display:none;background:none;border:none;color:var(--gold);font-size:28px;cursor:pointer}
+  @media(max-width:820px){.menu{position:fixed;top:68px;left:0;right:0;background:var(--bg2);flex-direction:column;padding:20px;gap:16px;transform:translateY(-130%);transition:.3s}.menu.open{transform:none}.burger{display:block}}
 
-section{padding:64px 0;position:relative;z-index:2}
-.center{text-align:center}
-h2{font-size:clamp(26px,4vw,38px);font-weight:900;margin-bottom:12px}
-h2 span{color:var(--gold2)}
-.sub{color:var(--mut);max-width:600px;margin:0 auto 40px;font-size:16px;line-height:1.6}
+  /* HERO */
+  .hero{min-height:100vh;display:flex;align-items:center;background:radial-gradient(ellipse at 70% 20%,rgba(212,164,85,.15),transparent 55%),radial-gradient(ellipse at 20% 90%,rgba(212,164,85,.08),transparent 50%),var(--bg);padding-top:100px}
+  .hero-inner{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+  .hero h1{font-size:clamp(34px,5.5vw,58px);line-height:1.12;color:var(--cream)}
+  .hero h1 em{font-style:normal;color:var(--gold)}
+  .hero p.sub{color:var(--muted);font-size:18px;margin:18px 0 28px;max-width:500px}
+  .hero-badge{display:inline-flex;gap:8px;align-items:center;background:rgba(212,164,85,.12);border:1px solid rgba(212,164,85,.3);padding:8px 16px;border-radius:40px;color:var(--gold-light);font-size:14px;margin-bottom:20px}
+  .btns{display:flex;gap:14px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:9px;padding:14px 26px;border-radius:40px;font-weight:700;font-size:16px;transition:.3s;border:none;cursor:pointer}
+  .btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:#1c1608}
+  .btn-gold:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(212,164,85,.4)}
+  .btn-ghost{background:transparent;border:1.5px solid var(--gold);color:var(--gold-light)}
+  .btn-ghost:hover{background:rgba(212,164,85,.12)}
+  .hero-visual{position:relative}
+  .mock{background:linear-gradient(145deg,#2b2418,#1e1912);border:1px solid rgba(212,164,85,.25);border-radius:24px;padding:34px;box-shadow:0 30px 60px rgba(0,0,0,.5)}
+  .mock .kitchen{height:190px;border-radius:14px;background:linear-gradient(135deg,#8a6a35,#c9a15f);position:relative;display:flex;align-items:flex-end;overflow:hidden}
+  .mock .kitchen::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 40px,rgba(0,0,0,.15) 40px 46px)}
+  .mock .counter{height:26px;background:#3a3122;border-top:3px solid var(--gold)}
+  .chip{display:flex;justify-content:space-between;margin-top:18px;font-size:13px;color:var(--muted)}
+  @media(max-width:820px){.hero-inner{grid-template-columns:1fr}.hero-visual{order:-1}}
 
-/* cards */
-.grid{display:grid;gap:18px}
-.g3{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
-.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px;transition:.3s}
-.card:hover{transform:translateY(-6px);border-color:var(--gold);box-shadow:0 20px 40px rgba(0,0,0,.4)}
-.card .ic{font-size:38px;margin-bottom:14px}
-.card h3{font-size:18px;margin-bottom:8px}
-.card p{color:var(--mut);font-size:14px;line-height:1.6}
+  /* STATS */
+  .stats{background:var(--bg2)}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:center}
+  .stat .num{font-size:44px;font-weight:800;color:var(--gold)}
+  .stat .lbl{color:var(--muted);margin-top:6px}
+  @media(max-width:700px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
 
-/* about */
-.about-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:40px;align-items:center}
-@media(max-width:760px){.about-grid{grid-template-columns:1fr}}
-.about-img{width:260px;height:260px;border-radius:50%;margin:0 auto;background:linear-gradient(135deg,var(--gold),#8a6a1e);display:flex;align-items:center;justify-content:center;font-size:110px;box-shadow:0 20px 50px rgba(212,166,67,.25);position:relative}
-.about-txt p{color:var(--mut);line-height:1.7;margin-bottom:14px}
-.check-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:18px}
-.check-list li{color:var(--cream);font-size:15px;display:flex;gap:10px;align-items:flex-start}
-.check-list li::before{content:'✓';color:var(--gold2);font-weight:900}
+  /* About */
+  .about-inner{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+  .about-portrait{background:linear-gradient(145deg,#2b2418,#1e1912);border-radius:24px;padding:40px;text-align:center;border:1px solid rgba(212,164,85,.2)}
+  .avatar{width:110px;height:110px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));margin:0 auto 18px;display:flex;align-items:center;justify-content:center;font-size:40px}
+  .about-list{list-style:none;margin-top:20px}
+  .about-list li{padding:10px 0 10px 30px;position:relative;color:var(--muted)}
+  .about-list li::before{content:"✓";position:absolute;left:0;color:var(--gold);font-weight:800}
+  @media(max-width:820px){.about-inner{grid-template-columns:1fr}}
 
-/* gallery */
-.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
-.gal{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line);aspect-ratio:4/3;background:var(--card);display:flex;align-items:center;justify-content:center;transition:.3s}
-.gal:hover{transform:translateY(-5px);border-color:var(--gold)}
-.gal .emoji{font-size:60px}
-.gal .glabel{position:absolute;bottom:0;left:0;right:0;padding:12px;background:linear-gradient(transparent,rgba(0,0,0,.8));font-size:14px;font-weight:700}
+  /* Consultation banner */
+  .consult{background:linear-gradient(135deg,rgba(212,164,85,.18),rgba(212,164,85,.05)),var(--bg2);border-top:1px solid rgba(212,164,85,.2);border-bottom:1px solid rgba(212,164,85,.2)}
+  .consult-box{text-align:center;max-width:820px;margin:0 auto}
+  .consult-box h2{font-size:clamp(26px,4vw,38px);color:var(--cream);margin-bottom:12px}
+  .consult-box p{color:var(--muted);margin-bottom:30px}
+  .consult-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+  .mini-btn{display:inline-flex;align-items:center;gap:10px;padding:15px 26px;border-radius:40px;font-weight:700;font-size:16px;transition:.3s;color:#fff}
+  .mini-btn:hover{transform:translateY(-3px)}
+  .btn-max{background:linear-gradient(135deg,#e94e77,#a0224a)}
+  .btn-tg{background:linear-gradient(135deg,#229ED9,#1c7fb3)}
+  .btn-wa{background:linear-gradient(135deg,#25D366,#128C7E)}
+  .btn-call{background:linear-gradient(135deg,#d4a455,#b5812e);color:#1c1608}
+  .consult-hint{margin-top:18px;color:var(--muted);font-size:14px}
 
-/* contacts */
-.contacts{max-width:640px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:36px;text-align:center}
-.contact-btns{display:flex;flex-direction:column;gap:14px;margin-top:24px}
-.cbtn{display:flex;align-items:center;justify-content:center;gap:10px;padding:16px;border-radius:14px;font-weight:800;font-size:16px;transition:.3s;border:1px solid var(--line)}
-.cbtn:hover{transform:translateY(-3px)}
-.cbtn.phone{background:linear-gradient(135deg,var(--gold),#a8832a);color:#14100b}
-.cbtn.phone:hover{box-shadow:0 10px 26px rgba(212,166,67,.4)}
-.cbtn.vk{background:rgba(212,166,67,.08);color:var(--cream)}
-.cbtn.vk:hover{border-color:var(--gold)}
-.cbtn.wa{background:rgba(37,211,102,.1);color:#4ade80;border-color:rgba(37,211,102,.3)}
-.note{color:var(--mut);font-size:13px;margin-top:16px}
+  /* Services */
+  .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .service{background:var(--card);border:1px solid rgba(212,164,85,.15);border-radius:var(--radius);padding:28px;transition:.35s}
+  .service:hover{transform:translateY(-6px);border-color:var(--gold);box-shadow:0 18px 40px rgba(0,0,0,.4)}
+  .service .ico{font-size:34px;margin-bottom:14px}
+  .service h3{color:var(--cream);margin-bottom:8px;font-size:19px}
+  .service p{color:var(--muted);font-size:14px}
+  @media(max-width:900px){.services-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.services-grid{grid-template-columns:1fr}}
 
-/* footer */
-footer{border-top:1px solid var(--line);padding:30px 0;text-align:center;color:var(--mut);font-size:13px;position:relative;z-index:2}
-footer a{color:var(--gold2)}
+  /* Calculator */
+  .calc{background:var(--bg2)}
+  .calc-box{max-width:720px;margin:0 auto;background:var(--card);border:1px solid rgba(212,164,85,.2);border-radius:var(--radius);padding:36px}
+  .field{margin-bottom:22px}
+  .field label{display:block;color:var(--cream);margin-bottom:8px;font-weight:600}
+  input[type=range]{width:100%;accent-color:var(--gold);height:6px}
+  .row-vals{display:flex;justify-content:space-between;color:var(--muted);font-size:14px;margin-top:6px}
+  .calc-result{text-align:center;margin-top:12px;padding:22px;background:linear-gradient(135deg,rgba(212,164,85,.15),transparent);border-radius:14px}
+  .calc-result .price{font-size:36px;font-weight:800;color:var(--gold-light)}
+  .calc-note{color:var(--muted);font-size:13px;margin-top:8px}
 
-/* float phone */
-.float-phone{position:fixed;bottom:24px;right:24px;z-index:60;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#a8832a);display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 10px 30px rgba(212,166,67,.5);animation:bounce 2s infinite}
-@keyframes bounce{50%{transform:translateY(-6px)}}
+  /* Process */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;position:relative}
+  .step{background:var(--card);border:1px solid rgba(212,164,85,.15);border-radius:var(--radius);padding:26px}
+  .step .n{font-size:40px;font-weight:800;color:rgba(212,164,85,.35);line-height:1}
+  .step h3{color:var(--cream);margin:10px 0 6px}
+  .step p{color:var(--muted);font-size:14px}
+  @media(max-width:820px){.steps{grid-template-columns:1fr}}
+
+  /* Gallery */
+  .filter-tabs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:30px}
+  .filter-tabs button{background:var(--card);border:1px solid rgba(212,164,85,.25);color:var(--text);padding:10px 20px;border-radius:40px;cursor:pointer;transition:.3s;font-size:14px}
+  .filter-tabs button.active,.filter-tabs button:hover{background:var(--gold);color:#1c1608;border-color:var(--gold)}
+  .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .g-item{border-radius:14px;overflow:hidden;position:relative;aspect-ratio:4/3;display:none}
+  .g-item.show{display:block;animation:fadeUp .5s}
+  .g-item .ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:40px;background-size:cover;background-position:center}
+  .g-item .cap{position:absolute;bottom:0;left:0;right:0;padding:14px;background:linear-gradient(transparent,rgba(0,0,0,.7));color:var(--cream);font-size:14px}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  @media(max-width:820px){.gallery{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.gallery{grid-template-columns:1fr}}
+
+  /* Before/After */
+  .ba-wrap{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+  .ba{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;font-size:40px;background-size:cover;background-position:center}
+  .ba .tag{position:absolute;top:12px;left:12px;background:rgba(0,0,0,.65);color:var(--cream);padding:6px 14px;border-radius:30px;font-size:13px;font-weight:700}
+  @media(max-width:640px){.ba-wrap{grid-template-columns:1fr}}
+
+  /* Guarantees */
+  .guar{background:var(--bg2)}
+  .guar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+  .guar-item{text-align:center;background:var(--card);border-radius:var(--radius);padding:28px;border:1px solid rgba(212,164,85,.15)}
+  .guar-item .ico{font-size:36px;margin-bottom:12px}
+  .guar-item h3{color:var(--cream);font-size:17px;margin-bottom:6px}
+  .guar-item p{color:var(--muted);font-size:13px}
+  @media(max-width:820px){.guar-grid{grid-template-columns:repeat(2,1fr)}}
+
+  /* Reviews */
+  .reviews{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .review{background:var(--card);border-radius:var(--radius);padding:26px;border:1px solid rgba(212,164,85,.15)}
+  .review .stars{color:var(--gold);margin-bottom:12px;letter-spacing:2px}
+  .review p{color:var(--muted);font-size:14px;font-style:italic}
+  .review .who{color:var(--gold-light);margin-top:14px;font-weight:700}
+  @media(max-width:900px){.reviews{grid-template-columns:1fr}}
+
+  /* FAQ */
+  .faq{max-width:760px;margin:0 auto}
+  .faq-item{background:var(--card);border:1px solid rgba(212,164,85,.15);border-radius:14px;margin-bottom:12px;overflow:hidden}
+  .faq-q{width:100%;background:none;border:none;color:var(--cream);text-align:left;padding:18px 20px;font-size:16px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+  .faq-q .plus{color:var(--gold);font-size:20px;transition:.3s}
+  .faq-item.open .plus{transform:rotate(45deg)}
+  .faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease}
+  .faq-item.open .faq-a{max-height:300px}
+  .faq-a p{padding:0 20px 18px;color:var(--muted);font-size:15px}
+
+  /* Form */
+  .form-box{max-width:640px;margin:0 auto;background:var(--card);border:1px solid rgba(212,164,85,.2);border-radius:var(--radius);padding:36px}
+  .form-box input,.form-box select,.form-box textarea{width:100%;background:var(--bg);border:1px solid rgba(212,164,85,.25);color:var(--text);padding:14px 16px;border-radius:12px;margin-bottom:14px;font-size:15px;font-family:inherit}
+  .form-box input:focus,.form-box select:focus,.form-box textarea:focus{outline:none;border-color:var(--gold)}
+  .form-box textarea{resize:vertical;min-height:80px}
+  .form-note{color:var(--muted);font-size:12px;text-align:center;margin-top:10px}
+
+  /* Map */
+  .map-wrap{border-radius:var(--radius);overflow:hidden;border:1px solid rgba(212,164,85,.2);box-shadow:0 20px 50px rgba(0,0,0,.4)}
+  .map-wrap iframe{width:100%;height:420px;border:0;filter:grayscale(.3) contrast(1.05)}
+
+  /* Contact */
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+  .contact-info h2{color:var(--cream);font-size:clamp(28px,4vw,40px);margin-bottom:14px}
+  .contact-info p{color:var(--muted);margin-bottom:24px}
+  .contact-lines{list-style:none}
+  .contact-lines li{display:flex;gap:14px;align-items:center;margin-bottom:18px}
+  .contact-lines .ci{width:46px;height:46px;border-radius:12px;background:rgba(212,164,85,.15);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+  .contact-lines a{color:var(--gold-light);font-size:18px;font-weight:600}
+  @media(max-width:820px){.contact-grid{grid-template-columns:1fr}}
+
+  footer{background:#0d0b09;border-top:1px solid rgba(212,164,85,.15);padding:40px 0;text-align:center;color:var(--muted);font-size:14px}
+  footer .logo{margin-bottom:12px}
+
+  /* Float call */
+  .float{position:fixed;bottom:24px;right:24px;z-index:90;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#25D366,#128C7E);display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 12px 30px rgba(18,140,126,.4);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(37,211,102,.5)}70%{box-shadow:0 0 0 18px rgba(37,211,102,0)}100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}}
+
+  .reveal{opacity:0;transform:translateY(30px);transition:all .8s ease}
+  .reveal.active{opacity:1;transform:none}
 </style>
 </head>
 <body>
-<div class="glow"></div>
 
-<nav>
-  <div class="nav-in">
-    <a class="logo" href="#top"><div class="logo-mark">👨‍🍳</div>Мастерская Островского</a>
-    <div class="menu">
-      <a href="#about">О мастере</a>
-      <a href="#services">Услуги</a>
-      <a href="#works">Наши работы</a>
-      <a href="#contacts">Контакты</a>
+<!-- ===== NAV ===== -->
+<header>
+  <div class="wrap nav">
+    <div class="logo">🍳 Мастерская <span>Островского</span></div>
+    <ul class="menu" id="menu">
+      <li><a href="#about">О мастере</a></li>
+      <li><a href="#services">Услуги</a></li>
+      <li><a href="#gallery">Работы</a></li>
+      <li><a href="#calc">Калькулятор</a></li>
+      <li><a href="#reviews">Отзывы</a></li>
+      <li><a href="#contacts">Контакты</a></li>
+    </ul>
+    <button class="burger" onclick="document.getElementById('menu').classList.toggle('open')">☰</button>
+  </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="wrap hero-inner">
+    <div>
+      <span class="hero-badge">⭐ 8 из 10 клиентов — по рекомендации</span>
+      <h1>Кухни на заказ<br>в <em>Ростове, Батайске, Азове</em></h1>
+      <p class="sub">Проектируем и создаём кухни и корпусную мебель, чтобы ваш дом был красивым, удобным и уютным. Полный цикл — от замера до монтажа.</p>
+      <div class="btns">
+        <a href="#form" class="btn btn-gold">📐 Бесплатный замер</a>
+        <a href="#calc" class="btn btn-ghost">🧮 Рассчитать стоимость</a>
+      </div>
     </div>
-    <a class="cta-top" href="tel:+79508465397">📞 Позвонить</a>
-  </div>
-</nav>
-
-<section class="hero" id="top"><div class="wrap">
-  <span class="badge">📍 Ростов · Батайск · Азов</span>
-  <h1>Кухни и мебель <span>на заказ</span>,<br>созданные с душой</h1>
-  <p>Проектируем и изготавливаем кухни и корпусную мебель по индивидуальным проектам. Полный цикл — от идеи и замера до сборки и установки. Честный расчёт без навязывания лишнего.</p>
-  <div class="cta-group">
-    <a class="btn btn-gold" href="tel:+79508465397">📞 Бесплатный замер</a>
-    <a class="btn btn-ghost" href="#works">🖼 Смотреть работы</a>
-  </div>
-  <div class="stats">
-    <div class="stat"><div class="num">8/10</div><div class="lab">клиентов по рекомендации</div></div>
-    <div class="stat"><div class="num">100%</div><div class="lab">полный цикл работ</div></div>
-    <div class="stat"><div class="num">4+</div><div class="lab">года во ВКонтакте</div></div>
-    <div class="stat"><div class="num">∞</div><div class="lab">индивидуальных решений</div></div>
-  </div>
-</div></section>
-
-<section id="about"><div class="wrap">
-  <div class="about-grid">
-    <div class="center">
-      <div class="about-img">👨‍🍳</div>
+    <div class="hero-visual reveal">
+      <div class="mock">
+        <div class="kitchen"><div style="width:100%"></div></div>
+        <div class="counter"></div>
+        <div class="chip"><span>Кухня «Остров»</span><span>МДФ / эмаль</span></div>
+        <div class="chip"><span>Фурнитура Blum</span><span>срок — от 21 дня</span></div>
+      </div>
     </div>
-    <div class="about-txt">
-      <h2>Здравствуйте! Меня зовут <span>Роман Островский</span></h2>
-      <p>Вместе с командой мы создаём кухни и корпусную мебель, о которой вы мечтали. Берёмся за сложные задачи, когда другие разводят руками, и всегда ищем лучшее решение под ваш дом.</p>
-      <ul class="check-list">
+  </div>
+</section>
+
+<!-- ===== STATS ===== -->
+<section class="stats">
+  <div class="wrap stats-grid">
+    <div class="stat reveal"><div class="num" data-target="8">0</div><div class="lbl">из 10 клиентов по рекомендации</div></div>
+    <div class="stat reveal"><div class="num" data-target="4">0</div><div class="lbl">года работаем в VK</div></div>
+    <div class="stat reveal"><div class="num" data-target="100">0</div><div class="lbl">% полный цикл под ключ</div></div>
+    <div class="stat reveal"><div class="num" data-target="3">0</div><div class="lbl">города: Ростов, Батайск, Азов</div></div>
+  </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section id="about">
+  <div class="wrap about-inner">
+    <div class="about-portrait reveal">
+      <div class="avatar">👨‍🍳</div>
+      <h3 style="color:var(--cream);font-size:24px">Роман Островский</h3>
+      <p style="color:var(--muted);margin-top:6px">Основатель «Мастерской Островского»</p>
+    </div>
+    <div class="reveal">
+      <div class="sec-head" style="text-align:left;margin:0 0 20px">
+        <div class="tag">О мастере</div>
+        <h2>Создадим мебель, о которой вы мечтали</h2>
+      </div>
+      <p style="color:var(--muted);margin-bottom:18px">С командой изготавливаем кухни и корпусную мебель по индивидуальным проектам — с учётом ваших идей, размеров и задач.</p>
+      <ul class="about-list">
         <li>Помогаем с планировкой и подбором материалов</li>
-        <li>Решения для нестандартных и сложных задач</li>
-        <li>Полный цикл: консультация → замер → изготовление → установка</li>
-        <li>Индивидуальный подход и личное сопровождение</li>
-        <li>Гарантия качества на все работы</li>
+        <li>Решения для сложных задач, когда другие разводят руками</li>
+        <li>Полный цикл: от консультации и замера до сборки</li>
+        <li>Честный расчёт стоимости — без навязывания лишнего</li>
+        <li>Аккуратность, пунктуальность и личное сопровождение</li>
+        <li>Гарантия качества</li>
       </ul>
     </div>
   </div>
-</div></section>
+</section>
 
-<section id="services"><div class="wrap center">
-  <h2>Что мы <span>делаем</span></h2>
-  <p class="sub">Каждая деталь работает на удобство и красоту вашего дома</p>
-  <div class="grid g3">
-    <div class="card"><div class="ic">🍳</div><h3>Кухни на заказ</h3><p>Эргономичная планировка, вместительные системы хранения и стильный дизайн — кухня, где удобно готовить и приятно быть.</p></div>
-    <div class="card"><div class="ic">🚪</div><h3>Шкафы и шкафы-купе</h3><p>Функциональные решения для хранения, идеально вписанные в ваше пространство и потребности.</p></div>
-    <div class="card"><div class="ic">👗</div><h3>Гардеробные</h3><p>Продуманные гардеробные комнаты, где вещам найдётся место, а вам — порядок.</p></div>
-    <div class="card"><div class="ic">🧥</div><h3>Прихожие</h3><p>Уютные и практичные прихожие, которые встречают гостей и берегут ваш дом.</p></div>
-    <div class="card"><div class="ic">🛋</div><h3>Корпусная мебель</h3><p>Мебель под ваши размеры и задачи — от идеи до готового изделия.</p></div>
-    <div class="card"><div class="ic">📐</div><h3>Сложные проекты</h3><p>Нестандартные решения для невысоких потолков, ниш и трудных планировок.</p></div>
-  </div>
-</div></section>
-
-<section id="works"><div class="wrap center">
-  <h2>Наши <span>работы</span></h2>
-  <p class="sub">Посмотрите больше фотографий в нашей группе ВКонтакте</p>
-  <div class="gallery">
-    <div class="gal"><span class="emoji">🍳</span><span class="glabel">Кухни в частный дом · 13 фото</span></div>
-    <div class="gal"><span class="emoji">🏙</span><span class="glabel">Кухни в квартиру</span></div>
-    <div class="gal"><span class="emoji">🚪</span><span class="glabel">Шкафы и шкафы-купе</span></div>
-    <div class="gal"><span class="emoji">👗</span><span class="glabel">Гардеробные</span></div>
-    <div class="gal"><span class="emoji">🧥</span><span class="glabel">Прихожие</span></div>
-    <div class="gal"><span class="emoji">✨</span><span class="glabel">Каталог работ</span></div>
-  </div>
-  <div style="margin-top:28px">
-    <a class="btn btn-gold" href="https://vk.com/mebel.ostrovsky" target="_blank">Смотреть все работы в VK</a>
-  </div>
-</div></section>
-
-<section id="contacts"><div class="wrap">
-  <div class="center"><h2>Запишитесь на <span>бесплатную консультацию</span></h2>
-  <p class="sub">Просто напишите или позвоните — поможем воплотить ваши идеи в жизнь</p></div>
-  <div class="contacts">
-    <div style="font-size:48px">📞</div>
-    <h3 style="margin-top:12px">Роман Островский</h3>
-    <p style="color:var(--mut);margin-top:6px">Ростов · Батайск · Азов</p>
-    <div class="contact-btns">
-      <a class="cbtn phone" href="tel:+79508465397">📞 +7 (950) 846-53-97</a>
-      <a class="cbtn wa" href="https://wa.me/79508465397" target="_blank">💬 Написать в WhatsApp</a>
-      <a class="cbtn vk" href="https://vk.com/mebel.ostrovsky" target="_blank">🌐 Группа ВКонтакте</a>
+<!-- ===== CONSULTATION ===== -->
+<section class="consult" id="consult">
+  <div class="wrap consult-box reveal">
+    <div class="sec-head">
+      <div class="tag">Бесплатная консультация</div>
+      <h2>Консультация с «Мебелью Островского»</h2>
+      <p>Напишите нам в удобный мессенджер или позвоните — подберём решение, посчитаем стоимость, договоримся о замере. Это бесплатно и ни к чему не обязывает.</p>
     </div>
-    <div class="note">Тот же номер работает в Telegram и MAX — удобно, быстро, на связи</div>
+    <div class="consult-btns">
+      <a class="mini-btn btn-tg" href="https://t.me/+79508465397" target="_blank" rel="noopener">✈️ Перейти в Telegram</a>
+      <a class="mini-btn btn-max" href="https://max.ru/" target="_blank" rel="noopener">💬 Перейти в MAX</a>
+      <a class="mini-btn btn-wa" href="https://wa.me/79508465397" target="_blank" rel="noopener">🟢 Написать в WhatsApp</a>
+      <a class="mini-btn btn-call" href="tel:+79508465397">📞 Позвонить: +7 (950) 846-53-97</a>
+    </div>
+    <p class="consult-hint">Все мессенджеры ведут к нам — отвечаем быстро, на связи в Telegram и MAX 💛</p>
   </div>
-</div></section>
+</section>
 
+<!-- ===== SERVICES ===== -->
+<section id="services">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="tag">Что мы делаем</div>
+      <h2>Наши услуги</h2>
+      <p>Индивидуальный подход к каждому проекту и полный цикл производства.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service reveal"><div class="ico">🍳</div><h3>Кухни на заказ</h3><p>Проектируем кухню точно под ваш размер, стиль и привычки — от классики до минимализма.</p></div>
+      <div class="service reveal"><div class="ico">🗄️</div><h3>Корпусная мебель</h3><p>Шкафы, гардеробные, тумбы, комоды — встраиваемые и отдельно стоящие решения.</p></div>
+      <div class="service reveal"><div class="ico">📐</div><h3>Замер и проект</h3><p>Выезжаем на замер, делаем планировку и 3D-проект бесплатно.</p></div>
+      <div class="service reveal"><div class="ico">🔧</div><h3>Сборка и монтаж</h3><p>Профессиональная установка, аккуратная сборка и подключение техники.</p></div>
+      <div class="service reveal"><div class="ico">🎨</div><h3>Подбор материалов</h3><p>Поможем выбрать фасады, столешницу и фурнитуру под бюджет.</p></div>
+      <div class="service reveal"><div class="ico">♻️</div><h3>Реконструкция</h3><p>Обновим фасады и фурнитуру существующей кухни — дешевле новой.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CALCULATOR ===== -->
+<section class="calc" id="calc">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="tag">Калькулятор</div>
+      <h2>Приблизительный расчёт</h2>
+      <p>Передвиньте ползунки — получите вилку стоимости. Точную цену скажем после замера.</p>
+    </div>
+    <div class="calc-box reveal">
+      <div class="field">
+        <label>Длина кухни, погонные метры</label>
+        <input type="range" id="meters" min="2" max="10" step="0.5" value="4">
+        <div class="row-vals"><span>2 м</span><span id="meters-val">4 м</span><span>10 м</span></div>
+      </div>
+      <div class="field">
+        <label>Материал фасадов</label>
+        <select id="material">
+          <option value="1.0">ЛДСП (эконом)</option>
+          <option value="1.5" selected>МДФ + эмаль (классика)</option>
+          <option value="2.0">Массив (премиум)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Фурнитура</label>
+        <select id="fitting">
+          <option value="1.0">Стандарт</option>
+          <option value="1.35" selected>Blum / Hettich (премиум)</option>
+        </select>
+      </div>
+      <div class="calc-result">
+        <div>Ориентировочная стоимость</div>
+        <div class="price" id="price">— ₽</div>
+        <div class="calc-note">Вилка ±15%. Точную цену зафиксируем после бесплатного замера.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROCESS ===== -->
+<section>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="tag">Как мы работаем</div>
+      <h2>Путь от идеи до готовой кухни</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><div class="n">01</div><h3>Заявка</h3><p>Вы оставляете заявку или звоните — обговариваем задачу и пожелания.</p></div>
+      <div class="step reveal"><div class="n">02</div><h3>Замер</h3><p>Выезжаем, снимаем размеры, обсуждаем планировку. Бесплатно.</p></div>
+      <div class="step reveal"><div class="n">03</div><h3>Проект</h3><p>Делаем 3D-проект, подбираем материалы и фурнитуру.</p></div>
+      <div class="step reveal"><div class="n">04</div><h3>Договор</h3><p>Фиксируем стоимость и сроки, подписываем договор.</p></div>
+      <div class="step reveal"><div class="n">05</div><h3>Производство</h3><p>Изготавливаем мебель на собственном производстве — от 21 дня.</p></div>
+      <div class="step reveal"><div class="n">06</div><h3>Доставка и монтаж</h3><p>Привозим, собираем и устанавливаем. Сдаём работу с гарантией.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== GALLERY ===== -->
+<section id="gallery">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="tag">Наши работы</div>
+      <h2>Фото кухонь</h2>
+      <p>Замени заглушки на фото из VK-группы (mebel.ostrovsky) — добавь реальные изображения в блоки ниже.</p>
+    </div>
+    <div class="filter-tabs reveal">
+      <button class="active" data-filter="all">Все</button>
+      <button data-filter="classic">Классика</button>
+      <button data-filter="modern">Модерн</button>
+      <button data-filter="minimal">Минимализм</button>
+    </div>
+    <div class="gallery">
+      <div class="g-item show" data-cat="classic"><div class="ph" style="background:linear-gradient(135deg,#8a6a35,#c9a15f)">🍳</div><div class="cap">Кухня «Классика», Ростов</div></div>
+      <div class="g-item show" data-cat="modern"><div class="ph" style="background:linear-gradient(135deg,#3a5a78,#7fa6c4)">✨</div><div class="cap">Кухня «Модерн», Батайск</div></div>
+      <div class="g-item show" data-cat="minimal"><div class="ph" style="background:linear-gradient(135deg,#4a4a4a,#8a8a8a)">⬜</div><div class="cap">Кухня «Минимализм», Азов</div></div>
+      <div class="g-item show" data-cat="classic"><div class="ph" style="background:linear-gradient(135deg,#7a5a30,#b8915c)">🏺</div><div class="cap">Кухня с островом, Ростов</div></div>
+      <div class="g-item show" data-cat="modern"><div class="ph" style="background:linear-gradient(135deg,#5a3a6a,#9a7ab0)">🪄</div><div class="cap">Гарнитур «Модерн», Батайск</div></div>
+      <div class="g-item show" data-cat="minimal"><div class="ph" style="background:linear-gradient(135deg,#2f3a4a,#6a7a8a)">▭</div><div class="cap">Белый минимализм, Азов</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BEFORE/AFTER ===== -->
+<section>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="tag">До / После</div>
+      <h2>Преображение кухни</h2>
+      <p>Добавьте реальные фото «до» и «после» — наглядно покажет результат работы.</p>
+    </div>
+    <div class="ba-wrap">
+      <div class="ba reveal"><span class="tag">До</span><div class="ph" style="font-size:40px">🕰️</div></div>
+      <div class="ba reveal"><span class="tag">После</span><div class="ph" style="font-size:40px">🎉</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== GUARANTEES ===== -->
+<section class="guar">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="tag">Почему мы</div>
+      <h2>Гарантии и преимущества</h2>
+    </div>
+    <div class="guar-grid">
+      <div class="guar-item reveal"><div class="ico">🛡️</div><h3>Гарантия качества</h3><p>Отвечаем за свою работу и сопровождаем после установки.</p></div>
+      <div class="guar-item reveal"><div class="ico">🤝</div><h3>Честный расчёт</h3><p>Без навязывания лишнего и скрытых доплат.</p></div>
+      <div class="guar-item reveal"><div class="ico">🏭</div><h3>Собственное производство</h3><p>Без посредников — контролируем качество на каждом этапе.</p></div>
+      <div class="guar-item reveal"><div class="ico">👤</div><h3>Личное сопровождение</h3><p>Вы всегда на связи с мастером от замера до монтажа.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== REVIEWS ===== -->
+<section id="reviews">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="tag">Отзывы</div>
+      <h2>Что говорят клиенты</h2>
+      <p>Замените примеры на реальные отзывы из VK-группы (с разрешения клиентов).</p>
+    </div>
+    <div class="reviews">
+      <div class="review reveal"><div class="stars">★★★★★</div><p>«Кухню сделали точно по проекту, собрали за один день. Роман лично всё проконтролировал — очень доволен!»</p><div class="who">— Анна, Ростов</div></div>
+      <div class="review reveal"><div class="stars">★★★★★</div><p>«Долго не могли найти исполнителя на сложную планировку. Здесь взялись, всё продумали до мелочей. Рекомендую!»</p><div class="who">— Сергей, Батайск</div></div>
+      <div class="review reveal"><div class="stars">★★★★★</div><p>«Честный расчёт, без навязывания лишнего. Красиво, аккуратно, в срок. Спасибо мастерской!»</p><div class="who">— Марина, Азов</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="tag">FAQ</div>
+      <h2>Частые вопросы</h2>
+    </div>
+    <div class="faq reveal">
+      <div class="faq-item open">
+        <button class="faq-q">Сколько по времени делается кухня?<span class="plus">+</span></button>
+        <div class="faq-a"><p>Обычно от 21 дня до 1,5 месяцев в зависимости от сложности и материалов. Точный срок фиксируем в договоре.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Замер и проект — это платно?<span class="plus">+</span></button>
+        <div class="faq-a"><p>Нет, замер и 3D-проект бесплатны и ни к чему вас не обязывают.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Делаете ли кухни «под ключ»?<span class="plus">+</span></button>
+        <div class="faq-a"><p>Да, полностью: замер, проект, производство, доставка и монтаж — вам остаётся только пользоваться.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Есть ли рассрочка?<span class="plus">+</span></button>
+        <div class="faq-a"><p>Возможна поэтапная оплата: предоплата за материалы, далее — по готовности. Подробности уточняйте при расчёте.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Какие материалы используете?<span class="plus">+</span></button>
+        <div class="faq-a"><p>ЛДСП, МДФ, эмаль, массив, а также фурнитуру Blum и Hettich. Поможем подобрать под бюджет и стиль.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MAP ===== -->
+<section>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="tag">Мы рядом</div>
+      <h2>Где мы работаем</h2>
+      <p>Ростов-на-Дону, Батайск, Азов. Выезд на замер — бесплатно.</p>
+    </div>
+    <div class="map-wrap reveal">
+      <!-- Замените iframe на карту вашего города: https://yandex.ru/map-constructor/ -->
+      <iframe src="https://yandex.ru/map-widget/v1/?ll=39.723300%2C47.235713&z=10" loading="lazy"></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FORM ===== -->
+<section id="form">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="tag">Заявка</div>
+      <h2>Записаться на бесплатный замер</h2>
+      <p>Заполните форму — заявка уйдёт нам в WhatsApp, перезвоним и договоримся о времени.</p>
+    </div>
+    <div class="form-box reveal">
+      <form onsubmit="sendForm(event)">
+        <input type="text" id="f-name" placeholder="Ваше имя" required>
+        <input type="tel" id="f-phone" placeholder="Телефон" required>
+        <select id="f-city">
+          <option value="">Выберите город</option>
+          <option>Ростов-на-Дону</option>
+          <option>Батайск</option>
+          <option>Азов</option>
+          <option>Другое</option>
+        </select>
+        <select id="f-type">
+          <option value="">Что хотите заказать?</option>
+          <option>Кухня</option>
+          <option>Корпусная мебель</option>
+          <option>Реконструкция</option>
+          <option>Другое</option>
+        </select>
+        <textarea id="f-msg" placeholder="Комментарий (размеры, пожелания...)"></textarea>
+        <button type="submit" class="btn btn-gold" style="width:100%;justify-content:center">Отправить заявку</button>
+        <p class="form-note">Нажимая кнопку, вы соглашаетесь на обработку данных.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACTS ===== -->
+<section id="contacts">
+  <div class="wrap contact-grid">
+    <div class="contact-info reveal">
+      <div class="tag" style="color:var(--gold);letter-spacing:3px;text-transform:uppercase;font-size:13px;font-weight:700">Контакты</div>
+      <h2>Создадим мебель, о которой вы мечтали</h2>
+      <p>Напишите в сообщения или позвоните — ответим быстро, на связи в Telegram и MAX.</p>
+      <ul class="contact-lines">
+        <li><div class="ci">📞</div><a href="tel:+79508465397">+7 (950) 846-53-97</a></li>
+        <li><div class="ci">🟢</div><a href="https://wa.me/79508465397" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><div class="ci">✈️</div><a href="https://t.me/+79508465397" target="_blank" rel="noopener">Telegram</a></li>
+        <li><div class="ci">💬</div><a href="https://max.ru/" target="_blank" rel="noopener">MAX</a></li>
+        <li><div class="ci">🌐</div><a href="https://vk.com/mebel.ostrovsky" target="_blank" rel="noopener">VK — mebel.ostrovsky</a></li>
+      </ul>
+    </div>
+    <div class="reveal">
+      <div class="mock" style="padding:28px">
+        <h3 style="color:var(--cream);margin-bottom:12px">📍 Регион работы</h3>
+        <p style="color:var(--muted)">Ростов-на-Дону, Батайск, Азов. Выезд на замер по городу — бесплатно.</p>
+        <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+          <a class="btn btn-gold" href="https://wa.me/79508465397" target="_blank" rel="noopener">Написать в WhatsApp</a>
+          <a class="btn btn-ghost" href="tel:+79508465397">Позвонить</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
 <footer>
   <div class="wrap">
-    © <span id="year"></span> Мастерская Островского · Кухни на заказ · <a href="https://vk.com/mebel.ostrovsky" target="_blank">Мы ВКонтакте</a>
+    <div class="logo">🍳 Мастерская <span style="color:var(--gold)">Островского</span></div>
+    <p>Кухни и корпусная мебель на заказ • Ростов, Батайск, Азов</p>
+    <p style="margin-top:8px">© <span id="year"></span> Мастерская Островского. Все права защищены.</p>
   </div>
 </footer>
 
-<a class="float-phone" href="tel:+79508465397" aria-label="Позвонить">📞</a>
+<!-- ===== FLOAT CALL ===== -->
+<a class="float" href="https://wa.me/79508465397" target="_blank" rel="noopener" aria-label="Написать в WhatsApp">💬</a>
 
 <script>
-document.getElementById('year').textContent = new Date().getFullYear();
+// Плавные появления при скролле
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('active'); io.unobserve(e.target);} });
+},{threshold:.15});
+revealEls.forEach(el=>io.observe(el));
+
+// Анимация счётчиков
+const counters = document.querySelectorAll('.num');
+const cio = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const el=e.target; const target=+el.dataset.target;
+      let cur=0; const step=Math.max(1,Math.ceil(target/40));
+      const tick=()=>{ cur+=step; if(cur>=target){el.textContent=target;}else{el.textContent=cur;requestAnimationFrame(tick);} };
+      tick(); cio.unobserve(el);
+    }
+  });
+},{threshold:.5});
+counters.forEach(el=>cio.observe(el));
+
+// Галерея-фильтр
+const tabs=document.querySelectorAll('.filter-tabs button');
+const items=document.querySelectorAll('.g-item');
+tabs.forEach(tab=>tab.addEventListener('click',()=>{
+  tabs.forEach(t=>t.classList.remove('active'));
+  tab.classList.add('active');
+  const f=tab.dataset.filter;
+  items.forEach(it=>{
+    it.classList.toggle('show', f==='all' || it.dataset.cat===f);
+  });
+}));
+
+// FAQ
+document.querySelectorAll('.faq-item').forEach(item=>{
+  item.querySelector('.faq-q').addEventListener('click',()=>item.classList.toggle('open'));
+});
+
+// Калькулятор
+const meters=document.getElementById('meters');
+const metersVal=document.getElementById('meters-val');
+const material=document.getElementById('material');
+const fitting=document.getElementById('fitting');
+const price=document.getElementById('price');
+function calc(){
+  metersVal.textContent=meters.value+' м';
+  const m=+meters.value;
+  const mat=+material.value;
+  const fit=+fitting.value;
+  const base=(m*35000*mat*fit);
+  const low=Math.round(base*0.85/1000)*1000;
+  const high=Math.round(base*1.15/1000)*1000;
+  price.textContent=low.toLocaleString('ru-RU')+' – '+high.toLocaleString('ru-RU')+' ₽';
+}
+meters.addEventListener('input',calc);
+material.addEventListener('change',calc);
+fitting.addEventListener('change',calc);
+calc();
+
+// Форма → WhatsApp
+function sendForm(e){
+  e.preventDefault();
+  const name=document.getElementById('f-name').value;
+  const phone=document.getElementById('f-phone').value;
+  const city=document.getElementById('f-city').value;
+  const type=document.getElementById('f-type').value;
+  const msg=document.getElementById('f-msg').value;
+  const text=`Здравствуйте! Заявка с сайта:%0A%0A👤 Имя: ${encodeURIComponent(name)}%0A📞 Телефон: ${encodeURIComponent(phone)}%0A📍 Город: ${encodeURIComponent(city)}%0A🗂️ Заказ: ${encodeURIComponent(type)}%0A💬 Комментарий: ${encodeURIComponent(msg)}`;
+  window.open('https://wa.me/79508465397?text='+text,'_blank');
+}
+
+// Год в футере
+document.getElementById('year').textContent=new Date().getFullYear();
 </script>
 </body>
 </html>
