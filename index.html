@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кухни на Заказ — Ростов, Батайск, Азов | Мастерская Островского</title>
+<meta name="description" content="Проектируем и создаём кухни и корпусную мебель на заказ. Ростов, Батайск, Азов. Полный цикл: замер, проект, изготовление, установка. Гарантия качества.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23b8860b'/><text x='50' y='72' font-size='58' text-anchor='middle'>👨‍🍳</text></svg>">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#14100b;--bg2:#1e1810;--card:#241c12;
+  --gold:#d4a643;--gold2:#f0c86a;--cream:#f5ecd9;
+  --mut:#b8a98e;--line:rgba(212,166,67,.25);
+}
+html{scroll-behavior:smooth}
+body{background:linear-gradient(160deg,#14100b,#1e1810 40%,#14100b);color:var(--cream);font-family:'Segoe UI',system-ui,Arial,sans-serif;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+.wrap{max-width:1100px;margin:0 auto;padding:0 24px;position:relative;z-index:2}
+
+/* soft warm glow background */
+.glow{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.glow::before{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(212,166,67,.12),transparent 60%);top:-150px;left:-150px}
+.glow::after{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(212,166,67,.08),transparent 60%);bottom:-150px;right:-100px}
+
+/* nav */
+nav{position:sticky;top:0;z-index:50;background:rgba(20,16,11,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;max-width:1100px;margin:0 auto}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;letter-spacing:.5px}
+.logo-mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--gold),#8a6a1e);display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 0 18px rgba(212,166,67,.4)}
+.menu{display:flex;gap:24px}
+.menu a{color:var(--mut);font-size:14px;font-weight:600;transition:.25s}
+.menu a:hover{color:var(--gold2)}
+.cta-top{padding:9px 18px;border-radius:10px;background:linear-gradient(135deg,var(--gold),#a8832a);color:#14100b;font-weight:800;font-size:13px;transition:.3s}
+.cta-top:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(212,166,67,.4)}
+@media(max-width:700px){.menu{display:none}}
+
+/* hero */
+.hero{text-align:center;padding:80px 0 60px;position:relative}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:999px;border:1px solid var(--line);background:rgba(212,166,67,.08);color:var(--gold2);font-size:13px;margin-bottom:26px}
+.hero h1{font-size:clamp(34px,6vw,58px);font-weight:900;line-height:1.08;margin-bottom:18px}
+.hero h1 span{color:var(--gold2)}
+.hero p{color:var(--mut);font-size:18px;max-width:680px;margin:0 auto 32px;line-height:1.6}
+.cta-group{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:16px 34px;border-radius:14px;font-weight:800;font-size:16px;transition:.3s}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#a8832a);color:#14100b}
+.btn-gold:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(212,166,67,.4)}
+.btn-ghost{border:1px solid var(--line);color:var(--cream);background:rgba(212,166,67,.06)}
+.btn-ghost:hover{border-color:var(--gold);transform:translateY(-3px)}
+
+/* stats */
+.stats{display:flex;gap:34px;justify-content:center;flex-wrap:wrap;margin-top:52px}
+.stat{text-align:center}
+.stat .num{font-size:36px;font-weight:900;color:var(--gold2)}
+.stat .lab{color:var(--mut);font-size:13px;margin-top:4px}
+
+section{padding:64px 0;position:relative;z-index:2}
+.center{text-align:center}
+h2{font-size:clamp(26px,4vw,38px);font-weight:900;margin-bottom:12px}
+h2 span{color:var(--gold2)}
+.sub{color:var(--mut);max-width:600px;margin:0 auto 40px;font-size:16px;line-height:1.6}
+
+/* cards */
+.grid{display:grid;gap:18px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px;transition:.3s}
+.card:hover{transform:translateY(-6px);border-color:var(--gold);box-shadow:0 20px 40px rgba(0,0,0,.4)}
+.card .ic{font-size:38px;margin-bottom:14px}
+.card h3{font-size:18px;margin-bottom:8px}
+.card p{color:var(--mut);font-size:14px;line-height:1.6}
+
+/* about */
+.about-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:40px;align-items:center}
+@media(max-width:760px){.about-grid{grid-template-columns:1fr}}
+.about-img{width:260px;height:260px;border-radius:50%;margin:0 auto;background:linear-gradient(135deg,var(--gold),#8a6a1e);display:flex;align-items:center;justify-content:center;font-size:110px;box-shadow:0 20px 50px rgba(212,166,67,.25);position:relative}
+.about-txt p{color:var(--mut);line-height:1.7;margin-bottom:14px}
+.check-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:18px}
+.check-list li{color:var(--cream);font-size:15px;display:flex;gap:10px;align-items:flex-start}
+.check-list li::before{content:'✓';color:var(--gold2);font-weight:900}
+
+/* gallery */
+.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.gal{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line);aspect-ratio:4/3;background:var(--card);display:flex;align-items:center;justify-content:center;transition:.3s}
+.gal:hover{transform:translateY(-5px);border-color:var(--gold)}
+.gal .emoji{font-size:60px}
+.gal .glabel{position:absolute;bottom:0;left:0;right:0;padding:12px;background:linear-gradient(transparent,rgba(0,0,0,.8));font-size:14px;font-weight:700}
+
+/* contacts */
+.contacts{max-width:640px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:36px;text-align:center}
+.contact-btns{display:flex;flex-direction:column;gap:14px;margin-top:24px}
+.cbtn{display:flex;align-items:center;justify-content:center;gap:10px;padding:16px;border-radius:14px;font-weight:800;font-size:16px;transition:.3s;border:1px solid var(--line)}
+.cbtn:hover{transform:translateY(-3px)}
+.cbtn.phone{background:linear-gradient(135deg,var(--gold),#a8832a);color:#14100b}
+.cbtn.phone:hover{box-shadow:0 10px 26px rgba(212,166,67,.4)}
+.cbtn.vk{background:rgba(212,166,67,.08);color:var(--cream)}
+.cbtn.vk:hover{border-color:var(--gold)}
+.cbtn.wa{background:rgba(37,211,102,.1);color:#4ade80;border-color:rgba(37,211,102,.3)}
+.note{color:var(--mut);font-size:13px;margin-top:16px}
+
+/* footer */
+footer{border-top:1px solid var(--line);padding:30px 0;text-align:center;color:var(--mut);font-size:13px;position:relative;z-index:2}
+footer a{color:var(--gold2)}
+
+/* float phone */
+.float-phone{position:fixed;bottom:24px;right:24px;z-index:60;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#a8832a);display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 10px 30px rgba(212,166,67,.5);animation:bounce 2s infinite}
+@keyframes bounce{50%{transform:translateY(-6px)}}
+</style>
+</head>
+<body>
+<div class="glow"></div>
+
+<nav>
+  <div class="nav-in">
+    <a class="logo" href="#top"><div class="logo-mark">👨‍🍳</div>Мастерская Островского</a>
+    <div class="menu">
+      <a href="#about">О мастере</a>
+      <a href="#services">Услуги</a>
+      <a href="#works">Наши работы</a>
+      <a href="#contacts">Контакты</a>
+    </div>
+    <a class="cta-top" href="tel:+79508465397">📞 Позвонить</a>
+  </div>
+</nav>
+
+<section class="hero" id="top"><div class="wrap">
+  <span class="badge">📍 Ростов · Батайск · Азов</span>
+  <h1>Кухни и мебель <span>на заказ</span>,<br>созданные с душой</h1>
+  <p>Проектируем и изготавливаем кухни и корпусную мебель по индивидуальным проектам. Полный цикл — от идеи и замера до сборки и установки. Честный расчёт без навязывания лишнего.</p>
+  <div class="cta-group">
+    <a class="btn btn-gold" href="tel:+79508465397">📞 Бесплатный замер</a>
+    <a class="btn btn-ghost" href="#works">🖼 Смотреть работы</a>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="num">8/10</div><div class="lab">клиентов по рекомендации</div></div>
+    <div class="stat"><div class="num">100%</div><div class="lab">полный цикл работ</div></div>
+    <div class="stat"><div class="num">4+</div><div class="lab">года во ВКонтакте</div></div>
+    <div class="stat"><div class="num">∞</div><div class="lab">индивидуальных решений</div></div>
+  </div>
+</div></section>
+
+<section id="about"><div class="wrap">
+  <div class="about-grid">
+    <div class="center">
+      <div class="about-img">👨‍🍳</div>
+    </div>
+    <div class="about-txt">
+      <h2>Здравствуйте! Меня зовут <span>Роман Островский</span></h2>
+      <p>Вместе с командой мы создаём кухни и корпусную мебель, о которой вы мечтали. Берёмся за сложные задачи, когда другие разводят руками, и всегда ищем лучшее решение под ваш дом.</p>
+      <ul class="check-list">
+        <li>Помогаем с планировкой и подбором материалов</li>
+        <li>Решения для нестандартных и сложных задач</li>
+        <li>Полный цикл: консультация → замер → изготовление → установка</li>
+        <li>Индивидуальный подход и личное сопровождение</li>
+        <li>Гарантия качества на все работы</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<section id="services"><div class="wrap center">
+  <h2>Что мы <span>делаем</span></h2>
+  <p class="sub">Каждая деталь работает на удобство и красоту вашего дома</p>
+  <div class="grid g3">
+    <div class="card"><div class="ic">🍳</div><h3>Кухни на заказ</h3><p>Эргономичная планировка, вместительные системы хранения и стильный дизайн — кухня, где удобно готовить и приятно быть.</p></div>
+    <div class="card"><div class="ic">🚪</div><h3>Шкафы и шкафы-купе</h3><p>Функциональные решения для хранения, идеально вписанные в ваше пространство и потребности.</p></div>
+    <div class="card"><div class="ic">👗</div><h3>Гардеробные</h3><p>Продуманные гардеробные комнаты, где вещам найдётся место, а вам — порядок.</p></div>
+    <div class="card"><div class="ic">🧥</div><h3>Прихожие</h3><p>Уютные и практичные прихожие, которые встречают гостей и берегут ваш дом.</p></div>
+    <div class="card"><div class="ic">🛋</div><h3>Корпусная мебель</h3><p>Мебель под ваши размеры и задачи — от идеи до готового изделия.</p></div>
+    <div class="card"><div class="ic">📐</div><h3>Сложные проекты</h3><p>Нестандартные решения для невысоких потолков, ниш и трудных планировок.</p></div>
+  </div>
+</div></section>
+
+<section id="works"><div class="wrap center">
+  <h2>Наши <span>работы</span></h2>
+  <p class="sub">Посмотрите больше фотографий в нашей группе ВКонтакте</p>
+  <div class="gallery">
+    <div class="gal"><span class="emoji">🍳</span><span class="glabel">Кухни в частный дом · 13 фото</span></div>
+    <div class="gal"><span class="emoji">🏙</span><span class="glabel">Кухни в квартиру</span></div>
+    <div class="gal"><span class="emoji">🚪</span><span class="glabel">Шкафы и шкафы-купе</span></div>
+    <div class="gal"><span class="emoji">👗</span><span class="glabel">Гардеробные</span></div>
+    <div class="gal"><span class="emoji">🧥</span><span class="glabel">Прихожие</span></div>
+    <div class="gal"><span class="emoji">✨</span><span class="glabel">Каталог работ</span></div>
+  </div>
+  <div style="margin-top:28px">
+    <a class="btn btn-gold" href="https://vk.com/mebel.ostrovsky" target="_blank">Смотреть все работы в VK</a>
+  </div>
+</div></section>
+
+<section id="contacts"><div class="wrap">
+  <div class="center"><h2>Запишитесь на <span>бесплатную консультацию</span></h2>
+  <p class="sub">Просто напишите или позвоните — поможем воплотить ваши идеи в жизнь</p></div>
+  <div class="contacts">
+    <div style="font-size:48px">📞</div>
+    <h3 style="margin-top:12px">Роман Островский</h3>
+    <p style="color:var(--mut);margin-top:6px">Ростов · Батайск · Азов</p>
+    <div class="contact-btns">
+      <a class="cbtn phone" href="tel:+79508465397">📞 +7 (950) 846-53-97</a>
+      <a class="cbtn wa" href="https://wa.me/79508465397" target="_blank">💬 Написать в WhatsApp</a>
+      <a class="cbtn vk" href="https://vk.com/mebel.ostrovsky" target="_blank">🌐 Группа ВКонтакте</a>
+    </div>
+    <div class="note">Тот же номер работает в Telegram и MAX — удобно, быстро, на связи</div>
+  </div>
+</div></section>
+
+<footer>
+  <div class="wrap">
+    © <span id="year"></span> Мастерская Островского · Кухни на заказ · <a href="https://vk.com/mebel.ostrovsky" target="_blank">Мы ВКонтакте</a>
+  </div>
+</footer>
+
+<a class="float-phone" href="tel:+79508465397" aria-label="Позвонить">📞</a>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
