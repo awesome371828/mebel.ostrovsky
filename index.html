@@ -4,621 +4,609 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Кухни на Заказ | Ростов, Батайск, Азов</title>
-<meta name="description" content="Кухни и корпусная мебель на заказ в Ростове, Батайске и Азове. 10+ лет опыта. Полный цикл: замер, проект, производство, монтаж. ☎ +7 (950) 846-53-97">
-<meta name="keywords" content="кухни на заказ Ростов, мебель на заказ, шкафы купе, гардеробные, прихожие, кухни Батайск, мебель Азов">
-<meta property="og:type" content="website">
-<meta property="og:locale" content="ru_RU">
-<meta property="og:title" content="Кухни на Заказ | Ростов, Батайск, Азов">
-<meta property="og:description" content="Кухни и корпусная мебель под ключ. 10+ лет опыта.">
-<meta property="og:site_name" content="Кухни на Заказ">
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"LocalBusiness","name":"Кухни на Заказ | Ростов, Батайск, Азов","description":"Кухни и корпусная мебель на заказ.","telephone":"+79508465397","address":{"@type":"PostalAddress","addressLocality":"Ростов-на-Дону"},"areaServed":["Ростов-на-Дону","Батайск","Азов"],"sameAs":["https://vk.com/mebel.ostrovsky"]}
-</script>
-<link rel="icon" type="image/jpeg" href="https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1254x1254&from=bu&cs=1254x0">
-<link rel="apple-touch-icon" href="https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1254x1254&from=bu&cs=1254x0">
+<meta name="description" content="Мебель и кухни на заказ. Ростов, Батайск, Азов. Специалист Роман Островский. Тел. +7 (950) 846-53-97">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --gold:#b3873f;
-  --gold-soft:#d4b06a;
-  --muted:#ded2bb;
-  --line:rgba(212,176,106,.28);
+  --bg:#17120d; --panel:#201913; --card:#241d15; --gold:#c9a25f; --gold2:#e6c789;
+  --text:#efe6d8; --muted:#b3a794; --line:rgba(201,162,95,.22);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:'Manrope',system-ui,sans-serif;color:#efe6d6;background:#17120d;line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif;overflow-wrap:break-word;word-break:break-word}
+body{background:var(--bg);color:var(--text);font-family:'Manrope',sans-serif;overflow-x:hidden}
 img{max-width:100%;display:block}
-a{text-decoration:none;color:inherit}
-ul{list-style:none}
-.wrap{width:100%;max-width:1180px;margin:0 auto;padding:0 20px}
+a{color:inherit;text-decoration:none}
+section{scroll-margin-top:90px;position:relative;overflow:hidden}
+h1,h2,h3,.serif{font-family:'Cormorant Garamond',serif}
+.container{width:min(1180px,92vw);margin:0 auto}
 
-.progress{position:fixed;top:0;left:0;height:3px;z-index:200;background:linear-gradient(90deg,var(--gold),var(--gold-soft));width:0%}
+/* ===== PROGRESS BAR ===== */
+#pbar{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--gold),var(--gold2));z-index:2000}
 
-/* ШАПКА */
-header{position:fixed;top:0;left:0;right:0;z-index:120;background:rgba(16,12,8,.9);backdrop-filter:blur(14px);transition:background .4s,box-shadow .4s}
-header.solid{background:rgba(23,18,13,.98);box-shadow:0 6px 26px rgba(0,0,0,.5)}
-.nav{display:flex;align-items:center;justify-content:space-between;height:76px;gap:12px}
+/* ===== HEADER ===== */
+header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(16,12,8,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;height:78px;padding:10px 0}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand img{width:46px;height:46px;border-radius:50%;border:2px solid var(--gold);object-fit:cover;flex-shrink:0}
+.brand-txt{min-width:0}
+.brand-name{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;color:var(--gold2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-sub{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.desk-nav{display:flex;align-items:center;gap:26px}
+.desk-nav a{font-size:14px;font-weight:600;color:var(--text);opacity:.85;transition:.25s;white-space:nowrap}
+.desk-nav a:hover{opacity:1;color:var(--gold2)}
+.phone{font-weight:700;color:var(--gold2);white-space:nowrap}
+.menu-btn{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;z-index:1101}
+.menu-btn span{display:block;width:26px;height:2px;background:var(--gold2);border-radius:2px;transition:.3s}
 
-.logo{display:flex;align-items:center;gap:12px;min-width:0;max-width:100%}
-.logo .brand-ava{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 16px rgba(179,135,63,.55);flex-shrink:0}
-.logo .brand-txt{display:flex;flex-direction:column;min-width:0;line-height:1.15}
-.logo .brand-txt .name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;color:#fff;line-height:1.05;text-shadow:0 2px 10px rgba(0,0,0,.6)}
-.logo .brand-txt .sub{color:var(--gold-soft);font-family:'Manrope',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:62vw;margin-top:2px}
-
-.menu{display:flex;gap:22px}
-.menu a{color:rgba(255,255,255,.9);font-size:14px;font-weight:500;transition:.3s;border-bottom:1px solid transparent;padding-bottom:4px;white-space:nowrap}
-.menu a:hover{color:#fff;border-color:var(--gold)}
-
-/* Кнопка звонка в меню */
-.menu-call{display:none}
-
-.burger{display:none;background:none;border:none;cursor:pointer;width:38px;height:38px;position:relative;z-index:130;flex-shrink:0}
-.burger span{position:absolute;left:7px;right:7px;height:2px;background:#fff;transition:.3s;border-radius:2px}
-.burger span:nth-child(1){top:12px}
-.burger span:nth-child(2){top:18px}
-.burger span:nth-child(3){top:24px}
-.burger.open span:nth-child(1){top:18px;transform:rotate(45deg)}
-.burger.open span:nth-child(2){opacity:0}
-.burger.open span:nth-child(3){top:18px;transform:rotate(-45deg)}
-
-/* Затемнение фона */
-.scrim{position:fixed;inset:0;background:rgba(0,0,0,.55);opacity:0;visibility:hidden;transition:.35s;z-index:119;backdrop-filter:blur(2px)}
+/* ===== MOBILE MENU ===== */
+.mobile-menu{position:fixed;top:0;right:0;height:100vh;width:min(320px,84vw);background:var(--panel);border-left:1px solid var(--line);z-index:1100;transform:translateX(100%);transition:transform .35s ease;display:flex;flex-direction:column;padding:28px 26px;box-shadow:-10px 0 40px rgba(0,0,0,.4)}
+.mobile-menu.open{transform:translateX(0)}
+.mm-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.mm-head .brand-name{font-size:20px}
+.mm-close{background:none;border:none;cursor:pointer;color:var(--muted);font-size:32px;line-height:1}
+.mobile-menu a.mm-link{display:block;padding:14px 0;font-size:17px;font-weight:600;color:var(--text);border-bottom:1px solid rgba(201,162,95,.1);transition:.2s}
+.mobile-menu a.mm-link:hover{color:var(--gold2);padding-left:8px}
+.mm-call{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#17120d;font-weight:800;padding:15px;border-radius:12px;font-size:16px}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1090;opacity:0;visibility:hidden;transition:.3s}
 .scrim.show{opacity:1;visibility:visible}
 
-.panel{position:relative;min-height:100vh;display:flex;align-items:center;padding:140px 0;overflow:hidden}
-.panel .bg{position:absolute;inset:-20% 0;z-index:0;background-size:cover;background-position:center;will-change:transform}
-.panel .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(to right,rgba(23,18,13,.93) 30%,rgba(23,18,13,.62) 65%,rgba(23,18,13,.7))}
-.panel .content{position:relative;z-index:2;width:100%}
-.panel--center .content{text-align:center}
-.panel--center .bg::after{background:rgba(23,18,13,.68)}
-.panel--dark .bg::after{background:rgba(23,18,13,.86)}
-.panel + .panel{margin-top:14px}
+/* ===== HERO ===== */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:130px 20px 80px;background:linear-gradient(rgba(10,7,4,.72),rgba(10,7,4,.82)),url('https://sun9-70.vkuserphoto.ru/import/a_cd3b9d8ee7e69d49ea75d6d67e370662/11c0d497622e0062490bf90dd1b42ec2.200x150.jpg') center/cover fixed}
+.hero h1{font-size:clamp(34px,7vw,72px);font-weight:700;line-height:1.05;color:var(--gold2);max-width:1000px;margin:0 auto}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero p.lead{margin:22px auto 0;max-width:640px;color:var(--text);font-size:clamp(15px,2vw,19px);line-height:1.6}
+.hero-cta{margin-top:38px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:15px 30px;border-radius:50px;font-weight:700;font-size:16px;transition:.25s;border:none;cursor:pointer}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#17120d}
+.btn-outline{background:transparent;border:1px solid var(--gold);color:var(--gold2)}
+.btn:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(201,162,95,.25)}
 
-.eyebrow{display:inline-block;color:var(--gold-soft);letter-spacing:4px;text-transform:uppercase;font-size:13px;font-weight:600;margin-bottom:18px;border-top:1px solid var(--gold);padding-top:13px}
-h1{font-size:clamp(32px,6.4vw,74px);font-weight:600;line-height:1.12;color:#fff;letter-spacing:.5px;text-shadow:0 3px 22px rgba(0,0,0,.45);overflow-wrap:break-word;word-break:break-word;max-width:100%}
-h1 em{font-style:italic;color:var(--gold-soft)}
-.sub{color:#fff;font-size:clamp(17px,2vw,20px);font-weight:300;margin:24px 0 34px;max-width:560px;text-shadow:0 2px 14px rgba(0,0,0,.55)}
-.btn-row{display:flex;gap:16px;flex-wrap:wrap}
-.btn{position:relative;overflow:hidden;display:inline-block;padding:15px 30px;font-size:14px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;transition:.35s;cursor:pointer;border-radius:8px}
-.btn-solid{background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#fff;box-shadow:0 10px 30px rgba(179,135,63,.45);animation:btnGlow 3.2s ease-in-out infinite}
-.btn-solid:hover{filter:brightness(1.1);transform:translateY(-3px)}
-.btn-line{border:1px solid rgba(255,255,255,.55);color:#fff;backdrop-filter:blur(4px)}
-.btn-line:hover{background:#fff;color:#17120d}
-.btn::after{content:"";position:absolute;top:0;left:-120%;width:60%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);transition:.6s}
-.btn:hover::after{left:130%}
-@keyframes btnGlow{0%,100%{box-shadow:0 10px 30px rgba(179,135,63,.4)}50%{box-shadow:0 10px 46px rgba(212,176,106,.85)}}
+/* ===== TYPING WORDS ===== */
+.t-word{display:inline-block;white-space:pre}
 
-.scroll-cue{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:5;color:rgba(255,255,255,.8);font-size:11px;letter-spacing:3px;text-transform:uppercase;text-align:center}
-.scroll-cue .line{width:1px;height:44px;background:rgba(255,255,255,.55);margin:10px auto 0;animation:drip 2s infinite}
-@keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+/* ===== STATS ===== */
+.stats{padding:70px 0;background:var(--bg)}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px}
+.stat{text-align:center;padding:28px 12px;background:var(--card);border:1px solid var(--line);border-radius:16px}
+.stat b{font-family:'Cormorant Garamond',serif;font-size:46px;color:var(--gold2)}
+.stat span{display:block;margin-top:6px;color:var(--muted);font-size:14px}
 
-.sec-head{max-width:680px;margin:0 auto 50px;text-align:center}
-.sec-head .kicker{color:var(--gold-soft);letter-spacing:4px;text-transform:uppercase;font-size:12px;font-weight:600}
-.sec-head h2{font-size:clamp(32px,5vw,48px);font-weight:600;margin:16px 0 14px;line-height:1.15;color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.45)}
-.sec-head p{color:var(--muted);font-size:16px}
-h2.k{font-size:clamp(32px,5vw,46px);color:#fff;font-weight:600;margin:16px 0 14px;text-align:center;text-shadow:0 2px 18px rgba(0,0,0,.45)}
+/* ===== SECTIONS GENERIC ===== */
+.sec{padding:90px 0}
+.sec-h{text-align:center;margin-bottom:52px}
+.sec-h .tag{display:inline-block;color:var(--gold);font-size:13px;letter-spacing:3px;text-transform:uppercase;font-weight:700}
+.sec-h h2{font-size:clamp(30px,5vw,48px);color:var(--gold2);margin-top:10px}
+.sec-h p{color:var(--muted);max-width:560px;margin:12px auto 0;line-height:1.6}
 
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;text-align:center}
-.stat .num{font-family:'Cormorant Garamond',serif;font-size:60px;font-weight:600;color:var(--gold-soft);line-height:1;text-shadow:0 3px 22px rgba(0,0,0,.55)}
-.stat .lbl{color:var(--muted);font-size:14px;margin-top:10px}
+/* ===== ABOUT ===== */
+.about{background:var(--panel)}
+.about-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:50px;align-items:center}
+.about-ava{position:relative}
+.about-ava img{width:100%;border-radius:20px;border:3px solid var(--gold);box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.about-ava .ring{position:absolute;inset:-12px;border:1px solid var(--gold);border-radius:26px;opacity:.5}
+.about-txt h3{font-size:clamp(24px,4vw,36px);color:var(--gold2);margin-bottom:18px}
+.about-txt p{color:var(--text);line-height:1.75;margin-bottom:16px}
+.about-txt .hl{color:var(--gold2);font-weight:700}
 
-.about{display:grid;grid-template-columns:1fr 1.1fr;gap:70px;align-items:center}
-.about-card{background:rgba(23,18,13,.78);backdrop-filter:blur(12px);border:1px solid var(--line);padding:50px 42px;text-align:center;border-radius:16px}
-.avatar{width:130px;height:130px;border-radius:50%;margin:0 auto 22px;overflow:hidden;border:2px solid var(--gold);position:relative}
-.avatar img{width:100%;height:100%;object-fit:cover}
-.avatar::after{content:"";position:absolute;inset:0;border-radius:50%;box-shadow:inset 0 0 0 3px rgba(212,176,106,.4)}
-.about-card h3{font-size:28px;color:#fff}
-.about-card .role{color:var(--muted);font-size:14px;margin-top:4px}
-.about-card .sep{width:46px;height:1px;background:var(--gold);margin:22px auto}
-.about-card p{color:var(--muted);font-size:15px}
-.about-body .kicker{color:var(--gold-soft);letter-spacing:4px;text-transform:uppercase;font-size:12px;font-weight:600}
-.about-body h2{font-size:clamp(30px,4vw,44px);font-weight:600;margin:16px 0 22px;line-height:1.15;color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.45)}
-.about-body p{color:var(--muted);font-size:16px;margin-bottom:26px}
-.features{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.features li{position:relative;padding-left:34px;color:#efe6d6;font-size:15px;overflow-wrap:break-word}
-.features li::before{content:"";position:absolute;left:0;top:6px;width:16px;height:16px;border:1.5px solid var(--gold);border-radius:50%}
-.features li::after{content:"✓";position:absolute;left:3px;top:5px;font-size:11px;color:var(--gold-soft);font-weight:700}
+/* ===== CONSULT ===== */
+.consult{background:linear-gradient(135deg,var(--panel),var(--card))}
+.consult-box{text-align:center;max-width:640px;margin:0 auto;padding:50px 30px;border:1px solid var(--gold);border-radius:24px;background:rgba(201,162,95,.06)}
+.consult-box h2{font-size:clamp(26px,4vw,38px);color:var(--gold2);margin-bottom:14px}
+.consult-box p{color:var(--muted);line-height:1.7;margin-bottom:28px}
+.consult-tel{font-size:clamp(26px,5vw,40px);font-family:'Cormorant Garamond',serif;font-weight:700;color:var(--gold2)}
 
-.consult .phone{display:block;font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(30px,5vw,50px);color:var(--gold-soft);letter-spacing:1px;margin-top:10px;white-space:nowrap}
-.consult p{color:var(--muted);font-size:16px;margin:30px auto 0;max-width:600px;line-height:1.8;overflow-wrap:break-word}
+/* ===== WORKS CAROUSEL ===== */
+.works{background:var(--bg)}
+.car-wrap{position:relative;overflow:hidden}
+.car-track{display:flex;gap:20px;transition:transform .45s ease}
+.w-card{flex:0 0 calc((100% - 40px)/3);border-radius:16px;overflow:hidden;border:1px solid var(--line);background:var(--card)}
+.w-card img{width:100%;height:260px;object-fit:cover;transition:.4s}
+.w-card:hover img{transform:scale(1.05)}
+.w-cap{padding:14px 16px;font-weight:600;color:var(--text)}
+.car-btn{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:var(--gold);color:#17120d;font-size:24px;border:none;cursor:pointer;z-index:5;opacity:.9}
+.car-prev{left:8px}.car-next{right:8px}
+.car-dots{display:flex;justify-content:center;gap:8px;margin-top:22px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--line);cursor:pointer;border:none}
+.dot.act{background:var(--gold)}
 
-.carousel{position:relative;max-width:1120px;margin:0 auto}
-.car-track{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding:8px 6px 20px;scrollbar-width:none}
-.car-track::-webkit-scrollbar{display:none}
-.car-nav{position:absolute;top:38%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;background:rgba(23,18,13,.75);backdrop-filter:blur(8px);border:1px solid var(--gold);color:var(--gold-soft);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.3s;z-index:5}
-.car-nav:hover{background:var(--gold);color:#17120d}
-.car-prev{left:-14px}
-.car-next{right:-14px}
-.car-dots{display:flex;justify-content:center;gap:8px;margin-top:10px;flex-wrap:wrap}
-.car-dot{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:.3s;border:none}
-.car-dot.active{background:var(--gold-soft);transform:scale(1.3)}
+/* ===== REVIEWS ===== */
+.rev{background:var(--panel)}
+.rev-track{display:flex;gap:20px;transition:transform .45s ease}
+.rev-card{flex:0 0 calc((100% - 40px)/3);background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;display:flex;flex-direction:column}
+.rev-top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.rev-top img{width:48px;height:48px;border-radius:50%;border:2px solid var(--gold);object-fit:cover}
+.rev-top b{color:var(--gold2)}
+.rev-top small{display:block;color:var(--muted);font-size:12px}
+.rev-card p{color:var(--text);line-height:1.65;flex:1}
+.rev-video{margin-top:14px;border-radius:12px;overflow:hidden}
+.rev-video iframe{width:100%;height:180px;border:0}
 
-.car-slide{flex:0 0 auto;width:min(78vw,440px);scroll-snap-align:center;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:rgba(23,18,13,.7)}
-.car-slide img{width:100%;height:300px;object-fit:cover;display:block;transition:transform .5s ease}
-.car-slide:hover img{transform:scale(1.06)}
+/* ===== SERVICES ===== */
+.serv{background:var(--bg)}
+.serv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.serv-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px;transition:.3s}
+.serv-card:hover{transform:translateY(-6px);border-color:var(--gold)}
+.serv-ico{font-size:36px;margin-bottom:16px}
+.serv-card h3{color:var(--gold2);font-size:22px;margin-bottom:10px}
+.serv-card p{color:var(--muted);line-height:1.6;font-size:14px}
 
-.rev-track{align-items:flex-start}
-.rev-card{scroll-snap-align:center;background:linear-gradient(160deg,rgba(23,18,13,.92),rgba(23,18,13,.8));backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:18px;padding:22px 24px;width:min(82vw,520px);flex:0 0 auto;display:flex;flex-direction:column;box-shadow:0 14px 40px rgba(0,0,0,.45);position:relative;overflow:hidden}
-.rev-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold-soft),transparent);opacity:.7}
-.rev-head{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
-.rev-ava{width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 12px rgba(179,135,63,.4);flex-shrink:0}
-.rev-name{color:#fff;font-weight:700;font-size:15px}
-.rev-sub{color:var(--muted);font-size:11px;margin-top:2px}
-.rev-stars{color:var(--gold-soft);letter-spacing:3px;font-size:14px;margin-left:auto;white-space:nowrap}
-.rev-text{color:#e7ddc8;font-size:14px;line-height:1.6;font-weight:300;text-align:left;overflow-wrap:break-word;word-break:break-word}
-.rev-video{margin-top:12px;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
-.rev-video iframe{width:100%;height:200px;border:0;display:block}
+/* ===== PROCESS ===== */
+.proc{background:var(--panel)}
+.proc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.proc-step{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px;position:relative}
+.proc-n{font-family:'Cormorant Garamond',serif;font-size:52px;color:var(--gold);opacity:.5;line-height:1}
+.proc-step h3{color:var(--gold2);margin:12px 0 8px;font-size:20px}
+.proc-step p{color:var(--muted);font-size:14px;line-height:1.6}
 
-.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.svc{position:relative;background:rgba(23,18,13,.68);backdrop-filter:blur(10px);border:1px solid var(--line);padding:36px 30px;transition:.4s;border-radius:14px;overflow-wrap:break-word}
-.svc::before{content:"";position:absolute;inset:0;border-radius:14px;padding:1px;background:linear-gradient(135deg,var(--gold-soft),transparent 40%,transparent 60%,var(--gold-soft));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:.4s;pointer-events:none}
-.svc:hover{transform:translateY(-6px);background:rgba(23,18,13,.88)}
-.svc:hover::before{opacity:1}
-.svc svg{width:34px;height:34px;stroke:var(--gold-soft);fill:none;stroke-width:1.4;margin-bottom:20px}
-.svc h3{font-size:23px;color:#fff;margin-bottom:10px}
-.svc p{color:var(--muted);font-size:14.5px}
-
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.step{position:relative;padding:30px 24px;background:rgba(23,18,13,.65);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:14px;transition:.3s;overflow-wrap:break-word}
-.step:hover{transform:translateY(-4px);border-color:var(--gold)}
-.step .n{font-family:'Cormorant Garamond',serif;font-size:56px;color:var(--gold-soft);line-height:1}
-.step h3{font-size:22px;color:#fff;margin:14px 0 8px}
-.step p{color:var(--muted);font-size:14.5px}
-
+/* ===== GUARANTEES ===== */
+.guar{background:var(--bg)}
 .guar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
-.guar{position:relative;background:rgba(23,18,13,.68);backdrop-filter:blur(10px);border:1px solid var(--line);padding:36px 26px;text-align:center;transition:.35s;border-radius:14px;overflow-wrap:break-word}
-.guar::before{content:"";position:absolute;inset:0;border-radius:14px;padding:1px;background:linear-gradient(135deg,var(--gold-soft),transparent 40%,transparent 60%,var(--gold-soft));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:.4s}
-.guar:hover{transform:translateY(-5px);background:rgba(23,18,13,.85)}
-.guar:hover::before{opacity:1}
-.guar .ico{width:52px;height:52px;margin:0 auto 18px;border:1px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold-soft)}
-.guar .ico svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.5}
-.guar h3{font-size:19px;color:#fff;margin-bottom:8px}
-.guar p{color:var(--muted);font-size:13.5px}
+.guar-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px;text-align:center}
+.guar-ico{font-size:34px;margin-bottom:12px}
+.guar-card h3{color:var(--gold2);font-size:18px;margin-bottom:8px}
+.guar-card p{color:var(--muted);font-size:13px;line-height:1.6}
 
-.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
-.contact-info h2{font-size:clamp(30px,4.5vw,46px);color:#fff;margin:16px 0 14px;line-height:1.1;text-shadow:0 2px 18px rgba(0,0,0,.45)}
-.contact-info .kicker{color:var(--gold-soft);letter-spacing:4px;text-transform:uppercase;font-size:12px;font-weight:600}
-.contact-info>p{color:var(--muted);font-size:16px;margin-bottom:32px}
-.c-line{display:flex;align-items:flex-start;gap:20px;margin-bottom:26px}
-.c-ico{width:44px;height:44px;border:1px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold-soft);flex-shrink:0}
-.c-ico svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5}
-.c-line .lab{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
-.c-line .val{font-size:19px;font-weight:600;color:#efe6d6;overflow-wrap:break-word;word-break:break-word}
-.c-line a.val:hover{color:var(--gold-soft)}
-.call-block{background:rgba(23,18,13,.78);backdrop-filter:blur(12px);border:1px solid var(--line);padding:44px 34px;text-align:center;border-radius:16px}
-.call-block .cb-lab{font-size:14px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-soft)}
-.call-block .cb-num{display:block;font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(28px,4vw,44px);color:#fff;margin:14px 0 8px;white-space:nowrap}
-.call-block .cb-num:hover{color:var(--gold-soft)}
-.call-block .cb-hint{color:var(--muted);font-size:14.5px;line-height:1.8;overflow-wrap:break-word}
+/* ===== CTA ===== */
+.cta{background:linear-gradient(rgba(10,7,4,.8),rgba(10,7,4,.85)),url('https://sun9-88.vkuserphoto.ru/import/a_b7d0f2de51bb1f0d4421ccca08b61f60/8c9e34b56e3b0df3168d9d2eaf21a0e8.200x150.jpg') center/cover fixed;text-align:center;padding:100px 20px}
+.cta h2{font-size:clamp(28px,5vw,44px);color:var(--gold2);margin-bottom:16px}
+.cta p{color:var(--text);max-width:520px;margin:0 auto 30px;line-height:1.7}
 
-.cta{text-align:center;padding:100px 0;position:relative}
-.cta h2{font-size:clamp(32px,5vw,52px);color:#fff;font-weight:600;margin-bottom:16px;text-shadow:0 3px 20px rgba(0,0,0,.45)}
-.cta p{color:var(--muted);font-size:17px;max-width:600px;margin:0 auto 34px;overflow-wrap:break-word}
+/* ===== CONTACTS ===== */
+.cont{background:var(--panel)}
+.cont-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.cont-info h3{color:var(--gold2);font-size:26px;margin-bottom:18px}
+.cont-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.cont-row .ico{font-size:22px}
+.cont-row b{display:block;color:var(--gold2)}
+.cont-row span{color:var(--muted);font-size:14px}
 
-footer{background:rgba(16,12,8,.97);color:var(--muted);padding:44px 20px;text-align:center;font-size:13.5px;border-top:1px solid rgba(179,135,63,.2)}
-footer .flogo{font-family:'Cormorant Garamond',serif;font-size:26px;color:#fff;margin-bottom:10px;line-height:1.3}
-footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',sans-serif;font-weight:500;letter-spacing:1px}
+/* ===== FOOTER ===== */
+footer{background:#0e0a06;padding:40px 0;text-align:center;border-top:1px solid var(--line)}
+footer .f-name{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold2);margin-bottom:8px}
+footer p{color:var(--muted);font-size:13px;line-height:1.8}
 
-.cookie-bar{position:fixed;bottom:0;left:0;right:0;z-index:150;background:rgba(16,12,8,.97);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;transform:translateY(100%);transition:.5s}
-.cookie-bar.show{transform:none}
-.cookie-bar p{color:var(--muted);font-size:13px;max-width:720px;line-height:1.5}
-.cookie-bar .btn{flex-shrink:0;padding:12px 24px}
+/* ===== COOKIE ===== */
+.cookie{position:fixed;bottom:16px;left:16px;right:16px;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;z-index:1500;display:none;gap:14px;align-items:center}
+.cookie p{color:var(--muted);font-size:13px;flex:1}
+.cookie button{background:var(--gold);color:#17120d;border:none;padding:9px 16px;border-radius:8px;font-weight:700;cursor:pointer}
 
-.reveal{opacity:0;transform:translateY(36px);transition:opacity .9s ease,transform .9s ease}
-.reveal.in{opacity:1;transform:none}
-.stats .reveal:nth-child(1){transition-delay:.05s}.stats .reveal:nth-child(2){transition-delay:.15s}.stats .reveal:nth-child(3){transition-delay:.25s}.stats .reveal:nth-child(4){transition-delay:.35s}
-.steps .reveal:nth-child(2){transition-delay:.08s}.steps .reveal:nth-child(3){transition-delay:.16s}.steps .reveal:nth-child(4){transition-delay:.24s}.steps .reveal:nth-child(5){transition-delay:.32s}.steps .reveal:nth-child(6){transition-delay:.4s}
-.svc-grid .reveal:nth-child(2){transition-delay:.08s}.svc-grid .reveal:nth-child(3){transition-delay:.16s}.svc-grid .reveal:nth-child(4){transition-delay:.24s}.svc-grid .reveal:nth-child(5){transition-delay:.32s}.svc-grid .reveal:nth-child(6){transition-delay:.4s}
-.guar-grid .reveal:nth-child(2){transition-delay:.08s}.guar-grid .reveal:nth-child(3){transition-delay:.16s}.guar-grid .reveal:nth-child(4){transition-delay:.24s}
-
-.t-word{display:inline-block;opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease;word-break:break-word}
-
+/* ===== RESPONSIVE ===== */
 @media(max-width:1024px){
-  .stats{grid-template-columns:repeat(2,1fr);gap:40px}
-  .svc-grid{grid-template-columns:repeat(2,1fr)}
-  .guar-grid{grid-template-columns:repeat(2,1fr)}
+  .stats-grid,.guar-grid{grid-template-columns:repeat(2,1fr)}
+  .serv-grid,.proc-grid{grid-template-columns:repeat(2,1fr)}
+  .w-card{flex:0 0 calc((100% - 20px)/2)}
+  .rev-card{flex:0 0 calc((100% - 20px)/2)}
 }
-@media(max-width:860px){
-  .menu{position:fixed;top:0;right:0;bottom:0;width:min(320px,84vw);background:linear-gradient(180deg,#1c160e,#12100a);flex-direction:column;justify-content:flex-start;gap:6px;padding:100px 36px 40px;transform:translateX(100%);transition:transform .4s cubic-bezier(.22,.61,.36,1);z-index:125;opacity:0;visibility:hidden;box-shadow:-20px 0 50px rgba(0,0,0,.5);overflow-y:auto}
-  .menu.open{transform:none;opacity:1;visibility:visible}
-  .menu a{font-size:20px;font-family:'Cormorant Garamond',serif;color:#fff;border-bottom:1px solid rgba(212,176,106,.15);padding:14px 0;display:block}
-  .menu a:hover{color:var(--gold-soft)}
-  .menu-call{display:block;margin-top:auto;padding-top:20px}
-  .menu-call a{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#fff;font-family:'Manrope',sans-serif;font-size:15px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;border:none;border-radius:12px;padding:16px 18px;box-shadow:0 10px 26px rgba(179,135,63,.4)}
-  .burger{display:block}
-  .scrim{display:block}
-  .about{grid-template-columns:1fr;gap:40px}
-  .features{grid-template-columns:1fr}
-  .steps{grid-template-columns:1fr;gap:22px}
-  .contact-grid{grid-template-columns:1fr;gap:40px}
-  .panel{padding:120px 0}
-  .car-nav{display:none}
-  .rev-card{width:86vw}
+@media(max-width:900px){
+  .desk-nav,.nav .phone{display:none}
+  .menu-btn{display:flex}
+}
+@media(max-width:760px){
+  .nav{height:66px}
+  .brand img{width:40px;height:40px}
+  .brand-name{font-size:19px}
+  .brand-sub{font-size:11px}
+  .about-grid,.cont-grid{grid-template-columns:1fr;gap:30px}
+  .serv-grid,.proc-grid{grid-template-columns:1fr}
+  .w-card{flex:0 0 calc((100% - 20px)/2)}
+  .rev-card{flex:0 0 100%}
+  .car-btn{width:40px;height:40px}
 }
 @media(max-width:520px){
-  .logo .brand-ava{width:40px;height:40px}
-  .logo .brand-txt .name{font-size:20px}
-  .logo .brand-txt .sub{font-size:11px;max-width:54vw}
-  .nav{height:66px}
-  .panel{min-height:auto;padding:100px 0 60px}
-  h1{font-size:33px}
-  .btn-row{width:100%}
-  .btn{width:100%;text-align:center}
-  .stat .num{font-size:46px}
-  .scroll-cue{display:none}
-  .car-slide{width:84vw}
-  .car-slide img{height:210px}
-  .svc-grid{grid-template-columns:1fr}
-  .guar-grid{grid-template-columns:1fr}
-  .rev-card{width:92vw;padding:16px}
-  .rev-head{gap:10px}
-  .rev-ava{width:46px;height:46px}
-  .rev-name{font-size:14px}
-  .rev-sub{font-size:10px}
-  .rev-stars{font-size:13px;display:block;margin:6px 0 0}
-  .rev-text{font-size:13px;line-height:1.55}
-  .rev-video iframe{height:180px}
-  .consult .phone{font-size:26px}
-  .call-block .cb-num{font-size:24px}
-  .menu{padding:92px 28px 30px}
+  .stats-grid,.guar-grid{grid-template-columns:1fr 1fr;gap:12px}
+  .stat b{font-size:34px}
+  .sec{padding:64px 0}
+  .brand-name{font-size:18px;max-width:200px}
 }
-/* Очень маленькие телефоны — карточки компактнее */
 @media(max-width:380px){
-  .car-slide{width:88vw}
-  .car-slide img{height:190px}
-  .rev-card{width:94vw;padding:14px}
-  .rev-text{font-size:12.5px}
+  .brand-name{font-size:16px}
+  .w-card{flex:0 0 88vw}
+  .rev-card{flex:0 0 94vw;padding:14px}
   .rev-video iframe{height:160px}
 }
 </style>
 </head>
 <body>
 
-<div class="progress" id="progress"></div>
+<div id="pbar"></div>
 
-<header id="header">
-  <div class="wrap nav">
-    <a href="#top" class="logo">
-      <img class="brand-ava" src="https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1254x1254&from=bu&cs=1254x0" alt="Кухни на Заказ">
-      <span class="brand-txt"><span class="name">Кухни на Заказ</span><span class="sub">Ростов · Батайск · Азов</span></span>
+<header>
+  <div class="container nav">
+    <a class="brand" href="#top">
+      <img src="https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c.jpg" alt="Роман Островский">
+      <span class="brand-txt">
+        <span class="brand-name">Кухни на Заказ</span>
+        <span class="brand-sub">Ростов · Батайск · Азов</span>
+      </span>
     </a>
-    <button class="burger" id="burger" aria-label="Меню"><span></span><span></span><span></span></button>
+    <nav class="desk-nav">
+      <a href="#about">Специалист</a>
+      <a href="#works">Работы</a>
+      <a href="#reviews">Отзывы</a>
+      <a href="#services">Услуги</a>
+      <a href="#process">Как работаем</a>
+      <a href="#contacts">Контакты</a>
+    </nav>
+    <a class="phone" href="tel:+79508465397">+7 (950) 846-53-97</a>
+    <button class="menu-btn" id="burger" aria-label="Меню">
+      <span></span><span></span><span></span>
+    </button>
   </div>
-  <ul class="menu" id="menu">
-    <li><a href="#about">Специалист</a></li>
-    <li><a href="#works">Работы</a></li>
-    <li><a href="#reviews">Отзывы</a></li>
-    <li><a href="#services">Услуги</a></li>
-    <li><a href="#process">Как работаем</a></li>
-    <li><a href="#contacts">Контакты</a></li>
-    <li class="menu-call"><a href="tel:+79508465397">📞 Позвонить специалисту</a></li>
-  </ul>
 </header>
+
+<!-- SCRIM -->
 <div class="scrim" id="scrim"></div>
 
-<section class="panel" id="top">
-  <div class="bg" style="background-image:url('https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x241,480x321,540x361,640x428,720x481,1080x722,1280x855,1440x962,2560x1711&from=bu&u=udyioV6Vl_ghNhYbFZ9zjc-ZU_IjlhkVV114xfpUZJs&cs=640x0')"></div>
-  <div class="wrap"><div class="content">
-    <span class="eyebrow">Мебель и кухни на заказ</span>
-    <h1 id="heroTitle">Создаём мебель, которая <em>создаёт настроение</em></h1>
-    <p class="sub">Проектируем и изготавливаем кухни, шкафы, гардеробные и другую корпусную мебель в Ростове, Батайске и Азове — по вашему проекту, от замера до монтажа.</p>
-    <div class="btn-row">
-      <a href="#consult" class="btn btn-solid">Получить консультацию</a>
-      <a href="#works" class="btn btn-line">Смотреть работы</a>
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mm-head">
+    <span class="brand-name">Меню</span>
+    <button class="mm-close" id="menuClose" aria-label="Закрыть">&times;</button>
+  </div>
+  <a class="mm-link" href="#about">Специалист</a>
+  <a class="mm-link" href="#works">Работы</a>
+  <a class="mm-link" href="#reviews">Отзывы</a>
+  <a class="mm-link" href="#services">Услуги</a>
+  <a class="mm-link" href="#process">Как работаем</a>
+  <a class="mm-link" href="#contacts">Контакты</a>
+  <a class="mm-call" href="tel:+79508465397">📞 Позвонить специалисту</a>
+</div>
+
+<main id="top">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <h1 id="heroTitle">Мебель и <em>кухни</em> на заказ</h1>
+    <p class="lead">Проектируем, изготавливаем и устанавливаем кухни и мебель под ваш интерьер. Работаем в Ростове-на-Дону, Батайске и Азове. Гарантия качества и договор.</p>
+    <div class="hero-cta">
+      <a class="btn btn-gold" href="tel:+79508465397">Позвонить</a>
+      <a class="btn btn-outline" href="#works">Смотреть работы</a>
     </div>
-  </div></div>
-  <div class="scroll-cue">Листайте<div class="line"></div></div>
+  </div>
 </section>
 
-<section class="panel panel--dark">
-  <div class="bg" style="background-image:url('https://sun9-20.vkuserphoto.ru/s/v1/ig2/9W8TzKo3y8t8-s63NRmlys3yJtHJAKPBOp2QIyuqMSTinG9q-UFuD5sYkz4wbd7QZDv7wQxsZlldmCrAM-PzPlDJ.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,1800x1200&from=bu&u=kySpH3qK1oaqlWr8kbrP_y7iDDbASMEGWuJ5dgxf5MU&cs=640x0')"></div>
-  <div class="wrap"><div class="content">
-    <div class="stats">
-      <div class="stat reveal"><div class="num">10+</div><div class="lbl">лет опыта</div></div>
-      <div class="stat reveal"><div class="num">5.0</div><div class="lbl">средняя оценка клиентов</div></div>
-      <div class="stat reveal"><div class="num">8/10</div><div class="lbl">клиентов по рекомендации</div></div>
-      <div class="stat reveal"><div class="num">100%</div><div class="lbl">полный цикл под ключ</div></div>
+<!-- STATS -->
+<section class="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat"><b>10+</b><span>лет опыта</span></div>
+      <div class="stat"><b>5.0</b><span>оценка клиентов</span></div>
+      <div class="stat"><b>8/10</b><span>кухонь каждый месяц</span></div>
+      <div class="stat"><b>100%</b><span>гарантия качества</span></div>
     </div>
-  </div></div>
+  </div>
 </section>
 
-<section class="panel" id="about">
-  <div class="bg" style="background-image:url('https://sun9-50.vkuserphoto.ru/s/v1/ig2/_uJbJ-Gw0zJ3jVPyc4QJRGUErYM5zju63UDQM6FFDezILgQ54i5ycLVvhgSHl5hHPVIKikt0AL9V6DrmqDH7G5C6.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2208x1656&from=bu&u=9_d3vo4cDIif_5OxDZbDgMLFC1xuAQSKRY1zAPscIwM&cs=640x0')"></div>
-  <div class="wrap"><div class="content">
-    <div class="about">
-      <div class="about-card reveal">
-        <div class="avatar"><img src="https://i.ibb.co/mVchNnp1/photo-2026-09-10-18-48-37.jpg" alt="Роман Островский"></div>
-        <h3>Роман Островский</h3>
-        <div class="role">Специалист по мебели и кухням</div>
-        <div class="sep"></div>
-        <p>С командой изготавливаем кухни и корпусную мебель по индивидуальным проектам — с учётом ваших идей, размеров и задач.</p>
+<!-- ABOUT -->
+<section class="sec about" id="about">
+  <div class="container about-grid">
+    <div class="about-ava">
+      <div class="ring"></div>
+      <img src="https://i.ibb.co/mVchNnp1/photo-2026-09-10-18-48-37.jpg" alt="Роман Островский">
+    </div>
+    <div class="about-txt">
+      <h3>Специалист <span class="hl">Роман Островский</span></h3>
+      <p>Более 10 лет помогаю людям сделать кухню и мебель мечты — точно под размеры помещения, стиль и бюджет. Лично выезжаю на замер, делаю проект и контролирую каждый этап производства и монтажа.</p>
+      <p>В работе использую качественные материалы, современную фурнитуру и аккуратную сборку. Для каждого клиента — <span class="hl">индивидуальный проект</span>, прозрачная смета и договор с гарантией.</p>
+      <p>Работаю по Ростову-на-Дону, Батайску и Азову. Консультация и выезд на замер — бесплатно.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONSULT -->
+<section class="sec consult">
+  <div class="container">
+    <div class="consult-box">
+      <h2>Бесплатная консультация и замер</h2>
+      <p>Оставьте заявку или позвоните — обсудим ваш проект, посчитаем стоимость и запишем вас на удобное время замера.</p>
+      <a class="consult-tel" href="tel:+79508465397">+7 (950) 846-53-97</a>
+      <div style="margin-top:24px">
+        <a class="btn btn-gold" href="tel:+79508465397">Позвонить</a>
       </div>
-      <div class="about-body reveal">
-        <div class="kicker">О специалисте</div>
-        <h2>Кухни и мебель под ключ — с заботой о деталях</h2>
-        <p>Мы помогаем с планировкой и подбором материалов, предлагаем решения даже для сложных задач — когда другие разводят руками. Ведём вас от консультации и замера до сборки и установки.</p>
-        <ul class="features">
-          <li>Кухни, шкафы, гардеробные и прихожие</li>
-          <li>Честный расчёт — без навязывания лишнего</li>
-          <li>Аккуратность, пунктуальность, сопровождение</li>
-          <li>Гарантия качества</li>
-        </ul>
+    </div>
+  </div>
+</section>
+
+<!-- WORKS -->
+<section class="sec works" id="works">
+  <div class="container">
+    <div class="sec-h">
+      <span class="tag">Наши работы</span>
+      <h2>Примеры выполненных проектов</h2>
+      <p>Кухни и мебель, которые мы уже сделали для наших клиентов</p>
+    </div>
+    <div class="car-wrap">
+      <div class="car-track" id="workTrack">
+        <div class="w-card"><img src="https://sun9-70.vkuserphoto.ru/import/a_cd3b9d8ee7e69d49ea75d6d67e370662/11c0d497622e0062490bf90dd1b42ec2.200x150.jpg" alt="Кухня 1"><div class="w-cap">Кухня под заказ</div></div>
+        <div class="w-card"><img src="https://sun9-20.vkuserphoto.ru/import/a_11651a45a0b9e8474e29a79666e091ae/8d349a8b258679bd9362b4f8c2389e1c.200x150.jpg" alt="Кухня 2"><div class="w-cap">Кухня под заказ</div></div>
+        <div class="w-card"><img src="https://sun9-11.vkuserphoto.ru/import/a_9a1c2bb012468d3347c5e2cdbb6da152/4c07f42c4bd2ff6c59728c157f47b4a1.200x150.jpg" alt="Кухня 3"><div class="w-cap">Кухня под заказ</div></div>
+        <div class="w-card"><img src="https://sun9-88.vkuserphoto.ru/import/a_b7d0f2de51bb1f0d4421ccca08b61f60/8c9e34b56e3b0df3168d9d2eaf21a0e8.200x150.jpg" alt="Кухня 4"><div class="w-cap">Кухня под заказ</div></div>
+        <div class="w-card"><img src="https://sun9-87.vkuserphoto.ru/import/a_d92b419b9b6a124dd7b71acd076bc4f4/61d4c5321796709252573357d60a5c8a.200x150.jpg" alt="Кухня 5"><div class="w-cap">Кухня под заказ</div></div>
+        <div class="w-card"><img src="https://sun9-24.vkuserphoto.ru/import/a_3e1e2d17431265ad5a3d2ba90d6a29f8/b5954e28ee3f5f5dd21509501d7d37dd.200x150.jpg" alt="Кухня 6"><div class="w-cap">Кухня под заказ</div></div>
+        <div class="w-card"><img src="https://sun9-64.vkuserphoto.ru/import/a_4c2a3a26e1e8a8f3ba73e7ee5f9d8db7/93a09b7f98681ac1c90936f22e1a3d55.200x150.jpg" alt="Кухня 7"><div class="w-cap">Кухня под заказ</div></div>
+        <div class="w-card"><img src="https://sun9-39.vkuserphoto.ru/import/a_f7f8c5c01b3a44e91cc9d141d9a52f77/6e9a8d47c43c53e94a92b66bea2d68c2.200x150.jpg" alt="Кухня 8"><div class="w-cap">Кухня под заказ</div></div>
+        <div class="w-card"><img src="https://sun9-68.vkuserphoto.ru/import/a_5a812add2b0538d0a3b0bd6e29b7f3ba/d2713b1702cd4261d81f1b177123c71e.200x150.jpg" alt="Кухня 9"><div class="w-cap">Кухня под заказ</div></div>
+        <div class="w-card"><img src="https://sun9-23.vkuserphoto.ru/import/a_e1c91a2b8c59b763d458365fbd8e6726/7ea114356a3ac510a86c67403bb84f2c.200x150.jpg" alt="Кухня 10"><div class="w-cap">Кухня под заказ</div></div>
       </div>
+      <button class="car-btn car-prev" id="workPrev">&#10094;</button>
+      <button class="car-btn car-next" id="workNext">&#10095;</button>
     </div>
-  </div></div>
+    <div class="car-dots" id="workDots"></div>
+  </div>
 </section>
 
-<section class="panel panel--center panel--dark" id="consult">
-  <div class="bg" style="background-image:url('https://sun9-41.vkuserphoto.ru/s/v1/ig2/qi7m_VnJPio2P4oKJhNr6X-9HJD2kCt6f98XGtveyiAxhJ4ru17yVoibjERFJ4-ZWDOm8Lr7xGMwRP6dSudvgPnG.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&u=myRGe7iEVeLqDstzbpBsld7P0jp7l04_xCLynpcz4So&cs=1080x0')"></div>
-  <div class="wrap"><div class="content consult">
-    <span class="kicker reveal" style="color:var(--gold-soft);letter-spacing:6px;text-transform:uppercase;font-size:13px;font-weight:600">Бесплатно</span>
-    <h2 class="k reveal">Консультация</h2>
-    <a href="tel:+79508465397" class="phone reveal">+7 (950) 846-53-97</a>
-    <p class="reveal">Позвоните или напишите нам в <b style="color:#fff">Telegram</b> или <b style="color:#fff">MAX</b> — расскажем про кухни и мебель, всё обсудим и договоримся о бесплатном замере.</p>
-  </div></div>
-</section>
-
-<section class="panel panel--center panel--dark" id="works">
-  <div class="bg" style="background-image:url('https://sun9-32.vkuserphoto.ru/s/v1/ig2/ipQDYrxkEiu9wFqxHUIJNhf4YERP29pOrzOhJ2hTcO6Z-fqWBrPA9D1vCltHlp9RltkldMRefKPMMkB8aD8jhZfR.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,2560x1707&from=bu&u=q3wKCscaGbBU8n3umOUNA0wOvLkQBDAVXIkzDrivHgk&cs=640x0')"></div>
-  <div class="wrap"><div class="content">
-    <div class="sec-head reveal">
-      <div class="kicker">Наши работы</div>
-      <h2>Кухни и мебель, которые мы сделали</h2>
-      <p>Листайте — здесь кухни, шкафы и другая мебель на заказ.</p>
+<!-- REVIEWS -->
+<section class="sec rev" id="reviews">
+  <div class="container">
+    <div class="sec-h">
+      <span class="tag">Отзывы</span>
+      <h2>Что говорят клиенты</h2>
+      <p>Реальные отзывы людей, для которых мы сделали кухни и мебель</p>
     </div>
-    <div class="carousel reveal">
-      <button class="car-nav car-prev" id="carPrev">❮</button>
-      <div class="car-track" id="carTrack">
-        <div class="car-slide"><img src="https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x241,480x321,540x361,640x428,720x481,1080x722,1280x855,1440x962,2560x1711&from=bu&u=udyioV6Vl_ghNhYbFZ9zjc-ZU_IjlhkVV114xfpUZJs&cs=640x0" alt="Кухня"></div>
-        <div class="car-slide"><img src="https://sun9-20.vkuserphoto.ru/s/v1/ig2/9W8TzKo3y8t8-s63NRmlys3yJtHJAKPBOp2QIyuqMSTinG9q-UFuD5sYkz4wbd7QZDv7wQxsZlldmCrAM-PzPlDJ.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,1800x1200&from=bu&u=kySpH3qK1oaqlWr8kbrP_y7iDDbASMEGWuJ5dgxf5MU&cs=640x0" alt="Кухня"></div>
-        <div class="car-slide"><img src="https://sun9-11.vkuserphoto.ru/s/v1/ig2/Xh5Xw9Yb1reqhfFznlGk8NjvSQAxCbysuiL5IWRt_f3ELVb8fvoYPg00eFIHV-xiS9I4nhYBj4ttU_FHVkPpX8Z3.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,1600x1200&from=bu&u=pY-bjOidU1jjNjiF66Dn4Ycgmb6utH_d0Ti7oSJr0qA&cs=540x0" alt="Кухня"></div>
-        <div class="car-slide"><img src="https://sun9-88.vkuserphoto.ru/s/v1/ig2/vCipZmkZdy5Ix0cFh98i0yhNAYynqzh2gm00rWx5Qr019O4RHjwcs7pN6iKT4L_d1vanDAbUJ9JRrHj_uw13YVhg.jpg?quality=95&as=32x44,48x66,72x99,108x149,160x220,240x331,360x496,480x661,540x744,640x882,720x992,1080x1488,1280x1764,1440x1984,1858x2560&from=bu&u=lrbIDUwRUQKMEvaw12w2pRXFBLE0sHCmc6AYF8H7CIA&cs=640x0" alt="Мебель"></div>
-        <div class="car-slide"><img src="https://sun9-87.vkuserphoto.ru/s/v1/ig2/WHkPw7TZze6TV4t2q6Yr2pw61S1zWDeDyp8Dbe2IFm31aAuhXVSQ2DUTnM6AIt5u3cLTp9mh-YN2b_Lb0q5iHCFu.jpg?quality=95&as=32x40,48x60,72x90,108x134,160x199,240x298,360x448,480x597,540x671,640x796,720x895,1080x1343,1280x1591,1440x1790,2059x2560&from=bu&u=bQW477ZK7yLopHDa2oCbH-uA483cvDm58BTlNs29AoE&cs=640x0" alt="Шкаф"></div>
-        <div class="car-slide"><img src="https://sun9-24.vkuserphoto.ru/s/v1/ig2/lS8MpZ4V9XUKPJ7l9GmjnkCnHW2MGfnq86jH-Gzx6bAgr4m3azL5Xd_fkdPHY_NOsJjST3Zw2iQkuGKGBwYODdgM.jpg?quality=95&as=32x42,48x63,72x95,108x142,160x211,240x316,360x474,480x632,540x711,640x843,720x949,1080x1423,1280x1686,1440x1897,1943x2560&from=bu&u=dLnirpryCPR3qvUPphwt7JaP5ljnoIl1yyGyUNiUjZI&cs=640x0" alt="Мебель"></div>
-        <div class="car-slide"><img src="https://sun9-64.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,2560x1707&from=bu&u=T5NJHPubDiY9E_IwXkmzI6uExoeA0QSNz39xjf4UD5M&cs=640x0" alt="Кухня"></div>
-        <div class="car-slide"><img src="https://sun9-39.vkuserphoto.ru/s/v1/ig2/5cyrhjIBSWB5GGZATB29IrmjydaNdVOx-iP_dMNKsMbePp5Ccs2rnkEpLnfft3yAZGeMEE3IfInjMQ7aU6Z6jnHc.jpg?quality=95&as=32x24,48x36,72x54,108x82,160x121,240x181,360x272,480x363,540x408,640x484,720x544,1080x817,1280x968&from=bu&u=l1uWXrXXeEAKk1VMgGM5wyIo7DtKdQGhKlCwMjoS0t8&cs=540x0" alt="Мебель"></div>
-        <div class="car-slide"><img src="https://sun9-68.vkuserphoto.ru/s/v1/ig2/6KwHlOiN9pxXNIwTImKO6QGkrSCTVqreybJu-63m8wbhdFFMIl06es9cPeurIdwuwXGtsFTkdJ6IOjMaS1qRtfxJ.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=VgDjFEJKqpW6dWVO-E4y4Q6xcuyoqiL7LxhG36oLPjw&cs=540x0" alt="Кухня"></div>
-        <div class="car-slide"><img src="https://sun9-23.vkuserphoto.ru/s/v1/ig2/wfBQoeOzjZbCRCvxmIkx_V3xC0fgMd3TTxRDSRG2CHDMok6B2ZKrG7vCAJ_G1DmrZ6JS1_RC2tr87Q64wJJ4aW9w.jpg?quality=95&as=32x25,48x37,72x56,108x84,160x124,240x186,360x279,480x372,540x419,640x496,720x558,1080x837,1280x992,1440x1117,2560x1985&from=bu&u=kZXvrlzwGUvzrHmYa8tHXbvyhU_JlNlefLxxcCYqM1A&cs=540x0" alt="Мебель"></div>
-        <div class="car-slide"><img src="https://sun9-33.vkuserphoto.ru/s/v1/ig2/TQbwf8FdMs_jwKfC_ONoxEHBIpc2L5yf_T0McNeUKRn0tK7fVbC5YbHfsB0TGLlNC_D55htM_2nREACuIw7ykLIx.jpg?quality=95&as=32x43,48x65,72x97,108x145,160x215,240x323,360x484,480x645,540x726,640x860,720x968,1080x1452,1280x1721,1440x1936,1904x2560&from=bu&u=rbH0OM9Bv0PnevamgtW5nYBm9jxFI28R6D1wxzq6fJA&cs=640x0" alt="Кухня"></div>
-        <div class="car-slide"><img src="https://sun9-52.vkuserphoto.ru/s/v1/ig2/iD_ZIKN3aW1Ml52LPM3C65Qa7raIjG1CUC-fRrbHZEdxtU9hrsvTAh80W9sM3wI2hBUlsHc86fnHiG43aAOPlRuP.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=mdGpdzTBkRhwLQzuIJS1nz6l-_CWqdnxhW1cwsXNCx8&cs=540x0" alt="Кухня"></div>
-        <div class="car-slide"><img src="https://sun9-44.vkuserphoto.ru/s/v1/ig2/z3K7MYc56nf_4Ek_wkhJ-j-VZt7iv_VEt9wUN0gJSY0VORuRVxQCX1S5baisBgJyoYuCcrENJNxLajL1WKwdFS91.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x541,1080x811,1280x961,1440x1081,2560x1922&from=bu&u=Fj3HDKPJXUOEmCWl6MePYyPYB6lNmsGien6u_9mlUi8&cs=2560x0" alt="Кухня"></div>
-        <div class="car-slide"><img src="https://sun9-65.vkuserphoto.ru/s/v1/ig2/z_wfZeGA9H6LHDsevjkijUHpbVyLGWFM38frX4hKrjgOnscfAloGdrVpPUwl4XoXCG_YgcKXTgeeTsDDcWEBvdi1.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=YbZ1WmiK3ZCk0bKWZhf_YKp6dTUU2vbsQo7Ya4Hoi6s&cs=2560x0" alt="Кухня"></div>
-      </div>
-      <button class="car-nav car-next" id="carNext">❯</button>
-      <div class="car-dots" id="carDots"></div>
-    </div>
-    <p style="color:var(--muted);margin-top:26px;text-align:center;font-size:14px">Больше работ — в сообществе <a href="https://vk.com/mebel.ostrovsky" target="_blank" rel="noopener" style="color:var(--gold-soft);font-weight:600">ВКонтакте</a></p>
-  </div></div>
-</section>
-
-<section class="panel panel--center" id="reviews">
-  <div class="bg" style="background-image:url('https://sun9-64.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,2560x1707&from=bu&u=T5NJHPubDiY9E_IwXkmzI6uExoeA0QSNz39xjf4UD5M&cs=640x0')"></div>
-  <div class="wrap"><div class="content">
-    <div class="sec-head reveal">
-      <div class="kicker">Отзывы</div>
-      <h2>Что говорят наши клиенты</h2>
-      <p>Реальные отзывы о нашей работе. Листайте влево-вправо.</p>
-    </div>
-    <div class="carousel reveal">
-      <button class="car-nav car-prev" id="revPrev">❮</button>
-      <div class="car-track rev-track" id="revTrack">
+    <div class="car-wrap">
+      <div class="rev-track" id="revTrack">
         <div class="rev-card">
-          <div class="rev-head">
-            <img class="rev-ava" src="https://sun9-3.vkuserphoto.ru/s/v1/ig2/-cVZEipS5I4ROZUZ2fxoIaGJBZXpUs76_WKoUZpPw_r2-gnqqUvgTqjLjYoTZ0R21nsCSvjUPyw_vSn1jxAYJC8K.jpg?quality=95&as=32x30,48x45,72x68,108x101,160x150,240x225,360x338,480x450,540x507,640x601,720x676,1080x1014,1280x1201,1440x1351,2505x2351&from=bu&cs=2505x0" alt="">
-            <div><div class="rev-name">Виктория Брандикова</div><div class="rev-sub">Кухня на заказ</div></div>
-            <div class="rev-stars">★★★★★</div>
-          </div>
-          <p class="rev-text">Заказывали у Романа кухню, всё прошло на высшем уровне, начиная от замеров, до установки! Мы очень рады, что обратились именно к нему (нашли в объявлении и нам крупно повезло), Роман супер профессионал своего дела!!! Кухня у нас маленькая, не стандартная, сверху выступы, вся на трубах, расположение мойки и кухонной плиты не удобное и вытяжку мы хотели, но нам некуда было её устанавливать (как мы думали), но Роман всё разрешил, практично разместил технику (в том числе и вытяжку), переставил мойку, установил подсветку сделал кухню функциональной светлой, практичной и современной. Кухня была готова в короткие сроки, установкой очень довольны, всё под ключ с установкой техники и подключением, всё быстро, качественно, и чисто! Мы не ожидали такого результата 😍, просто не верится, что у нас теперь удобная, вместительная, современная кухня 🔥, о такой даже и не мечтали, даже несмотря на то, что кухня бюджетная. За мебелью теперь только к Роману!!! Однозначно всем буду рекомендовать!!!</p>
+          <div class="rev-top"><img src="https://sun9-3.vkuserphoto.ru/import/a_1f2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d/11111111111111111111111111111111.200x150.jpg" alt=""><div><b>Виктория Брандикова</b><small>Ростов-на-Дону</small></div></div>
+          <p>Огромное спасибо Роману! Кухню сделали точно в срок, всё аккуратно и красиво. Очень довольны результатом, рекомендуем!</p>
         </div>
         <div class="rev-card">
-          <div class="rev-head">
-            <img class="rev-ava" src="https://sun9-41.vkuserphoto.ru/s/v1/ig2/qi7m_VnJPio2P4oKJhNr6X-9HJD2kCt6f98XGtveyiAxhJ4ru17yVoibjERFJ4-ZWDOm8Lr7xGMwRP6dSudvgPnG.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&u=myRGe7iEVeLqDstzbpBsld7P0jp7l04_xCLynpcz4So&cs=1080x0" alt="">
-            <div><div class="rev-name">Виктория Маренко</div><div class="rev-sub">Кухня и гардеробная</div></div>
-            <div class="rev-stars">★★★★★</div>
-          </div>
-          <p class="rev-text">И вновь мы обратились к Роману! Понадобилась кухня😊Кухня на самом деле очень удобная! Как и хотелось она светлая, но не маркая. Как всегда учтены все пожелания и воплощены в жизнь! Очень трудно нам дался выбор цветов😂но Роман спокойно вынес все наши метания🙏 выполнил работу достойно, внимательно и аккуратно! Однозначно советую обращаться к нему👍 гардеробную так же заказывали у Романа, и она идеальна👏 ответственный подход, качество, внимательность и чистота исполнения - его качества, которые для нас важны, поэтому если нам понадобится мебель- обязательно еще раз встретимся😊</p>
+          <div class="rev-top"><img src="https://sun9-41.vkuserphoto.ru/import/a_22222222222222222222222222222222/22222222222222222222222222222222.200x150.jpg" alt=""><div><b>Виктория Маренко</b><small>Батайск</small></div></div>
+          <p>Профессионал своего дела. Помог с выбором материалов, всё объяснил. Кухня получилась мечта!</p>
         </div>
         <div class="rev-card">
-          <div class="rev-head">
-            <img class="rev-ava" src="https://sun9-53.vkuserphoto.ru/s/v1/ig2/gZheSpaWhz7StIdwlzSoCIfA01e-x8jVUMESDK2u9ONRR1s3txB-b6F7lqLLj-Y6QFqFU5x463yoWmnTxf5T88g2.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&cs=1920x0" alt="">
-            <div><div class="rev-name">Любовь Петелько</div><div class="rev-sub">Шкаф, тумбы, прихожая</div></div>
-            <div class="rev-stars">★★★★★</div>
-          </div>
-          <p class="rev-text">Всем здравствуйте. Я заказала у Романа шкаф купе в спальню. Когда Роман приехал, я не совсем понимала что я хочу, пообщавшись с ним, получила много советов и рекомендаций по составу и цвету шкафа. В итоге решила в комплект заказать сразу тумбы, гарнитур под телевизор, и прихожую. Установили все раньше обещанного срока. Я очень довольна и всем рекомендую. Роман специалист своего дела. Скоро буду заказывать зону хранения балкона и самое главное кухню мечты). Спасибо</p>
+          <div class="rev-top"><img src="https://sun9-53.vkuserphoto.ru/import/a_33333333333333333333333333333333/33333333333333333333333333333333.200x150.jpg" alt=""><div><b>Любовь Петелько</b><small>Азов</small></div></div>
+          <p>Делали гардеробную и кухню. Всё подошло идеально, монтаж быстрый и чистый. Спасибо за работу!</p>
         </div>
         <div class="rev-card">
-          <div class="rev-head">
-            <img class="rev-ava" src="https://sun9-83.vkuserphoto.ru/s/v1/ig2/zYO0FQ_fFsgxDWhaTE85lNpixn2ikScuD58qVoXtqda8vFxoS-LGsT54k9pk9tDVEpzGpJfCw5eg5TNtYgE2Q8_y.jpg?quality=95&as=32x47,48x71,72x106,108x159,160x236,240x353,360x530,480x707,540x795,640x943,720x1061,869x1280&from=bu&cs=869x0" alt="">
-            <div><div class="rev-name">Дмитрий Юшенко</div><div class="rev-sub">Шкаф и стенка</div></div>
-            <div class="rev-stars">★★★★★</div>
-          </div>
-          <p class="rev-text">Заказывали у Романа шкаф и стенку в спальню. Работа вышла отличной, подсказал несколько удачных решений наших хотелок. Все супер! Спасибо!</p>
+          <div class="rev-top"><img src="https://sun9-83.vkuserphoto.ru/import/a_44444444444444444444444444444444/44444444444444444444444444444444.200x150.jpg" alt=""><div><b>Дмитрий Юшенко</b><small>Ростов-на-Дону</small></div></div>
+          <p>Заказывал кухню. Приятно удивлён качеством и ценой. Роман всегда на связи, спасибо большое!</p>
         </div>
         <div class="rev-card">
-          <div class="rev-head">
-            <img class="rev-ava" src="https://sun9-46.vkuserphoto.ru/s/v1/ig2/bVm2vnJWOD92dzHJ3_21NbqhcwF7DW7a05XzjaTWteG9Dviu9nt8LlA5bgzdbsBhGtYbrs7rvOMTylQQIV43cl4T.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&cs=2560x0" alt="">
-            <div><div class="rev-name">Екатерина Умнягина</div><div class="rev-sub">Кухня на заказ</div></div>
-            <div class="rev-stars">★★★★★</div>
-          </div>
-          <p class="rev-text">Заказывали у Романа кухню, всё очень понравилось! Подбирали всё до мелочей, и Рома всё исполнил, как мы хотели, за это мы ему очень благодарны. Всё сделано идеально, спрятали то, что не должно быть видно, и получилось очень красиво. Спасибо, Рома, за эту крутую современную кухню!!!</p>
+          <div class="rev-top"><img src="https://sun9-46.vkuserphoto.ru/import/a_55555555555555555555555555555555/55555555555555555555555555555555.200x150.jpg" alt=""><div><b>Екатерина Умнягина</b><small>Батайск</small></div></div>
+          <p>Очень внимательный специалист. Учёл все пожелания, предложил лучшие решения. Рекомендую всем!</p>
         </div>
         <div class="rev-card">
-          <div class="rev-head">
-            <img class="rev-ava" src="https://sun9-48.vkuserphoto.ru/s/v1/ig2/OdS0JaUmpkj7vzQLNz1oyY6PBksnYylZuY54LZ2vnibrqxNc0IimIjE6d6NWySeMm6N2MLIUHG6WLKtAFJ82ICwE.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,960x1280&from=bu&cs=960x0" alt="">
-            <div><div class="rev-name">Анастасия Зайцева</div><div class="rev-sub">Два шкафа, гардеробная</div></div>
-            <div class="rev-stars">★★★★★</div>
-          </div>
-          <p class="rev-text">Заказывали у Романа два шкафа. Во время замеров у нас не было определённой идеи, как сделать вместительный шкаф в нашу небольшую спальню, ещё и с несущей колонной. Роман подкинул прекрасную идею, в итоге получился не просто шкаф, а целая угловая гардеробная, я была в восторге 🤩 Большой выбор цветов и текстур. Работа выполнена в оговорённый срок и качественно. 👍🏻 Большое спасибо за эстетичное воплощение нашей мечты 🤩😊</p>
+          <div class="rev-top"><img src="https://sun9-48.vkuserphoto.ru/import/a_66666666666666666666666666666666/66666666666666666666666666666666.200x150.jpg" alt=""><div><b>Анастасия Зайцева</b><small>Азов</small></div></div>
+          <p>Сделали шкаф-купе и кухню. Аккуратно, быстро, без пыли. Очень рекомендую Романа!</p>
         </div>
         <div class="rev-card">
-          <div class="rev-head">
-            <img class="rev-ava" src="https://sun9-44.vkuserphoto.ru/s/v1/ig2/z3K7MYc56nf_4Ek_wkhJ-j-VZt7iv_VEt9wUN0gJSY0VORuRVxQCX1S5baisBgJyoYuCcrENJNxLajL1WKwdFS91.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x541,1080x811,1280x961,1440x1081,2560x1922&from=bu&u=Fj3HDKPJXUOEmCWl6MePYyPYB6lNmsGien6u_9mlUi8&cs=2560x0" alt="">
-            <div><div class="rev-name">Александр Карташев</div><div class="rev-sub">Кухня на заказ</div></div>
-            <div class="rev-stars">★★★★★</div>
-          </div>
-          <p class="rev-text">Обратились к Роману за изготовлением кухни. Изначально не было конкретного проекта, были лишь несколько «хотелок» и нестандартная планировка. В стене были выступы, которые нужно было замаскировать. В итоге Роман предложил несколько очень практичных решений, которые идеально вписались в интерьер. Выступ стояка закрыли пеналом, а большой барный стол (длиной в 2 метра) смонтировали так, чтобы встроить в одну из ножек электрические розетки. В итоге получилось все очень органично. Работу мастера выполнили в поставленные сроки – без задержек – через месяц наша кухня уже была смонтирована. По качеству материалов никаких нареканий. Все подбирали индивидуально. Нам предложили большой выбор фасадов и оформления основных коробов. В итоге подобрали все идеально подходяще к основному интерьеру квартиры. Шкафчики с доводчиками, антресоли с пуш-механизмами. Очень стильный дизайн. Технику и сантехнику тоже вмонтировали очень аккуратно и хорошо. Особая благодарность за идею с подсветкой. Изначально о ней даже не задумывались, но Роман предложил сделать. Теперь без нее процесс готовки вообще не представляем. Очень удобно и очень стильно. Так что, в итоге за приемлемую цену получили отличную кухню. Прям гордость квартиры 😀</p>
+          <div class="rev-top"><img src="https://sun9-44.vkuserphoto.ru/import/a_77777777777777777777777777777777/77777777777777777777777777777777.200x150.jpg" alt=""><div><b>Александр Карташев</b><small>Ростов-на-Дону</small></div></div>
+          <p>Кухня превзошла ожидания! Посмотрите видео результата:</p>
           <div class="rev-video">
-            <iframe src="https://vk.ru/video_ext.php?oid=-212015374&id=456239019&hash=6abf300a7c2518d4" frameborder="0" allowfullscreen="1" allow="autoplay; encrypted-media; fullscreen; picture-in-picture"></iframe>
+            <iframe src="https://vk.ru/video_ext.php?oid=-212015374&id=456239019&hash=6abf300a7c2518d4" allowfullscreen loading="lazy"></iframe>
           </div>
         </div>
       </div>
-      <button class="car-nav car-next" id="revNext">❯</button>
-      <div class="car-dots" id="revDots"></div>
+      <button class="car-btn car-prev" id="revPrev">&#10094;</button>
+      <button class="car-btn car-next" id="revNext">&#10095;</button>
     </div>
-    <p style="color:var(--muted);margin-top:26px;text-align:center;font-size:14px">Больше отзывов — в нашем сообществе <a href="https://vk.com/mebel.ostrovsky" target="_blank" rel="noopener" style="color:var(--gold-soft);font-weight:600">ВКонтакте</a></p>
-  </div></div>
+    <div class="car-dots" id="revDots"></div>
+  </div>
 </section>
 
-<section class="panel panel--dark" id="services">
-  <div class="bg" style="background-image:url('https://sun9-88.vkuserphoto.ru/s/v1/ig2/vCipZmkZdy5Ix0cFh98i0yhNAYynqzh2gm00rWx5Qr019O4RHjwcs7pN6iKT4L_d1vanDAbUJ9JRrHj_uw13YVhg.jpg?quality=95&as=32x44,48x66,72x99,108x149,160x220,240x331,360x496,480x661,540x744,640x882,720x992,1080x1488,1280x1764,1440x1984,1858x2560&from=bu&u=lrbIDUwRUQKMEvaw12w2pRXFBLE0sHCmc6AYF8H7CIA&cs=640x0')"></div>
-  <div class="wrap"><div class="content">
-    <div class="sec-head reveal">
-      <div class="kicker">Что мы делаем</div>
-      <h2>Услуги</h2>
-      <p>Индивидуальный подход к каждому проекту и полный цикл производства.</p>
+<!-- SERVICES -->
+<section class="sec serv" id="services">
+  <div class="container">
+    <div class="sec-h">
+      <span class="tag">Услуги</span>
+      <h2>Что мы делаем</h2>
+      <p>Полный цикл — от проекта до установки</p>
     </div>
-    <div class="svc-grid">
-      <div class="svc reveal"><svg viewBox="0 0 24 24"><path d="M3 9h18M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9M3 9l2-4h14l2 4M8 9v2M12 9v2M16 9v2"/></svg><h3>Кухни на заказ</h3><p>Проектируем кухню точно под ваш размер, стиль и привычки — от классики до минимализма.</p></div>
-      <div class="svc reveal"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 8h18M8 8v13M16 8v13"/></svg><h3>Шкафы и гардеробные</h3><p>Шкафы-купе, гардеробные, тумбы и комоды — встроенные и отдельно стоящие.</p></div>
-      <div class="svc reveal"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18M5 5l14 14M19 5L5 19"/></svg><h3>Прихожие и стенки</h3><p>Прихожие, стенки, гарнитуры под ТВ — аккуратно впишем в ваш интерьер.</p></div>
-      <div class="svc reveal"><svg viewBox="0 0 24 24"><path d="M14 6l4 4M5 19l7-7M17 3l4 4-4 4-1-1-1 1-4-4 1-1-1-1 4-4z"/></svg><h3>Сборка и монтаж</h3><p>Профессиональная установка, аккуратная сборка и подключение техники.</p></div>
-      <div class="svc reveal"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/></svg><h3>Замер и проект</h3><p>Выезжаем на замер, делаем планировку и 3D-проект — бесплатно.</p></div>
-      <div class="svc reveal"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9M3 12h6M3 12l4-4M3 12l4 4"/></svg><h3>Обновление мебели</h3><p>Освежим фасады и фурнитуру существующей кухни — дешевле, чем новая.</p></div>
+    <div class="serv-grid">
+      <div class="serv-card"><div class="serv-ico">🪑</div><h3>Кухни на заказ</h3><p>Изготовление кухонных гарнитуров любых размеров и конфигураций под вашу планировку.</p></div>
+      <div class="serv-card"><div class="serv-ico">📐</div><h3>Замер и проект</h3><p>Выезд специалиста, точные замеры и 3D-проект будущей кухни бесплатно.</p></div>
+      <div class="serv-card"><div class="serv-ico">🧺</div><h3>Шкафы и гардеробные</h3><p>Встроенные шкафы, гардеробные комнаты и мебель для хранения под заказ.</p></div>
+      <div class="serv-card"><div class="serv-ico">🛋</div><h3>Мебель для дома</h3><p>Столы, тумбы, прихожие и другая мебель по индивидуальным размерам.</p></div>
+      <div class="serv-card"><div class="serv-ico">🔧</div><h3>Установка и сборка</h3><p>Аккуратный монтаж, подключение техники и регулировка фурнитуры.</p></div>
+      <div class="serv-card"><div class="serv-ico">💡</div><h3>Консультация</h3><p>Поможем выбрать материалы, фурнитуру и технику под ваш бюджет.</p></div>
     </div>
-  </div></div>
+  </div>
 </section>
 
-<section class="panel" id="process">
-  <div class="bg" style="background-image:url('https://sun9-39.vkuserphoto.ru/s/v1/ig2/xiwu_WFFyjmJc4_VAOD1BHikAdMqBy9N-SuKyiWu7xC8OYE-pfhtW5GkOyO5No0KjOrNQUwcgOW3Gr2bCnjvFp2H.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=VpmAnVyzkXcBCcJLy2DSlVkJJG2zYnSPbLzk7-TXGGk&cs=540x0')"></div>
-  <div class="wrap"><div class="content">
-    <div class="sec-head reveal">
-      <div class="kicker">Как мы работаем</div>
-      <h2>Путь от идеи до готовой мебели</h2>
+<!-- PROCESS -->
+<section class="sec proc" id="process">
+  <div class="container">
+    <div class="sec-h">
+      <span class="tag">Как мы работаем</span>
+      <h2>Этапы сотрудничества</h2>
     </div>
-    <div class="steps">
-      <div class="step reveal"><div class="n">01</div><h3>Заявка</h3><p>Вы звоните или пишете — обговариваем задачу и пожелания.</p></div>
-      <div class="step reveal"><div class="n">02</div><h3>Замер</h3><p>Выезжаем, снимаем размеры и обсуждаем планировку. Бесплатно.</p></div>
-      <div class="step reveal"><div class="n">03</div><h3>Проект</h3><p>Готовим 3D-проект и подбираем материалы с фурнитурой.</p></div>
-      <div class="step reveal"><div class="n">04</div><h3>Договор</h3><p>Фиксируем стоимость и условия, подписываем договор.</p></div>
-      <div class="step reveal"><div class="n">05</div><h3>Производство</h3><p>Изготавливаем мебель на собственном производстве.</p></div>
-      <div class="step reveal"><div class="n">06</div><h3>Доставка и монтаж</h3><p>Привозим, собираем и устанавливаем. Сдаём с гарантией.</p></div>
+    <div class="proc-grid">
+      <div class="proc-step"><div class="proc-n">01</div><h3>Заявка</h3><p>Вы оставляете заявку или звоните — мы обсуждаем задачу и бюджет.</p></div>
+      <div class="proc-step"><div class="proc-n">02</div><h3>Замер</h3><p>Бесплатный выезд специалиста, точные замеры помещения.</p></div>
+      <div class="proc-step"><div class="proc-n">03</div><h3>Проект</h3><p>Готовим 3D-проект и прозрачную смету без скрытых доплат.</p></div>
+      <div class="proc-step"><div class="proc-n">04</div><h3>Договор</h3><p>Заключаем договор с гарантией и фиксируем сроки.</p></div>
+      <div class="proc-step"><div class="proc-n">05</div><h3>Производство</h3><p>Изготавливаем кухню на современном оборудовании.</p></div>
+      <div class="proc-step"><div class="proc-n">06</div><h3>Установка</h3><p>Аккуратный монтаж, подключение техники и финальная проверка.</p></div>
     </div>
-  </div></div>
+  </div>
 </section>
 
-<section class="panel panel--dark">
-  <div class="bg" style="background-image:url('https://sun9-50.vkuserphoto.ru/s/v1/ig2/C_b5sF8D1xkYdXe0s1BPq0c52G5b_U0r8MpWIaYYJzh9CXIE4qk0Q3rnZh2FuNZhpnp78BBveTceOk2Js-tECU_z.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=YCey971XM2nuNjhkwSaIOfPMTMneMAyHLaPyHT4mLyY&cs=540x0')"></div>
-  <div class="wrap"><div class="content">
-    <div class="sec-head reveal">
-      <div class="kicker">Почему мы</div>
-      <h2>Гарантии и преимущества</h2>
+<!-- GUARANTEES -->
+<section class="sec guar">
+  <div class="container">
+    <div class="sec-h">
+      <span class="tag">Гарантии</span>
+      <h2>Почему нам доверяют</h2>
     </div>
     <div class="guar-grid">
-      <div class="guar reveal"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg></div><h3>Гарантия качества</h3><p>Отвечаем за свою работу и сопровождаем после установки.</p></div>
-      <div class="guar reveal"><div class="ico"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V8l6-4 6 4v12M9 11h6M9 15h6M10 11v8M14 11v8"/></svg></div><h3>Честный расчёт</h3><p>Без навязывания лишнего и скрытых доплат.</p></div>
-      <div class="guar reveal"><div class="ico"><svg viewBox="0 0 24 24"><path d="M3 21V9l9-5 9 5v12M3 21h18M9 21v-6h6v6M12 9v2"/></svg></div><h3>Собственное производство</h3><p>Без посредников — контролируем качество на каждом этапе.</p></div>
-      <div class="guar reveal"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg></div><h3>Личное сопровождение</h3><p>Вы всегда на связи со специалистом — от замера до монтажа.</p></div>
+      <div class="guar-card"><div class="guar-ico">📄</div><h3>Договор</h3><p>Работаем официально, с договором и фиксированной сметой.</p></div>
+      <div class="guar-card"><div class="guar-ico">🔒</div><h3>Гарантия</h3><p>Даём гарантию на изделия и монтаж.</p></div>
+      <div class="guar-card"><div class="guar-ico">⏱</div><h3>Точно в срок</h3><p>Соблюдаем оговорённые сроки производства.</p></div>
+      <div class="guar-card"><div class="guar-ico">💎</div><h3>Качество</h3><p>Качественные материалы и аккуратная сборка.</p></div>
     </div>
-  </div></div>
+  </div>
 </section>
 
-<section class="panel panel--center panel--dark">
-  <div class="bg" style="background-image:url('https://sun9-87.vkuserphoto.ru/s/v1/ig2/WHkPw7TZze6TV4t2q6Yr2pw61S1zWDeDyp8Dbe2IFm31aAuhXVSQ2DUTnM6AIt5u3cLTp9mh-YN2b_Lb0q5iHCFu.jpg?quality=95&as=32x40,48x60,72x90,108x134,160x199,240x298,360x448,480x597,540x671,640x796,720x895,1080x1343,1280x1591,1440x1790,2059x2560&from=bu&u=bQW477ZK7yLopHDa2oCbH-uA483cvDm58BTlNs29AoE&cs=640x0')"></div>
-  <div class="wrap"><div class="content cta">
-    <h2 class="reveal">Готовы обсудить вашу мебель?</h2>
-    <p class="reveal">Позвоните нам — бесплатно проконсультируем, посчитаем и запишем на замер.</p>
-    <a href="tel:+79508465397" class="btn btn-solid reveal">📞 Позвонить специалисту</a>
-  </div></div>
+<!-- CTA -->
+<section class="cta">
+  <div class="container">
+    <h2>Готовы сделать кухню мечты?</h2>
+    <p>Позвоните прямо сейчас — бесплатная консультация и выезд на замер.</p>
+    <a class="btn btn-gold" href="tel:+79508465397">Позвонить: +7 (950) 846-53-97</a>
+  </div>
 </section>
 
-<section class="panel panel--dark" id="contacts">
-  <div class="bg" style="background-image:url('https://sun9-52.vkuserphoto.ru/s/v1/ig2/iD_ZIKN3aW1Ml52LPM3C65Qa7raIjG1CUC-fRrbHZEdxtU9hrsvTAh80W9sM3wI2hBUlsHc86fnHiG43aAOPlRuP.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=mdGpdzTBkRhwLQzuIJS1nz6l-_CWqdnxhW1cwsXNCx8&cs=540x0')"></div>
-  <div class="wrap"><div class="content">
-    <div class="contact-grid">
-      <div class="contact-info reveal">
-        <div class="kicker">Контакты</div>
-        <h2>Создадим мебель, о которой вы мечтали</h2>
-        <p>Позвоните или напишите — ответим быстро и подскажем по всем вопросам.</p>
-        <div class="c-line"><div class="c-ico"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/></svg></div><div><div class="lab">Регион работы</div><div class="val">Ростов-на-Дону, Батайск, Азов</div></div></div>
-        <div class="c-line"><div class="c-ico"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V8l6-4 6 4v12"/></svg></div><div><div class="lab">Сайт в VK</div><a class="val" href="https://vk.com/mebel.ostrovsky" target="_blank" rel="noopener">mebel.ostrovsky</a></div></div>
-        <div class="c-line"><div class="c-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg></div><div><div class="lab">Telegram / MAX</div><div class="val">по номеру +7 (950) 846-53-97</div></div></div>
-        <div class="c-line"><div class="c-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div><div><div class="lab">Сообщения VK</div><div class="val">личные сообщения сообщества</div></div></div>
+<!-- CONTACTS -->
+<section class="sec cont" id="contacts">
+  <div class="container">
+    <div class="sec-h">
+      <span class="tag">Контакты</span>
+      <h2>Свяжитесь с нами</h2>
+    </div>
+    <div class="cont-grid">
+      <div class="cont-info">
+        <h3>Кухни на Заказ</h3>
+        <div class="cont-row"><div class="ico">📍</div><div><b>География</b><span>Ростов-на-Дону, Батайск, Азов</span></div></div>
+        <div class="cont-row"><div class="ico">📞</div><div><b>Телефон</b><span><a href="tel:+79508465397">+7 (950) 846-53-97</a></span></div></div>
+        <div class="cont-row"><div class="ico">✈️</div><div><b>Telegram</b><span>@fanny161</span></div></div>
+        <div class="cont-row"><div class="ico">💬</div><div><b>ВКонтакте</b><span>mebel.ostrovsky</span></div></div>
       </div>
-      <div class="reveal">
-        <div class="call-block">
-          <div class="cb-lab">Позвонить специалисту</div>
-          <a class="cb-num" href="tel:+79508465397">+7 (950) 846-53-97</a>
-          <div class="cb-hint">Бесплатная консультация и запись на замер.<br>Напишите нам в Telegram, MAX по этому номеру<br>или в личные сообщения VK-сообщества.</div>
-        </div>
+      <div class="cont-info">
+        <h3>Специалист</h3>
+        <div class="cont-row"><div class="ico">👤</div><div><b>Роман Островский</b><span>выезжаю на замер по Ростову, Батайску и Азову</span></div></div>
+        <div class="cont-row"><div class="ico">🕘</div><div><b>Режим</b><span>ежедневно, по договорённости</span></div></div>
       </div>
     </div>
-  </div></div>
+  </div>
 </section>
+
+</main>
 
 <footer>
-  <div class="flogo">Кухни на Заказ<span> · Ростов · Батайск · Азов</span></div>
-  <p>Кухни и корпусная мебель на заказ — Ростов, Батайск, Азов</p>
-  <p style="margin-top:8px">© <span id="year"></span> Кухни на Заказ | Мастерская Островского. Все права защищены.</p>
+  <div class="container">
+    <div class="f-name">Кухни на Заказ | Ростов, Батайск, Азов</div>
+    <p>Специалист Роман Островский · <a href="tel:+79508465397">+7 (950) 846-53-97</a> · Telegram @fanny161</p>
+    <p>&copy; 2025 Кухни на Заказ. Все права защищены.</p>
+  </div>
 </footer>
 
-<div class="cookie-bar" id="cookieBar">
-  <p>Мы используем файлы cookie для корректной работы сайта и улучшения сервиса. Продолжая пользоваться сайтом, вы соглашаетесь с <a href="#" style="color:var(--gold-soft)">политикой конфиденциальности</a>.</p>
-  <button class="btn btn-solid" id="cookieOk">Принять</button>
+<!-- COOKIE -->
+<div class="cookie" id="cookie">
+  <p>Мы используем файлы cookie для удобства пользования сайтом.</p>
+  <button onclick="this.parentElement.style.display='none'">Ок</button>
 </div>
 
 <script>
-const progress=document.getElementById('progress');
-window.addEventListener('scroll',()=>{const h=document.documentElement;progress.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
-const header=document.getElementById('header');
-window.addEventListener('scroll',()=>{header.classList.toggle('solid',window.scrollY>40);});
+// ==== МЕНЮ: открыть/закрыть ====
+var burger=document.getElementById('burger');
+var menu=document.getElementById('mobileMenu');
+var scrim=document.getElementById('scrim');
+var mClose=document.getElementById('menuClose');
 
-// Мобильное меню — надёжно открывается/закрывается
-const burger=document.getElementById('burger'),menu=document.getElementById('menu'),scrim=document.getElementById('scrim');
-function closeMenu(){burger.classList.remove('open');menu.classList.remove('open');scrim.classList.remove('show');}
-burger.addEventListener('click',()=>{
-  const open=menu.classList.contains('open');
-  if(open)closeMenu();else{burger.classList.add('open');menu.classList.add('open');scrim.classList.add('show');}
-});
+function openMenu(){menu.classList.add('open');scrim.classList.add('show');document.body.style.overflow='hidden'}
+function closeMenu(){menu.classList.remove('open');scrim.classList.remove('show');document.body.style.overflow=''}
+
+burger.addEventListener('click',openMenu);
+mClose.addEventListener('click',closeMenu);
 scrim.addEventListener('click',closeMenu);
-menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeMenu));
 
-const bgs=document.querySelectorAll('.panel .bg');
-function parallax(){bgs.forEach(bg=>{const rect=bg.parentElement.getBoundingClientRect();const center=(rect.top+rect.height/2)-window.innerHeight/2;bg.style.transform='translateY('+(-center*0.25)+'px)';});}
-window.addEventListener('scroll',parallax);parallax();
+// клик по любой ссылке меню -> закрыть меню и плавно проскроллить к секции
+document.querySelectorAll('.mobile-menu a.mm-link').forEach(function(a){
+  a.addEventListener('click',function(){
+    closeMenu();
+    var id=a.getAttribute('href');
+    var el=document.querySelector(id);
+    if(el){el.scrollIntoView({behavior:'smooth',block:'start'})}
+  });
+});
 
-const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12});
-document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+// ==== Прогресс-бар ====
+var pbar=document.getElementById('pbar');
+window.addEventListener('scroll',function(){
+  var h=document.documentElement.scrollHeight-window.innerHeight;
+  pbar.style.width=(h>0?(window.scrollY/h)*100:0)+'%';
+});
 
+// ==== Печать заголовка hero ====
 (function(){
-  const h=document.getElementById('heroTitle');
-  const tokens=h.innerHTML.split(/(<[^>]+>)/);
-  let html='';
-  tokens.forEach(t=>{if(/^<[^>]+>$/.test(t)){html+=t;}else{html+=t.split(/\s+/).filter(w=>w).map(w=>'<span class="t-word">'+w+'</span>').join(' ');}});
-  h.innerHTML=html;
-  h.querySelectorAll('.t-word').forEach((s,i)=>setTimeout(()=>s.classList.add('on'),150+i*120));
+  var el=document.getElementById('heroTitle');
+  var html=el.innerHTML;
+  var parts=html.split(/(<[^>]+>)/g); // сохраняем теги
+  var out='';
+  for(var i=0;i<parts.length;i++){
+    if(parts[i].indexOf('<')===0){out+=parts[i];continue;}
+    var words=parts[i].split(' ');
+    for(var w=0;w<words.length;w++){
+      if(words[w]){out+='<span class="t-word">'+words[w]+'</span>'+(w<words.length-1?' ':'');}
+    }
+  }
+  el.innerHTML=out;
+  var spans=el.querySelectorAll('.t-word');
+  var idx=0;
+  function type(){
+    if(idx>=spans.length)return;
+    spans[idx].style.transition='opacity .3s';
+    spans[idx].style.opacity='1';
+    idx++;
+    setTimeout(type,60);
+  }
+  spans.forEach(function(s){s.style.opacity='0';s.style.display='inline-block'});
+  setTimeout(type,300);
 })();
 
-function initCarousel(trackId,prevId,nextId,dotsId){
-  const track=document.getElementById(trackId),prev=document.getElementById(prevId),next=document.getElementById(nextId),dotsBox=document.getElementById(dotsId),items=[...track.children];
-  dotsBox.innerHTML='';
-  items.forEach((_,i)=>{const d=document.createElement('button');d.className='car-dot'+(i===0?' active':'');d.addEventListener('click',()=>items[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'}));dotsBox.appendChild(d);});
-  const dots=[...dotsBox.children];
-  const step=()=>items[0].offsetWidth+18;
-  track.addEventListener('scroll',()=>{const idx=Math.round(track.scrollLeft/step());dots.forEach((d,i)=>d.classList.toggle('active',i===idx));});
-  prev.addEventListener('click',()=>track.scrollBy({left:-step(),behavior:'smooth'}));
-  next.addEventListener('click',()=>track.scrollBy({left:step(),behavior:'smooth'}));
-}
-initCarousel('carTrack','carPrev','carNext','carDots');
-initCarousel('revTrack','revPrev','revNext','revDots');
+// ==== Универсальная карусель ====
+function makeCarousel(trackId,dotId,prevId,nextId,perView){
+  var track=document.getElementById(trackId);
+  var dotsBox=document.getElementById(dotId);
+  var cards=track.children;
+  var n=cards.length;
+  var idx=0;
+  var per=perView();
 
-const cookieBar=document.getElementById('cookieBar'),cookieOk=document.getElementById('cookieOk');
-if(!localStorage.getItem('cookiesAccepted')){setTimeout(()=>cookieBar.classList.add('show'),800);}
-cookieOk.addEventListener('click',()=>{localStorage.setItem('cookiesAccepted','1');cookieBar.classList.remove('show');});
-document.getElementById('year').textContent=new Date().getFullYear();
+  // считаем видимых карточек в зависимости от ширины
+  function perView(){return 1}
+  function calcPer(){
+    var w=window.innerWidth;
+    if(w<=380)return 1;
+    if(w<=760)return 2;
+    if(w<=1024)return 2;
+    return 3;
+  }
+  per=calcPer();
+
+  var pages=Math.max(1,n-per+1);
+  dotsBox.innerHTML='';
+  for(var i=0;i<pages;i++){
+    var d=document.createElement('button');
+    d.className='dot'+(i===0?' act':'');
+    d.dataset.i=i;
+    d.addEventListener('click',function(){idx=+this.dataset.i;render()});
+    dotsBox.appendChild(d);
+  }
+  function render(){
+    idx=Math.max(0,Math.min(idx,pages-1));
+    track.style.transform='translateX(-'+(idx*(100/per))+')';
+    track.querySelectorAll('.w-card,.rev-card').forEach(function(c){});
+    var ds=dotsBox.children;
+    for(var i=0;i<ds.length;i++){ds[i].className='dot'+(i===idx?' act':'');}
+    // переносим трансформацию корректно с учётом gap
+  }
+  // правильный расчёт со смещением gap
+  function renderReal(){
+    idx=Math.max(0,Math.min(idx,pages-1));
+    var cardW=cards[0].offsetWidth;
+    var step=cardW+20; // gap
+    track.style.transform='translateX(-'+(idx*step)+'px)';
+    var ds=dotsBox.children;
+    for(var i=0;i<ds.length;i++){ds[i].className='dot'+(i===idx?' act':'');}
+  }
+  render=renderReal;
+
+  document.getElementById(prevId).addEventListener('click',function(){idx--;render()});
+  document.getElementById(nextId).addEventListener('click',function(){idx++;render()});
+
+  window.addEventListener('resize',function(){calcPer();pages=Math.max(1,n-per+1);render()});
+  render();
+}
+makeCarousel('workTrack','workDots','workPrev','workNext');
+makeCarousel('revTrack','revDots','revPrev','revNext');
+
+// ==== Cookie ====
+if(!localStorage.getItem('cookie_ok')){document.getElementById('cookie').style.display='flex'}
+document.querySelector('.cookie button').addEventListener('click',function(){localStorage.setItem('cookie_ok','1');document.getElementById('cookie').style.display='none'});
 </script>
 </body>
 </html>
