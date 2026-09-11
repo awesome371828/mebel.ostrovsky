@@ -37,22 +37,22 @@ ul{list-style:none}
 .wrap{width:100%;max-width:1180px;margin:0 auto;padding:0 20px}
 
 /* Прогресс-бар */
-.progress{position:fixed;top:0;left:0;height:3px;z-index:80;background:var(--gold);width:0%}
+.progress{position:fixed;top:0;left:0;height:3px;z-index:80;background:linear-gradient(90deg,var(--gold),var(--gold-soft));width:0%}
 
-/* NAV — всегда с фоном, текст опущен ниже */
-header{position:fixed;top:0;left:0;right:0;z-index:60;background:rgba(16,12,8,.62);backdrop-filter:blur(12px);transition:background .4s}
-header.solid{background:rgba(23,18,13,.96)}
-.nav{display:flex;align-items:center;justify-content:space-between;height:76px;padding-top:10px;gap:12px}
+/* ШАПКА — плотный фон, название опущено ниже */
+header{position:fixed;top:0;left:0;right:0;z-index:60;background:rgba(16,12,8,.88);backdrop-filter:blur(14px);transition:background .4s,box-shadow .4s}
+header.solid{background:rgba(23,18,13,.98);box-shadow:0 6px 26px rgba(0,0,0,.5)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:96px;padding-top:26px;gap:14px}
 
-/* Логотип с аватаркой */
-.logo{display:flex;align-items:center;gap:12px;min-width:0;max-width:100%}
-.logo .brand-ava{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 16px rgba(179,135,63,.55);flex-shrink:0}
+/* Логотип — крупный, с аватаркой */
+.logo{display:flex;align-items:center;gap:14px;min-width:0;max-width:100%}
+.logo .brand-ava{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 18px rgba(179,135,63,.6);flex-shrink:0}
 .logo .brand-txt{display:flex;flex-direction:column;min-width:0}
-.logo .brand-txt .name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;color:#fff;line-height:1.1}
-.logo .brand-txt .sub{color:var(--gold-soft);font-family:'Manrope',sans-serif;font-size:11px;font-weight:500;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60vw}
+.logo .brand-txt .name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Cormorant Garamond',serif;font-size:27px;font-weight:700;color:#fff;line-height:1.05;text-shadow:0 2px 10px rgba(0,0,0,.6)}
+.logo .brand-txt .sub{color:var(--gold-soft);font-family:'Manrope',sans-serif;font-size:12px;font-weight:500;letter-spacing:1.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:62vw}
 
 .menu{display:flex;gap:22px}
-.menu a{color:rgba(255,255,255,.88);font-size:14px;font-weight:500;transition:.3s;border-bottom:1px solid transparent;padding-bottom:4px;white-space:nowrap}
+.menu a{color:rgba(255,255,255,.9);font-size:14px;font-weight:500;transition:.3s;border-bottom:1px solid transparent;padding-bottom:4px;white-space:nowrap}
 .menu a:hover{color:#fff;border-color:var(--gold)}
 .burger{display:none;background:none;border:none;cursor:pointer;width:40px;height:40px;position:relative;z-index:70;flex-shrink:0}
 .burger span{position:absolute;left:8px;right:8px;height:2px;background:#fff;transition:.3s}
@@ -64,13 +64,13 @@ header.solid{background:rgba(23,18,13,.96)}
 .burger.open span:nth-child(3){top:19px;transform:rotate(-45deg)}
 
 /* ПАНЕЛИ */
-.panel{position:relative;min-height:100vh;display:flex;align-items:center;padding:110px 0;overflow:hidden}
+.panel{position:relative;min-height:100vh;display:flex;align-items:center;padding:150px 0;overflow:hidden}
 .panel .bg{position:absolute;inset:-20% 0;z-index:0;background-size:cover;background-position:center;will-change:transform}
-.panel .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(to right,rgba(23,18,13,.92) 30%,rgba(23,18,13,.6) 65%,rgba(23,18,13,.68))}
+.panel .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(to right,rgba(23,18,13,.93) 30%,rgba(23,18,13,.62) 65%,rgba(23,18,13,.7))}
 .panel .content{position:relative;z-index:2;width:100%}
 .panel--center .content{text-align:center}
-.panel--center .bg::after{background:rgba(23,18,13,.66)}
-.panel--dark .bg::after{background:rgba(23,18,13,.84)}
+.panel--center .bg::after{background:rgba(23,18,13,.68)}
+.panel--dark .bg::after{background:rgba(23,18,13,.86)}
 .panel + .panel{margin-top:14px}
 
 .eyebrow{display:inline-block;color:var(--gold-soft);letter-spacing:4px;text-transform:uppercase;font-size:12.5px;font-weight:600;margin-bottom:22px;border-top:1px solid var(--gold);padding-top:14px}
@@ -78,14 +78,14 @@ h1{font-size:clamp(32px,6.4vw,74px);font-weight:600;line-height:1.15;color:#fff;
 h1 em{font-style:italic;color:var(--gold-soft)}
 .sub{color:#fff;font-size:clamp(17px,2vw,20px);font-weight:300;margin:26px 0 34px;max-width:560px;text-shadow:0 2px 14px rgba(0,0,0,.55)}
 .btn-row{display:flex;gap:16px;flex-wrap:wrap}
-.btn{position:relative;overflow:hidden;display:inline-block;padding:16px 32px;font-size:14px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;transition:.35s;cursor:pointer}
-.btn-solid{background:var(--gold);color:#fff;box-shadow:0 10px 30px rgba(179,135,63,.4);animation:btnGlow 3.2s ease-in-out infinite}
-.btn-solid:hover{background:var(--gold-soft);transform:translateY(-3px)}
+.btn{position:relative;overflow:hidden;display:inline-block;padding:16px 32px;font-size:14px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;transition:.35s;cursor:pointer;border-radius:8px}
+.btn-solid{background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#fff;box-shadow:0 10px 30px rgba(179,135,63,.45);animation:btnGlow 3.2s ease-in-out infinite}
+.btn-solid:hover{filter:brightness(1.1);transform:translateY(-3px)}
 .btn-line{border:1px solid rgba(255,255,255,.55);color:#fff;backdrop-filter:blur(4px)}
 .btn-line:hover{background:#fff;color:#17120d}
 .btn::after{content:"";position:absolute;top:0;left:-120%;width:60%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);transition:.6s}
 .btn:hover::after{left:130%}
-@keyframes btnGlow{0%,100%{box-shadow:0 10px 30px rgba(179,135,63,.4)}50%{box-shadow:0 10px 44px rgba(212,176,106,.8)}}
+@keyframes btnGlow{0%,100%{box-shadow:0 10px 30px rgba(179,135,63,.4)}50%{box-shadow:0 10px 46px rgba(212,176,106,.85)}}
 
 .scroll-cue{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:5;color:rgba(255,255,255,.8);font-size:11px;letter-spacing:3px;text-transform:uppercase;text-align:center}
 .scroll-cue .line{width:1px;height:44px;background:rgba(255,255,255,.55);margin:10px auto 0;animation:drip 2s infinite}
@@ -104,7 +104,7 @@ h2.k{font-size:clamp(32px,5vw,46px);color:#fff;font-weight:600;margin:16px 0 14p
 
 /* ABOUT */
 .about{display:grid;grid-template-columns:1fr 1.1fr;gap:70px;align-items:center}
-.about-card{background:rgba(23,18,13,.78);backdrop-filter:blur(12px);border:1px solid var(--line);padding:50px 42px;text-align:center}
+.about-card{background:rgba(23,18,13,.78);backdrop-filter:blur(12px);border:1px solid var(--line);padding:50px 42px;text-align:center;border-radius:16px}
 .avatar{width:130px;height:130px;border-radius:50%;margin:0 auto 22px;overflow:hidden;border:2px solid var(--gold);position:relative}
 .avatar img{width:100%;height:100%;object-fit:cover}
 .avatar::after{content:"";position:absolute;inset:0;border-radius:50%;box-shadow:inset 0 0 0 3px rgba(212,176,106,.4)}
@@ -141,25 +141,18 @@ h2.k{font-size:clamp(32px,5vw,46px);color:#fff;font-weight:600;margin:16px 0 14p
 .car-slide img{width:100%;height:310px;object-fit:cover;display:block;transition:transform .5s ease}
 .car-slide:hover img{transform:scale(1.06)}
 
-/* Отзывы — карточки по размеру текста */
+/* Отзывы — компактные, по размеру текста */
 .rev-track{align-items:flex-start}
-.rev-card{scroll-snap-align:center;background:linear-gradient(160deg,rgba(23,18,13,.9),rgba(23,18,13,.78));backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:18px;padding:26px 28px;width:min(86vw,540px);flex:0 0 auto;display:flex;flex-direction:column;box-shadow:0 14px 40px rgba(0,0,0,.45)}
-.rev-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold-soft),transparent);opacity:.6}
+.rev-card{scroll-snap-align:center;background:linear-gradient(160deg,rgba(23,18,13,.92),rgba(23,18,13,.8));backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:18px;padding:24px 26px;width:min(80vw,520px);flex:0 0 auto;display:flex;flex-direction:column;box-shadow:0 14px 40px rgba(0,0,0,.45);position:relative;overflow:hidden}
+.rev-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold-soft),transparent);opacity:.7}
 .rev-head{display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap}
 .rev-ava{width:54px;height:54px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 12px rgba(179,135,63,.4);flex-shrink:0}
 .rev-name{color:#fff;font-weight:700;font-size:16px}
 .rev-sub{color:var(--muted);font-size:11.5px;margin-top:2px}
 .rev-stars{color:var(--gold-soft);letter-spacing:3px;font-size:15px;margin-left:auto;white-space:nowrap}
-.rev-text{color:#e7ddc8;font-size:14px;line-height:1.7;font-weight:300;text-align:left;overflow-wrap:break-word;word-break:break-word;max-height:none;overflow:visible}
+.rev-text{color:#e7ddc8;font-size:14px;line-height:1.65;font-weight:300;text-align:left;overflow-wrap:break-word;word-break:break-word}
 .rev-video{margin-top:14px;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
 .rev-video iframe{width:100%;height:210px;border:0;display:block}
-@media(max-width:560px){
-  .rev-card{width:92vw;padding:20px}
-  .rev-stars{display:block;margin:6px 0 0}
-  .rev-head{flex-wrap:wrap}
-  .rev-video iframe{height:190px}
-  .rev-card{position:relative}
-}
 
 /* SERVICES */
 .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
@@ -201,7 +194,7 @@ h2.k{font-size:clamp(32px,5vw,46px);color:#fff;font-weight:600;margin:16px 0 14p
 .c-line .lab{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
 .c-line .val{font-size:19px;font-weight:600;color:#efe6d6;overflow-wrap:break-word;word-break:break-word}
 .c-line a.val:hover{color:var(--gold-soft)}
-.call-block{background:rgba(23,18,13,.78);backdrop-filter:blur(12px);border:1px solid var(--line);padding:44px 34px;text-align:center}
+.call-block{background:rgba(23,18,13,.78);backdrop-filter:blur(12px);border:1px solid var(--line);padding:44px 34px;text-align:center;border-radius:16px}
 .call-block .cb-lab{font-size:14px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-soft)}
 .call-block .cb-num{display:block;font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(28px,4vw,44px);color:#fff;margin:14px 0 8px;white-space:nowrap}
 .call-block .cb-num:hover{color:var(--gold-soft)}
@@ -233,14 +226,15 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
 /* Печатающийся заголовок */
 .t-word{display:inline-block;opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease;word-break:break-word}
 
-/* АДАПТАЦИЯ */
+/* АДАПТАЦИЯ — ПЛАНШЕТЫ */
 @media(max-width:1024px){
   .stats{grid-template-columns:repeat(2,1fr);gap:40px}
   .svc-grid{grid-template-columns:repeat(2,1fr)}
   .guar-grid{grid-template-columns:repeat(2,1fr)}
 }
+/* АДАПТАЦИЯ — ПЛАНШЕТ/ТЕЛЕФОН */
 @media(max-width:860px){
-  .nav{height:68px;padding-top:8px}
+  .nav{height:84px;padding-top:22px}
   .menu{position:fixed;top:0;right:0;bottom:0;width:min(320px,82vw);background:rgba(16,12,8,.98);flex-direction:column;justify-content:center;gap:24px;padding:40px;transform:translateX(100%);transition:transform .4s ease;z-index:60}
   .menu.open{transform:none}
   .menu a{font-size:19px;font-family:'Cormorant Garamond',serif}
@@ -249,22 +243,35 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
   .features{grid-template-columns:1fr}
   .steps{grid-template-columns:1fr;gap:22px}
   .contact-grid{grid-template-columns:1fr;gap:40px}
-  .panel{padding:80px 0}
+  .panel{padding:130px 0}
   .car-nav{display:none}
+  .rev-card{width:86vw}
 }
+/* АДАПТАЦИЯ — ТЕЛЕФОН */
 @media(max-width:520px){
-  .svc-grid{grid-template-columns:1fr}
-  .guar-grid{grid-template-columns:1fr}
+  .nav{height:80px;padding-top:24px}
+  .logo .brand-ava{width:44px;height:44px}
+  .logo .brand-txt .name{font-size:21px}
+  .logo .brand-txt .sub{font-size:10px;max-width:56vw}
+  .panel{min-height:auto;padding:110px 0 60px}
+  h1{font-size:33px}
+  .btn-row{width:100%}
   .btn{width:100%;text-align:center}
   .stat .num{font-size:46px}
-  .panel{min-height:auto;padding:64px 0}
-  h1{font-size:33px}
   .scroll-cue{display:none}
   .car-slide{width:84vw}
   .car-slide img{height:220px}
-  .logo .brand-ava{width:38px;height:38px}
-  .logo .brand-txt .name{font-size:18px}
-  .logo .brand-txt .sub{font-size:9px;max-width:52vw}
+  .svc-grid{grid-template-columns:1fr}
+  .guar-grid{grid-template-columns:1fr}
+  /* отзывы компактно */
+  .rev-card{width:94vw;padding:18px}
+  .rev-head{gap:10px}
+  .rev-ava{width:48px;height:48px}
+  .rev-name{font-size:14px}
+  .rev-sub{font-size:10px}
+  .rev-stars{font-size:13px;display:block;margin:6px 0 0}
+  .rev-text{font-size:13px;line-height:1.55}
+  .rev-video iframe{height:185px}
   .consult .phone{font-size:26px}
   .call-block .cb-num{font-size:24px}
 }
