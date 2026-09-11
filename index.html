@@ -6,20 +6,16 @@
 <title>Кухни на Заказ | Ростов, Батайск, Азов</title>
 <meta name="description" content="Кухни и корпусная мебель на заказ в Ростове, Батайске и Азове. 10+ лет опыта. Полный цикл: замер, проект, производство, монтаж. ☎ +7 (950) 846-53-97">
 <meta name="keywords" content="кухни на заказ Ростов, мебель на заказ, шкафы купе, гардеробные, прихожие, кухни Батайск, мебель Азов">
-
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ru_RU">
 <meta property="og:title" content="Кухни на Заказ | Ростов, Батайск, Азов">
 <meta property="og:description" content="Кухни и корпусная мебель под ключ. 10+ лет опыта.">
 <meta property="og:site_name" content="Кухни на Заказ">
-
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"LocalBusiness","name":"Кухни на Заказ | Ростов, Батайск, Азов","description":"Кухни и корпусная мебель на заказ.","telephone":"+79508465397","address":{"@type":"PostalAddress","addressLocality":"Ростов-на-Дону"},"areaServed":["Ростов-на-Дону","Батайск","Азов"],"sameAs":["https://vk.com/mebel.ostrovsky"]}
 </script>
-
 <link rel="icon" type="image/jpeg" href="https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1254x1254&from=bu&cs=1254x0">
 <link rel="apple-touch-icon" href="https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1254x1254&from=bu&cs=1254x0">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -40,17 +36,17 @@ a{text-decoration:none;color:inherit}
 ul{list-style:none}
 .wrap{width:100%;max-width:1180px;margin:0 auto;padding:0 20px}
 
-/* Прогресс-бар скролла */
+/* Прогресс-бар */
 .progress{position:fixed;top:0;left:0;height:3px;z-index:80;background:var(--gold);width:0%}
 
-/* NAV — полностью адаптивный */
-header{position:fixed;top:0;left:0;right:0;z-index:60;transition:top .3s,background .4s}
-.nav{display:flex;align-items:center;justify-content:space-between;height:68px;gap:12px}
-.nav.solid{background:rgba(23,18,13,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+/* NAV — всегда с фоном, текст опущен ниже */
+header{position:fixed;top:0;left:0;right:0;z-index:60;background:rgba(16,12,8,.62);backdrop-filter:blur(12px);transition:background .4s}
+header.solid{background:rgba(23,18,13,.96)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:76px;padding-top:10px;gap:12px}
 
 /* Логотип с аватаркой */
 .logo{display:flex;align-items:center;gap:12px;min-width:0;max-width:100%}
-.logo .brand-ava{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 14px rgba(179,135,63,.5);flex-shrink:0}
+.logo .brand-ava{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 16px rgba(179,135,63,.55);flex-shrink:0}
 .logo .brand-txt{display:flex;flex-direction:column;min-width:0}
 .logo .brand-txt .name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;color:#fff;line-height:1.1}
 .logo .brand-txt .sub{color:var(--gold-soft);font-family:'Manrope',sans-serif;font-size:11px;font-weight:500;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60vw}
@@ -78,8 +74,6 @@ header{position:fixed;top:0;left:0;right:0;z-index:60;transition:top .3s,backgro
 .panel + .panel{margin-top:14px}
 
 .eyebrow{display:inline-block;color:var(--gold-soft);letter-spacing:4px;text-transform:uppercase;font-size:12.5px;font-weight:600;margin-bottom:22px;border-top:1px solid var(--gold);padding-top:14px}
-
-/* Заголовок — починен, не вылетает */
 h1{font-size:clamp(32px,6.4vw,74px);font-weight:600;line-height:1.15;color:#fff;letter-spacing:.5px;text-shadow:0 3px 22px rgba(0,0,0,.45);overflow-wrap:break-word;word-break:break-word;max-width:100%}
 h1 em{font-style:italic;color:var(--gold-soft)}
 .sub{color:#fff;font-size:clamp(17px,2vw,20px);font-weight:300;margin:26px 0 34px;max-width:560px;text-shadow:0 2px 14px rgba(0,0,0,.55)}
@@ -131,40 +125,40 @@ h2.k{font-size:clamp(32px,5vw,46px);color:#fff;font-weight:600;margin:16px 0 14p
 .consult p{color:var(--muted);font-size:16px;margin:30px auto 0;max-width:600px;line-height:1.8;overflow-wrap:break-word}
 
 /* CAROUSEL общая */
-.carousel{position:relative;max-width:980px;margin:0 auto}
-.car-track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding:6px 4px 20px;scrollbar-width:none}
+.carousel{position:relative;max-width:1120px;margin:0 auto}
+.car-track{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding:8px 6px 20px;scrollbar-width:none}
 .car-track::-webkit-scrollbar{display:none}
 .car-nav{position:absolute;top:38%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;background:rgba(23,18,13,.75);backdrop-filter:blur(8px);border:1px solid var(--gold);color:var(--gold-soft);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.3s;z-index:5}
 .car-nav:hover{background:var(--gold);color:#17120d}
 .car-prev{left:-14px}
 .car-next{right:-14px}
-.car-dots{display:flex;justify-content:center;gap:8px;margin-top:8px;flex-wrap:wrap}
+.car-dots{display:flex;justify-content:center;gap:8px;margin-top:10px;flex-wrap:wrap}
 .car-dot{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:.3s;border:none}
 .car-dot.active{background:var(--gold-soft);transform:scale(1.3)}
 
 /* Карусель работ */
-.car-slide{flex:0 0 auto;width:min(72vw,430px);scroll-snap-align:center;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:rgba(23,18,13,.7)}
-.car-slide img{width:100%;height:300px;object-fit:cover;display:block;transition:transform .5s ease}
-.car-slide:hover img{transform:scale(1.05)}
+.car-slide{flex:0 0 auto;width:min(72vw,440px);scroll-snap-align:center;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:rgba(23,18,13,.7)}
+.car-slide img{width:100%;height:310px;object-fit:cover;display:block;transition:transform .5s ease}
+.car-slide:hover img{transform:scale(1.06)}
 
-/* Отзывы */
-.rev-track{align-items:stretch}
-.rev-card{scroll-snap-align:center;background:rgba(23,18,13,.82);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:14px;padding:24px 26px;width:min(92vw,820px);flex:0 0 auto;display:flex;flex-direction:column}
-.rev-head{display:flex;align-items:center;gap:14px;margin-bottom:12px;flex-wrap:wrap}
-.rev-ava{width:48px;height:48px;border-radius:50%;object-fit:cover;border:1px solid var(--gold);flex-shrink:0}
-.rev-name{color:#fff;font-weight:600;font-size:15px}
-.rev-sub{color:var(--muted);font-size:11.5px;margin-top:1px}
-.rev-stars{color:var(--gold-soft);letter-spacing:2px;font-size:14px;margin-left:auto;white-space:nowrap}
-.rev-text{color:var(--muted);font-size:13px;line-height:1.55;font-weight:300;text-align:left;max-height:104px;overflow-y:auto;padding-right:6px;overflow-wrap:break-word;word-break:break-word}
-.rev-text::-webkit-scrollbar{width:4px}
-.rev-text::-webkit-scrollbar-thumb{background:var(--gold);border-radius:4px}
-.rev-video{margin-top:12px;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
-.rev-video iframe{width:100%;height:200px;border:0;display:block}
+/* Отзывы — карточки по размеру текста */
+.rev-track{align-items:flex-start}
+.rev-card{scroll-snap-align:center;background:linear-gradient(160deg,rgba(23,18,13,.9),rgba(23,18,13,.78));backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:18px;padding:26px 28px;width:min(86vw,540px);flex:0 0 auto;display:flex;flex-direction:column;box-shadow:0 14px 40px rgba(0,0,0,.45)}
+.rev-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold-soft),transparent);opacity:.6}
+.rev-head{display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+.rev-ava{width:54px;height:54px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 12px rgba(179,135,63,.4);flex-shrink:0}
+.rev-name{color:#fff;font-weight:700;font-size:16px}
+.rev-sub{color:var(--muted);font-size:11.5px;margin-top:2px}
+.rev-stars{color:var(--gold-soft);letter-spacing:3px;font-size:15px;margin-left:auto;white-space:nowrap}
+.rev-text{color:#e7ddc8;font-size:14px;line-height:1.7;font-weight:300;text-align:left;overflow-wrap:break-word;word-break:break-word;max-height:none;overflow:visible}
+.rev-video{margin-top:14px;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.rev-video iframe{width:100%;height:210px;border:0;display:block}
 @media(max-width:560px){
-  .rev-card{width:94vw;padding:18px}
+  .rev-card{width:92vw;padding:20px}
   .rev-stars{display:block;margin:6px 0 0}
   .rev-head{flex-wrap:wrap}
-  .rev-video iframe{height:180px}
+  .rev-video iframe{height:190px}
+  .rev-card{position:relative}
 }
 
 /* SERVICES */
@@ -246,7 +240,7 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
   .guar-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:860px){
-  .nav{height:62px}
+  .nav{height:68px;padding-top:8px}
   .menu{position:fixed;top:0;right:0;bottom:0;width:min(320px,82vw);background:rgba(16,12,8,.98);flex-direction:column;justify-content:center;gap:24px;padding:40px;transform:translateX(100%);transition:transform .4s ease;z-index:60}
   .menu.open{transform:none}
   .menu a{font-size:19px;font-family:'Cormorant Garamond',serif}
@@ -267,7 +261,7 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
   h1{font-size:33px}
   .scroll-cue{display:none}
   .car-slide{width:84vw}
-  .car-slide img{height:210px}
+  .car-slide img{height:220px}
   .logo .brand-ava{width:38px;height:38px}
   .logo .brand-txt .name{font-size:18px}
   .logo .brand-txt .sub{font-size:9px;max-width:52vw}
@@ -409,7 +403,6 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
       <h2>Что говорят наши клиенты</h2>
       <p>Реальные отзывы о нашей работе. Листайте влево-вправо.</p>
     </div>
-
     <div class="carousel reveal">
       <button class="car-nav car-prev" id="revPrev">❮</button>
       <div class="car-track rev-track" id="revTrack">
@@ -484,7 +477,6 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
       <button class="car-nav car-next" id="revNext">❯</button>
       <div class="car-dots" id="revDots"></div>
     </div>
-
     <p style="color:var(--muted);margin-top:26px;text-align:center;font-size:14px">Больше отзывов — в нашем сообществе <a href="https://vk.com/mebel.ostrovsky" target="_blank" rel="noopener" style="color:var(--gold-soft);font-weight:600">ВКонтакте</a></p>
   </div></div>
 </section>
@@ -593,82 +585,42 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
 </div>
 
 <script>
-// Прогресс-бар
 const progress=document.getElementById('progress');
-window.addEventListener('scroll',()=>{
-  const h=document.documentElement;
-  progress.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
-});
-
-// Навбар
+window.addEventListener('scroll',()=>{const h=document.documentElement;progress.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
 const header=document.getElementById('header');
 window.addEventListener('scroll',()=>{header.classList.toggle('solid',window.scrollY>40);});
-
-// Меню
 const burger=document.getElementById('burger');
 const menu=document.getElementById('menu');
 burger.addEventListener('click',()=>{burger.classList.toggle('open');menu.classList.toggle('open');});
 menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{burger.classList.remove('open');menu.classList.remove('open');}));
-
-// Параллакс
 const bgs=document.querySelectorAll('.panel .bg');
 function parallax(){bgs.forEach(bg=>{const rect=bg.parentElement.getBoundingClientRect();const center=(rect.top+rect.height/2)-window.innerHeight/2;bg.style.transform='translateY('+(-center*0.25)+'px)';});}
 window.addEventListener('scroll',parallax);parallax();
-
-// Появление
 const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-
-// Печатающийся заголовок (безопасно — не ломает <em>)
 (function(){
   const h=document.getElementById('heroTitle');
   const tokens=h.innerHTML.split(/(<[^>]+>)/);
   let html='';
-  tokens.forEach(t=>{
-    if(/^<[^>]+>$/.test(t)){ html+=t; }
-    else{
-      html+=t.split(/\s+/).filter(w=>w).map(w=>'<span class="t-word">'+w+'</span>').join(' ');
-    }
-  });
+  tokens.forEach(t=>{if(/^<[^>]+>$/.test(t)){html+=t;}else{html+=t.split(/\s+/).filter(w=>w).map(w=>'<span class="t-word">'+w+'</span>').join(' ');}});
   h.innerHTML=html;
   h.querySelectorAll('.t-word').forEach((s,i)=>setTimeout(()=>s.classList.add('on'),150+i*120));
 })();
-
-// Карусели
 function initCarousel(trackId,prevId,nextId,dotsId){
-  const track=document.getElementById(trackId);
-  const prev=document.getElementById(prevId);
-  const next=document.getElementById(nextId);
-  const dotsBox=document.getElementById(dotsId);
-  const items=[...track.children];
+  const track=document.getElementById(trackId),prev=document.getElementById(prevId),next=document.getElementById(nextId),dotsBox=document.getElementById(dotsId),items=[...track.children];
   dotsBox.innerHTML='';
-  items.forEach((_,i)=>{
-    const d=document.createElement('button');
-    d.className='car-dot'+(i===0?' active':'');
-    d.addEventListener('click',()=>items[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'}));
-    dotsBox.appendChild(d);
-  });
+  items.forEach((_,i)=>{const d=document.createElement('button');d.className='car-dot'+(i===0?' active':'');d.addEventListener('click',()=>items[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'}));dotsBox.appendChild(d);});
   const dots=[...dotsBox.children];
-  const step=()=>items[0].offsetWidth+16;
-  track.addEventListener('scroll',()=>{
-    const idx=Math.round(track.scrollLeft/step());
-    dots.forEach((d,i)=>d.classList.toggle('active',i===idx));
-  });
+  const step=()=>items[0].offsetWidth+20;
+  track.addEventListener('scroll',()=>{const idx=Math.round(track.scrollLeft/step());dots.forEach((d,i)=>d.classList.toggle('active',i===idx));});
   prev.addEventListener('click',()=>track.scrollBy({left:-step(),behavior:'smooth'}));
   next.addEventListener('click',()=>track.scrollBy({left:step(),behavior:'smooth'}));
 }
 initCarousel('carTrack','carPrev','carNext','carDots');
 initCarousel('revTrack','revPrev','revNext','revDots');
-
-// Cookie
-const cookieBar=document.getElementById('cookieBar');
-const cookieOk=document.getElementById('cookieOk');
-if(!localStorage.getItem('cookiesAccepted')){
-  setTimeout(()=>cookieBar.classList.add('show'),800);
-}
+const cookieBar=document.getElementById('cookieBar'),cookieOk=document.getElementById('cookieOk');
+if(!localStorage.getItem('cookiesAccepted')){setTimeout(()=>cookieBar.classList.add('show'),800);}
 cookieOk.addEventListener('click',()=>{localStorage.setItem('cookiesAccepted','1');cookieBar.classList.remove('show');});
-
-// Год
 document.getElementById('year').textContent=new Date().getFullYear();
 </script>
 </body>
