@@ -1,25 +1,26 @@
 # -*- coding: utf-8 -*-
 """
-mebel.py — сервер сайта «Кухни Островский» + живой ИИ-чат с памятью.
+mebel.py — сервер сайта «Кухни Островский» + живой ИИ-чат.
 
 Как запустить (docker):
-  1. Задайте секреты в переменных окружения контейнера (НЕ в коде!):
+  1. Секреты в переменных окружения контейнера (НЕ в коде!):
        GIGACHAT_AUTH_KEY="..."   # основная
        YANDEX_API_KEY="..."      # запасная
        FOLDER_ID="..."
   2. Соберите и запустите контейнер (порт 8080).
 
 Эндпоинты:
-  GET  /                    — страница сайта
-  POST /api/chat            — {"message": "...", "session_id": "..."}
-                              -> {"reply": "...", "session_id": "..."}
+  GET  /         — страница сайта
+  POST /api/chat — {"message": "...", "session_id": "..."} -> {"reply": "..."}
 
-Память: история диалогов хранится на сервере по session_id (до 30 сообщений),
-передаётся модели как контекст. База знаний мастерской зашита в SYSTEM_PROMPT.
+Память: история диалогов хранится в SQLite (memory.db) и переживает перезапуск.
+ИИ отвечает СТРОГО по содержимому сайта и группы ВК, ничего не выдумывает.
+Цены и точные сроки — по телефону, как и на самом сайте.
 """
 import os
 import json
 import uuid
+import sqlite3
 import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
@@ -28,41 +29,45 @@ FOLDER_ID          = os.environ.get("FOLDER_ID", "")
 YANDEX_API_KEY     = os.environ.get("YANDEX_API_KEY", "")
 GIGACHAT_AUTH_KEY  = os.environ.get("GIGACHAT_AUTH_KEY", "")
 PORT               = int(os.environ.get("PORT", "8080"))
+DB_FILE            = os.environ.get("DB_FILE", "/app/memory.db")
 
-# Максимум сообщений в «памяти» диалога (большой контекст)
-HISTORY_LIMIT = 30
+# Лимит сообщений в контексте (бережём деньги и лимит модели)
+HISTORY_LIMIT = 24
 
-# ----------------------------- База знаний сайта -----------------------------
+# --------------------------- База знаний: сайт + ВК --------------------------
 SYSTEM_PROMPT = (
     "Ты — вежливый ИИ-консультант мебельной мастерской «Кухни Островский». "
-    "Руководитель мастерской — Роман Островский. "
-    "Ты знаешь ВСЁ о нашей мастерской и отвечаешь на любые вопросы про кухни и мебель. "
-    "Отвечай дружелюбно, кратко и по делу, всегда на русском.\n\n"
+    "Руководитель мастерской — Роман Островский.\n"
+    "Отвечай ТОЛЬКО на основе информации ниже. НЕ выдумывай цены, сроки, "
+    "материалы или другие детали, которых здесь нет. Если в базе нет ответа — "
+    "честно направь к специалисту по телефону или в сообщения ВК.\n\n"
 
-    "БАЗА ЗНАНИЙ МАСТЕРСКОЙ:\n"
-    "1. ЧТО МЫ ДЕЛАЕМ: кухни на заказ, шкафы-купе, гардеробные, прихожие, стенки, "
-    "гарнитуры под ТВ, тумбы, комоды, корпусную мебель по индивидуальным проектам.\n"
-    "2. ЦЕНЫ: базовая кухня — от 25 000 ₽ за погонный метр. Точная смета после замера "
-    "(обычно за 1–2 дня). Честный расчёт, без скрытых доплат.\n"
-    "3. ЗАМЕР И ПРОЕКТ: выезд на замер по Ростову, Батайску и Азову — БЕСПЛАТНО. "
-    "Делаем планировку и 3D-проект бесплатно.\n"
-    "4. СРОКИ: изготовление кухни от 14 до 30 дней, зависит от фасадов и загрузки. "
-    "Монтаж и установка — своими силами, под ключ.\n"
-    "5. МАТЕРИАЛЫ: фасады из МДФ, ДСП, эмали, акрила и плёнки. Большой выбор цветов и "
-    "текстур. Подбираем под бюджет и стиль.\n"
-    "6. ГАРАНТИЯ: гарантия качества на все изделия, фурнитура с доводчиками, "
-    "пуш-механизмы. Сопровождение после установки.\n"
-    "7. ГОРОДА: работаем в Ростове-на-Дону, Батайске и Азове, возможен выезд в область.\n"
-    "8. ПРЕИМУЩЕСТВА: собственное производство без посредников, личное сопровождение "
-    "от замера до монтажа, аккуратность и пунктуальность.\n"
-    "9. ЭТАПЫ РАБОТЫ: заявка → замер (бесплатно) → 3D-проект → договор → производство → "
+    "ИНФОРМАЦИЯ С САЙТА (кухниостровский.рф):\n"
+    "• ЧТО ДЕЛАЕМ: кухни на заказ, шкафы-купе, гардеробные, прихожие, стенки, "
+    "гарнитуры под ТВ, тумбы, комоды, другую корпусную мебель по индивидуальным проектам. "
+    "Также: профессиональная сборка и монтаж, замер и проект, обновление существующей мебели.\n"
+    "• ЗАМЕР И ПРОЕКТ: выезд на замер, планировка и 3D-проект — бесплатно.\n"
+    "• ЭТАПЫ РАБОТЫ: заявка → замер → 3D-проект → договор → производство → "
     "доставка и монтаж с гарантией.\n"
-    "10. КОНТАКТЫ: телефон +7 (950) 846-53-97, Telegram t.me/fanny161, "
-    "группа ВК vk.com/mebel.ostrovsky, сообщения сообщества ВКонтакте.\n"
-    "11. УСЛОВИЯ ОПЛАТЫ: условия оплаты и акции уточняйте по телефону.\n\n"
+    "• ГОРОДА: работаем в Ростове-на-Дону, Батайске и Азове.\n"
+    "• О КОМАНДЕ: руководитель мебельной мастерской — Роман Островский. Помогают с планировкой "
+    "и подбором, решают даже сложные задачи, ведут от консультации и замера до сборки и установки.\n"
+    "• ПРЕИМУЩЕСТВА: собственное производство без посредников, личное сопровождение от замера "
+    "до монтажа, аккуратность и пунктуальность, честный расчёт без навязывания лишнего, гарантия качества.\n"
+    "• КОНТАКТЫ: телефон +7 (950) 846-53-97, Telegram t.me/fanny161, MAX — по тому же номеру, "
+    "группа ВКонтакте vk.com/mebel.ostrovsky (личные сообщения сообщества).\n\n"
 
-    "Отвечай так, будто лично консультируешь клиента мастерской. Если вопрос не по теме "
-    "мебели — вежливо предложи вернуться к теме и оставь контакты."
+    "ИНФОРМАЦИЯ ИЗ ГРУППЫ ВК (vk.com/mebel.ostrovsky):\n"
+    "• Там публикуются реальные отзывы клиентов и примеры готовых работ (фото/видео).\n"
+    "• На страницу можно обратиться с вопросами и заказать мебель через личные сообщения.\n\n"
+
+    "ПРАВИЛА:\n"
+    "• Про стоимость: на сайте цена не указана. Отвечай так: «Точную стоимость рассчитают "
+    "после замера и проекта — это бесплатно. Позвоните +7 (950) 846-53-97, чтобы записаться.»\n"
+    "• Про точные сроки/материалы: если на сайте этого нет — не выдумывай, предложи уточнить "
+    "у специалиста по телефону или в ВК.\n"
+    "• На вопросы по мебели отвечай подробно, дружелюбно и по делу, всегда на русском.\n"
+    "• Если вопрос не про мебель — вежливо вернись к теме и оставь контакты."
 )
 
 # ------------------------------- HTTP-помощник -------------------------------
@@ -106,7 +111,7 @@ def ask_yandex_gpt(messages):
         llm_messages.append({"role": role, "text": m["content"]})
     payload = {
         "modelUri": "gpt://{}/yandexgpt-lite".format(FOLDER_ID),
-        "completionOptions": {"stream": False, "temperature": 0.5, "maxTokens": 900},
+        "completionOptions": {"stream": False, "temperature": 0.3, "maxTokens": 900},
         "messages": llm_messages,
     }
     resp = _post(url, headers, json.dumps(payload).encode("utf-8"))
@@ -115,24 +120,47 @@ def ask_yandex_gpt(messages):
         return alts[0].get("message", {}).get("text", "").strip()
     return ""
 
-# ---------------------------- Память (истории) -------------------------------
-SESSIONS = {}
+# ------------------------- Постоянная память (SQLite) ------------------------
+def init_db():
+    conn = sqlite3.connect(DB_FILE)
+    conn.execute("CREATE TABLE IF NOT EXISTS sessions (session_id TEXT PRIMARY KEY, messages TEXT)")
+    conn.commit()
+    conn.close()
 
 def get_history(session_id):
-    if session_id not in SESSIONS:
-        SESSIONS[session_id] = []
-    return SESSIONS[session_id]
+    conn = sqlite3.connect(DB_FILE)
+    try:
+        row = conn.execute("SELECT messages FROM sessions WHERE session_id=?", (session_id,)).fetchone()
+    finally:
+        conn.close()
+    if row and row[0]:
+        try:
+            return json.loads(row[0])
+        except Exception:
+            return []
+    return []
+
+def save_history(session_id, history):
+    conn = sqlite3.connect(DB_FILE)
+    try:
+        conn.execute(
+            "INSERT INTO sessions (session_id, messages) VALUES (?, ?) "
+            "ON CONFLICT(session_id) DO UPDATE SET messages=excluded.messages",
+            (session_id, json.dumps(history, ensure_ascii=False)),
+        )
+        conn.commit()
+    finally:
+        conn.close()
 
 def remember(session_id, role, content):
     h = get_history(session_id)
     h.append({"role": role, "content": content})
-    # держим память большой, но обрезаем слишком длинные диалоги
     if len(h) > HISTORY_LIMIT:
         del h[: len(h) - HISTORY_LIMIT]
+    save_history(session_id, h)
 
 def ask_ai(message, history):
     convo = history[-HISTORY_LIMIT:]
-    # Основная — GigaChat
     if GIGACHAT_AUTH_KEY:
         try:
             reply = ask_gigachat(convo)
@@ -140,7 +168,6 @@ def ask_ai(message, history):
                 return reply
         except Exception as exc:
             print("GigaChat error:", exc)
-    # Запасная — YandexGPT
     if YANDEX_API_KEY and FOLDER_ID:
         try:
             reply = ask_yandex_gpt(convo)
@@ -148,7 +175,7 @@ def ask_ai(message, history):
                 return reply
         except Exception as exc:
             print("YandexGPT error:", exc)
-    return "Извините, сейчас не удалось получить ответ от нейросети. Позвоните нам: +7 (950) 846-53-97"
+    return "Извините, сейчас не удалось получить ответ. Позвоните нам: +7 (950) 846-53-97"
 
 # ------------------------------- HTML-страница ------------------------------
 PAGE = """<!DOCTYPE html>
@@ -392,27 +419,24 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
 .t-word{display:inline-block;opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease;word-break:break-word}
 .t-word.on{opacity:1;transform:none}
 
-/* ===== Кнопка и окно ИИ (плавно и красиво) ===== */
-.btn-ai{background:linear-gradient(135deg,#8b5cf6,#6d28d9);border:1px solid rgba(139,92,246,.5);color:#fff;box-shadow:0 10px 30px rgba(109,40,217,.4)}
-.btn-ai:hover{filter:brightness(1.15);transform:translateY(-3px)}
-.btn-ai .ai-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#fff;margin-right:9px;vertical-align:middle;animation:aiPulse 1.6s ease-in-out infinite}
-@keyframes aiPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.6)}50%{box-shadow:0 0 0 7px rgba(255,255,255,0)}}
-.ai-fab{position:fixed;right:22px;bottom:22px;z-index:160;display:flex;align-items:center;gap:10px;padding:14px 20px;border:none;border-radius:50px;background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 12px 34px rgba(109,40,217,.55);transition:transform .3s,filter .3s}
-.ai-fab:hover{transform:translateY(-3px);filter:brightness(1.1)}
-.ai-fab-icon{font-size:20px;animation:aiBob 2.4s ease-in-out infinite}
-@keyframes aiBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-@media(max-width:520px){.ai-fab{width:58px;height:58px;padding:0;justify-content:center;border-radius:50%}.ai-fab-label{display:none}}
-.ai-chat{position:fixed;right:22px;bottom:96px;z-index:170;width:min(370px,94vw);max-height:74vh;display:flex;flex-direction:column;background:#1c160e;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.6);opacity:0;transform:translateY(24px) scale(.96);pointer-events:none;transition:opacity .35s ease,transform .35s cubic-bezier(.22,.61,.36,1)}
+/* ===== Кнопка ИИ (в стиле сайта, не выделяется) ===== */
+.btn-ai{border:1px solid rgba(255,255,255,.35);color:#efe6d6;background:rgba(23,18,13,.55);backdrop-filter:blur(6px)}
+.btn-ai:hover{background:#fff;color:#17120d;transform:translateY(-3px)}
+.btn-ai .ai-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gold-soft);margin-right:9px;vertical-align:middle;animation:aiPulse 1.8s ease-in-out infinite}
+@keyframes aiPulse{0%,100%{box-shadow:0 0 0 0 rgba(212,176,106,.5)}50%{box-shadow:0 0 0 7px rgba(212,176,106,0)}}
+
+/* ===== Окно ИИ (плавно и красиво) ===== */
+.ai-chat{position:fixed;right:22px;bottom:24px;z-index:170;width:min(370px,94vw);max-height:76vh;display:flex;flex-direction:column;background:#1c160e;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.65);opacity:0;transform:translateY(24px) scale(.96);pointer-events:none;transition:opacity .35s ease,transform .35s cubic-bezier(.22,.61,.36,1)}
 .ai-chat.open{opacity:1;transform:none;pointer-events:auto}
-.ai-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;font-weight:700;font-size:14px}
+.ai-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120d;font-weight:700;font-size:14px}
 .ai-head .ai-title{display:flex;align-items:center;gap:8px}
-.ai-head .ai-status{width:8px;height:8px;border-radius:50%;background:#4ade80;box-shadow:0 0 8px #4ade80;animation:aiPulse 1.8s ease-in-out infinite}
-.ai-close{background:none;border:none;color:#fff;font-size:24px;line-height:1;cursor:pointer;transition:transform .3s}
+.ai-head .ai-status{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px #22c55e;animation:aiPulse 1.8s ease-in-out infinite}
+.ai-close{background:none;border:none;color:#17120d;font-size:24px;line-height:1;cursor:pointer;transition:transform .3s}
 .ai-close:hover{transform:rotate(90deg)}
-.ai-body{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:200px;max-height:46vh}
+.ai-body{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:200px;max-height:48vh}
 .ai-msg{max-width:85%;padding:10px 13px;border-radius:14px;font-size:14px;line-height:1.5;white-space:pre-wrap;word-break:break-word;animation:msgIn .35s ease both}
 @keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.ai-msg.bot{background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.3);color:#efe6d6;align-self:flex-start;border-bottom-left-radius:4px}
+.ai-msg.bot{background:rgba(212,176,106,.1);border:1px solid var(--line);color:#efe6d6;align-self:flex-start;border-bottom-left-radius:4px}
 .ai-msg.user{background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120d;align-self:flex-end;border-bottom-right-radius:4px}
 .ai-msg.typing{display:flex;align-items:center;gap:4px;padding:14px}
 .ai-msg.typing span{width:7px;height:7px;border-radius:50%;background:var(--gold-soft);animation:dotTyping 1.2s infinite ease-in-out}
@@ -425,7 +449,7 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
 .ai-input-row input::placeholder{color:var(--muted)}
 .ai-input-row button{width:44px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120d;font-size:18px;cursor:pointer;transition:transform .2s,filter .2s}
 .ai-input-row button:hover{transform:scale(1.08);filter:brightness(1.1)}
-@media(max-width:520px){.ai-chat{bottom:88px;right:12px;left:12px;width:auto}}
+@media(max-width:520px){.ai-chat{bottom:12px;right:12px;left:12px;width:auto}}
 
 @media(max-width:1024px){
   .stats{grid-template-columns:repeat(2,1fr);gap:40px}
@@ -794,12 +818,7 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
   <button class="btn btn-solid" id="cookieOk">Принять</button>
 </div>
 
-<!-- Кнопка и окно ИИ -->
-<button id="aiFab" class="ai-fab" aria-label="Посоветоваться с ИИ">
-  <span class="ai-fab-icon">🤖</span>
-  <span class="ai-fab-label">Посоветоваться с ИИ</span>
-</button>
-
+<!-- Окно ИИ (открывается кнопкой рядом со «Смотреть работы») -->
 <div class="ai-chat" id="aiChat">
   <div class="ai-head">
     <span class="ai-title"><span class="ai-status"></span>🤖 Консультант Кухни Островский</span>
@@ -904,17 +923,15 @@ const cookieBar=document.getElementById('cookieBar'),cookieOk=document.getElemen
 if(!localStorage.getItem('cookiesAccepted')){setTimeout(()=>cookieBar.classList.add('show'),900);}
 cookieOk.addEventListener('click',()=>{localStorage.setItem('cookiesAccepted','1');cookieBar.classList.remove('show');});
 
-// ===== ИИ-чат с памятью =====
-const aiFab=document.getElementById('aiFab'),aiHeroBtn=document.getElementById('aiHeroBtn'),
+// ===== ИИ-чат с постоянной памятью =====
+const aiHeroBtn=document.getElementById('aiHeroBtn'),
       aiChat=document.getElementById('aiChat'),aiClose=document.getElementById('aiClose'),
       aiBody=document.getElementById('aiBody'),aiInput=document.getElementById('aiInput'),
       aiSend=document.getElementById('aiSend');
-// уникальный id сессии для «памяти» на сервере
 let sessionId=localStorage.getItem('aiSessionId');
 if(!sessionId){sessionId='s'+Date.now()+Math.random().toString(36).slice(2,10);localStorage.setItem('aiSessionId',sessionId);}
 function openAi(){aiChat.classList.add('open');setTimeout(()=>aiInput.focus(),350);}
 function closeAi(){aiChat.classList.remove('open');}
-aiFab.addEventListener('click',openAi);
 if(aiHeroBtn)aiHeroBtn.addEventListener('click',openAi);
 aiClose.addEventListener('click',closeAi);
 function aiAdd(text,who){const m=document.createElement('div');m.className='ai-msg '+who;m.textContent=text;aiBody.appendChild(m);aiBody.scrollTop=aiBody.scrollHeight;}
@@ -982,5 +999,6 @@ class Handler(BaseHTTPRequestHandler):
         pass
 
 if __name__ == "__main__":
+    init_db()
     print("Кухни Островский сервер запущен на http://0.0.0.0:{}".format(PORT))
     ThreadingHTTPServer(("0.0.0.0", PORT), Handler).serve_forever()
