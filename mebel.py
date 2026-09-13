@@ -1,4 +1,114 @@
-<!DOCTYPE html>
+# -*- coding: utf-8 -*-
+"""
+mebel.py — сервер сайта «Кухни Островский» + серверный ИИ-чат.
+
+Как запустить:
+  1. Задайте секреты в переменных окружения сервера (НЕ в коде!):
+       export FOLDER_ID="..."
+       export YANDEX_API_KEY="..."
+       # и/или для GigaChat:
+       export GIGACHAT_AUTH_KEY="..."
+  2. python3 mebel.py
+  3. Откройте http://127.0.0.1:8080/
+
+Эндпоинты:
+  GET  /               — страница сайта
+  POST /api/chat       — принять {"message": "..."} и вернуть {"reply": "..."}
+
+Сначала пробует YandexGPT (если есть YANDEX_API_KEY + FOLDER_ID),
+иначе GigaChat (если есть GIGACHAT_AUTH_KEY).
+"""
+import os
+import json
+import uuid
+import base64
+import urllib.request
+import urllib.error
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+# ----------------------- Секреты читаются ТОЛЬКО из окружения ----------------
+FOLDER_ID          = os.environ.get("FOLDER_ID", "")
+YANDEX_API_KEY     = os.environ.get("YANDEX_API_KEY", "")
+GIGACHAT_AUTH_KEY  = os.environ.get("GIGACHAT_AUTH_KEY", "")
+PORT               = int(os.environ.get("PORT", "8080"))
+
+SYSTEM_PROMPT = (
+    "Ты — вежливый консультант мебельной мастерской «Кухни Островский» в "
+    "Ростове-на-Дону, Батайске и Азове. Руководитель мастерской — Роман "
+    "Островский. Кухни и корпусная мебель на заказ: шкафы-купе, гардеробные, "
+    "прихожие, стенки. Работаешь по Ростову, Батайску и Азову. Цена кухни — "
+    "от 25 000 ₽ за погонный метр, замер и 3D-проект бесплатные, срок "
+    "изготовления 14–30 дней, монтаж под ключ, гарантия качества. Телефон "
+    "+7 (950) 846-53-97, Telegram t.me/fanny161, группа ВК vk.com/mebel.ostrovsky. "
+    "Отвечай кратко, по делу, на русском, дружелюбно."
+)
+
+# ------------------------------- HTTP-помощник -------------------------------
+def _post(url, headers, data):
+    req = urllib.request.Request(url, data=data, headers=headers, method="POST")
+    with urllib.request.urlopen(req, timeout=60) as resp:
+        return json.loads(resp.read().decode("utf-8"))
+
+# --------------------------- YandexGPT (foundation) --------------------------
+def ask_yandex_gpt(message):
+    url = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion"
+    headers = {
+        "Authorization": "Api-Key " + YANDEX_API_KEY,
+        "Content-Type": "application/json",
+    }
+    payload = {
+        "modelUri": "gpt://{}/yandexgpt-lite".format(FOLDER_ID),
+        "completionOptions": {"stream": False, "temperature": 0.5, "maxTokens": 800},
+        "messages": [
+            {"role": "system", "text": SYSTEM_PROMPT},
+            {"role": "user", "text": message},
+        ],
+    }
+    resp = _post(url, headers, json.dumps(payload).encode("utf-8"))
+    alts = resp.get("result", {}).get("alternatives", [])
+    if alts:
+        return alts[0].get("message", {}).get("text", "").strip()
+    return ""
+
+# -------------------------------- GigaChat ----------------------------------
+def gigachat_token():
+    url = "https://ngw.devices.sberbank.ru:9443/api/v2/oauth"
+    headers = {
+        # GIGACHAT_AUTH_KEY обычно уже закодирован в base64 client_id:client_secret
+        "Authorization": "Basic " + GIGACHAT_AUTH_KEY,
+        "RqUID": str(uuid.uuid4()),
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
+    resp = _post(url, headers, b"scope=GIGACHAT_API_PERS")
+    return resp.get("access_token", "")
+
+def ask_gigachat(message):
+    token = gigachat_token()
+    url = "https://gigachat.devices.sberbank.ru/api/v1/chat/completions"
+    headers = {"Authorization": "Bearer " + token, "Content-Type": "application/json"}
+    payload = {
+        "model": "GigaChat",
+        "messages": [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": message},
+        ],
+    }
+    resp = _post(url, headers, json.dumps(payload).encode("utf-8"))
+    choices = resp.get("choices", [])
+    if choices:
+        return choices[0].get("message", {}).get("content", "").strip()
+    return ""
+
+def ask_ai(message):
+    if YANDEX_API_KEY and FOLDER_ID:
+        return ask_yandex_gpt(message)
+    if GIGACHAT_AUTH_KEY:
+        return ask_gigachat(message)
+    return ("ИИ-ключи не настроены. Добавьте YANDEX_API_KEY (и FOLDER_ID) "
+            "или GIGACHAT_AUTH_KEY в переменные окружения сервера.")
+
+# ------------------------------- HTML-страница ------------------------------
+PAGE = """<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -11,10 +121,8 @@
 <meta name="geo.placename" content="Ростов-на-Дону">
 <meta name="theme-color" content="#17120d">
 <link rel="canonical" href="https://кухниостровский.рф/">
-<!-- Яндекс и Google подтверждение -->
 <meta name="yandex-verification" content="f7e96d07aee79bf3">
 <meta name="google-site-verification" content="dNSAELu64Y7aK5sjz_zpmhoz6YKn2PIZ03UKPwrgnCI">
-<!-- Фавикон: встроенный SVG — виден во всех браузерах и на всех устройствах -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2317120d'/%3E%3Ctext x='50' y='72' font-size='62' font-family='Georgia,serif' font-weight='bold' fill='%23d4b06a' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1254x1254&from=bu&cs=1254x0">
 <meta property="og:type" content="website">
@@ -32,7 +140,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<!-- Предзагрузка главного фона, чтобы первый экран был мгновенным -->
 <link rel="preload" as="image" fetchpriority="high" href="https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x241,480x321,540x361,640x428,720x481,1080x722,1280x855,1440x962,2560x1711&from=bu&u=udyioV6Vl_ghNhYbFZ9zjc-ZU_IjlhkVV114xfpUZJs&cs=1280x0">
 <link rel="preconnect" href="https://sun9-70.vkuserphoto.ru">
 <link rel="preconnect" href="https://i.ibb.co">
@@ -53,32 +160,23 @@ img{max-width:100%;display:block}
 a{text-decoration:none;color:inherit}
 ul{list-style:none}
 .wrap{width:100%;max-width:1180px;margin:0 auto;padding:0 20px}
-
 .progress{position:fixed;top:0;left:0;height:3px;z-index:200;background:linear-gradient(90deg,var(--gold),var(--gold-soft));width:0%}
-
-/* ===== КАСТОМНЫЙ КУРСОР ===== */
 .cursor{position:fixed;top:0;left:0;width:34px;height:34px;border:1.5px solid var(--gold-soft);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .12s ease,width .25s,height .25s,border-color .25s;mix-blend-mode:difference}
 .cursor.dot{width:6px;height:6px;background:var(--gold-soft);border:none;transition:.1s}
 @media(hover:none){.cursor{display:none}}
-
-/* ШАПКА */
 header{position:fixed;top:0;left:0;right:0;z-index:120;background:rgba(16,12,8,.9);backdrop-filter:blur(14px);transition:background .4s,box-shadow .4s}
 header.solid{background:rgba(23,18,13,.98);box-shadow:0 6px 26px rgba(0,0,0,.5)}
 .nav{display:flex;align-items:center;justify-content:space-between;height:76px;gap:12px}
-
 .logo{display:flex;align-items:center;gap:12px;min-width:0;max-width:100%;cursor:pointer}
 .logo .brand-ava{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 16px rgba(179,135,63,.55);flex-shrink:0;loading:eager;fetchpriority:high}
 .logo .brand-txt{display:flex;flex-direction:column;min-width:0;line-height:1.15}
 .logo .brand-txt .name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;color:#fff;line-height:1.05;text-shadow:0 2px 10px rgba(0,0,0,.6)}
 .logo .brand-txt .sub{color:var(--gold-soft);font-family:'Manrope',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:62vw;margin-top:2px}
-
 .menu{position:fixed;top:0;height:76px;right:max(20px,calc((100vw - 1220px)/2));display:flex;gap:22px;align-items:center;z-index:121}
 .menu a{color:rgba(255,255,255,.9);font-size:14px;font-weight:500;transition:.3s;border-bottom:1px solid transparent;padding-bottom:4px;white-space:nowrap}
 .menu a:hover{color:#fff;border-color:var(--gold)}
 .menu a.active{color:var(--gold-soft);border-color:var(--gold)}
-
 .menu-call{display:none}
-
 .burger{display:none;background:none;border:none;cursor:pointer;width:38px;height:38px;position:relative;z-index:130;flex-shrink:0}
 .burger span{position:absolute;left:7px;right:7px;height:2px;background:#fff;transition:.3s;border-radius:2px}
 .burger span:nth-child(1){top:12px}
@@ -87,10 +185,8 @@ header.solid{background:rgba(23,18,13,.98);box-shadow:0 6px 26px rgba(0,0,0,.5)}
 .burger.open span:nth-child(1){top:18px;transform:rotate(45deg)}
 .burger.open span:nth-child(2){opacity:0}
 .burger.open span:nth-child(3){top:18px;transform:rotate(-45deg)}
-
 .scrim{position:fixed;inset:0;background:rgba(0,0,0,.55);opacity:0;visibility:hidden;transition:.35s;z-index:119;backdrop-filter:blur(2px)}
 .scrim.show{opacity:1;visibility:visible}
-
 .panel{position:relative;min-height:100vh;display:flex;align-items:center;padding:140px 0;overflow:hidden}
 .panel .bg{position:absolute;inset:-20% 0;z-index:0;background-size:cover;background-position:center;will-change:transform;transform:translateZ(0)}
 .panel .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(to right,rgba(23,18,13,.93) 30%,rgba(23,18,13,.62) 65%,rgba(23,18,13,.7))}
@@ -99,7 +195,6 @@ header.solid{background:rgba(23,18,13,.98);box-shadow:0 6px 26px rgba(0,0,0,.5)}
 .panel--center .bg::after{background:rgba(23,18,13,.68)}
 .panel--dark .bg::after{background:rgba(23,18,13,.86)}
 .panel + .panel{margin-top:14px}
-
 .eyebrow{display:inline-block;color:var(--gold-soft);letter-spacing:4px;text-transform:uppercase;font-size:13px;font-weight:600;margin-bottom:18px;border-top:1px solid var(--gold);padding-top:13px}
 h1{font-size:clamp(32px,6.4vw,74px);font-weight:600;line-height:1.12;color:#fff;letter-spacing:.5px;text-shadow:0 3px 22px rgba(0,0,0,.45);overflow-wrap:break-word;word-break:break-word;max-width:100%}
 h1 em{font-style:italic}
@@ -113,28 +208,22 @@ h1 em{font-style:italic}
 .btn::after{content:"";position:absolute;top:0;left:-120%;width:60%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);transition:.6s}
 .btn:hover::after{left:130%}
 @keyframes btnGlow{0%,100%{box-shadow:0 10px 30px rgba(179,135,63,.4)}50%{box-shadow:0 10px 46px rgba(212,176,106,.85)}}
-
-/* Градиентный заголовок + золотое мерцание */
 #heroTitle .t-word{background:linear-gradient(120deg,#f4e2b5,var(--gold-soft) 45%,#a9843f);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none}
 .shimmer{background:linear-gradient(90deg,var(--gold-soft),#fff 35%,var(--gold-soft) 70%);background-size:220% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerMove 3.2s linear infinite}
 @keyframes shimmerMove{0%{background-position:0% center}100%{background-position:-220% center}}
 h1 em.shimmer{-webkit-text-fill-color:transparent}
 .cta h2.shimmer{-webkit-text-fill-color:transparent}
-
 .scroll-cue{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:5;color:rgba(255,255,255,.8);font-size:11px;letter-spacing:3px;text-transform:uppercase;text-align:center}
 .scroll-cue .line{width:1px;height:44px;background:rgba(255,255,255,.55);margin:10px auto 0;animation:drip 2s infinite}
 @keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
-
 .sec-head{max-width:680px;margin:0 auto 50px;text-align:center}
 .sec-head .kicker{color:var(--gold-soft);letter-spacing:4px;text-transform:uppercase;font-size:12px;font-weight:600}
 .sec-head h2{font-size:clamp(32px,5vw,48px);font-weight:600;margin:16px 0 14px;line-height:1.15;color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.45)}
 .sec-head p{color:var(--muted);font-size:16px}
 h2.k{font-size:clamp(32px,5vw,46px);color:#fff;font-weight:600;margin:16px 0 14px;text-align:center;text-shadow:0 2px 18px rgba(0,0,0,.45)}
-
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;text-align:center}
 .stat .num{font-family:'Cormorant Garamond',serif;font-size:60px;font-weight:600;color:var(--gold-soft);line-height:1;text-shadow:0 3px 22px rgba(0,0,0,.55)}
 .stat .lbl{color:var(--muted);font-size:14px;margin-top:10px}
-
 .about{display:grid;grid-template-columns:1fr 1.1fr;gap:70px;align-items:center}
 .about-card{background:rgba(23,18,13,.78);backdrop-filter:blur(12px);border:1px solid var(--line);padding:50px 42px;text-align:center;border-radius:16px}
 .avatar{width:130px;height:130px;border-radius:50%;margin:0 auto 22px;overflow:hidden;border:2px solid var(--gold);position:relative}
@@ -151,10 +240,8 @@ h2.k{font-size:clamp(32px,5vw,46px);color:#fff;font-weight:600;margin:16px 0 14p
 .features li{position:relative;padding-left:34px;color:#efe6d6;font-size:15px;overflow-wrap:break-word}
 .features li::before{content:"";position:absolute;left:0;top:6px;width:16px;height:16px;border:1.5px solid var(--gold);border-radius:50%}
 .features li::after{content:"✓";position:absolute;left:3px;top:5px;font-size:11px;color:var(--gold-soft);font-weight:700}
-
 .consult .phone{display:block;font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(30px,5vw,50px);color:var(--gold-soft);letter-spacing:1px;margin-top:10px;white-space:nowrap}
 .consult p{color:var(--muted);font-size:16px;margin:30px auto 0;max-width:600px;line-height:1.8;overflow-wrap:break-word}
-
 .carousel{position:relative;max-width:1120px;margin:0 auto}
 .car-track{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding:8px 6px 20px;scrollbar-width:none}
 .car-track::-webkit-scrollbar{display:none}
@@ -165,11 +252,9 @@ h2.k{font-size:clamp(32px,5vw,46px);color:#fff;font-weight:600;margin:16px 0 14p
 .car-dots{display:flex;justify-content:center;gap:8px;margin-top:10px;flex-wrap:wrap}
 .car-dot{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:.3s;border:none}
 .car-dot.active{background:var(--gold-soft);transform:scale(1.3)}
-
 .car-slide{flex:0 0 auto;width:min(78vw,440px);scroll-snap-align:center;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:rgba(23,18,13,.7);cursor:zoom-in}
 .car-slide img{width:100%;height:300px;object-fit:cover;display:block;transition:transform .5s ease;loading:lazy;decoding:async}
 .car-slide:hover img{transform:scale(1.06)}
-
 .rev-track{align-items:flex-start}
 .rev-card{scroll-snap-align:center;background:linear-gradient(160deg,rgba(23,18,13,.92),rgba(23,18,13,.8));backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:18px;padding:22px 24px;width:min(82vw,520px);flex:0 0 auto;display:flex;flex-direction:column;box-shadow:0 14px 40px rgba(0,0,0,.45);position:relative;overflow:hidden}
 .rev-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold-soft),transparent);opacity:.7}
@@ -181,7 +266,6 @@ h2.k{font-size:clamp(32px,5vw,46px);color:#fff;font-weight:600;margin:16px 0 14p
 .rev-text{color:#e7ddc8;font-size:14px;line-height:1.6;font-weight:300;text-align:left;overflow-wrap:break-word;word-break:break-word}
 .rev-video{margin-top:12px;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
 .rev-video iframe{width:100%;height:200px;border:0;display:block;loading:lazy}
-
 .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
 .svc{position:relative;background:rgba(23,18,13,.68);backdrop-filter:blur(10px);border:1px solid var(--line);padding:36px 30px;transition:.4s;border-radius:14px;overflow-wrap:break-word}
 .svc::before{content:"";position:absolute;inset:0;border-radius:14px;padding:1px;background:linear-gradient(135deg,var(--gold-soft),transparent 40%,transparent 60%,var(--gold-soft));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:.4s;pointer-events:none}
@@ -190,14 +274,12 @@ h2.k{font-size:clamp(32px,5vw,46px);color:#fff;font-weight:600;margin:16px 0 14p
 .svc svg{width:34px;height:34px;stroke:var(--gold-soft);fill:none;stroke-width:1.4;margin-bottom:20px}
 .svc h3{font-size:23px;color:#fff;margin-bottom:10px}
 .svc p{color:var(--muted);font-size:14.5px}
-
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
 .step{position:relative;padding:30px 24px;background:rgba(23,18,13,.65);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:14px;transition:.3s;overflow-wrap:break-word}
 .step:hover{transform:translateY(-4px);border-color:var(--gold)}
 .step .n{font-family:'Cormorant Garamond',serif;font-size:56px;color:var(--gold-soft);line-height:1}
 .step h3{font-size:22px;color:#fff;margin:14px 0 8px}
 .step p{color:var(--muted);font-size:14.5px}
-
 .guar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
 .guar{position:relative;background:rgba(23,18,13,.68);backdrop-filter:blur(10px);border:1px solid var(--line);padding:36px 26px;text-align:center;transition:.35s;border-radius:14px;overflow-wrap:break-word}
 .guar::before{content:"";position:absolute;inset:0;border-radius:14px;padding:1px;background:linear-gradient(135deg,var(--gold-soft),transparent 40%,transparent 60%,var(--gold-soft));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:.4s}
@@ -207,7 +289,6 @@ h2.k{font-size:clamp(32px,5vw,46px);color:#fff;font-weight:600;margin:16px 0 14p
 .guar .ico svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.5}
 .guar h3{font-size:19px;color:#fff;margin-bottom:8px}
 .guar p{color:var(--muted);font-size:13.5px}
-
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
 .contact-info h2{font-size:clamp(30px,4.5vw,46px);color:#fff;margin:16px 0 14px;line-height:1.1;text-shadow:0 2px 18px rgba(0,0,0,.45)}
 .contact-info .kicker{color:var(--gold-soft);letter-spacing:4px;text-transform:uppercase;font-size:12px;font-weight:600}
@@ -223,8 +304,6 @@ h2.k{font-size:clamp(32px,5vw,46px);color:#fff;font-weight:600;margin:16px 0 14p
 .call-block .cb-num{display:block;font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(28px,4vw,44px);color:#fff;margin:14px 0 20px;white-space:nowrap}
 .call-block .cb-num:hover{color:var(--gold-soft)}
 .call-block .cb-hint{color:var(--muted);font-size:14.5px;line-height:1.8;overflow-wrap:break-word}
-
-/* Кнопки связи */
 .contact-actions{display:flex;flex-direction:column;gap:12px;margin-top:24px}
 .c-action{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px 18px;border-radius:12px;font-weight:700;font-size:15px;letter-spacing:.4px;transition:.3s;color:#fff}
 .c-action svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8}
@@ -234,21 +313,16 @@ h2.k{font-size:clamp(32px,5vw,46px);color:#fff;font-weight:600;margin:16px 0 14p
 .c-action.c-tg:hover{background:rgba(64,169,242,.28);transform:translateY(-2px)}
 .c-action.c-max{background:rgba(177,88,252,.16);border:1px solid rgba(177,88,252,.45);color:#e0b8ff}
 .c-action.c-max:hover{background:rgba(177,88,252,.28);transform:translateY(-2px)}
-
 .cta{text-align:center;padding:100px 0;position:relative}
 .cta h2{font-size:clamp(32px,5vw,52px);color:#fff;font-weight:600;margin-bottom:16px;text-shadow:0 3px 20px rgba(0,0,0,.45)}
 .cta p{color:var(--muted);font-size:17px;max-width:600px;margin:0 auto 34px;overflow-wrap:break-word}
-
 footer{background:rgba(16,12,8,.97);color:var(--muted);padding:44px 20px;text-align:center;font-size:13.5px;border-top:1px solid rgba(179,135,63,.2)}
 footer .flogo{font-family:'Cormorant Garamond',serif;font-size:26px;color:#fff;margin-bottom:10px;line-height:1.3}
 footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',sans-serif;font-weight:500;letter-spacing:1px}
-
 .cookie-bar{position:fixed;bottom:0;left:0;right:0;z-index:150;background:rgba(16,12,8,.97);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;transform:translateY(100%);transition:.5s}
 .cookie-bar.show{transform:none}
 .cookie-bar p{color:var(--muted);font-size:13px;max-width:720px;line-height:1.5}
 .cookie-bar .btn{flex-shrink:0;padding:12px 24px}
-
-/* Лайтбокс */
 .lightbox{position:fixed;inset:0;z-index:3000;background:rgba(10,7,4,.94);display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px}
 .lightbox.open{display:flex}
 .lightbox img{max-width:92vw;max-height:84vh;border-radius:12px;border:1px solid var(--gold);box-shadow:0 20px 70px rgba(0,0,0,.7)}
@@ -257,17 +331,14 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
 .lb-nav:hover{background:var(--gold);color:#17120d}
 .lb-prev{left:18px}.lb-next{right:18px}
 .lb-count{color:var(--muted);font-size:13px}
-
 .reveal{opacity:0;transform:translateY(36px);transition:opacity .9s ease,transform .9s ease}
 .reveal.in{opacity:1;transform:none}
 .stats .reveal:nth-child(1){transition-delay:.05s}.stats .reveal:nth-child(2){transition-delay:.15s}.stats .reveal:nth-child(3){transition-delay:.25s}.stats .reveal:nth-child(4){transition-delay:.35s}
 .steps .reveal:nth-child(2){transition-delay:.08s}.steps .reveal:nth-child(3){transition-delay:.16s}.steps .reveal:nth-child(4){transition-delay:.24s}.steps .reveal:nth-child(5){transition-delay:.32s}.steps .reveal:nth-child(6){transition-delay:.4s}
 .svc-grid .reveal:nth-child(2){transition-delay:.08s}.svc-grid .reveal:nth-child(3){transition-delay:.16s}.svc-grid .reveal:nth-child(4){transition-delay:.24s}.svc-grid .reveal:nth-child(5){transition-delay:.32s}.svc-grid .reveal:nth-child(6){transition-delay:.4s}
 .guar-grid .reveal:nth-child(2){transition-delay:.08s}.guar-grid .reveal:nth-child(3){transition-delay:.16s}.guar-grid .reveal:nth-child(4){transition-delay:.24s}
-
 .t-word{display:inline-block;opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease;word-break:break-word}
 .t-word.on{opacity:1;transform:none}
-
 @media(max-width:1024px){
   .stats{grid-template-columns:repeat(2,1fr);gap:40px}
   .svc-grid{grid-template-columns:repeat(2,1fr)}
@@ -331,8 +402,6 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
 <body>
 
 <div class="progress" id="progress"></div>
-
-<!-- Кастомный курсор -->
 <div class="cursor" id="cursor"></div>
 
 <header id="header">
@@ -449,7 +518,6 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
   </div></div>
 </section>
 
-<!-- Лайтбокс -->
 <div class="lightbox" id="lightbox">
   <button class="lb-close" id="lbClose">×</button>
   <button class="lb-nav lb-prev" id="lbPrev">❮</button>
@@ -648,11 +716,7 @@ function onScroll(){
   header.classList.toggle('solid',h.scrollTop>40);
 }
 window.addEventListener('scroll',onScroll,{passive:true});onScroll();
-
-// Скролл наверх по логотипу
 document.getElementById('logo').addEventListener('click',e=>{e.preventDefault();window.scrollTo({top:0,behavior:'smooth'});});
-
-// Мобильное меню
 const burger=document.getElementById('burger'),menu=document.getElementById('menu'),scrim=document.getElementById('scrim');
 function closeMenu(){burger.classList.remove('open');menu.classList.remove('open');scrim.classList.remove('show');}
 burger.addEventListener('click',()=>{
@@ -661,8 +725,6 @@ burger.addEventListener('click',()=>{
 });
 scrim.addEventListener('click',closeMenu);
 menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeMenu));
-
-// Активный пункт меню
 const sections=['about','works','reviews','services','process','contacts'];
 const navLinks=menu.querySelectorAll('a[href^="#"]');
 window.addEventListener('scroll',()=>{
@@ -670,8 +732,6 @@ window.addEventListener('scroll',()=>{
   sections.forEach(id=>{const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<=120)current=id;});
   navLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+current));
 },{passive:true});
-
-// Параллакс (только там, где не мобилка, чтобы не тормозить)
 function supportsParallax(){return window.matchMedia('(min-width:861px)').matches;}
 if(supportsParallax()){
   const bgs=document.querySelectorAll('.panel .bg');
@@ -682,16 +742,12 @@ if(supportsParallax()){
   }
   window.addEventListener('scroll',parallax,{passive:true});parallax();
 }
-
-// Кастомный курсор
 const cursor=document.getElementById('cursor');
 if(window.matchMedia('(hover:hover) and (pointer:fine)').matches){
   let tx=0,ty=0,cx=0,cy=0;
   document.addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY;},{passive:true});
   (function anim(){cx+=(tx-cx)*0.18;cy+=(ty-cy)*0.18;cursor.style.transform='translate('+(cx-17)+'px,'+(cy-17)+'px)';requestAnimationFrame(anim);})();
 }else{cursor.style.display='none';}
-
-// Счётчики статистики
 function animateCount(el){
   const target=parseFloat(el.dataset.count);
   const dec=parseInt(el.dataset.decimal||'0');
@@ -708,12 +764,8 @@ function animateCount(el){
 }
 const statIO=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){animateCount(e.target);statIO.unobserve(e.target);}});},{threshold:.5});
 document.querySelectorAll('.stat .num').forEach(el=>statIO.observe(el));
-
-// Reveal
 const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-
-// Печать заголовка hero
 (function(){
   const h=document.getElementById('heroTitle');
   const tokens=h.innerHTML.split(/(<[^>]+>)/);
@@ -722,8 +774,6 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
   h.innerHTML=html;
   h.querySelectorAll('.t-word').forEach((s,i)=>setTimeout(()=>s.classList.add('on'),120+i*70));
 })();
-
-// Карусель
 function initCarousel(trackId,prevId,nextId,dotsId){
   const track=document.getElementById(trackId),prev=document.getElementById(prevId),next=document.getElementById(nextId),dotsBox=document.getElementById(dotsId),items=[...track.children];
   dotsBox.innerHTML='';
@@ -736,8 +786,6 @@ function initCarousel(trackId,prevId,nextId,dotsId){
 }
 initCarousel('carTrack','carPrev','carNext','carDots');
 initCarousel('revTrack','revPrev','revNext','revDots');
-
-// Лайтбокс на работы
 const lightbox=document.getElementById('lightbox'),lbImg=document.getElementById('lbImg'),lbCount=document.getElementById('lbCount');
 const lbItems=[...document.querySelectorAll('#carTrack .car-slide img')];
 let lbIdx=0;
@@ -750,7 +798,6 @@ document.getElementById('lbPrev').addEventListener('click',e=>{e.stopPropagation
 document.getElementById('lbNext').addEventListener('click',e=>{e.stopPropagation();lbStep(1);});
 lightbox.addEventListener('click',e=>{if(e.target===lightbox)closeLb();});
 document.addEventListener('keydown',e=>{if(lightbox.classList.contains('open')){if(e.key==='Escape')closeLb();if(e.key==='ArrowLeft')lbStep(-1);if(e.key==='ArrowRight')lbStep(1);}});
-
 const cookieBar=document.getElementById('cookieBar'),cookieOk=document.getElementById('cookieOk');
 if(!localStorage.getItem('cookiesAccepted')){setTimeout(()=>cookieBar.classList.add('show'),900);}
 cookieOk.addEventListener('click',()=>{localStorage.setItem('cookiesAccepted','1');cookieBar.classList.remove('show');});
@@ -758,3 +805,45 @@ document.getElementById('year').textContent=new Date().getFullYear();
 </script>
 </body>
 </html>
+"""
+
+# ------------------------------- HTTP-сервер ---------------------------------
+class Handler(BaseHTTPRequestHandler):
+    def _send(self, code, body, ctype="text/plain; charset=utf-8"):
+        data = body.encode("utf-8") if isinstance(body, str) else body
+        self.send_response(code)
+        self.send_header("Content-Type", ctype)
+        self.send_header("Content-Length", str(len(data)))
+        self.end_headers()
+        self.wfile.write(data)
+
+    def do_GET(self):
+        path = self.path.split("?")[0]
+        if path in ("/", "/index.html"):
+            self._send(200, PAGE, "text/html; charset=utf-8")
+        else:
+            self._send(404, "Not found")
+
+    def do_POST(self):
+        if self.path.split("?")[0] != "/api/chat":
+            self._send(404, "Not found")
+            return
+        try:
+            length = int(self.headers.get("Content-Length", 0))
+            raw = self.rfile.read(length) if length else b"{}"
+            data = json.loads(raw.decode("utf-8") or "{}")
+            question = (data.get("message") or "").strip()
+            if not question:
+                self._send(400, json.dumps({"error": "empty message"}, ensure_ascii=False), "application/json")
+                return
+            reply = ask_ai(question) or "Извините, не удалось получить ответ. Попробуйте позже."
+            self._send(200, json.dumps({"reply": reply}, ensure_ascii=False), "application/json")
+        except Exception as exc:  # noqa: BLE001
+            self._send(500, json.dumps({"error": str(exc)}, ensure_ascii=False), "application/json")
+
+    def log_message(self, *args):  # тихие логи
+        pass
+
+if __name__ == "__main__":
+    print("Кухни Островский сервер запущен на http://127.0.0.1:{}".format(PORT))
+    ThreadingHTTPServer(("0.0.0.0", PORT), Handler).serve_forever()
