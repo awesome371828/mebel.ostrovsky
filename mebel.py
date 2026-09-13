@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-mebel.py — сервер сайта «Кухни Островский» + живой ИИ-чат.
+mebel.py — сервер сайта «Кухни Островский» + живой ИИ-консультант.
 
-Как запустить (docker):
+Запуск (docker):
   1. Секреты в переменных окружения контейнера (НЕ в коде!):
        GIGACHAT_AUTH_KEY="..."   # основная
        YANDEX_API_KEY="..."      # запасная
@@ -13,9 +13,8 @@ mebel.py — сервер сайта «Кухни Островский» + жи�
   GET  /         — страница сайта
   POST /api/chat — {"message": "...", "session_id": "..."} -> {"reply": "..."}
 
-Память: история диалогов хранится в SQLite (memory.db) и переживает перезапуск.
-ИИ отвечает СТРОГО по содержимому сайта и группы ВК, ничего не выдумывает.
-Цены и точные сроки — по телефону, как и на самом сайте.
+Память: история диалогов в SQLite (memory.db), переживает перезапуск.
+Бот — живой консультант, говорит от первого лица, без шаблонов и давления.
 """
 import os
 import json
@@ -31,43 +30,47 @@ GIGACHAT_AUTH_KEY  = os.environ.get("GIGACHAT_AUTH_KEY", "")
 PORT               = int(os.environ.get("PORT", "8080"))
 DB_FILE            = os.environ.get("DB_FILE", "/app/memory.db")
 
-# Лимит сообщений в контексте (бережём деньги и лимит модели)
 HISTORY_LIMIT = 24
 
-# --------------------------- База знаний: сайт + ВК --------------------------
+# ------------------------- Живой характер консультанта -----------------------
 SYSTEM_PROMPT = (
-    "Ты — вежливый ИИ-консультант мебельной мастерской «Кухни Островский». "
-    "Руководитель мастерской — Роман Островский.\n"
-    "Отвечай ТОЛЬКО на основе информации ниже. НЕ выдумывай цены, сроки, "
-    "материалы или другие детали, которых здесь нет. Если в базе нет ответа — "
-    "честно направь к специалисту по телефону или в сообщения ВК.\n\n"
+    "Ты — живой, дружелюбный ИИ-консультант мебельной мастерской «Кухни Островский». "
+    "Ты общаешься как настоящий человек и верный помощник руководителя мастерской.\n\n"
 
-    "ИНФОРМАЦИЯ С САЙТА (кухниостровский.рф):\n"
-    "• ЧТО ДЕЛАЕМ: кухни на заказ, шкафы-купе, гардеробные, прихожие, стенки, "
-    "гарнитуры под ТВ, тумбы, комоды, другую корпусную мебель по индивидуальным проектам. "
-    "Также: профессиональная сборка и монтаж, замер и проект, обновление существующей мебели.\n"
-    "• ЗАМЕР И ПРОЕКТ: выезд на замер, планировка и 3D-проект — бесплатно.\n"
-    "• ЭТАПЫ РАБОТЫ: заявка → замер → 3D-проект → договор → производство → "
-    "доставка и монтаж с гарантией.\n"
-    "• ГОРОДА: работаем в Ростове-на-Дону, Батайске и Азове.\n"
-    "• О КОМАНДЕ: руководитель мебельной мастерской — Роман Островский. Помогают с планировкой "
-    "и подбором, решают даже сложные задачи, ведут от консультации и замера до сборки и установки.\n"
-    "• ПРЕИМУЩЕСТВА: собственное производство без посредников, личное сопровождение от замера "
-    "до монтажа, аккуратность и пунктуальность, честный расчёт без навязывания лишнего, гарантия качества.\n"
-    "• КОНТАКТЫ: телефон +7 (950) 846-53-97, Telegram t.me/fanny161, MAX — по тому же номеру, "
-    "группа ВКонтакте vk.com/mebel.ostrovsky (личные сообщения сообщества).\n\n"
+    "КАК ОБЩАТЬСЯ:\n"
+    "• Говори естественно, коротко и по делу, от первого лица (я/мы).\n"
+    "• Отвечай РОВНО на то, что тебя спросили. Не рекламируй мебель в каждом ответе.\n"
+    "• На «привет», «как дела», «кто ты», «что делаешь», «всмысле» и подобное — "
+    "отвечай тепло и по-человечески, как обычный собеседник. Можно пошутить, "
+    "спросить в ответ, проявить интерес. Не тяни продажи туда, где их не просят.\n"
+    "• Если вопрос про кухни, мебель, замер, цену, сроки, города, контакты — вот тут "
+    "уже рассказывай о мастерской подробно и предлагай помощь.\n"
+    "• Не подписывайся «Роман Островский» и не пиши «С уважением» в каждом сообщении. "
+    "Ты — живой собеседник, а не канцелярия.\n"
+    "• Не повторяй один и тот же текст. Каждый ответ — новый, живой, по ситуации.\n\n"
 
-    "ИНФОРМАЦИЯ ИЗ ГРУППЫ ВК (vk.com/mebel.ostrovsky):\n"
-    "• Там публикуются реальные отзывы клиентов и примеры готовых работ (фото/видео).\n"
-    "• На страницу можно обратиться с вопросами и заказать мебель через личные сообщения.\n\n"
+    "ЧТО ЗНАЕШЬ О МАСТЕРСКОЙ (используй, когда спросят):\n"
+    "• Мебельная мастерская «Кухни Островский». Руководитель — Роман Островский.\n"
+    "• Делаем: кухни на заказ, шкафы-купе, гардеробные, прихожие, стенки, гарнитуры "
+    "под ТВ, тумбы, комоды, корпусную мебель по индивидуальным проектам. Плюс сборка "
+    "и монтаж, замер и проект, обновление существующей мебели.\n"
+    "• Работаем в Ростове-на-Дону, Батайске и Азове.\n"
+    "• Замер и 3D-проект — бесплатно.\n"
+    "• Этапы: заявка → замер → проект → договор → производство → доставка и монтаж с гарантией.\n"
+    "• Преимущества: собственное производство, личное сопровождение, честный расчёт, "
+    "аккуратность и пунктуальность, гарантия качества.\n"
+    "• Контакты: телефон +7 (950) 846-53-97, Telegram t.me/fanny161, группа ВК "
+    "vk.com/mebel.ostrovsky (личные сообщения).\n\n"
 
-    "ПРАВИЛА:\n"
-    "• Про стоимость: на сайте цена не указана. Отвечай так: «Точную стоимость рассчитают "
-    "после замера и проекта — это бесплатно. Позвоните +7 (950) 846-53-97, чтобы записаться.»\n"
-    "• Про точные сроки/материалы: если на сайте этого нет — не выдумывай, предложи уточнить "
-    "у специалиста по телефону или в ВК.\n"
-    "• На вопросы по мебели отвечай подробно, дружелюбно и по делу, всегда на русском.\n"
-    "• Если вопрос не про мебель — вежливо вернись к теме и оставь контакты."
+    "ПРО ЦЕНУ:\n"
+    "• Если спросят стоимость — честно: цена зависит от размеров, материалов и проекта, "
+    "точную цифру рассчитают после бесплатного замера. Не выдумывай цен и «от N руб.» — "
+    "их на сайте нет.\n\n"
+
+    "ВАЖНО:\n"
+    "• Не выдумывай детали, которых нет в этой информации.\n"
+    "• Если вопрос вообще не про мебель — просто по-доброму ответь и мягко предложи "
+    "вернуться к теме, когда будет удобно."
 )
 
 # ------------------------------- HTTP-помощник -------------------------------
@@ -92,7 +95,8 @@ def ask_gigachat(messages):
     url = "https://gigachat.devices.sberbank.ru/api/v1/chat/completions"
     headers = {"Authorization": "Bearer " + token, "Content-Type": "application/json"}
     payload = {
-        "model": "GigaChat",
+        "model": "GigaChat-Pro",
+        "temperature": 0.8,
         "messages": [{"role": "system", "content": SYSTEM_PROMPT}] + messages,
     }
     resp = _post(url, headers, json.dumps(payload).encode("utf-8"))
@@ -111,7 +115,7 @@ def ask_yandex_gpt(messages):
         llm_messages.append({"role": role, "text": m["content"]})
     payload = {
         "modelUri": "gpt://{}/yandexgpt-lite".format(FOLDER_ID),
-        "completionOptions": {"stream": False, "temperature": 0.3, "maxTokens": 900},
+        "completionOptions": {"stream": False, "temperature": 0.8, "maxTokens": 900},
         "messages": llm_messages,
     }
     resp = _post(url, headers, json.dumps(payload).encode("utf-8"))
@@ -175,7 +179,7 @@ def ask_ai(message, history):
                 return reply
         except Exception as exc:
             print("YandexGPT error:", exc)
-    return "Извините, сейчас не удалось получить ответ. Позвоните нам: +7 (950) 846-53-97"
+    return "Извините, сейчас что-то с сетью. Попробуйте ещё раз или позвоните +7 (950) 846-53-97."
 
 # ------------------------------- HTML-страница ------------------------------
 PAGE = """<!DOCTYPE html>
@@ -418,14 +422,12 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
 .guar-grid .reveal:nth-child(2){transition-delay:.08s}.guar-grid .reveal:nth-child(3){transition-delay:.16s}.guar-grid .reveal:nth-child(4){transition-delay:.24s}
 .t-word{display:inline-block;opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease;word-break:break-word}
 .t-word.on{opacity:1;transform:none}
-
-/* ===== Кнопка ИИ (в стиле сайта, не выделяется) ===== */
+/* ===== Кнопка ИИ (в стиле сайта) ===== */
 .btn-ai{border:1px solid rgba(255,255,255,.35);color:#efe6d6;background:rgba(23,18,13,.55);backdrop-filter:blur(6px)}
 .btn-ai:hover{background:#fff;color:#17120d;transform:translateY(-3px)}
 .btn-ai .ai-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gold-soft);margin-right:9px;vertical-align:middle;animation:aiPulse 1.8s ease-in-out infinite}
 @keyframes aiPulse{0%,100%{box-shadow:0 0 0 0 rgba(212,176,106,.5)}50%{box-shadow:0 0 0 7px rgba(212,176,106,0)}}
-
-/* ===== Окно ИИ (плавно и красиво) ===== */
+/* ===== Окно ИИ (плавно) ===== */
 .ai-chat{position:fixed;right:22px;bottom:24px;z-index:170;width:min(370px,94vw);max-height:76vh;display:flex;flex-direction:column;background:#1c160e;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.65);opacity:0;transform:translateY(24px) scale(.96);pointer-events:none;transition:opacity .35s ease,transform .35s cubic-bezier(.22,.61,.36,1)}
 .ai-chat.open{opacity:1;transform:none;pointer-events:auto}
 .ai-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120d;font-weight:700;font-size:14px}
@@ -450,7 +452,6 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
 .ai-input-row button{width:44px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120d;font-size:18px;cursor:pointer;transition:transform .2s,filter .2s}
 .ai-input-row button:hover{transform:scale(1.08);filter:brightness(1.1)}
 @media(max-width:520px){.ai-chat{bottom:12px;right:12px;left:12px;width:auto}}
-
 @media(max-width:1024px){
   .stats{grid-template-columns:repeat(2,1fr);gap:40px}
   .svc-grid{grid-template-columns:repeat(2,1fr)}
@@ -825,10 +826,10 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
     <button id="aiClose" class="ai-close">×</button>
   </div>
   <div class="ai-body" id="aiBody">
-    <div class="ai-msg bot">Здравствуйте! Я ИИ-консультант мастерской «Кухни Островский». Знаю всё о наших кухнях и мебели в Ростове, Батайске и Азове. Что вас интересует?</div>
+    <div class="ai-msg bot">Привет! Я консультант мастерской «Кухни Островский» 🤝 Расскажу про кухни и мебель в Ростове, Батайске и Азове, помогу разобраться. Что вас интересует?</div>
   </div>
   <div class="ai-input-row">
-    <input id="aiInput" type="text" placeholder="Введите ваш вопрос..." autocomplete="off">
+    <input id="aiInput" type="text" placeholder="Ваш вопрос..." autocomplete="off">
     <button id="aiSend">➤</button>
   </div>
 </div>
