@@ -1,25 +1,26 @@
 # -*- coding: utf-8 -*-
 """
-mebel.py — сервер сайта «Кухни Островский» + серверный ИИ-чат.
+mebel.py — сервер сайта «Кухни Островский» + живой ИИ-чат с памятью.
 
 Как запустить (docker):
   1. Задайте секреты в переменных окружения контейнера (НЕ в коде!):
+       GIGACHAT_AUTH_KEY="..."   # основная
+       YANDEX_API_KEY="..."      # запасная
        FOLDER_ID="..."
-       YANDEX_API_KEY="..."          # запасная
-       GIGACHAT_AUTH_KEY="..."       # основная
   2. Соберите и запустите контейнер (порт 8080).
 
 Эндпоинты:
-  GET  /              — страница сайта
-  POST /api/chat      — {"message": "..."} -> {"reply": "..."}
+  GET  /                    — страница сайта
+  POST /api/chat            — {"message": "...", "session_id": "..."}
+                              -> {"reply": "...", "session_id": "..."}
 
-Логика ИИ: сначала GigaChat, при сбое — YandexGPT.
+Память: история диалогов хранится на сервере по session_id (до 30 сообщений),
+передаётся модели как контекст. База знаний мастерской зашита в SYSTEM_PROMPT.
 """
 import os
 import json
 import uuid
 import urllib.request
-import urllib.error
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 # ----------------------- Секреты читаются ТОЛЬКО из окружения ----------------
@@ -28,15 +29,40 @@ YANDEX_API_KEY     = os.environ.get("YANDEX_API_KEY", "")
 GIGACHAT_AUTH_KEY  = os.environ.get("GIGACHAT_AUTH_KEY", "")
 PORT               = int(os.environ.get("PORT", "8080"))
 
+# Максимум сообщений в «памяти» диалога (большой контекст)
+HISTORY_LIMIT = 30
+
+# ----------------------------- База знаний сайта -----------------------------
 SYSTEM_PROMPT = (
-    "Ты — вежливый консультант мебельной мастерской «Кухни Островский» в "
-    "Ростове-на-Дону, Батайске и Азове. Руководитель мастерской — Роман "
-    "Островский. Кухни и корпусная мебель на заказ: шкафы-купе, гардеробные, "
-    "прихожие, стенки. Работаешь по Ростову, Батайску и Азову. Цена кухни — "
-    "от 25 000 ₽ за погонный метр, замер и 3D-проект бесплатные, срок "
-    "изготовления 14–30 дней, монтаж под ключ, гарантия качества. Телефон "
-    "+7 (950) 846-53-97, Telegram t.me/fanny161, группа ВК vk.com/mebel.ostrovsky. "
-    "Отвечай кратко, по делу, на русском, дружелюбно."
+    "Ты — вежливый ИИ-консультант мебельной мастерской «Кухни Островский». "
+    "Руководитель мастерской — Роман Островский. "
+    "Ты знаешь ВСЁ о нашей мастерской и отвечаешь на любые вопросы про кухни и мебель. "
+    "Отвечай дружелюбно, кратко и по делу, всегда на русском.\n\n"
+
+    "БАЗА ЗНАНИЙ МАСТЕРСКОЙ:\n"
+    "1. ЧТО МЫ ДЕЛАЕМ: кухни на заказ, шкафы-купе, гардеробные, прихожие, стенки, "
+    "гарнитуры под ТВ, тумбы, комоды, корпусную мебель по индивидуальным проектам.\n"
+    "2. ЦЕНЫ: базовая кухня — от 25 000 ₽ за погонный метр. Точная смета после замера "
+    "(обычно за 1–2 дня). Честный расчёт, без скрытых доплат.\n"
+    "3. ЗАМЕР И ПРОЕКТ: выезд на замер по Ростову, Батайску и Азову — БЕСПЛАТНО. "
+    "Делаем планировку и 3D-проект бесплатно.\n"
+    "4. СРОКИ: изготовление кухни от 14 до 30 дней, зависит от фасадов и загрузки. "
+    "Монтаж и установка — своими силами, под ключ.\n"
+    "5. МАТЕРИАЛЫ: фасады из МДФ, ДСП, эмали, акрила и плёнки. Большой выбор цветов и "
+    "текстур. Подбираем под бюджет и стиль.\n"
+    "6. ГАРАНТИЯ: гарантия качества на все изделия, фурнитура с доводчиками, "
+    "пуш-механизмы. Сопровождение после установки.\n"
+    "7. ГОРОДА: работаем в Ростове-на-Дону, Батайске и Азове, возможен выезд в область.\n"
+    "8. ПРЕИМУЩЕСТВА: собственное производство без посредников, личное сопровождение "
+    "от замера до монтажа, аккуратность и пунктуальность.\n"
+    "9. ЭТАПЫ РАБОТЫ: заявка → замер (бесплатно) → 3D-проект → договор → производство → "
+    "доставка и монтаж с гарантией.\n"
+    "10. КОНТАКТЫ: телефон +7 (950) 846-53-97, Telegram t.me/fanny161, "
+    "группа ВК vk.com/mebel.ostrovsky, сообщения сообщества ВКонтакте.\n"
+    "11. УСЛОВИЯ ОПЛАТЫ: условия оплаты и акции уточняйте по телефону.\n\n"
+
+    "Отвечай так, будто лично консультируешь клиента мастерской. Если вопрос не по теме "
+    "мебели — вежливо предложи вернуться к теме и оставь контакты."
 )
 
 # ------------------------------- HTTP-помощник -------------------------------
@@ -49,7 +75,6 @@ def _post(url, headers, data):
 def gigachat_token():
     url = "https://ngw.devices.sberbank.ru:9443/api/v2/oauth"
     headers = {
-        # GIGACHAT_AUTH_KEY обычно уже закодирован в base64 client_id:client_secret
         "Authorization": "Basic " + GIGACHAT_AUTH_KEY,
         "RqUID": str(uuid.uuid4()),
         "Content-Type": "application/x-www-form-urlencoded",
@@ -57,16 +82,13 @@ def gigachat_token():
     resp = _post(url, headers, b"scope=GIGACHAT_API_PERS")
     return resp.get("access_token", "")
 
-def ask_gigachat(message):
+def ask_gigachat(messages):
     token = gigachat_token()
     url = "https://gigachat.devices.sberbank.ru/api/v1/chat/completions"
     headers = {"Authorization": "Bearer " + token, "Content-Type": "application/json"}
     payload = {
         "model": "GigaChat",
-        "messages": [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": message},
-        ],
+        "messages": [{"role": "system", "content": SYSTEM_PROMPT}] + messages,
     }
     resp = _post(url, headers, json.dumps(payload).encode("utf-8"))
     choices = resp.get("choices", [])
@@ -75,19 +97,17 @@ def ask_gigachat(message):
     return ""
 
 # -------------------------- YandexGPT (запасная) -----------------------------
-def ask_yandex_gpt(message):
+def ask_yandex_gpt(messages):
     url = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion"
-    headers = {
-        "Authorization": "Api-Key " + YANDEX_API_KEY,
-        "Content-Type": "application/json",
-    }
+    headers = {"Authorization": "Api-Key " + YANDEX_API_KEY, "Content-Type": "application/json"}
+    llm_messages = [{"role": "system", "text": SYSTEM_PROMPT}]
+    for m in messages:
+        role = "assistant" if m["role"] == "assistant" else "user"
+        llm_messages.append({"role": role, "text": m["content"]})
     payload = {
         "modelUri": "gpt://{}/yandexgpt-lite".format(FOLDER_ID),
-        "completionOptions": {"stream": False, "temperature": 0.5, "maxTokens": 800},
-        "messages": [
-            {"role": "system", "text": SYSTEM_PROMPT},
-            {"role": "user", "text": message},
-        ],
+        "completionOptions": {"stream": False, "temperature": 0.5, "maxTokens": 900},
+        "messages": llm_messages,
     }
     resp = _post(url, headers, json.dumps(payload).encode("utf-8"))
     alts = resp.get("result", {}).get("alternatives", [])
@@ -95,12 +115,27 @@ def ask_yandex_gpt(message):
         return alts[0].get("message", {}).get("text", "").strip()
     return ""
 
-# --------------------------------- Выбор ИИ ---------------------------------
-def ask_ai(message):
-    # Основная модель — GigaChat
+# ---------------------------- Память (истории) -------------------------------
+SESSIONS = {}
+
+def get_history(session_id):
+    if session_id not in SESSIONS:
+        SESSIONS[session_id] = []
+    return SESSIONS[session_id]
+
+def remember(session_id, role, content):
+    h = get_history(session_id)
+    h.append({"role": role, "content": content})
+    # держим память большой, но обрезаем слишком длинные диалоги
+    if len(h) > HISTORY_LIMIT:
+        del h[: len(h) - HISTORY_LIMIT]
+
+def ask_ai(message, history):
+    convo = history[-HISTORY_LIMIT:]
+    # Основная — GigaChat
     if GIGACHAT_AUTH_KEY:
         try:
-            reply = ask_gigachat(message)
+            reply = ask_gigachat(convo)
             if reply:
                 return reply
         except Exception as exc:
@@ -108,7 +143,7 @@ def ask_ai(message):
     # Запасная — YandexGPT
     if YANDEX_API_KEY and FOLDER_ID:
         try:
-            reply = ask_yandex_gpt(message)
+            reply = ask_yandex_gpt(convo)
             if reply:
                 return reply
         except Exception as exc:
@@ -172,7 +207,8 @@ ul{list-style:none}
 header{position:fixed;top:0;left:0;right:0;z-index:120;background:rgba(16,12,8,.9);backdrop-filter:blur(14px);transition:background .4s,box-shadow .4s}
 header.solid{background:rgba(23,18,13,.98);box-shadow:0 6px 26px rgba(0,0,0,.5)}
 .nav{display:flex;align-items:center;justify-content:space-between;height:76px;gap:12px}
-.logo{display:flex;align-items:center;gap:12px;min-width:0;max-width:100%;cursor:pointer}
+.logo{display:flex;align-items:center;gap:12px;min-width:0;max-width:100%;cursor:pointer;transition:opacity .3s}
+.logo:hover{opacity:.85}
 .logo .brand-ava{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 16px rgba(179,135,63,.55);flex-shrink:0}
 .logo .brand-txt{display:flex;flex-direction:column;min-width:0;line-height:1.15}
 .logo .brand-txt .name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;color:#fff;line-height:1.05;text-shadow:0 2px 10px rgba(0,0,0,.6)}
@@ -218,9 +254,10 @@ h1 em{font-style:italic}
 @keyframes shimmerMove{0%{background-position:0% center}100%{background-position:-220% center}}
 h1 em.shimmer{-webkit-text-fill-color:transparent}
 .cta h2.shimmer{-webkit-text-fill-color:transparent}
-.scroll-cue{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:5;color:rgba(255,255,255,.8);font-size:11px;letter-spacing:3px;text-transform:uppercase;text-align:center}
+.scroll-cue{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:5;color:rgba(255,255,255,.8);font-size:11px;letter-spacing:3px;text-transform:uppercase;text-align:center;animation:fadeInUp 1s ease .8s both}
 .scroll-cue .line{width:1px;height:44px;background:rgba(255,255,255,.55);margin:10px auto 0;animation:drip 2s infinite}
 @keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+@keyframes fadeInUp{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
 .sec-head{max-width:680px;margin:0 auto 50px;text-align:center}
 .sec-head .kicker{color:var(--gold-soft);letter-spacing:4px;text-transform:uppercase;font-size:12px;font-weight:600}
 .sec-head h2{font-size:clamp(32px,5vw,48px);font-weight:600;margin:16px 0 14px;line-height:1.15;color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.45)}
@@ -251,17 +288,19 @@ h2.k{font-size:clamp(32px,5vw,46px);color:#fff;font-weight:600;margin:16px 0 14p
 .car-track{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding:8px 6px 20px;scrollbar-width:none}
 .car-track::-webkit-scrollbar{display:none}
 .car-nav{position:absolute;top:38%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;background:rgba(23,18,13,.75);backdrop-filter:blur(8px);border:1px solid var(--gold);color:var(--gold-soft);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.3s;z-index:5}
-.car-nav:hover{background:var(--gold);color:#17120d}
+.car-nav:hover{background:var(--gold);color:#17120d;transform:translateY(-50%) scale(1.1)}
 .car-prev{left:-14px}
 .car-next{right:-14px}
 .car-dots{display:flex;justify-content:center;gap:8px;margin-top:10px;flex-wrap:wrap}
 .car-dot{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:.3s;border:none}
 .car-dot.active{background:var(--gold-soft);transform:scale(1.3)}
-.car-slide{flex:0 0 auto;width:min(78vw,440px);scroll-snap-align:center;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:rgba(23,18,13,.7);cursor:zoom-in}
+.car-slide{flex:0 0 auto;width:min(78vw,440px);scroll-snap-align:center;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:rgba(23,18,13,.7);cursor:zoom-in;transition:transform .4s}
+.car-slide:hover{transform:translateY(-4px)}
 .car-slide img{width:100%;height:300px;object-fit:cover;display:block;transition:transform .5s ease;loading:lazy;decoding:async}
 .car-slide:hover img{transform:scale(1.06)}
 .rev-track{align-items:flex-start}
-.rev-card{scroll-snap-align:center;background:linear-gradient(160deg,rgba(23,18,13,.92),rgba(23,18,13,.8));backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:18px;padding:22px 24px;width:min(82vw,520px);flex:0 0 auto;display:flex;flex-direction:column;box-shadow:0 14px 40px rgba(0,0,0,.45);position:relative;overflow:hidden}
+.rev-card{scroll-snap-align:center;background:linear-gradient(160deg,rgba(23,18,13,.92),rgba(23,18,13,.8));backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:18px;padding:22px 24px;width:min(82vw,520px);flex:0 0 auto;display:flex;flex-direction:column;box-shadow:0 14px 40px rgba(0,0,0,.45);position:relative;overflow:hidden;transition:transform .4s}
+.rev-card:hover{transform:translateY(-4px)}
 .rev-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold-soft),transparent);opacity:.7}
 .rev-head{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
 .rev-ava{width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 12px rgba(179,135,63,.4);flex-shrink:0;loading:lazy;decoding:async}
@@ -276,13 +315,15 @@ h2.k{font-size:clamp(32px,5vw,46px);color:#fff;font-weight:600;margin:16px 0 14p
 .svc::before{content:"";position:absolute;inset:0;border-radius:14px;padding:1px;background:linear-gradient(135deg,var(--gold-soft),transparent 40%,transparent 60%,var(--gold-soft));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:.4s;pointer-events:none}
 .svc:hover{transform:translateY(-6px);background:rgba(23,18,13,.88)}
 .svc:hover::before{opacity:1}
-.svc svg{width:34px;height:34px;stroke:var(--gold-soft);fill:none;stroke-width:1.4;margin-bottom:20px}
+.svc svg{width:34px;height:34px;stroke:var(--gold-soft);fill:none;stroke-width:1.4;margin-bottom:20px;transition:transform .4s}
+.svc:hover svg{transform:scale(1.1) rotate(-3deg)}
 .svc h3{font-size:23px;color:#fff;margin-bottom:10px}
 .svc p{color:var(--muted);font-size:14.5px}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
 .step{position:relative;padding:30px 24px;background:rgba(23,18,13,.65);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:14px;transition:.3s;overflow-wrap:break-word}
 .step:hover{transform:translateY(-4px);border-color:var(--gold)}
-.step .n{font-family:'Cormorant Garamond',serif;font-size:56px;color:var(--gold-soft);line-height:1}
+.step .n{font-family:'Cormorant Garamond',serif;font-size:56px;color:var(--gold-soft);line-height:1;transition:.3s}
+.step:hover .n{transform:scale(1.15)}
 .step h3{font-size:22px;color:#fff;margin:14px 0 8px}
 .step p{color:var(--muted);font-size:14.5px}
 .guar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
@@ -290,7 +331,8 @@ h2.k{font-size:clamp(32px,5vw,46px);color:#fff;font-weight:600;margin:16px 0 14p
 .guar::before{content:"";position:absolute;inset:0;border-radius:14px;padding:1px;background:linear-gradient(135deg,var(--gold-soft),transparent 40%,transparent 60%,var(--gold-soft));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:.4s}
 .guar:hover{transform:translateY(-5px);background:rgba(23,18,13,.85)}
 .guar:hover::before{opacity:1}
-.guar .ico{width:52px;height:52px;margin:0 auto 18px;border:1px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold-soft)}
+.guar .ico{width:52px;height:52px;margin:0 auto 18px;border:1px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold-soft);transition:transform .3s}
+.guar:hover .ico{transform:scale(1.12)}
 .guar .ico svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.5}
 .guar h3{font-size:19px;color:#fff;margin-bottom:8px}
 .guar p{color:var(--muted);font-size:13.5px}
@@ -298,15 +340,17 @@ h2.k{font-size:clamp(32px,5vw,46px);color:#fff;font-weight:600;margin:16px 0 14p
 .contact-info h2{font-size:clamp(30px,4.5vw,46px);color:#fff;margin:16px 0 14px;line-height:1.1;text-shadow:0 2px 18px rgba(0,0,0,.45)}
 .contact-info .kicker{color:var(--gold-soft);letter-spacing:4px;text-transform:uppercase;font-size:12px;font-weight:600}
 .contact-info>p{color:var(--muted);font-size:16px;margin-bottom:32px}
-.c-line{display:flex;align-items:flex-start;gap:20px;margin-bottom:26px}
-.c-ico{width:44px;height:44px;border:1px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold-soft);flex-shrink:0}
+.c-line{display:flex;align-items:flex-start;gap:20px;margin-bottom:26px;transition:transform .3s}
+.c-line:hover{transform:translateX(4px)}
+.c-ico{width:44px;height:44px;border:1px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold-soft);flex-shrink:0;transition:transform .3s}
+.c-line:hover .c-ico{transform:scale(1.1)}
 .c-ico svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5}
 .c-line .lab{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
 .c-line .val{font-size:19px;font-weight:600;color:#efe6d6;overflow-wrap:break-word;word-break:break-word}
 .c-line a.val:hover{color:var(--gold-soft)}
 .call-block{background:rgba(23,18,13,.78);backdrop-filter:blur(12px);border:1px solid var(--line);padding:44px 34px;text-align:center;border-radius:16px}
 .call-block .cb-lab{font-size:14px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-soft)}
-.call-block .cb-num{display:block;font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(28px,4vw,44px);color:#fff;margin:14px 0 20px;white-space:nowrap}
+.call-block .cb-num{display:block;font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(28px,4vw,44px);color:#fff;margin:14px 0 20px;white-space:nowrap;transition:color .3s}
 .call-block .cb-num:hover{color:var(--gold-soft)}
 .call-block .cb-hint{color:var(--muted);font-size:14.5px;line-height:1.8;overflow-wrap:break-word}
 .contact-actions{display:flex;flex-direction:column;gap:12px;margin-top:24px}
@@ -329,9 +373,12 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
 .cookie-bar p{color:var(--muted);font-size:13px;max-width:720px;line-height:1.5}
 .cookie-bar .btn{flex-shrink:0;padding:12px 24px}
 .lightbox{position:fixed;inset:0;z-index:3000;background:rgba(10,7,4,.94);display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px}
-.lightbox.open{display:flex}
-.lightbox img{max-width:92vw;max-height:84vh;border-radius:12px;border:1px solid var(--gold);box-shadow:0 20px 70px rgba(0,0,0,.7)}
-.lb-close{position:absolute;top:18px;right:24px;background:none;border:none;color:#fff;font-size:44px;cursor:pointer;z-index:5;line-height:1}
+.lightbox.open{display:flex;animation:lbFade .3s ease}
+@keyframes lbFade{from{opacity:0}to{opacity:1}}
+.lightbox img{max-width:92vw;max-height:84vh;border-radius:12px;border:1px solid var(--gold);box-shadow:0 20px 70px rgba(0,0,0,.7);animation:lbZoom .3s ease}
+@keyframes lbZoom{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
+.lb-close{position:absolute;top:18px;right:24px;background:none;border:none;color:#fff;font-size:44px;cursor:pointer;z-index:5;line-height:1;transition:transform .3s}
+.lb-close:hover{transform:rotate(90deg)}
 .lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:52px;height:52px;border-radius:50%;background:rgba(212,176,106,.15);border:1px solid var(--gold);color:var(--gold-soft);font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.3s}
 .lb-nav:hover{background:var(--gold);color:#17120d}
 .lb-prev{left:18px}.lb-next{right:18px}
@@ -345,23 +392,39 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
 .t-word{display:inline-block;opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease;word-break:break-word}
 .t-word.on{opacity:1;transform:none}
 
-/* ===== ИИ-чат ===== */
-.ai-fab{position:fixed;right:22px;bottom:22px;z-index:160;display:flex;align-items:center;gap:10px;padding:14px 20px;border:none;border-radius:50px;background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120d;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 12px 34px rgba(179,135,63,.55);transition:.3s}
-.ai-fab:hover{transform:translateY(-3px);filter:brightness(1.08)}
-.ai-fab-icon{font-size:20px}
+/* ===== Кнопка и окно ИИ (плавно и красиво) ===== */
+.btn-ai{background:linear-gradient(135deg,#8b5cf6,#6d28d9);border:1px solid rgba(139,92,246,.5);color:#fff;box-shadow:0 10px 30px rgba(109,40,217,.4)}
+.btn-ai:hover{filter:brightness(1.15);transform:translateY(-3px)}
+.btn-ai .ai-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#fff;margin-right:9px;vertical-align:middle;animation:aiPulse 1.6s ease-in-out infinite}
+@keyframes aiPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.6)}50%{box-shadow:0 0 0 7px rgba(255,255,255,0)}}
+.ai-fab{position:fixed;right:22px;bottom:22px;z-index:160;display:flex;align-items:center;gap:10px;padding:14px 20px;border:none;border-radius:50px;background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 12px 34px rgba(109,40,217,.55);transition:transform .3s,filter .3s}
+.ai-fab:hover{transform:translateY(-3px);filter:brightness(1.1)}
+.ai-fab-icon{font-size:20px;animation:aiBob 2.4s ease-in-out infinite}
+@keyframes aiBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @media(max-width:520px){.ai-fab{width:58px;height:58px;padding:0;justify-content:center;border-radius:50%}.ai-fab-label{display:none}}
-.ai-chat{position:fixed;right:22px;bottom:96px;z-index:170;width:min(360px,92vw);max-height:70vh;display:none;flex-direction:column;background:#1c160e;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.6)}
-.ai-chat.open{display:flex}
-.ai-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120d;font-weight:700;font-size:14px}
-.ai-close{background:none;border:none;color:#17120d;font-size:24px;line-height:1;cursor:pointer}
-.ai-body{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:180px;max-height:44vh}
-.ai-msg{max-width:85%;padding:10px 13px;border-radius:14px;font-size:14px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
-.ai-msg.bot{background:rgba(212,176,106,.12);border:1px solid var(--line);color:#efe6d6;align-self:flex-start;border-bottom-left-radius:4px}
+.ai-chat{position:fixed;right:22px;bottom:96px;z-index:170;width:min(370px,94vw);max-height:74vh;display:flex;flex-direction:column;background:#1c160e;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.6);opacity:0;transform:translateY(24px) scale(.96);pointer-events:none;transition:opacity .35s ease,transform .35s cubic-bezier(.22,.61,.36,1)}
+.ai-chat.open{opacity:1;transform:none;pointer-events:auto}
+.ai-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;font-weight:700;font-size:14px}
+.ai-head .ai-title{display:flex;align-items:center;gap:8px}
+.ai-head .ai-status{width:8px;height:8px;border-radius:50%;background:#4ade80;box-shadow:0 0 8px #4ade80;animation:aiPulse 1.8s ease-in-out infinite}
+.ai-close{background:none;border:none;color:#fff;font-size:24px;line-height:1;cursor:pointer;transition:transform .3s}
+.ai-close:hover{transform:rotate(90deg)}
+.ai-body{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:200px;max-height:46vh}
+.ai-msg{max-width:85%;padding:10px 13px;border-radius:14px;font-size:14px;line-height:1.5;white-space:pre-wrap;word-break:break-word;animation:msgIn .35s ease both}
+@keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.ai-msg.bot{background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.3);color:#efe6d6;align-self:flex-start;border-bottom-left-radius:4px}
 .ai-msg.user{background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120d;align-self:flex-end;border-bottom-right-radius:4px}
+.ai-msg.typing{display:flex;align-items:center;gap:4px;padding:14px}
+.ai-msg.typing span{width:7px;height:7px;border-radius:50%;background:var(--gold-soft);animation:dotTyping 1.2s infinite ease-in-out}
+.ai-msg.typing span:nth-child(2){animation-delay:.15s}
+.ai-msg.typing span:nth-child(3){animation-delay:.3s}
+@keyframes dotTyping{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-5px);opacity:1}}
 .ai-input-row{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line)}
-.ai-input-row input{flex:1;padding:11px 13px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:#fff;font-size:14px;outline:none}
+.ai-input-row input{flex:1;padding:11px 13px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:#fff;font-size:14px;outline:none;transition:border-color .3s}
+.ai-input-row input:focus{border-color:var(--gold-soft)}
 .ai-input-row input::placeholder{color:var(--muted)}
-.ai-input-row button{width:44px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120d;font-size:18px;cursor:pointer}
+.ai-input-row button{width:44px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120d;font-size:18px;cursor:pointer;transition:transform .2s,filter .2s}
+.ai-input-row button:hover{transform:scale(1.08);filter:brightness(1.1)}
 @media(max-width:520px){.ai-chat{bottom:88px;right:12px;left:12px;width:auto}}
 
 @media(max-width:1024px){
@@ -457,6 +520,7 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
     <div class="btn-row">
       <a href="#consult" class="btn btn-solid">Получить консультацию</a>
       <a href="#works" class="btn btn-line">Смотреть работы</a>
+      <button id="aiHeroBtn" class="btn btn-ai"><span class="ai-dot"></span>Посоветоваться с ИИ</button>
     </div>
   </div></div>
   <div class="scroll-cue">Листайте<div class="line"></div></div>
@@ -730,19 +794,19 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
   <button class="btn btn-solid" id="cookieOk">Принять</button>
 </div>
 
-<!-- Кнопка и панель ИИ-чата -->
-<button id="aiBtn" class="ai-fab" aria-label="Посоветоваться с ИИ">
+<!-- Кнопка и окно ИИ -->
+<button id="aiFab" class="ai-fab" aria-label="Посоветоваться с ИИ">
   <span class="ai-fab-icon">🤖</span>
   <span class="ai-fab-label">Посоветоваться с ИИ</span>
 </button>
 
 <div class="ai-chat" id="aiChat">
   <div class="ai-head">
-    <span>🤖 Консультант Кухни Островский</span>
+    <span class="ai-title"><span class="ai-status"></span>🤖 Консультант Кухни Островский</span>
     <button id="aiClose" class="ai-close">×</button>
   </div>
   <div class="ai-body" id="aiBody">
-    <div class="ai-msg bot">Здравствуйте! Я ИИ-консультант мастерской «Кухни Островский». Расскажу про кухни и мебель в Ростове, Батайске и Азове, цены, сроки и условия. Что вас интересует?</div>
+    <div class="ai-msg bot">Здравствуйте! Я ИИ-консультант мастерской «Кухни Островский». Знаю всё о наших кухнях и мебели в Ростове, Батайске и Азове. Что вас интересует?</div>
   </div>
   <div class="ai-input-row">
     <input id="aiInput" type="text" placeholder="Введите ваш вопрос..." autocomplete="off">
@@ -840,23 +904,31 @@ const cookieBar=document.getElementById('cookieBar'),cookieOk=document.getElemen
 if(!localStorage.getItem('cookiesAccepted')){setTimeout(()=>cookieBar.classList.add('show'),900);}
 cookieOk.addEventListener('click',()=>{localStorage.setItem('cookiesAccepted','1');cookieBar.classList.remove('show');});
 
-// ИИ-чат
-const aiBtn=document.getElementById('aiBtn'),aiChat=document.getElementById('aiChat'),
-      aiClose=document.getElementById('aiClose'),aiBody=document.getElementById('aiBody'),
-      aiInput=document.getElementById('aiInput'),aiSend=document.getElementById('aiSend');
+// ===== ИИ-чат с памятью =====
+const aiFab=document.getElementById('aiFab'),aiHeroBtn=document.getElementById('aiHeroBtn'),
+      aiChat=document.getElementById('aiChat'),aiClose=document.getElementById('aiClose'),
+      aiBody=document.getElementById('aiBody'),aiInput=document.getElementById('aiInput'),
+      aiSend=document.getElementById('aiSend');
+// уникальный id сессии для «памяти» на сервере
+let sessionId=localStorage.getItem('aiSessionId');
+if(!sessionId){sessionId='s'+Date.now()+Math.random().toString(36).slice(2,10);localStorage.setItem('aiSessionId',sessionId);}
+function openAi(){aiChat.classList.add('open');setTimeout(()=>aiInput.focus(),350);}
+function closeAi(){aiChat.classList.remove('open');}
+aiFab.addEventListener('click',openAi);
+if(aiHeroBtn)aiHeroBtn.addEventListener('click',openAi);
+aiClose.addEventListener('click',closeAi);
 function aiAdd(text,who){const m=document.createElement('div');m.className='ai-msg '+who;m.textContent=text;aiBody.appendChild(m);aiBody.scrollTop=aiBody.scrollHeight;}
-aiBtn.addEventListener('click',()=>{aiChat.classList.add('open');aiInput.focus();});
-aiClose.addEventListener('click',()=>aiChat.classList.remove('open'));
+function aiTyping(on){const t=aiBody.querySelector('.typing');if(on&&!t){const m=document.createElement('div');m.className='ai-msg bot typing';m.innerHTML='<span></span><span></span><span></span>';aiBody.appendChild(m);aiBody.scrollTop=aiBody.scrollHeight;}else if(!on&&t){t.remove();}}
 async function aiAsk(){
   const q=aiInput.value.trim();if(!q)return;
-  aiAdd(q,'user');aiInput.value='';aiAdd('Печатает...','bot typing');
+  aiAdd(q,'user');aiInput.value='';aiTyping(true);
   try{
-    const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:q})});
+    const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:q,session_id:sessionId})});
     const data=await res.json();
-    const t=aiBody.querySelector('.typing');if(t)t.remove();
+    aiTyping(false);
     aiAdd(data.reply||'Не удалось получить ответ. Попробуйте позже.','bot');
   }catch(e){
-    const t=aiBody.querySelector('.typing');if(t)t.remove();
+    aiTyping(false);
     aiAdd('Ошибка соединения с ИИ. Позвоните нам: +7 (950) 846-53-97','bot');
   }
 }
@@ -897,8 +969,12 @@ class Handler(BaseHTTPRequestHandler):
             if not question:
                 self._send(400, json.dumps({"error": "empty message"}, ensure_ascii=False), "application/json")
                 return
-            reply = ask_ai(question) or "Извините, не удалось получить ответ. Попробуйте позже."
-            self._send(200, json.dumps({"reply": reply}, ensure_ascii=False), "application/json")
+            sid = data.get("session_id") or "default"
+            history = get_history(sid)
+            remember(sid, "user", question)
+            reply = ask_ai(question, history) or "Извините, не удалось получить ответ. Попробуйте позже."
+            remember(sid, "assistant", reply)
+            self._send(200, json.dumps({"reply": reply, "session_id": sid}, ensure_ascii=False), "application/json")
         except Exception as exc:  # noqa: BLE001
             self._send(500, json.dumps({"error": str(exc)}, ensure_ascii=False), "application/json")
 
@@ -906,5 +982,5 @@ class Handler(BaseHTTPRequestHandler):
         pass
 
 if __name__ == "__main__":
-    print("Кухни Островский сервер запущен на http://127.0.0.1:{}".format(PORT))
+    print("Кухни Островский сервер запущен на http://0.0.0.0:{}".format(PORT))
     ThreadingHTTPServer(("0.0.0.0", PORT), Handler).serve_forever()
