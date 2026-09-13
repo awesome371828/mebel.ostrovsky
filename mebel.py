@@ -2,26 +2,22 @@
 """
 mebel.py — сервер сайта «Кухни Островский» + серверный ИИ-чат.
 
-Как запустить:
-  1. Задайте секреты в переменных окружения сервера (НЕ в коде!):
-       export FOLDER_ID="..."
-       export YANDEX_API_KEY="..."
-       # и/или для GigaChat:
-       export GIGACHAT_AUTH_KEY="..."
-  2. python3 mebel.py
-  3. Откройте http://127.0.0.1:8080/
+Как запустить (docker):
+  1. Задайте секреты в переменных окружения контейнера (НЕ в коде!):
+       FOLDER_ID="..."
+       YANDEX_API_KEY="..."          # запасная
+       GIGACHAT_AUTH_KEY="..."       # основная
+  2. Соберите и запустите контейнер (порт 8080).
 
 Эндпоинты:
-  GET  /               — страница сайта
-  POST /api/chat       — принять {"message": "..."} и вернуть {"reply": "..."}
+  GET  /              — страница сайта
+  POST /api/chat      — {"message": "..."} -> {"reply": "..."}
 
-Сначала пробует YandexGPT (если есть YANDEX_API_KEY + FOLDER_ID),
-иначе GigaChat (если есть GIGACHAT_AUTH_KEY).
+Логика ИИ: сначала GigaChat, при сбое — YandexGPT.
 """
 import os
 import json
 import uuid
-import base64
 import urllib.request
 import urllib.error
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -49,28 +45,7 @@ def _post(url, headers, data):
     with urllib.request.urlopen(req, timeout=60) as resp:
         return json.loads(resp.read().decode("utf-8"))
 
-# --------------------------- YandexGPT (foundation) --------------------------
-def ask_yandex_gpt(message):
-    url = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion"
-    headers = {
-        "Authorization": "Api-Key " + YANDEX_API_KEY,
-        "Content-Type": "application/json",
-    }
-    payload = {
-        "modelUri": "gpt://{}/yandexgpt-lite".format(FOLDER_ID),
-        "completionOptions": {"stream": False, "temperature": 0.5, "maxTokens": 800},
-        "messages": [
-            {"role": "system", "text": SYSTEM_PROMPT},
-            {"role": "user", "text": message},
-        ],
-    }
-    resp = _post(url, headers, json.dumps(payload).encode("utf-8"))
-    alts = resp.get("result", {}).get("alternatives", [])
-    if alts:
-        return alts[0].get("message", {}).get("text", "").strip()
-    return ""
-
-# -------------------------------- GigaChat ----------------------------------
+# ------------------------------ GigaChat (основная) --------------------------
 def gigachat_token():
     url = "https://ngw.devices.sberbank.ru:9443/api/v2/oauth"
     headers = {
@@ -99,13 +74,46 @@ def ask_gigachat(message):
         return choices[0].get("message", {}).get("content", "").strip()
     return ""
 
+# -------------------------- YandexGPT (запасная) -----------------------------
+def ask_yandex_gpt(message):
+    url = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion"
+    headers = {
+        "Authorization": "Api-Key " + YANDEX_API_KEY,
+        "Content-Type": "application/json",
+    }
+    payload = {
+        "modelUri": "gpt://{}/yandexgpt-lite".format(FOLDER_ID),
+        "completionOptions": {"stream": False, "temperature": 0.5, "maxTokens": 800},
+        "messages": [
+            {"role": "system", "text": SYSTEM_PROMPT},
+            {"role": "user", "text": message},
+        ],
+    }
+    resp = _post(url, headers, json.dumps(payload).encode("utf-8"))
+    alts = resp.get("result", {}).get("alternatives", [])
+    if alts:
+        return alts[0].get("message", {}).get("text", "").strip()
+    return ""
+
+# --------------------------------- Выбор ИИ ---------------------------------
 def ask_ai(message):
-    if YANDEX_API_KEY and FOLDER_ID:
-        return ask_yandex_gpt(message)
+    # Основная модель — GigaChat
     if GIGACHAT_AUTH_KEY:
-        return ask_gigachat(message)
-    return ("ИИ-ключи не настроены. Добавьте YANDEX_API_KEY (и FOLDER_ID) "
-            "или GIGACHAT_AUTH_KEY в переменные окружения сервера.")
+        try:
+            reply = ask_gigachat(message)
+            if reply:
+                return reply
+        except Exception as exc:
+            print("GigaChat error:", exc)
+    # Запасная — YandexGPT
+    if YANDEX_API_KEY and FOLDER_ID:
+        try:
+            reply = ask_yandex_gpt(message)
+            if reply:
+                return reply
+        except Exception as exc:
+            print("YandexGPT error:", exc)
+    return "Извините, сейчас не удалось получить ответ от нейросети. Позвоните нам: +7 (950) 846-53-97"
 
 # ------------------------------- HTML-страница ------------------------------
 PAGE = """<!DOCTYPE html>
@@ -161,14 +169,11 @@ a{text-decoration:none;color:inherit}
 ul{list-style:none}
 .wrap{width:100%;max-width:1180px;margin:0 auto;padding:0 20px}
 .progress{position:fixed;top:0;left:0;height:3px;z-index:200;background:linear-gradient(90deg,var(--gold),var(--gold-soft));width:0%}
-.cursor{position:fixed;top:0;left:0;width:34px;height:34px;border:1.5px solid var(--gold-soft);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .12s ease,width .25s,height .25s,border-color .25s;mix-blend-mode:difference}
-.cursor.dot{width:6px;height:6px;background:var(--gold-soft);border:none;transition:.1s}
-@media(hover:none){.cursor{display:none}}
 header{position:fixed;top:0;left:0;right:0;z-index:120;background:rgba(16,12,8,.9);backdrop-filter:blur(14px);transition:background .4s,box-shadow .4s}
 header.solid{background:rgba(23,18,13,.98);box-shadow:0 6px 26px rgba(0,0,0,.5)}
 .nav{display:flex;align-items:center;justify-content:space-between;height:76px;gap:12px}
 .logo{display:flex;align-items:center;gap:12px;min-width:0;max-width:100%;cursor:pointer}
-.logo .brand-ava{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 16px rgba(179,135,63,.55);flex-shrink:0;loading:eager;fetchpriority:high}
+.logo .brand-ava{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 16px rgba(179,135,63,.55);flex-shrink:0}
 .logo .brand-txt{display:flex;flex-direction:column;min-width:0;line-height:1.15}
 .logo .brand-txt .name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;color:#fff;line-height:1.05;text-shadow:0 2px 10px rgba(0,0,0,.6)}
 .logo .brand-txt .sub{color:var(--gold-soft);font-family:'Manrope',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:62vw;margin-top:2px}
@@ -339,6 +344,26 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
 .guar-grid .reveal:nth-child(2){transition-delay:.08s}.guar-grid .reveal:nth-child(3){transition-delay:.16s}.guar-grid .reveal:nth-child(4){transition-delay:.24s}
 .t-word{display:inline-block;opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease;word-break:break-word}
 .t-word.on{opacity:1;transform:none}
+
+/* ===== ИИ-чат ===== */
+.ai-fab{position:fixed;right:22px;bottom:22px;z-index:160;display:flex;align-items:center;gap:10px;padding:14px 20px;border:none;border-radius:50px;background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120d;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 12px 34px rgba(179,135,63,.55);transition:.3s}
+.ai-fab:hover{transform:translateY(-3px);filter:brightness(1.08)}
+.ai-fab-icon{font-size:20px}
+@media(max-width:520px){.ai-fab{width:58px;height:58px;padding:0;justify-content:center;border-radius:50%}.ai-fab-label{display:none}}
+.ai-chat{position:fixed;right:22px;bottom:96px;z-index:170;width:min(360px,92vw);max-height:70vh;display:none;flex-direction:column;background:#1c160e;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.6)}
+.ai-chat.open{display:flex}
+.ai-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120d;font-weight:700;font-size:14px}
+.ai-close{background:none;border:none;color:#17120d;font-size:24px;line-height:1;cursor:pointer}
+.ai-body{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:180px;max-height:44vh}
+.ai-msg{max-width:85%;padding:10px 13px;border-radius:14px;font-size:14px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+.ai-msg.bot{background:rgba(212,176,106,.12);border:1px solid var(--line);color:#efe6d6;align-self:flex-start;border-bottom-left-radius:4px}
+.ai-msg.user{background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120d;align-self:flex-end;border-bottom-right-radius:4px}
+.ai-input-row{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line)}
+.ai-input-row input{flex:1;padding:11px 13px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:#fff;font-size:14px;outline:none}
+.ai-input-row input::placeholder{color:var(--muted)}
+.ai-input-row button{width:44px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120d;font-size:18px;cursor:pointer}
+@media(max-width:520px){.ai-chat{bottom:88px;right:12px;left:12px;width:auto}}
+
 @media(max-width:1024px){
   .stats{grid-template-columns:repeat(2,1fr);gap:40px}
   .svc-grid{grid-template-columns:repeat(2,1fr)}
@@ -402,7 +427,6 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
 <body>
 
 <div class="progress" id="progress"></div>
-<div class="cursor" id="cursor"></div>
 
 <header id="header">
   <div class="wrap nav">
@@ -706,6 +730,26 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
   <button class="btn btn-solid" id="cookieOk">Принять</button>
 </div>
 
+<!-- Кнопка и панель ИИ-чата -->
+<button id="aiBtn" class="ai-fab" aria-label="Посоветоваться с ИИ">
+  <span class="ai-fab-icon">🤖</span>
+  <span class="ai-fab-label">Посоветоваться с ИИ</span>
+</button>
+
+<div class="ai-chat" id="aiChat">
+  <div class="ai-head">
+    <span>🤖 Консультант Кухни Островский</span>
+    <button id="aiClose" class="ai-close">×</button>
+  </div>
+  <div class="ai-body" id="aiBody">
+    <div class="ai-msg bot">Здравствуйте! Я ИИ-консультант мастерской «Кухни Островский». Расскажу про кухни и мебель в Ростове, Батайске и Азове, цены, сроки и условия. Что вас интересует?</div>
+  </div>
+  <div class="ai-input-row">
+    <input id="aiInput" type="text" placeholder="Введите ваш вопрос..." autocomplete="off">
+    <button id="aiSend">➤</button>
+  </div>
+</div>
+
 <script>
 const progress=document.getElementById('progress');
 const header=document.getElementById('header');
@@ -742,12 +786,6 @@ if(supportsParallax()){
   }
   window.addEventListener('scroll',parallax,{passive:true});parallax();
 }
-const cursor=document.getElementById('cursor');
-if(window.matchMedia('(hover:hover) and (pointer:fine)').matches){
-  let tx=0,ty=0,cx=0,cy=0;
-  document.addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY;},{passive:true});
-  (function anim(){cx+=(tx-cx)*0.18;cy+=(ty-cy)*0.18;cursor.style.transform='translate('+(cx-17)+'px,'+(cy-17)+'px)';requestAnimationFrame(anim);})();
-}else{cursor.style.display='none';}
 function animateCount(el){
   const target=parseFloat(el.dataset.count);
   const dec=parseInt(el.dataset.decimal||'0');
@@ -801,6 +839,29 @@ document.addEventListener('keydown',e=>{if(lightbox.classList.contains('open')){
 const cookieBar=document.getElementById('cookieBar'),cookieOk=document.getElementById('cookieOk');
 if(!localStorage.getItem('cookiesAccepted')){setTimeout(()=>cookieBar.classList.add('show'),900);}
 cookieOk.addEventListener('click',()=>{localStorage.setItem('cookiesAccepted','1');cookieBar.classList.remove('show');});
+
+// ИИ-чат
+const aiBtn=document.getElementById('aiBtn'),aiChat=document.getElementById('aiChat'),
+      aiClose=document.getElementById('aiClose'),aiBody=document.getElementById('aiBody'),
+      aiInput=document.getElementById('aiInput'),aiSend=document.getElementById('aiSend');
+function aiAdd(text,who){const m=document.createElement('div');m.className='ai-msg '+who;m.textContent=text;aiBody.appendChild(m);aiBody.scrollTop=aiBody.scrollHeight;}
+aiBtn.addEventListener('click',()=>{aiChat.classList.add('open');aiInput.focus();});
+aiClose.addEventListener('click',()=>aiChat.classList.remove('open'));
+async function aiAsk(){
+  const q=aiInput.value.trim();if(!q)return;
+  aiAdd(q,'user');aiInput.value='';aiAdd('Печатает...','bot typing');
+  try{
+    const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:q})});
+    const data=await res.json();
+    const t=aiBody.querySelector('.typing');if(t)t.remove();
+    aiAdd(data.reply||'Не удалось получить ответ. Попробуйте позже.','bot');
+  }catch(e){
+    const t=aiBody.querySelector('.typing');if(t)t.remove();
+    aiAdd('Ошибка соединения с ИИ. Позвоните нам: +7 (950) 846-53-97','bot');
+  }
+}
+aiSend.addEventListener('click',aiAsk);
+aiInput.addEventListener('keydown',e=>{if(e.key==='Enter')aiAsk();});
 document.getElementById('year').textContent=new Date().getFullYear();
 </script>
 </body>
