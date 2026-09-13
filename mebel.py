@@ -13,8 +13,9 @@ mebel.py — сервер сайта «Кухни Островский» + жи�
   GET  /         — страница сайта
   POST /api/chat — {"message": "...", "session_id": "..."} -> {"reply": "..."}
 
-Память: история диалогов в SQLite (memory.db), переживает перезапуск.
-Бот — живой консультант, говорит от первого лица, без шаблонов и давления.
+Болтовня (привет/как дела/кто ты) отвечается готовыми живыми фразами — стабильно.
+По делу (мебель/цены/контакты) — нейросеть со строгим промптом.
+Память: история диалогов в SQLite (memory.db).
 """
 import os
 import json
@@ -32,37 +33,27 @@ DB_FILE            = os.environ.get("DB_FILE", "/app/memory.db")
 
 HISTORY_LIMIT = 24
 
-# ------------------------- Живой характер консультанта -----------------------
+# -------------------------------- Промпт по делу ------------------------------
 SYSTEM_PROMPT = (
-    "Ты — живой, дружелюбный консультант мебельной мастерской «Кухни Островский» "
-    "в Ростове-на-Дону, Батайске и Азове. Ты общаешься как настоящий человек — "
-    "тепло, естественно, без канцелярита и без навязчивых продаж.\n\n"
+    "Ты — консультант мебельной мастерской «Кухни Островский» в Ростове, "
+    "Батайске и Азове. Ты отвечаешь на вопросы клиентов о кухнях и мебели.\n\n"
 
     "ГЛАВНОЕ ПРАВИЛО — ОТВЕЧАЙ ТОЧНО НА ЗАДАННЫЙ ВОПРОС:\n"
     "• Сначала пойми, о чём спросили. Ответь РОВНО на это, не сворачивая на другие темы.\n"
-    "• Не отвечай «всё хорошо» на вопрос про продукцию и не путай приветствие с вопросом о работе.\n"
-    "• Если спросили «что за кухни», «что вы делаете», «какие кухни» — расскажи про услуги мастерской.\n"
-    "• Если спросили «привет», «как дела» — коротко поприветствуй и спроси, чем помочь.\n"
-    "• Не повторяй один и тот же текст. Каждый ответ — новый, живой, по ситуации.\n\n"
-
-    "ТВОЯ ЛИНИЯ:\n"
-    "• Говори кратко, по-человечески, по делу, от первого лица (я/мы).\n"
-    "• Если вопрос про мебель/кухни — рассказывай и предлагай помощь.\n"
-    "• Если вопрос личный или не по теме — коротко ответь по-доброму и мягко вернись к теме мебели.\n"
-    "• Не подписывайся «Роман Островский» и не пиши «С уважением» в каждом сообщении.\n\n"
+    "• Если спросили «что за кухни», «что вы делаете», «какие кухни», «какие услуги» — "
+    "расскажи про услуги мастерской.\n"
+    "• Если спросили личное/не по теме — коротко ответь и мягко вернись к мебели.\n\n"
 
     "ЧТО ДЕЛАЕМ (отвечай этим на вопросы про услуги/кухни/мебель):\n"
     "• Кухни на заказ, шкафы-купе, гардеробные, прихожие, стенки, гарнитуры под ТВ, "
     "тумбы, комоды — корпусная мебель по индивидуальным проектам.\n"
     "• Сборка и монтаж, замер и 3D-проект (бесплатно), обновление существующей мебели.\n"
     "• Работаем в Ростове-на-Дону, Батайске и Азове. Собственное производство, "
-    "личное сопровождение, честный расчёт, аккуратность, гарантия качества.\n"
-    "• Этапы: заявка → замер → проект → договор → производство → доставка и монтаж с гарантией.\n\n"
+    "личное сопровождение, гарантия качества.\n\n"
 
     "ПРО ЦЕНУ (если спросят «сколько стоит»):\n"
     "• «Цена зависит от размеров, материалов и проекта. Точную стоимость рассчитают "
-    "после бесплатного замера.» Больше ничего не выдумывай про цены — "
-    "никаких «от N рублей».\n\n"
+    "после бесплатного замера.» Больше ничего не выдумывай про цены.\n\n"
 
     "КОНТАКТЫ (используй ТОЛЬКО когда просят как связаться/куда обратиться):\n"
     "• Телефон: +7 (950) 846-53-97 — можно позвонить или написать.\n"
@@ -70,13 +61,9 @@ SYSTEM_PROMPT = (
     "• MAX — по тому же номеру +7 (950) 846-53-97.\n"
     "• Группа ВК: vk.com/mebel.ostrovsky (личные сообщения).\n"
     "НЕ предлагай «оформить заявку» и не говори, что «специалист приедет сам». "
-    "Просто назови контакты для связи.\n\n"
-
-    "ВАЖНО:\n"
-    "• Не выдумывай детали, которых нет в этой информации.\n"
-    "• Если чего-то не знаешь — честно скажи, что уточнишь у руководителя, "
-    "и предложи контакты для связи."
+    "Просто назови контакты для связи."
 )
+
 # ------------------------------- HTTP-помощник -------------------------------
 def _post(url, headers, data):
     req = urllib.request.Request(url, data=data, headers=headers, method="POST")
@@ -100,7 +87,7 @@ def ask_gigachat(messages):
     headers = {"Authorization": "Bearer " + token, "Content-Type": "application/json"}
     payload = {
         "model": "GigaChat-Pro",
-        "temperature": 0.8,
+        "temperature": 0.6,
         "messages": [{"role": "system", "content": SYSTEM_PROMPT}] + messages,
     }
     resp = _post(url, headers, json.dumps(payload).encode("utf-8"))
@@ -119,7 +106,7 @@ def ask_yandex_gpt(messages):
         llm_messages.append({"role": role, "text": m["content"]})
     payload = {
         "modelUri": "gpt://{}/yandexgpt-lite".format(FOLDER_ID),
-        "completionOptions": {"stream": False, "temperature": 0.8, "maxTokens": 900},
+        "completionOptions": {"stream": False, "temperature": 0.6, "maxTokens": 900},
         "messages": llm_messages,
     }
     resp = _post(url, headers, json.dumps(payload).encode("utf-8"))
@@ -167,7 +154,34 @@ def remember(session_id, role, content):
         del h[: len(h) - HISTORY_LIMIT]
     save_history(session_id, h)
 
+# -------------------- Бытовые реплики (без нейросети, стабильно) -------------
+def handle_smalltalk(text):
+    t = text.lower()
+    if any(w in t for w in ("привет", "здравств", "добрый", "доброе", "хай",
+                            "здаров", "здоров", "ку", "салют", "hello", "hi")):
+        return ("Привет! 👋 Я консультант мастерской «Кухни Островский». "
+                "Чем могу помочь — по кухням, мебели или записи на замер?")
+    if any(w in t for w in ("как дела", "как ты", "что делаешь", "как жизнь",
+                            "как вы", "что нового", "как настроение")):
+        return ("Да всё отлично, спасибо! 🤝 Работаем, делаем кухни и мебель на заказ. "
+                "А вы чем занимаетесь? Если что-то по мебели нужно — я тут как тут 🙂")
+    if any(w in t for w in ("кто ты", "кто вы", "что ты", "ты кто", "вы кто",
+                            "ты бот", "ты робот", "ии", "нейросеть", "искусствен интеллект")):
+        return ("Я ИИ-консультант мебельной мастерской «Кухни Островский» 🤖 "
+                "Подскажу по кухням, шкафам, гардеробным, ценам, замерам и контактам. "
+                "Спрашивайте!")
+    if any(w in t for w in ("спасибо", "благодар", "ок", "окей", "понял", "понятно",
+                            "ясно", "круто", "отлично", "супер", "хорошо")):
+        return "Всегда пожалуйста! 😊 Если появятся вопросы по кухне или мебели — пишите."
+    if any(w in t for w in ("пока", "до свидан", "до встречи", "всего доброго",
+                            "удачи", "бывай")):
+        return "До встречи! Буду рад помочь снова 🙌 Телефон: +7 (950) 846-53-97."
+    return None
+
 def ask_ai(message, history):
+    small = handle_smalltalk(message)
+    if small:
+        return small
     convo = history[-HISTORY_LIMIT:]
     if GIGACHAT_AUTH_KEY:
         try:
@@ -223,12 +237,7 @@ PAGE = """<!DOCTYPE html>
 <link rel="preconnect" href="https://i.ibb.co">
 
 <style>
-:root{
-  --gold:#b3873f;
-  --gold-soft:#d4b06a;
-  --muted:#ded2bb;
-  --line:rgba(212,176,106,.28);
-}
+:root{--gold:#b3873f;--gold-soft:#d4b06a;--muted:#ded2bb;--line:rgba(212,176,106,.28);}
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 section{scroll-margin-top:90px}
@@ -456,64 +465,10 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
 .ai-input-row button{width:44px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120d;font-size:18px;cursor:pointer;transition:transform .2s,filter .2s}
 .ai-input-row button:hover{transform:scale(1.08);filter:brightness(1.1)}
 @media(max-width:520px){.ai-chat{bottom:12px;right:12px;left:12px;width:auto}}
-@media(max-width:1024px){
-  .stats{grid-template-columns:repeat(2,1fr);gap:40px}
-  .svc-grid{grid-template-columns:repeat(2,1fr)}
-  .guar-grid{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:860px){
-  .menu{position:fixed;top:0;right:0;bottom:0;width:min(320px,84vw);background:linear-gradient(180deg,#1c160e,#12100a);flex-direction:column;justify-content:flex-start;gap:6px;padding:100px 36px 40px;transform:translateX(100%);transition:transform .4s cubic-bezier(.22,.61,.36,1);z-index:125;opacity:0;visibility:hidden;box-shadow:-20px 0 50px rgba(0,0,0,.5);overflow-y:auto;height:auto}
-  .menu.open{transform:none;opacity:1;visibility:visible}
-  .menu a{font-size:20px;font-family:'Cormorant Garamond',serif;color:#fff;border-bottom:1px solid rgba(212,176,106,.15);padding:14px 0;display:block}
-  .menu a:hover{color:var(--gold-soft)}
-  .menu a.active{color:var(--gold-soft);border-color:var(--gold);border-bottom-color:var(--gold)}
-  .menu-call{display:block;margin-top:auto;padding-top:20px}
-  .menu-call a{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#fff;font-family:'Manrope',sans-serif;font-size:15px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;border:none;border-radius:12px;padding:16px 18px;box-shadow:0 10px 26px rgba(179,135,63,.4)}
-  .burger{display:block}
-  .scrim{display:block}
-  .about{grid-template-columns:1fr;gap:40px}
-  .features{grid-template-columns:1fr}
-  .steps{grid-template-columns:1fr;gap:22px}
-  .contact-grid{grid-template-columns:1fr;gap:40px}
-  .panel{padding:120px 0}
-  .car-nav{display:none}
-  .rev-card{width:86vw}
-}
-@media(max-width:520px){
-  .logo .brand-ava{width:40px;height:40px}
-  .logo .brand-txt .name{font-size:20px}
-  .logo .brand-txt .sub{font-size:11px;max-width:54vw}
-  .nav{height:66px}
-  .panel{min-height:auto;padding:100px 0 60px}
-  h1{font-size:33px}
-  .btn-row{width:100%}
-  .btn{width:100%;text-align:center}
-  .stat .num{font-size:46px}
-  .scroll-cue{display:none}
-  .car-slide{width:84vw}
-  .car-slide img{height:210px}
-  .svc-grid{grid-template-columns:1fr}
-  .guar-grid{grid-template-columns:1fr}
-  .rev-card{width:92vw;padding:16px}
-  .rev-head{gap:10px}
-  .rev-ava{width:46px;height:46px}
-  .rev-name{font-size:14px}
-  .rev-sub{font-size:10px}
-  .rev-stars{font-size:13px;display:block;margin:6px 0 0}
-  .rev-text{font-size:13px;line-height:1.55}
-  .rev-video iframe{height:180px}
-  .consult .phone{font-size:26px}
-  .call-block .cb-num{font-size:24px}
-  .menu{padding:92px 28px 30px}
-  .lb-nav{width:44px;height:44px;font-size:22px}
-}
-@media(max-width:380px){
-  .car-slide{width:88vw}
-  .car-slide img{height:190px}
-  .rev-card{width:94vw;padding:14px}
-  .rev-text{font-size:12.5px}
-  .rev-video iframe{height:160px}
-}
+@media(max-width:1024px){.stats{grid-template-columns:repeat(2,1fr);gap:40px}.svc-grid{grid-template-columns:repeat(2,1fr)}.guar-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:860px){.menu{position:fixed;top:0;right:0;bottom:0;width:min(320px,84vw);background:linear-gradient(180deg,#1c160e,#12100a);flex-direction:column;justify-content:flex-start;gap:6px;padding:100px 36px 40px;transform:translateX(100%);transition:transform .4s cubic-bezier(.22,.61,.36,1);z-index:125;opacity:0;visibility:hidden;box-shadow:-20px 0 50px rgba(0,0,0,.5);overflow-y:auto;height:auto}.menu.open{transform:none;opacity:1;visibility:visible}.menu a{font-size:20px;font-family:'Cormorant Garamond',serif;color:#fff;border-bottom:1px solid rgba(212,176,106,.15);padding:14px 0;display:block}.menu a:hover{color:var(--gold-soft)}.menu a.active{color:var(--gold-soft);border-color:var(--gold);border-bottom-color:var(--gold)}.menu-call{display:block;margin-top:auto;padding-top:20px}.menu-call a{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#fff;font-family:'Manrope',sans-serif;font-size:15px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;border:none;border-radius:12px;padding:16px 18px;box-shadow:0 10px 26px rgba(179,135,63,.4)}.burger{display:block}.scrim{display:block}.about{grid-template-columns:1fr;gap:40px}.features{grid-template-columns:1fr}.steps{grid-template-columns:1fr;gap:22px}.contact-grid{grid-template-columns:1fr;gap:40px}.panel{padding:120px 0}.car-nav{display:none}.rev-card{width:86vw}}
+@media(max-width:520px){.logo .brand-ava{width:40px;height:40px}.logo .brand-txt .name{font-size:20px}.logo .brand-txt .sub{font-size:11px;max-width:54vw}.nav{height:66px}.panel{min-height:auto;padding:100px 0 60px}h1{font-size:33px}.btn-row{width:100%}.btn{width:100%;text-align:center}.stat .num{font-size:46px}.scroll-cue{display:none}.car-slide{width:84vw}.car-slide img{height:210px}.svc-grid{grid-template-columns:1fr}.guar-grid{grid-template-columns:1fr}.rev-card{width:92vw;padding:16px}.rev-head{gap:10px}.rev-ava{width:46px;height:46px}.rev-name{font-size:14px}.rev-sub{font-size:10px}.rev-stars{font-size:13px;display:block;margin:6px 0 0}.rev-text{font-size:13px;line-height:1.55}.rev-video iframe{height:180px}.consult .phone{font-size:26px}.call-block .cb-num{font-size:24px}.menu{padding:92px 28px 30px}.lb-nav{width:44px;height:44px;font-size:22px}}
+@media(max-width:380px){.car-slide{width:88vw}.car-slide img{height:190px}.rev-card{width:94vw;padding:14px}.rev-text{font-size:12.5px}.rev-video iframe{height:160px}}
 </style>
 </head>
 <body>
@@ -841,80 +796,30 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
 <script>
 const progress=document.getElementById('progress');
 const header=document.getElementById('header');
-function onScroll(){
-  const h=document.documentElement;
-  const sc=h.scrollHeight>h.clientHeight?h.scrollTop/(h.scrollHeight-h.clientHeight):0;
-  progress.style.width=(sc*100)+'%';
-  header.classList.toggle('solid',h.scrollTop>40);
-}
+function onScroll(){const h=document.documentElement;const sc=h.scrollHeight>h.clientHeight?h.scrollTop/(h.scrollHeight-h.clientHeight):0;progress.style.width=(sc*100)+'%';header.classList.toggle('solid',h.scrollTop>40);}
 window.addEventListener('scroll',onScroll,{passive:true});onScroll();
 document.getElementById('logo').addEventListener('click',e=>{e.preventDefault();window.scrollTo({top:0,behavior:'smooth'});});
 const burger=document.getElementById('burger'),menu=document.getElementById('menu'),scrim=document.getElementById('scrim');
 function closeMenu(){burger.classList.remove('open');menu.classList.remove('open');scrim.classList.remove('show');}
-burger.addEventListener('click',()=>{
-  const open=menu.classList.contains('open');
-  if(open)closeMenu();else{burger.classList.add('open');menu.classList.add('open');scrim.classList.add('show');}
-});
+burger.addEventListener('click',()=>{const open=menu.classList.contains('open');if(open)closeMenu();else{burger.classList.add('open');menu.classList.add('open');scrim.classList.add('show');}});
 scrim.addEventListener('click',closeMenu);
 menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeMenu));
 const sections=['about','works','reviews','services','process','contacts'];
 const navLinks=menu.querySelectorAll('a[href^="#"]');
-window.addEventListener('scroll',()=>{
-  let current='';
-  sections.forEach(id=>{const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<=120)current=id;});
-  navLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+current));
-},{passive:true});
+window.addEventListener('scroll',()=>{let current='';sections.forEach(id=>{const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<=120)current=id;});navLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+current));},{passive:true});
 function supportsParallax(){return window.matchMedia('(min-width:861px)').matches;}
-if(supportsParallax()){
-  const bgs=document.querySelectorAll('.panel .bg');
-  const contents=document.querySelectorAll('.panel .content');
-  function parallax(){
-    bgs.forEach(bg=>{const r=bg.parentElement.getBoundingClientRect();const c=(r.top+r.height/2)-innerHeight/2;bg.style.transform='translateY('+(-c*0.25)+'px)';});
-    contents.forEach(cn=>{const r=cn.parentElement.getBoundingClientRect();const c=(r.top+r.height/2)-innerHeight/2;cn.style.transform='translateY('+(-c*0.08)+'px)';});
-  }
-  window.addEventListener('scroll',parallax,{passive:true});parallax();
-}
-function animateCount(el){
-  const target=parseFloat(el.dataset.count);
-  const dec=parseInt(el.dataset.decimal||'0');
-  const suffix=el.dataset.suffix||'';
-  const dur=1200,start=performance.now();
-  function tick(t){
-    let p=Math.min((t-start)/dur,1);
-    p=1-Math.pow(1-p,3);
-    let val=(target*p).toFixed(dec);
-    el.textContent=(dec?val:Math.round(val))+suffix;
-    if(p<1)requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
-}
+if(supportsParallax()){const bgs=document.querySelectorAll('.panel .bg');const contents=document.querySelectorAll('.panel .content');function parallax(){bgs.forEach(bg=>{const r=bg.parentElement.getBoundingClientRect();const c=(r.top+r.height/2)-innerHeight/2;bg.style.transform='translateY('+(-c*0.25)+'px)';});contents.forEach(cn=>{const r=cn.parentElement.getBoundingClientRect();const c=(r.top+r.height/2)-innerHeight/2;cn.style.transform='translateY('+(-c*0.08)+'px)';});}window.addEventListener('scroll',parallax,{passive:true});parallax();}
+function animateCount(el){const target=parseFloat(el.dataset.count);const dec=parseInt(el.dataset.decimal||'0');const suffix=el.dataset.suffix||'';const dur=1200,start=performance.now();function tick(t){let p=Math.min((t-start)/dur,1);p=1-Math.pow(1-p,3);let val=(target*p).toFixed(dec);el.textContent=(dec?val:Math.round(val))+suffix;if(p<1)requestAnimationFrame(tick);}requestAnimationFrame(tick);}
 const statIO=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){animateCount(e.target);statIO.unobserve(e.target);}});},{threshold:.5});
 document.querySelectorAll('.stat .num').forEach(el=>statIO.observe(el));
 const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-(function(){
-  const h=document.getElementById('heroTitle');
-  const tokens=h.innerHTML.split(/(<[^>]+>)/);
-  let html='';
-  tokens.forEach(t=>{if(/^<[^>]+>$/.test(t)){html+=t;}else{html+=t.split(/\s+/).filter(w=>w).map(w=>'<span class="t-word">'+w+'</span>').join(' ');}});
-  h.innerHTML=html;
-  h.querySelectorAll('.t-word').forEach((s,i)=>setTimeout(()=>s.classList.add('on'),120+i*70));
-})();
-function initCarousel(trackId,prevId,nextId,dotsId){
-  const track=document.getElementById(trackId),prev=document.getElementById(prevId),next=document.getElementById(nextId),dotsBox=document.getElementById(dotsId),items=[...track.children];
-  dotsBox.innerHTML='';
-  items.forEach((_,i)=>{const d=document.createElement('button');d.className='car-dot'+(i===0?' active':'');d.addEventListener('click',()=>items[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'}));dotsBox.appendChild(d);});
-  const dots=[...dotsBox.children];
-  const step=()=>items[0].offsetWidth+18;
-  track.addEventListener('scroll',()=>{const idx=Math.round(track.scrollLeft/step());dots.forEach((d,i)=>d.classList.toggle('active',i===idx));},{passive:true});
-  prev.addEventListener('click',()=>track.scrollBy({left:-step(),behavior:'smooth'}));
-  next.addEventListener('click',()=>track.scrollBy({left:step(),behavior:'smooth'}));
-}
+(function(){const h=document.getElementById('heroTitle');const tokens=h.innerHTML.split(/(<[^>]+>)/);let html='';tokens.forEach(t=>{if(/^<[^>]+>$/.test(t)){html+=t;}else{html+=t.split(/\s+/).filter(w=>w).map(w=>'<span class="t-word">'+w+'</span>').join(' ');}});h.innerHTML=html;h.querySelectorAll('.t-word').forEach((s,i)=>setTimeout(()=>s.classList.add('on'),120+i*70));})();
+function initCarousel(trackId,prevId,nextId,dotsId){const track=document.getElementById(trackId),prev=document.getElementById(prevId),next=document.getElementById(nextId),dotsBox=document.getElementById(dotsId),items=[...track.children];dotsBox.innerHTML='';items.forEach((_,i)=>{const d=document.createElement('button');d.className='car-dot'+(i===0?' active':'');d.addEventListener('click',()=>items[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'}));dotsBox.appendChild(d);});const dots=[...dotsBox.children];const step=()=>items[0].offsetWidth+18;track.addEventListener('scroll',()=>{const idx=Math.round(track.scrollLeft/step());dots.forEach((d,i)=>d.classList.toggle('active',i===idx));},{passive:true});prev.addEventListener('click',()=>track.scrollBy({left:-step(),behavior:'smooth'}));next.addEventListener('click',()=>track.scrollBy({left:step(),behavior:'smooth'}));}
 initCarousel('carTrack','carPrev','carNext','carDots');
 initCarousel('revTrack','revPrev','revNext','revDots');
 const lightbox=document.getElementById('lightbox'),lbImg=document.getElementById('lbImg'),lbCount=document.getElementById('lbCount');
-const lbItems=[...document.querySelectorAll('#carTrack .car-slide img')];
-let lbIdx=0;
+const lbItems=[...document.querySelectorAll('#carTrack .car-slide img')];let lbIdx=0;
 function openLb(i){lbIdx=i;lbImg.src=lbItems[i].src;lbImg.alt=lbItems[i].alt;lbCount.textContent=(i+1)+' / '+lbItems.length;lightbox.classList.add('open');}
 function closeLb(){lightbox.classList.remove('open');}
 function lbStep(d){openLb((lbIdx+d+lbItems.length)%lbItems.length);}
@@ -927,12 +832,8 @@ document.addEventListener('keydown',e=>{if(lightbox.classList.contains('open')){
 const cookieBar=document.getElementById('cookieBar'),cookieOk=document.getElementById('cookieOk');
 if(!localStorage.getItem('cookiesAccepted')){setTimeout(()=>cookieBar.classList.add('show'),900);}
 cookieOk.addEventListener('click',()=>{localStorage.setItem('cookiesAccepted','1');cookieBar.classList.remove('show');});
-
-// ===== ИИ-чат с постоянной памятью =====
-const aiHeroBtn=document.getElementById('aiHeroBtn'),
-      aiChat=document.getElementById('aiChat'),aiClose=document.getElementById('aiClose'),
-      aiBody=document.getElementById('aiBody'),aiInput=document.getElementById('aiInput'),
-      aiSend=document.getElementById('aiSend');
+// ===== ИИ-чат =====
+const aiHeroBtn=document.getElementById('aiHeroBtn'),aiChat=document.getElementById('aiChat'),aiClose=document.getElementById('aiClose'),aiBody=document.getElementById('aiBody'),aiInput=document.getElementById('aiInput'),aiSend=document.getElementById('aiSend');
 let sessionId=localStorage.getItem('aiSessionId');
 if(!sessionId){sessionId='s'+Date.now()+Math.random().toString(36).slice(2,10);localStorage.setItem('aiSessionId',sessionId);}
 function openAi(){aiChat.classList.add('open');setTimeout(()=>aiInput.focus(),350);}
@@ -941,19 +842,7 @@ if(aiHeroBtn)aiHeroBtn.addEventListener('click',openAi);
 aiClose.addEventListener('click',closeAi);
 function aiAdd(text,who){const m=document.createElement('div');m.className='ai-msg '+who;m.textContent=text;aiBody.appendChild(m);aiBody.scrollTop=aiBody.scrollHeight;}
 function aiTyping(on){const t=aiBody.querySelector('.typing');if(on&&!t){const m=document.createElement('div');m.className='ai-msg bot typing';m.innerHTML='<span></span><span></span><span></span>';aiBody.appendChild(m);aiBody.scrollTop=aiBody.scrollHeight;}else if(!on&&t){t.remove();}}
-async function aiAsk(){
-  const q=aiInput.value.trim();if(!q)return;
-  aiAdd(q,'user');aiInput.value='';aiTyping(true);
-  try{
-    const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:q,session_id:sessionId})});
-    const data=await res.json();
-    aiTyping(false);
-    aiAdd(data.reply||'Не удалось получить ответ. Попробуйте позже.','bot');
-  }catch(e){
-    aiTyping(false);
-    aiAdd('Ошибка соединения с ИИ. Позвоните нам: +7 (950) 846-53-97','bot');
-  }
-}
+async function aiAsk(){const q=aiInput.value.trim();if(!q)return;aiAdd(q,'user');aiInput.value='';aiTyping(true);try{const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:q,session_id:sessionId})});const data=await res.json();aiTyping(false);aiAdd(data.reply||'Не удалось получить ответ. Попробуйте позже.','bot');}catch(e){aiTyping(false);aiAdd('Ошибка соединения с ИИ. Позвоните нам: +7 (950) 846-53-97','bot');}}
 aiSend.addEventListener('click',aiAsk);
 aiInput.addEventListener('keydown',e=>{if(e.key==='Enter')aiAsk();});
 document.getElementById('year').textContent=new Date().getFullYear();
@@ -1000,7 +889,7 @@ class Handler(BaseHTTPRequestHandler):
         except Exception as exc:  # noqa: BLE001
             self._send(500, json.dumps({"error": str(exc)}, ensure_ascii=False), "application/json")
 
-    def log_message(self, *args):  # тихие логи
+    def log_message(self, *args):
         pass
 
 if __name__ == "__main__":
