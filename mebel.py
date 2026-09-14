@@ -1,205 +1,19 @@
 # -*- coding: utf-8 -*-
 """
-mebel.py — сервер сайта «Кухни Островский» + живой ИИ-консультант.
+mebel.py — сервер сайта «Кухни Островский».
 
 Запуск (docker):
-  1. Секреты в переменных окружения контейнера (НЕ в коде!):
-       GIGACHAT_AUTH_KEY="..."   # основная
-       YANDEX_API_KEY="..."      # запасная
-       FOLDER_ID="..."
-  2. Соберите и запустите контейнер (порт 8080).
+  Соберите и запустите контейнер (порт 8080).
 
-Эндпоинты:
-  GET  /         — страница сайта
-  POST /api/chat — {"message": "...", "session_id": "..."} -> {"reply": "..."}
+Эндпоинт:
+  GET  /   — страница сайта
 
-Болтовня (привет/как дела/кто ты) отвечается готовыми живыми фразами — стабильно.
-По делу (мебель/цены/контакты) — нейросеть со строгим промптом.
-Память: история диалогов в SQLite (memory.db).
+(ИИ-консультант полностью удалён.)
 """
-import os
-import json
-import uuid
-import sqlite3
-import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-# ----------------------- Секреты читаются ТОЛЬКО из окружения ----------------
-FOLDER_ID          = os.environ.get("FOLDER_ID", "")
-YANDEX_API_KEY     = os.environ.get("YANDEX_API_KEY", "")
-GIGACHAT_AUTH_KEY  = os.environ.get("GIGACHAT_AUTH_KEY", "")
-PORT               = int(os.environ.get("PORT", "8080"))
-DB_FILE            = os.environ.get("DB_FILE", "/app/memory.db")
+PORT = int(__import__("os").environ.get("PORT", "8080"))
 
-HISTORY_LIMIT = 24
-
-# -------------------------------- Промпт по делу ------------------------------
-SYSTEM_PROMPT = (
-    "Ты — консультант мебельной мастерской «Кухни Островский» в Ростове, "
-    "Батайске и Азове. Ты отвечаешь на вопросы клиентов о кухнях и мебели.\n\n"
-
-    "ГЛАВНОЕ ПРАВИЛО — ОТВЕЧАЙ ТОЧНО НА ЗАДАННЫЙ ВОПРОС:\n"
-    "• Сначала пойми, о чём спросили. Ответь РОВНО на это, не сворачивая на другие темы.\n"
-    "• Если спросили «что за кухни», «что вы делаете», «какие кухни», «какие услуги» — "
-    "расскажи про услуги мастерской.\n"
-    "• Если спросили личное/не по теме — коротко ответь и мягко вернись к мебели.\n\n"
-
-    "ЧТО ДЕЛАЕМ (отвечай этим на вопросы про услуги/кухни/мебель):\n"
-    "• Кухни на заказ, шкафы-купе, гардеробные, прихожие, стенки, гарнитуры под ТВ, "
-    "тумбы, комоды — корпусная мебель по индивидуальным проектам.\n"
-    "• Сборка и монтаж, замер и 3D-проект (бесплатно), обновление существующей мебели.\n"
-    "• Работаем в Ростове-на-Дону, Батайске и Азове. Собственное производство, "
-    "личное сопровождение, гарантия качества.\n\n"
-
-    "ПРО ЦЕНУ (если спросят «сколько стоит»):\n"
-    "• «Цена зависит от размеров, материалов и проекта. Точную стоимость рассчитают "
-    "после бесплатного замера.» Больше ничего не выдумывай про цены.\n\n"
-
-    "КОНТАКТЫ (используй ТОЛЬКО когда просят как связаться/куда обратиться):\n"
-    "• Телефон: +7 (950) 846-53-97 — можно позвонить или написать.\n"
-    "• Telegram: t.me/fanny161.\n"
-    "• MAX — по тому же номеру +7 (950) 846-53-97.\n"
-    "• Группа ВК: vk.com/mebel.ostrovsky (личные сообщения).\n"
-    "НЕ предлагай «оформить заявку» и не говори, что «специалист приедет сам». "
-    "Просто назови контакты для связи."
-)
-
-# ------------------------------- HTTP-помощник -------------------------------
-def _post(url, headers, data):
-    req = urllib.request.Request(url, data=data, headers=headers, method="POST")
-    with urllib.request.urlopen(req, timeout=60) as resp:
-        return json.loads(resp.read().decode("utf-8"))
-
-# ------------------------------ GigaChat (основная) --------------------------
-def gigachat_token():
-    url = "https://ngw.devices.sberbank.ru:9443/api/v2/oauth"
-    headers = {
-        "Authorization": "Basic " + GIGACHAT_AUTH_KEY,
-        "RqUID": str(uuid.uuid4()),
-        "Content-Type": "application/x-www-form-urlencoded",
-    }
-    resp = _post(url, headers, b"scope=GIGACHAT_API_PERS")
-    return resp.get("access_token", "")
-
-def ask_gigachat(messages):
-    token = gigachat_token()
-    url = "https://gigachat.devices.sberbank.ru/api/v1/chat/completions"
-    headers = {"Authorization": "Bearer " + token, "Content-Type": "application/json"}
-    payload = {
-        "model": "GigaChat-Pro",
-        "temperature": 0.6,
-        "messages": [{"role": "system", "content": SYSTEM_PROMPT}] + messages,
-    }
-    resp = _post(url, headers, json.dumps(payload).encode("utf-8"))
-    choices = resp.get("choices", [])
-    if choices:
-        return choices[0].get("message", {}).get("content", "").strip()
-    return ""
-
-# -------------------------- YandexGPT (запасная) -----------------------------
-def ask_yandex_gpt(messages):
-    url = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion"
-    headers = {"Authorization": "Api-Key " + YANDEX_API_KEY, "Content-Type": "application/json"}
-    llm_messages = [{"role": "system", "text": SYSTEM_PROMPT}]
-    for m in messages:
-        role = "assistant" if m["role"] == "assistant" else "user"
-        llm_messages.append({"role": role, "text": m["content"]})
-    payload = {
-        "modelUri": "gpt://{}/yandexgpt-lite".format(FOLDER_ID),
-        "completionOptions": {"stream": False, "temperature": 0.6, "maxTokens": 900},
-        "messages": llm_messages,
-    }
-    resp = _post(url, headers, json.dumps(payload).encode("utf-8"))
-    alts = resp.get("result", {}).get("alternatives", [])
-    if alts:
-        return alts[0].get("message", {}).get("text", "").strip()
-    return ""
-
-# ------------------------- Постоянная память (SQLite) ------------------------
-def init_db():
-    conn = sqlite3.connect(DB_FILE)
-    conn.execute("CREATE TABLE IF NOT EXISTS sessions (session_id TEXT PRIMARY KEY, messages TEXT)")
-    conn.commit()
-    conn.close()
-
-def get_history(session_id):
-    conn = sqlite3.connect(DB_FILE)
-    try:
-        row = conn.execute("SELECT messages FROM sessions WHERE session_id=?", (session_id,)).fetchone()
-    finally:
-        conn.close()
-    if row and row[0]:
-        try:
-            return json.loads(row[0])
-        except Exception:
-            return []
-    return []
-
-def save_history(session_id, history):
-    conn = sqlite3.connect(DB_FILE)
-    try:
-        conn.execute(
-            "INSERT INTO sessions (session_id, messages) VALUES (?, ?) "
-            "ON CONFLICT(session_id) DO UPDATE SET messages=excluded.messages",
-            (session_id, json.dumps(history, ensure_ascii=False)),
-        )
-        conn.commit()
-    finally:
-        conn.close()
-
-def remember(session_id, role, content):
-    h = get_history(session_id)
-    h.append({"role": role, "content": content})
-    if len(h) > HISTORY_LIMIT:
-        del h[: len(h) - HISTORY_LIMIT]
-    save_history(session_id, h)
-
-# -------------------- Бытовые реплики (без нейросети, стабильно) -------------
-def handle_smalltalk(text):
-    t = text.lower()
-    if any(w in t for w in ("привет", "здравств", "добрый", "доброе", "хай",
-                            "здаров", "здоров", "ку", "салют", "hello", "hi")):
-        return ("Привет! 👋 Я консультант мастерской «Кухни Островский». "
-                "Чем могу помочь — по кухням, мебели или записи на замер?")
-    if any(w in t for w in ("как дела", "как ты", "что делаешь", "как жизнь",
-                            "как вы", "что нового", "как настроение")):
-        return ("Да всё отлично, спасибо! 🤝 Работаем, делаем кухни и мебель на заказ. "
-                "А вы чем занимаетесь? Если что-то по мебели нужно — я тут как тут 🙂")
-    if any(w in t for w in ("кто ты", "кто вы", "что ты", "ты кто", "вы кто",
-                            "ты бот", "ты робот", "ии", "нейросеть", "искусствен интеллект")):
-        return ("Я ИИ-консультант мебельной мастерской «Кухни Островский» 🤖 "
-                "Подскажу по кухням, шкафам, гардеробным, ценам, замерам и контактам. "
-                "Спрашивайте!")
-    if any(w in t for w in ("спасибо", "благодар", "ок", "окей", "понял", "понятно",
-                            "ясно", "круто", "отлично", "супер", "хорошо")):
-        return "Всегда пожалуйста! 😊 Если появятся вопросы по кухне или мебели — пишите."
-    if any(w in t for w in ("пока", "до свидан", "до встречи", "всего доброго",
-                            "удачи", "бывай")):
-        return "До встречи! Буду рад помочь снова 🙌 Телефон: +7 (950) 846-53-97."
-    return None
-
-def ask_ai(message, history):
-    small = handle_smalltalk(message)
-    if small:
-        return small
-    convo = history[-HISTORY_LIMIT:]
-    if GIGACHAT_AUTH_KEY:
-        try:
-            reply = ask_gigachat(convo)
-            if reply:
-                return reply
-        except Exception as exc:
-            print("GigaChat error:", exc)
-    if YANDEX_API_KEY and FOLDER_ID:
-        try:
-            reply = ask_yandex_gpt(convo)
-            if reply:
-                return reply
-        except Exception as exc:
-            print("YandexGPT error:", exc)
-    return "Извините, сейчас что-то с сетью. Попробуйте ещё раз или позвоните +7 (950) 846-53-97."
-
-# ------------------------------- HTML-страница ------------------------------
 PAGE = """<!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -435,36 +249,6 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
 .guar-grid .reveal:nth-child(2){transition-delay:.08s}.guar-grid .reveal:nth-child(3){transition-delay:.16s}.guar-grid .reveal:nth-child(4){transition-delay:.24s}
 .t-word{display:inline-block;opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease;word-break:break-word}
 .t-word.on{opacity:1;transform:none}
-/* ===== Кнопка ИИ (в стиле сайта) ===== */
-.btn-ai{border:1px solid rgba(255,255,255,.35);color:#efe6d6;background:rgba(23,18,13,.55);backdrop-filter:blur(6px)}
-.btn-ai:hover{background:#fff;color:#17120d;transform:translateY(-3px)}
-.btn-ai .ai-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gold-soft);margin-right:9px;vertical-align:middle;animation:aiPulse 1.8s ease-in-out infinite}
-@keyframes aiPulse{0%,100%{box-shadow:0 0 0 0 rgba(212,176,106,.5)}50%{box-shadow:0 0 0 7px rgba(212,176,106,0)}}
-/* ===== Окно ИИ (плавно) ===== */
-.ai-chat{position:fixed;right:22px;bottom:24px;z-index:170;width:min(370px,94vw);max-height:76vh;display:flex;flex-direction:column;background:#1c160e;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.65);opacity:0;transform:translateY(24px) scale(.96);pointer-events:none;transition:opacity .35s ease,transform .35s cubic-bezier(.22,.61,.36,1)}
-.ai-chat.open{opacity:1;transform:none;pointer-events:auto}
-.ai-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120d;font-weight:700;font-size:14px}
-.ai-head .ai-title{display:flex;align-items:center;gap:8px}
-.ai-head .ai-status{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px #22c55e;animation:aiPulse 1.8s ease-in-out infinite}
-.ai-close{background:none;border:none;color:#17120d;font-size:24px;line-height:1;cursor:pointer;transition:transform .3s}
-.ai-close:hover{transform:rotate(90deg)}
-.ai-body{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:200px;max-height:48vh}
-.ai-msg{max-width:85%;padding:10px 13px;border-radius:14px;font-size:14px;line-height:1.5;white-space:pre-wrap;word-break:break-word;animation:msgIn .35s ease both}
-@keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.ai-msg.bot{background:rgba(212,176,106,.1);border:1px solid var(--line);color:#efe6d6;align-self:flex-start;border-bottom-left-radius:4px}
-.ai-msg.user{background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120d;align-self:flex-end;border-bottom-right-radius:4px}
-.ai-msg.typing{display:flex;align-items:center;gap:4px;padding:14px}
-.ai-msg.typing span{width:7px;height:7px;border-radius:50%;background:var(--gold-soft);animation:dotTyping 1.2s infinite ease-in-out}
-.ai-msg.typing span:nth-child(2){animation-delay:.15s}
-.ai-msg.typing span:nth-child(3){animation-delay:.3s}
-@keyframes dotTyping{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-5px);opacity:1}}
-.ai-input-row{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line)}
-.ai-input-row input{flex:1;padding:11px 13px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:#fff;font-size:14px;outline:none;transition:border-color .3s}
-.ai-input-row input:focus{border-color:var(--gold-soft)}
-.ai-input-row input::placeholder{color:var(--muted)}
-.ai-input-row button{width:44px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120d;font-size:18px;cursor:pointer;transition:transform .2s,filter .2s}
-.ai-input-row button:hover{transform:scale(1.08);filter:brightness(1.1)}
-@media(max-width:520px){.ai-chat{bottom:12px;right:12px;left:12px;width:auto}}
 @media(max-width:1024px){.stats{grid-template-columns:repeat(2,1fr);gap:40px}.svc-grid{grid-template-columns:repeat(2,1fr)}.guar-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:860px){.menu{position:fixed;top:0;right:0;bottom:0;width:min(320px,84vw);background:linear-gradient(180deg,#1c160e,#12100a);flex-direction:column;justify-content:flex-start;gap:6px;padding:100px 36px 40px;transform:translateX(100%);transition:transform .4s cubic-bezier(.22,.61,.36,1);z-index:125;opacity:0;visibility:hidden;box-shadow:-20px 0 50px rgba(0,0,0,.5);overflow-y:auto;height:auto}.menu.open{transform:none;opacity:1;visibility:visible}.menu a{font-size:20px;font-family:'Cormorant Garamond',serif;color:#fff;border-bottom:1px solid rgba(212,176,106,.15);padding:14px 0;display:block}.menu a:hover{color:var(--gold-soft)}.menu a.active{color:var(--gold-soft);border-color:var(--gold);border-bottom-color:var(--gold)}.menu-call{display:block;margin-top:auto;padding-top:20px}.menu-call a{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#fff;font-family:'Manrope',sans-serif;font-size:15px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;border:none;border-radius:12px;padding:16px 18px;box-shadow:0 10px 26px rgba(179,135,63,.4)}.burger{display:block}.scrim{display:block}.about{grid-template-columns:1fr;gap:40px}.features{grid-template-columns:1fr}.steps{grid-template-columns:1fr;gap:22px}.contact-grid{grid-template-columns:1fr;gap:40px}.panel{padding:120px 0}.car-nav{display:none}.rev-card{width:86vw}}
 @media(max-width:520px){.logo .brand-ava{width:40px;height:40px}.logo .brand-txt .name{font-size:20px}.logo .brand-txt .sub{font-size:11px;max-width:54vw}.nav{height:66px}.panel{min-height:auto;padding:100px 0 60px}h1{font-size:33px}.btn-row{width:100%}.btn{width:100%;text-align:center}.stat .num{font-size:46px}.scroll-cue{display:none}.car-slide{width:84vw}.car-slide img{height:210px}.svc-grid{grid-template-columns:1fr}.guar-grid{grid-template-columns:1fr}.rev-card{width:92vw;padding:16px}.rev-head{gap:10px}.rev-ava{width:46px;height:46px}.rev-name{font-size:14px}.rev-sub{font-size:10px}.rev-stars{font-size:13px;display:block;margin:6px 0 0}.rev-text{font-size:13px;line-height:1.55}.rev-video iframe{height:180px}.consult .phone{font-size:26px}.call-block .cb-num{font-size:24px}.menu{padding:92px 28px 30px}.lb-nav{width:44px;height:44px;font-size:22px}}
@@ -504,7 +288,6 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
     <div class="btn-row">
       <a href="#consult" class="btn btn-solid">Получить консультацию</a>
       <a href="#works" class="btn btn-line">Смотреть работы</a>
-      <button id="aiHeroBtn" class="btn btn-ai"><span class="ai-dot"></span>Посоветоваться с ИИ</button>
     </div>
   </div></div>
   <div class="scroll-cue">Листайте<div class="line"></div></div>
@@ -778,21 +561,6 @@ footer .flogo span{color:var(--gold-soft);font-size:15px;font-family:'Manrope',s
   <button class="btn btn-solid" id="cookieOk">Принять</button>
 </div>
 
-<!-- Окно ИИ (открывается кнопкой рядом со «Смотреть работы») -->
-<div class="ai-chat" id="aiChat">
-  <div class="ai-head">
-    <span class="ai-title"><span class="ai-status"></span>🤖 Консультант Кухни Островский</span>
-    <button id="aiClose" class="ai-close">×</button>
-  </div>
-  <div class="ai-body" id="aiBody">
-    <div class="ai-msg bot">Привет! Я консультант мастерской «Кухни Островский» 🤝 Расскажу про кухни и мебель в Ростове, Батайске и Азове, помогу разобраться. Что вас интересует?</div>
-  </div>
-  <div class="ai-input-row">
-    <input id="aiInput" type="text" placeholder="Ваш вопрос..." autocomplete="off">
-    <button id="aiSend">➤</button>
-  </div>
-</div>
-
 <script>
 const progress=document.getElementById('progress');
 const header=document.getElementById('header');
@@ -832,26 +600,12 @@ document.addEventListener('keydown',e=>{if(lightbox.classList.contains('open')){
 const cookieBar=document.getElementById('cookieBar'),cookieOk=document.getElementById('cookieOk');
 if(!localStorage.getItem('cookiesAccepted')){setTimeout(()=>cookieBar.classList.add('show'),900);}
 cookieOk.addEventListener('click',()=>{localStorage.setItem('cookiesAccepted','1');cookieBar.classList.remove('show');});
-// ===== ИИ-чат =====
-const aiHeroBtn=document.getElementById('aiHeroBtn'),aiChat=document.getElementById('aiChat'),aiClose=document.getElementById('aiClose'),aiBody=document.getElementById('aiBody'),aiInput=document.getElementById('aiInput'),aiSend=document.getElementById('aiSend');
-let sessionId=localStorage.getItem('aiSessionId');
-if(!sessionId){sessionId='s'+Date.now()+Math.random().toString(36).slice(2,10);localStorage.setItem('aiSessionId',sessionId);}
-function openAi(){aiChat.classList.add('open');setTimeout(()=>aiInput.focus(),350);}
-function closeAi(){aiChat.classList.remove('open');}
-if(aiHeroBtn)aiHeroBtn.addEventListener('click',openAi);
-aiClose.addEventListener('click',closeAi);
-function aiAdd(text,who){const m=document.createElement('div');m.className='ai-msg '+who;m.textContent=text;aiBody.appendChild(m);aiBody.scrollTop=aiBody.scrollHeight;}
-function aiTyping(on){const t=aiBody.querySelector('.typing');if(on&&!t){const m=document.createElement('div');m.className='ai-msg bot typing';m.innerHTML='<span></span><span></span><span></span>';aiBody.appendChild(m);aiBody.scrollTop=aiBody.scrollHeight;}else if(!on&&t){t.remove();}}
-async function aiAsk(){const q=aiInput.value.trim();if(!q)return;aiAdd(q,'user');aiInput.value='';aiTyping(true);try{const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:q,session_id:sessionId})});const data=await res.json();aiTyping(false);aiAdd(data.reply||'Не удалось получить ответ. Попробуйте позже.','bot');}catch(e){aiTyping(false);aiAdd('Ошибка соединения с ИИ. Позвоните нам: +7 (950) 846-53-97','bot');}}
-aiSend.addEventListener('click',aiAsk);
-aiInput.addEventListener('keydown',e=>{if(e.key==='Enter')aiAsk();});
 document.getElementById('year').textContent=new Date().getFullYear();
 </script>
 </body>
 </html>
 """
 
-# ------------------------------- HTTP-сервер ---------------------------------
 class Handler(BaseHTTPRequestHandler):
     def _send(self, code, body, ctype="text/plain; charset=utf-8"):
         data = body.encode("utf-8") if isinstance(body, str) else body
@@ -868,31 +622,9 @@ class Handler(BaseHTTPRequestHandler):
         else:
             self._send(404, "Not found")
 
-    def do_POST(self):
-        if self.path.split("?")[0] != "/api/chat":
-            self._send(404, "Not found")
-            return
-        try:
-            length = int(self.headers.get("Content-Length", 0))
-            raw = self.rfile.read(length) if length else b"{}"
-            data = json.loads(raw.decode("utf-8") or "{}")
-            question = (data.get("message") or "").strip()
-            if not question:
-                self._send(400, json.dumps({"error": "empty message"}, ensure_ascii=False), "application/json")
-                return
-            sid = data.get("session_id") or "default"
-            history = get_history(sid)
-            remember(sid, "user", question)
-            reply = ask_ai(question, history) or "Извините, не удалось получить ответ. Попробуйте позже."
-            remember(sid, "assistant", reply)
-            self._send(200, json.dumps({"reply": reply, "session_id": sid}, ensure_ascii=False), "application/json")
-        except Exception as exc:  # noqa: BLE001
-            self._send(500, json.dumps({"error": str(exc)}, ensure_ascii=False), "application/json")
-
     def log_message(self, *args):
         pass
 
 if __name__ == "__main__":
-    init_db()
     print("Кухни Островский сервер запущен на http://0.0.0.0:{}".format(PORT))
     ThreadingHTTPServer(("0.0.0.0", PORT), Handler).serve_forever()
