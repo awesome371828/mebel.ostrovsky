@@ -1,17 +1,21 @@
 # -*- coding: utf-8 -*-
 """
-mebel.py — сайт «Кухни Островский» + система заявок, аккаунты MEBEL-XX, админ-панель.
+mebel.py — сайт «Кухни Островский» + заявки, коды MEBEL-XX, админ-панель.
 
-Данные хранятся в SQLite (переменная окружения DB_FILE, по умолчанию /app/data.db).
+Сотрудники (вход в /admin):
+  MEBEL-R  Руководитель
+  MEBEL-V  Владелец
+  MEBEL-A  Администратор
+  MEBEL-M  Менеджер
+  Пароль для всех: кухнироман (можно переопределить env STAFF_PASSWORD)
 
-Уведомления о заявках:
-  • бесплатно через Telegram: задайте TG_BOT_TOKEN и TG_CHAT_ID (сообщение придёт
-    на все устройства, даже на заблокированный экран);
-  • в админ-панели /admin заявка видна сразу со статусом «Новая».
-  Настоящие SMS требуют платного шлюза (sms.ru и т.п.) — подключаются отдельно.
+Обычные посетители при первом входе получают код MEBEL-01, MEBEL-02, ...
 
-Роли: director (Руководитель) > owner (Владелец) > admin > manager > user.
-Первый посетитель сайта автоматически становится MEBEL-OWNER (director).
+Заявки:
+  • сохраняются в SQLite (env DB_FILE, по умолчанию /app/data.db);
+  • приходят в Telegram-бот @codkuhni_bot: задайте env COD_TG с токеном бота.
+    Chat_id определяется автоматически по последнему сообщению боту,
+    либо задайте явно env COD_CHAT_ID.
 """
 import os
 import json
@@ -24,10 +28,17 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 PORT = int(os.environ.get("PORT", "8080"))
 DB_FILE = os.environ.get("DB_FILE", "/app/data.db")
 DOMAIN = "https://кухниостровский.рф"
-TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "")
-TG_CHAT_ID = os.environ.get("TG_CHAT_ID", "")
 
-ROLE_RANK = {"director": 4, "owner": 3, "admin": 2, "manager": 1, "user": 0}
+TG_BOT_TOKEN = os.environ.get("COD_TG", "")
+TG_CHAT_ID = os.environ.get("COD_CHAT_ID", "")
+STAFF_PASSWORD = os.environ.get("STAFF_PASSWORD", "кухнироман")
+
+STAFF = {
+    "MEBEL-R": "director",
+    "MEBEL-V": "owner",
+    "MEBEL-A": "admin",
+    "MEBEL-M": "manager",
+}
 ROLE_LABELS = {
     "director": "Руководитель",
     "owner": "Владелец",
@@ -95,42 +106,66 @@ def init_db():
     conn.close()
 
 
-def get_user(code):
-    if not code:
-        return None
-    conn = get_db()
-    row = conn.execute("SELECT * FROM users WHERE code=?", (code,)).fetchone()
-    conn.close()
-    return row
+# ------------------------------ Telegram -------------------------------------
+_tg_chat_cache = None
+
+
+def tg_resolve_chat_id():
+    global _tg_chat_cache
+    if _tg_chat_cache:
+        return _tg_chat_cache
+    if TG_CHAT_ID:
+        _tg_chat_cache = TG_CHAT_ID
+        return _tg_chat_cache
+    try:
+        url = "https://api.telegram.org/bot{}/getUpdates".format(TG_BOT_TOKEN)
+        with urllib.request.urlopen(url, timeout=15) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        for upd in reversed(data.get("result", [])):
+            msg = upd.get("message") or upd.get("channel_post") or {}
+            cid = msg.get("chat", {}).get("id")
+            if cid:
+                _tg_chat_cache = str(cid)
+                return _tg_chat_cache
+    except Exception as exc:  # noqa: BLE001
+        print("Telegram getUpdates error:", exc)
+    return ""
 
 
 def send_telegram(text):
-    if not TG_BOT_TOKEN or not TG_CHAT_ID:
-        print("Уведомление в Telegram не отправлено: задайте TG_BOT_TOKEN и TG_CHAT_ID")
+    if not TG_BOT_TOKEN:
+        print("Telegram не настроен: задайте COD_TG (токен бота @codkuhni_bot)")
+        return False
+    chat_id = tg_resolve_chat_id()
+    if not chat_id:
+        print("Не удалось определить chat_id: напишите боту @codkuhni_bot любое сообщение или задайте COD_CHAT_ID")
         return False
     try:
         url = "https://api.telegram.org/bot{}/sendMessage".format(TG_BOT_TOKEN)
-        data = urllib.parse.urlencode({"chat_id": TG_CHAT_ID, "text": text}).encode("utf-8")
+        data = urllib.parse.urlencode({"chat_id": chat_id, "text": text}).encode("utf-8")
         req = urllib.request.Request(url, data=data)
         with urllib.request.urlopen(req, timeout=15) as resp:
             return resp.status == 200
     except Exception as exc:  # noqa: BLE001
-        print("Telegram error:", exc)
+        print("Telegram send error:", exc)
         return False
 
 
 # ------------------------------ API ------------------------------------------
 def api_register():
     conn = get_db()
-    count = conn.execute("SELECT COUNT(*) AS c FROM users").fetchone()["c"]
-    if count == 0:
-        code, role = "MEBEL-OWNER", "director"
-    else:
-        code, role = "MEBEL-{:02d}".format(count + 1), "user"
-    conn.execute("INSERT INTO users (code, role, created_at) VALUES (?,?,?)", (code, role, now()))
+    used = {r["code"] for r in conn.execute("SELECT code FROM users").fetchall()}
+    n = 1
+    while True:
+        code = "MEBEL-{:02d}".format(n)
+        if code not in used and code not in STAFF:
+            break
+        n += 1
+    conn.execute("INSERT INTO users (code, role, created_at) VALUES (?,?,?)",
+                 (code, "user", now()))
     conn.commit()
     conn.close()
-    return {"ok": True, "code": code, "role": role}
+    return {"ok": True, "code": code, "role": "user"}
 
 
 def api_request(body):
@@ -156,7 +191,7 @@ def api_request(body):
     text = ("🔔 Новая заявка на сайте «Кухни Островский»!\n"
             "👤 Имя: {name}\n📞 Телефон: {phone}\n🏙 Город: {city}\n🪑 Что нужно: {furniture}\n"
             "💬 Комментарий: {comment}\n🆔 Код клиента: {code}\n\n"
-            "Посмотрите заявку в админ-панели: {domain}/admin").format(
+            "Подробнее: {domain}/admin").format(
         name=name, phone=phone, city=city, furniture=furniture,
         comment=comment or "—", code=code, domain=DOMAIN)
     send_telegram(text)
@@ -164,20 +199,22 @@ def api_request(body):
 
 
 def _staff(body):
-    code = (body.get("code") or "").strip()
-    user = get_user(code)
-    if not user or ROLE_RANK.get(user["role"], 0) < 1:
+    code = (body.get("code") or "").strip().upper()
+    password = body.get("password") or ""
+    role = STAFF.get(code)
+    if not role or password != STAFF_PASSWORD:
         return None
-    return user
+    return {"code": code, "role": role}
 
 
 def api_admin_login(body):
-    code = (body.get("code") or "").strip()
-    user = get_user(code)
-    if not user or ROLE_RANK.get(user["role"], 0) < 1:
-        return {"ok": False, "error": "Доступ запрещён: этот код не является кодом сотрудника"}
-    return {"ok": True, "code": user["code"], "role": user["role"],
-            "role_label": ROLE_LABELS.get(user["role"], user["role"])}
+    code = (body.get("code") or "").strip().upper()
+    password = body.get("password") or ""
+    role = STAFF.get(code)
+    if not role or password != STAFF_PASSWORD:
+        return {"ok": False, "error": "Неверный логин или пароль"}
+    return {"ok": True, "code": code, "role": role,
+            "role_label": ROLE_LABELS.get(role, role)}
 
 
 def api_admin_stats(body):
@@ -241,26 +278,6 @@ def api_admin_users(body):
     return {"ok": True, "items": items, "my_role": user["role"]}
 
 
-def api_admin_user_role(body):
-    user = _staff(body)
-    if not user or ROLE_RANK.get(user["role"], 0) < 3:
-        return {"ok": False, "error": "Только Руководитель или Владелец может выдавать роли"}
-    target_code = (body.get("target_code") or "").strip()
-    role = (body.get("role") or "").strip()
-    if role not in ROLE_RANK or role == "director":
-        return {"ok": False, "error": "Недопустимая роль"}
-    target = get_user(target_code)
-    if not target:
-        return {"ok": False, "error": "Пользователь не найден"}
-    if target["role"] == "director":
-        return {"ok": False, "error": "Нельзя изменить роль Руководителя"}
-    conn = get_db()
-    conn.execute("UPDATE users SET role=? WHERE code=?", (role, target_code))
-    conn.commit()
-    conn.close()
-    return {"ok": True}
-
-
 def handle_api(path, body):
     if path == "/api/register":
         return api_register()
@@ -276,12 +293,10 @@ def handle_api(path, body):
         return api_admin_request_update(body)
     if path == "/api/admin/users":
         return api_admin_users(body)
-    if path == "/api/admin/user/role":
-        return api_admin_user_role(body)
     return None
 
 
-# ------------------------------ HTML сайта -----------------------------------
+# ------------------------------- Сайт ----------------------------------------
 PAGE = """<!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -319,23 +334,7 @@ PAGE = """<!DOCTYPE html>
 <link rel="preconnect" href="https://i.ibb.co">
 
 <style>
-:root{
-  --bg:#14100b;
-  --card:rgba(255,255,255,.035);
-  --gold:#c9a45c;
-  --gold-soft:#e6c98a;
-  --gold-deep:#9a7434;
-  --text:#f4ecdc;
-  --muted:#cdbda3;
-  --line:rgba(201,164,92,.22);
-  --line-strong:rgba(230,201,138,.45);
-  --r-lg:26px;--r-md:18px;--r-sm:12px;
-  --shadow-lg:0 30px 70px rgba(0,0,0,.5);
-  --shadow-md:0 18px 44px rgba(0,0,0,.38);
-  --shadow-gold:0 16px 40px rgba(201,164,92,.28);
-  --serif:'Cormorant Garamond',Georgia,serif;
-  --sans:'Manrope',system-ui,sans-serif;
-}
+:root{--bg:#14100b;--gold:#c9a45c;--gold-soft:#e6c98a;--gold-deep:#9a7434;--text:#f4ecdc;--muted:#cdbda3;--line:rgba(201,164,92,.22);--line-strong:rgba(230,201,138,.45);--r-lg:26px;--r-md:18px;--r-sm:12px;--shadow-lg:0 30px 70px rgba(0,0,0,.5);--shadow-md:0 18px 44px rgba(0,0,0,.38);--shadow-gold:0 16px 40px rgba(201,164,92,.28);--serif:'Cormorant Garamond',Georgia,serif;--sans:'Manrope',system-ui,sans-serif}
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 section{scroll-margin-top:96px}
@@ -1012,13 +1011,9 @@ table{width:100%;border-collapse:collapse;font-size:14px}
 th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
 th{color:var(--gold-soft);font-size:11px;letter-spacing:2px;text-transform:uppercase}
 td{color:var(--text)}
-.status{display:inline-block;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700}
-.st-new{background:rgba(230,201,138,.16);color:var(--gold-soft);border:1px solid var(--gold)}
-.st-in_progress{background:rgba(64,169,242,.16);color:#8fd0ff;border:1px solid rgba(64,169,242,.4)}
-.st-done{background:rgba(34,197,94,.14);color:#6ee7a0;border:1px solid rgba(34,197,94,.35)}
-.st-canceled{background:rgba(255,80,80,.12);color:#ff9d9d;border:1px solid rgba(255,80,80,.3)}
 .empty{color:var(--muted);text-align:center;padding:30px 0}
 .badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(201,164,92,.15);border:1px solid var(--line);color:var(--gold-soft)}
+.hint{color:var(--muted);font-size:12px;margin-top:10px;line-height:1.6}
 @media(max-width:760px){.stats{grid-template-columns:1fr}.top{flex-direction:column;align-items:flex-start}}
 </style>
 </head>
@@ -1026,11 +1021,13 @@ td{color:var(--text)}
 <div class="wrap">
   <div id="login" class="card login-box">
     <h1>Админ-панель</h1>
-    <p>«Кухни Островский» — вход только по коду сотрудника.</p>
-    <input id="codeInput" class="input" placeholder="MEBEL-OWNER" autocomplete="off">
+    <p>«Кухни Островский» — вход по коду сотрудника и паролю.</p>
+    <input id="codeInput" class="input" placeholder="MEBEL-R" autocomplete="off">
+    <input id="passInput" class="input" type="password" placeholder="Пароль" autocomplete="off">
     <button class="btn btn-gold" id="loginBtn" style="width:100%">Войти</button>
     <div class="msg" id="loginMsg"></div>
-    <p style="margin-top:18px;font-size:13px"><a href="/">← Вернуться на сайт</a></p>
+    <p class="hint">Коды: MEBEL-R (Руководитель), MEBEL-V (Владелец), MEBEL-A (Администратор), MEBEL-M (Менеджер)</p>
+    <p style="margin-top:14px;font-size:13px"><a href="/">← Вернуться на сайт</a></p>
   </div>
   <div id="panel" style="display:none">
     <div class="top">
@@ -1053,12 +1050,14 @@ td{color:var(--text)}
 </div>
 <script>
 let code=localStorage.getItem('mebel_code')||'';
+let password=localStorage.getItem('mebel_pass')||'';
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 async function post(url,data){const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});return r.json();}
-async function tryLogin(c){
-  const d=await post('/api/admin/login',{code:c});
+async function tryLogin(c,p){
+  const d=await post('/api/admin/login',{code:c,password:p});
   if(d.ok){
-    code=c;localStorage.setItem('mebel_code',c);
+    code=c;password=p;
+    localStorage.setItem('mebel_code',c);localStorage.setItem('mebel_pass',p);
     document.getElementById('login').style.display='none';
     document.getElementById('panel').style.display='block';
     document.getElementById('who').textContent=d.role_label+' ('+d.code+')';
@@ -1067,13 +1066,9 @@ async function tryLogin(c){
     document.getElementById('loginMsg').textContent=d.error||'Ошибка входа';
   }
 }
-async function loadAll(){
-  await loadStats();
-  await loadRequests();
-  await loadUsers();
-}
+async function loadAll(){await loadStats();await loadRequests();await loadUsers();}
 async function loadStats(){
-  const d=await post('/api/admin/stats',{code:code});
+  const d=await post('/api/admin/stats',{code:code,password:password});
   if(!d.ok){alert(d.error||'Нет доступа');return;}
   document.getElementById('statsRow').innerHTML=
     '<div class="card stat"><div class="num">'+d.total+'</div><div class="lbl">Всего заявок</div></div>'+
@@ -1081,7 +1076,7 @@ async function loadStats(){
     '<div class="card stat"><div class="num">'+d.users+'</div><div class="lbl">Пользователей</div></div>';
 }
 async function loadRequests(){
-  const d=await post('/api/admin/requests',{code:code});
+  const d=await post('/api/admin/requests',{code:code,password:password});
   if(!d.ok){document.getElementById('reqCard').innerHTML='<div class="empty">'+esc(d.error||'Ошибка')+'</div>';return;}
   if(!d.items.length){document.getElementById('reqCard').innerHTML='<div class="empty">Заявок пока нет</div>';return;}
   let rows='<table><tr><th>№</th><th>Клиент</th><th>Телефон</th><th>Город</th><th>Что нужно</th><th>Комментарий</th><th>Дата</th><th>Статус</th></tr>';
@@ -1097,41 +1092,26 @@ async function loadRequests(){
   document.getElementById('reqCard').innerHTML=rows;
 }
 async function setStatus(id,status){
-  const d=await post('/api/admin/request/update',{code:code,id:id,status:status});
+  const d=await post('/api/admin/request/update',{code:code,password:password,id:id,status:status});
   if(!d.ok){alert(d.error||'Ошибка');}
 }
 async function loadUsers(){
-  const d=await post('/api/admin/users',{code:code});
+  const d=await post('/api/admin/users',{code:code,password:password});
   if(!d.ok){document.getElementById('usersCard').innerHTML='<div class="empty">'+esc(d.error||'Ошибка')+'</div>';return;}
   if(!d.items.length){document.getElementById('usersCard').innerHTML='<div class="empty">Пользователей пока нет</div>';return;}
-  const canRole=(d.my_role==='director'||d.my_role==='owner');
-  let rows='<table><tr><th>Код</th><th>Роль</th>'+(canRole?'<th>Выдать роль</th>':'')+'<th>Регистрация</th></tr>';
+  let rows='<table><tr><th>Код</th><th>Роль</th><th>Регистрация</th></tr>';
   d.items.forEach(u=>{
-    let roleCell='<span class="badge">'+esc(u.role_label)+'</span>';
-    let roleSelect='';
-    if(canRole&&u.role!=='director'){
-      roleSelect='<select class="input" style="min-width:150px" onchange="setRole(\''+esc(u.code)+'\',this.value)">'+
-        '<option value="owner"'+(u.role==='owner'?' selected':'')+'>Владелец</option>'+
-        '<option value="admin"'+(u.role==='admin'?' selected':'')+'>Администратор</option>'+
-        '<option value="manager"'+(u.role==='manager'?' selected':'')+'>Менеджер</option>'+
-        '<option value="user"'+(u.role==='user'?' selected':'')+'>Пользователь</option>'+
-      '</select>';
-    }
-    rows+='<tr><td style="font-weight:700">'+esc(u.code)+'</td><td>'+roleCell+'</td>'+(canRole?'<td>'+roleSelect+'</td>':'')+'<td style="white-space:nowrap">'+esc(u.created_at)+'</td></tr>';
+    rows+='<tr><td style="font-weight:700">'+esc(u.code)+'</td><td><span class="badge">'+esc(u.role_label)+'</span></td><td style="white-space:nowrap">'+esc(u.created_at)+'</td></tr>';
   });
   rows+='</table>';
   document.getElementById('usersCard').innerHTML=rows;
 }
-async function setRole(target,role){
-  const d=await post('/api/admin/user/role',{code:code,target_code:target,role:role});
-  if(!d.ok){alert(d.error||'Ошибка');}
-  loadUsers();
-}
-document.getElementById('loginBtn').addEventListener('click',()=>tryLogin(document.getElementById('codeInput').value.trim()));
-document.getElementById('codeInput').addEventListener('keydown',e=>{if(e.key==='Enter')tryLogin(e.target.value.trim());});
-document.getElementById('logoutBtn').addEventListener('click',()=>{code='';localStorage.removeItem('mebel_code');location.reload();});
+document.getElementById('loginBtn').addEventListener('click',()=>tryLogin(document.getElementById('codeInput').value.trim(),document.getElementById('passInput').value));
+document.getElementById('codeInput').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('passInput').focus();});
+document.getElementById('passInput').addEventListener('keydown',e=>{if(e.key==='Enter')tryLogin(document.getElementById('codeInput').value.trim(),e.target.value);});
+document.getElementById('logoutBtn').addEventListener('click',()=>{code='';password='';localStorage.removeItem('mebel_code');localStorage.removeItem('mebel_pass');location.reload();});
 document.getElementById('refreshBtn').addEventListener('click',loadAll);
-if(code){tryLogin(code);}
+if(code&&password){tryLogin(code,password);}
 </script>
 </body>
 </html>
@@ -1183,5 +1163,5 @@ class Handler(BaseHTTPRequestHandler):
 if __name__ == "__main__":
     init_db()
     print("Кухни Островский сервер запущен на http://0.0.0.0:{}".format(PORT))
-    print("Админ-панель: /admin")
+    print("Админ-панель: /admin (коды MEBEL-R/V/A/M, пароль кухнироман)")
     ThreadingHTTPServer(("0.0.0.0", PORT), Handler).serve_forever()
