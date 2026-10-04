@@ -1389,15 +1389,16 @@ class Handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(data)
 
-    def _redirect(self, location, cache="public, max-age=86400"):
+        def _redirect(self, location, cache="public, max-age=86400"):
         self.send_response(302)
         self.send_header("Location", location)
         self.send_header("Cache-Control", cache)
         self.end_headers()
 
-        def do_GET(self):
+    def do_GET(self):
         path = self.path.split("?")[0]
 
+      
         if path == "/admin":
             if get_cookie(self, "sc_admin") and verify_token(get_cookie(self, "sc_admin")):
                 self._send(200, admin_page(), "text/html; charset=utf-8", "no-cache")
@@ -1452,7 +1453,7 @@ class Handler(BaseHTTPRequestHandler):
         else:
             self._send(404, PAGE_404, "text/html; charset=utf-8", "no-cache")
 
-      def do_POST(self):
+     def do_POST(self):
         path = self.path.split("?")[0]
         try:
             if path == "/admin/login":
