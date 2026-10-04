@@ -1106,21 +1106,19 @@ def uploads_list():
 
 def make_token():
     ts = str(int(time.time()))
-    payload = ts + ":" + ADMIN_LOGIN
-    sig = hmac.new(SESSION_SECRET.encode(), payload.encode(), hashlib.sha256).hexdigest()
-    return payload + "." + sig
+    msg = ts + ":" + ADMIN_LOGIN
+    sig = hmac.new(SESSION_SECRET.encode(), msg.encode("utf-8"), hashlib.sha256).hexdigest()
+    return ts + "." + sig  # только ASCII: timestamp.hex
 
 
 def verify_token(token):
     try:
         payload, sig = token.rsplit(".", 1)
-        expect = hmac.new(SESSION_SECRET.encode(), payload.encode(), hashlib.sha256).hexdigest()
+        msg = payload + ":" + ADMIN_LOGIN
+        expect = hmac.new(SESSION_SECRET.encode(), msg.encode("utf-8"), hashlib.sha256).hexdigest()
         if not hmac.compare_digest(sig, expect):
             return False
-        ts, login = payload.split(":", 1)
-        if not hmac.compare_digest(login, ADMIN_LOGIN):
-            return False
-        return int(time.time()) - int(ts) < SESSION_TTL
+        return int(time.time()) - int(payload) < SESSION_TTL
     except Exception:
         return False
 
@@ -1397,6 +1395,14 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
+        try:
+            self._do_get()
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            self._send(500, "<h1>500 — ошибка сервера</h1><pre>" + esc(repr(e)) + "</pre>", "text/html; charset=utf-8", "no-cache")
+
+    def _do_get(self):
         path = self.path.split("?")[0]
 
         if path == "/admin":
