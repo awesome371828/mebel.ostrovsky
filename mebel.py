@@ -66,7 +66,8 @@ MANIFEST = """{
   "theme_color": "#14100b",
   "lang": "ru-RU",
   "icons": [
-    {"src": "/favicon.ico", "sizes": "any", "type": "image/jpeg", "purpose": "any"}
+    {"src": "/favicon.ico", "sizes": "any", "type": "image/jpeg", "purpose": "any"},
+    {"src": "/apple-touch-icon.png", "sizes": "any", "type": "image/jpeg", "purpose": "any"}
   ]
 }
 """
@@ -127,8 +128,10 @@ PAGE = """<!DOCTYPE html>
 <link rel="alternate" hreflang="x-default" href="https://кухниостровский.рф/">
 <meta name="yandex-verification" content="f7e96d07aee79bf3">
 <meta name="google-site-verification" content="dNSAELu64Y7aK5sjz_zpmhoz6YKn2PIZ03UKPwrgnCI">
-<link rel="icon" href="/favicon.ico">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="icon" type="image/jpeg" sizes="any" href="/favicon.ico">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="msapplication-TileImage" content="/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ru_RU">
@@ -332,7 +335,7 @@ h2.k{position:relative;font-size:clamp(34px,4.8vw,50px);color:#faf3e6;font-weigh
 .rev-stars{color:var(--gold-soft);letter-spacing:3px;font-size:15px;margin-left:auto;white-space:nowrap;text-shadow:0 0 14px rgba(230,201,138,.5)}
 .rev-text{color:#ece2cd;font-size:14px;line-height:1.68;font-weight:300;text-align:left;overflow-wrap:break-word;word-break:break-word;letter-spacing:.1px}
 .rev-video{margin-top:14px;border-radius:var(--r-md);overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow-md)}
-.rev-video iframe{width:100%;height:200px;border:0;display:block}
+.rev-video iframe{width:100%;height:260px;border:0;display:block}
 .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
 .svc{position:relative;background:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.016));backdrop-filter:blur(14px);border:1px solid var(--line);padding:38px 32px;transition:.5s cubic-bezier(.22,.61,.36,1);border-radius:var(--r-lg);overflow-wrap:break-word;overflow:hidden}
 .svc::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(135deg,var(--gold-soft),transparent 40%,transparent 60%,var(--gold-soft));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:.5s;pointer-events:none}
@@ -623,26 +626,21 @@ footer .flogo span{color:var(--gold-soft);font-size:14px;font-family:var(--sans)
           </div>
           <p class="rev-text">Заказывали у Романа два шкафа. Во время замеров у нас не было определённой идеи, как сделать вместительный шкаф в нашу небольшую спальню, ещё и с несущей колонной. Роман подкинул прекрасную идею, в итоге получился не просто шкаф, а целая угловая гардеробная, я была в восторге 🤩 Большой выбор цветов и текстур. Работа выполнена в оговорённый срок и качественно. 👍🏻 Большое спасибо за эстетичное воплощение нашей мечты 🤩😊</p>
         </div>
+        <div class="rev-card">
+          <div class="rev-head">
+            <div><div class="rev-name">Александр Карташев</div><div class="rev-sub">Видеоотзыв · Кухня на заказ</div></div>
+            <div class="rev-stars">★★★★★</div>
+          </div>
+          <div class="rev-video">
+            <iframe src="https://vk.ru/video_ext.php?oid=-212015374&id=456239019&hash=6abf300a7c2518d4" frameborder="0" allowfullscreen="1" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Видеоотзыв Александра Карташева о кухне на заказ — Кухни Островский"></iframe>
+          </div>
+          <p class="rev-text">«<b>Прям гордость квартиры 😀</b> За приемлемую цену получили отличную кухню: выступ стояка закрыли пеналом, а в ножку барного стола встроили розетки».</p>
+        </div>
       </div>
       <button class="car-nav car-next" id="revNext">❯</button>
       <div class="car-dots" id="revDots"></div>
     </div>
     <p style="color:var(--muted);margin-top:26px;text-align:center;font-size:14px">Больше отзывов — в нашем сообществе <a href="https://vk.com/mebel.ostrovsky" target="_blank" rel="noopener" style="color:var(--gold-soft);font-weight:600">ВКонтакте</a></p>
-  </div></div>
-</section>
-
-<section class="panel panel--center panel--dark" id="video">
-  <div class="bg" style="background-image:url('https://sun9-44.vkuserphoto.ru/s/v1/ig2/z3K7MYc56nf_4Ek_wkhJ-j-VZt7iv_VEt9wUN0gJSY0VORuRVxQCX1S5baisBgJyoYuCcrENJNxLajL1WKwdFS91.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x541,1080x811,1280x961,1440x1081,2560x1922&from=bu&u=Fj3HDKPJXUOEmCWl6MePYyPYB6lNmsGien6u_9mlUi8&cs=1280x0')"></div>
-  <div class="wrap"><div class="content">
-    <div class="sec-head reveal">
-      <div class="kicker">Видеоотзыв</div>
-      <h2>Как это было — история клиента</h2>
-      <p>Александр Карташев рассказывает, как мы сделали кухню под нестандартную планировку.</p>
-    </div>
-    <div class="video-hero reveal">
-      <iframe src="https://vk.ru/video_ext.php?oid=-212015374&id=456239019&hash=6abf300a7c2518d4" frameborder="0" allowfullscreen="1" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Видеоотзыв клиента о кухне на заказ — Кухни Островский"></iframe>
-    </div>
-    <p class="video-note reveal">«<b>Прям гордость квартиры 😀</b> За приемлемую цену получили отличную кухню: выступ стояка закрыли пеналом, а в ножку барного стола встроили розетки».</p>
   </div></div>
 </section>
 
@@ -781,7 +779,7 @@ function closeMenu(){burger.classList.remove('open');menu.classList.remove('open
 burger.addEventListener('click',()=>{const open=menu.classList.contains('open');if(open)closeMenu();else{burger.classList.add('open');menu.classList.add('open');scrim.classList.add('show');}});
 scrim.addEventListener('click',closeMenu);
 menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeMenu));
-const sections=['about','works','reviews','video','services','process','cities','contacts'];
+const sections=['about','works','reviews','services','process','cities','contacts'];
 const navLinks=menu.querySelectorAll('a[href^="#"]');
 window.addEventListener('scroll',()=>{let current='';sections.forEach(id=>{const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<=120)current=id;});navLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+current));},{passive:true});
 function supportsParallax(){return window.matchMedia('(min-width:861px)').matches;}
