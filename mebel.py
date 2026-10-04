@@ -1084,11 +1084,12 @@ def save_content(content):
 
 
 def apply_overrides(html_text, content):
-    # фикс Google: если в JSON-LD нет alternateName — добавляем на лету
-    if "alternateName" not in html_text and '"name": "Кухни Островский",' in html_text:
+    # фикс Google: alternateName именно в блоке WebSite (якорь #website)
+    anchor = '"@id": "https://кухниостровский.рф/#website",'
+    if anchor in html_text and '"alternateName": "кухниостровский.рф"' not in html_text:
         html_text = html_text.replace(
-            '"name": "Кухни Островский",',
-            '"name": "Кухни Островский",\n  "alternateName": "кухниостровский.рф",', 1)
+            anchor,
+            anchor + '\n  "alternateName": "кухниостровский.рф",', 1)
     for r in content.get("replacements", []):
         find = (r.get("find") or "").strip()
         repl = r.get("replace") or ""
@@ -1389,7 +1390,7 @@ class Handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(data)
 
-        def _redirect(self, location, cache="public, max-age=86400"):
+    def _redirect(self, location, cache="public, max-age=86400"):
         self.send_response(302)
         self.send_header("Location", location)
         self.send_header("Cache-Control", cache)
@@ -1398,7 +1399,6 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         path = self.path.split("?")[0]
 
-      
         if path == "/admin":
             if get_cookie(self, "sc_admin") and verify_token(get_cookie(self, "sc_admin")):
                 self._send(200, admin_page(), "text/html; charset=utf-8", "no-cache")
@@ -1453,7 +1453,7 @@ class Handler(BaseHTTPRequestHandler):
         else:
             self._send(404, PAGE_404, "text/html; charset=utf-8", "no-cache")
 
-     def do_POST(self):
+    def do_POST(self):
         path = self.path.split("?")[0]
         try:
             if path == "/admin/login":
@@ -1550,6 +1550,9 @@ class Handler(BaseHTTPRequestHandler):
         with open(os.path.join(UPLOAD_DIR, name), "wb") as f:
             f.write(fdata)
         self._send(200, json.dumps({"ok": True, "url": "/uploads/" + name}, ensure_ascii=False), "application/json; charset=utf-8", "no-cache")
+
+    def log_message(self, *args):
+        pass
 
     def log_message(self, *args):
         pass
