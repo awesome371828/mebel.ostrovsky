@@ -15,15 +15,32 @@ mebel.py — сайт «Кухни Островский».
 """
 import gzip
 import hashlib
+import hmac
+import html as _html
 import io
+import json
+import mimetypes
 import os
+import re
+import secrets
 import time
 import urllib.request
 from datetime import date
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from urllib.parse import parse_qs
 
 PORT = int(os.environ.get("PORT", "8080"))
 DOMAIN = "https://кухниостровский.рф"
+
+# --- Админка ---------------------------------------------------------------
+ADMIN_LOGIN = os.environ.get("ADMIN_LOGIN", "кухнироманост")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "kuhroman")
+SESSION_SECRET = os.environ.get("SESSION_SECRET", secrets.token_hex(32))
+SESSION_TTL = 7 * 24 * 3600  # 7 дней
+CONTENT_FILE = os.environ.get("CONTENT_FILE", "content.json")
+UPLOAD_DIR = os.environ.get("UPLOAD_DIR", "uploads")
+MAX_UPLOAD = 10 * 1024 * 1024
+ALLOWED_EXT = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg", ".ico", ".mp4", ".webm"}
 
 FAVICON_URL = "https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1254x1254&from=bu&u=8vUcv8YxPcmfEmzVcjy5cNrPtcWeOIJmbKMc6vln3Q8&cs=1254x0"
 VIDEO_POSTER = "https://sun9-44.vkuserphoto.ru/s/v1/ig2/z3K7MYc56nf_4Ek_wkhJ-j-VZt7iv_VEt9wUN0gJSY0VORuRVxQCX1S5baisBgJyoYuCcrENJNxLajL1WKwdFS91.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x541,1080x811,1280x961,1440x1081,2560x1922&from=bu&u=Fj3HDKPJXUOEmCWl6MePYyPYB6lNmsGien6u_9mlUi8&cs=1280x0"
@@ -1045,6 +1062,290 @@ def get_favicon():
             return None
     return _favicon_cache["data"]
 
+def esc(x):
+    return _html.escape(str(x), quote=True)
+
+
+def load_content():
+    if not os.path.exists(CONTENT_FILE):
+        save_content({"replacements": [], "page": ""})
+    try:
+        with open(CONTENT_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {"replacements": [], "page": ""}
+
+
+def save_content(content):
+    tmp = CONTENT_FILE + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(content, f, ensure_ascii=False, indent=2)
+    os.replace(tmp, CONTENT_FILE)
+
+
+def apply_overrides(html_text, content):
+    # фикс Google: если в JSON-LD нет alternateName — добавляем на лету
+    if "alternateName" not in html_text and '"name": "Кухни Островский",' in html_text:
+        html_text = html_text.replace(
+            '"name": "Кухни Островский",',
+            '"name": "Кухни Островский",\n  "alternateName": "кухниостровский.рф",', 1)
+    for r in content.get("replacements", []):
+        find = (r.get("find") or "").strip()
+        repl = r.get("replace") or ""
+        if find and find in html_text:
+            html_text = html_text.replace(find, repl)
+    return html_text
+
+
+def uploads_list():
+    if not os.path.isdir(UPLOAD_DIR):
+        return []
+    return ["/uploads/" + f for f in sorted(os.listdir(UPLOAD_DIR)) if not f.startswith(".")]
+
+
+def make_token():
+    ts = str(int(time.time()))
+    payload = ts + ":" + ADMIN_LOGIN
+    sig = hmac.new(SESSION_SECRET.encode(), payload.encode(), hashlib.sha256).hexdigest()
+    return payload + "." + sig
+
+
+def verify_token(token):
+    try:
+        payload, sig = token.rsplit(".", 1)
+        expect = hmac.new(SESSION_SECRET.encode(), payload.encode(), hashlib.sha256).hexdigest()
+        if not hmac.compare_digest(sig, expect):
+            return False
+        ts, login = payload.split(":", 1)
+        if not hmac.compare_digest(login, ADMIN_LOGIN):
+            return False
+        return int(time.time()) - int(ts) < SESSION_TTL
+    except Exception:
+        return False
+
+
+def get_cookie(req, name):
+    raw = req.headers.get("Cookie") or ""
+    for part in raw.split(";"):
+        part = part.strip()
+        if part.startswith(name + "="):
+            return part[len(name) + 1:]
+    return None
+
+
+ADMIN_LOGIN_PAGE = """<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Вход — Кухни Островский</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Manrope',system-ui,sans-serif;background:#0e0c09;color:#f5efe3;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.card{max-width:420px;width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(236,207,160,.25);border-radius:20px;padding:40px 34px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.logo{width:60px;height:60px;border-radius:50%;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:28px;font-weight:700;color:#17120b;background:linear-gradient(135deg,#eccfa0,#d4af6a);box-shadow:0 10px 30px rgba(212,175,106,.4)}
+h1{font-family:Georgia,serif;font-size:26px;margin-bottom:6px}
+p.sub{color:#b9ad9a;font-size:14px;margin-bottom:26px}
+label{display:block;text-align:left;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#b9ad9a;margin:14px 0 6px}
+input{width:100%;padding:14px 16px;border-radius:12px;border:1px solid rgba(236,207,160,.25);background:#0e0c09;color:#f5efe3;font-size:15px;outline:none;font-family:inherit}
+input:focus{border-color:#d4af6a}
+button{width:100%;margin-top:22px;padding:15px;border:0;border-radius:12px;font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;color:#17120b;background:linear-gradient(135deg,#eccfa0,#d4af6a);font-family:inherit}
+.err{margin-top:16px;padding:12px;border-radius:10px;background:rgba(200,60,50,.15);border:1px solid rgba(200,60,50,.4);color:#ffb4a8;font-size:13px}
+a.back{display:block;margin-top:16px;color:#b9ad9a;font-size:13px;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">К</div>
+  <h1>Кухни Островский</h1>
+  <p class="sub">Вход в админ-панель</p>
+  <form method="post" action="/admin/login">
+    <label>Логин</label><input type="text" name="login" autocomplete="username" required>
+    <label>Пароль</label><input type="password" name="password" autocomplete="current-password" required>
+    <button type="submit">Войти</button>
+    <!--ERR-->
+  </form>
+  <a class="back" href="/">← На сайт</a>
+</div>
+</body>
+</html>"""
+
+
+def admin_page():
+    content = load_content()
+    reps = content.get("replacements", [])
+    rows = ""
+    for r in reps:
+        rows += ("<tr><td><input type='text' class='f' value='%s' placeholder='Что заменить'></td>"
+                 "<td><input type='text' class='r' value='%s' placeholder='На что заменить'></td>"
+                 "<td><button type='button' class='del' onclick=\"this.parentNode.parentNode.remove()\">✕</button></td></tr>"
+                 ) % (esc(r.get("find", "")), esc(r.get("replace", "")))
+    page_val = content.get("page") or PAGE
+    return ADMIN_TEMPLATE.replace("__ROWS__", rows).replace("__PAGE__", esc(page_val))
+
+
+ADMIN_TEMPLATE = """<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Админка — Кухни Островский</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Manrope',system-ui,sans-serif;background:#0e0c09;color:#f5efe3;min-height:100vh}
+.top{position:sticky;top:0;z-index:50;background:rgba(14,12,9,.95);backdrop-filter:blur(14px);border-bottom:1px solid rgba(236,207,160,.2);padding:0 20px;display:flex;align-items:center;gap:14px;height:62px}
+.top .logo{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-weight:700;color:#17120b;background:linear-gradient(135deg,#eccfa0,#d4af6a)}
+.top h1{font-size:16px;flex:1}
+.top a{color:#eccfa0;text-decoration:none;font-size:14px}
+.top form{display:inline}
+.top button{background:none;border:1px solid rgba(236,207,160,.4);color:#eccfa0;padding:8px 14px;border-radius:30px;cursor:pointer;font-family:inherit;font-size:13px}
+.tabs{display:flex;gap:6px;padding:16px 20px 0;overflow-x:auto}
+.tab-btn{white-space:nowrap;padding:10px 18px;border-radius:12px 12px 0 0;border:1px solid transparent;background:none;color:#b9ad9a;font-size:14px;cursor:pointer;font-family:inherit}
+.tab-btn.active{color:#eccfa0;background:rgba(236,207,160,.08);border-color:rgba(236,207,160,.25) rgba(236,207,160,.25) transparent}
+main{padding:22px 20px 80px;max-width:1100px;margin:0 auto}
+.tab{display:none}
+.tab.active{display:block}
+.card{background:rgba(255,255,255,.04);border:1px solid rgba(236,207,160,.18);border-radius:16px;padding:22px;margin-bottom:18px}
+.card h2{font-size:17px;color:#eccfa0;margin-bottom:12px}
+.hint{font-size:12.5px;color:#b9ad9a;line-height:1.6;margin-bottom:14px}
+table{width:100%;border-collapse:collapse;margin-top:10px}
+th{text-align:left;color:#b9ad9a;font-size:12px;font-weight:500;padding:8px;border-bottom:1px solid rgba(236,207,160,.2)}
+td{padding:6px 8px;border-bottom:1px solid rgba(236,207,160,.1)}
+input[type=text],textarea{width:100%;padding:11px 13px;border-radius:10px;border:1px solid rgba(236,207,160,.22);background:#0e0c09;color:#f5efe3;font-size:14px;outline:none;font-family:inherit}
+input:focus,textarea:focus{border-color:#d4af6a}
+textarea{min-height:420px;font-family:ui-monospace,Consolas,monospace;font-size:12.5px;line-height:1.5;resize:vertical}
+.btn{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:13px 26px;border:0;border-radius:30px;background:linear-gradient(135deg,#eccfa0,#d4af6a);color:#17120b;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit}
+.btn.ghost{background:none;border:1px solid rgba(236,207,160,.4);color:#eccfa0}
+.del{background:none;border:1px solid rgba(200,60,50,.5);color:#ff9d8f;width:32px;height:32px;border-radius:8px;cursor:pointer}
+.add{padding:9px 16px;border-radius:30px;border:1px dashed rgba(236,207,160,.5);background:none;color:#eccfa0;cursor:pointer;font-family:inherit;margin-top:10px}
+.uploads{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px}
+.up-item{border:1px solid rgba(236,207,160,.2);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:6px;align-items:center;max-width:140px;cursor:pointer}
+.up-item img{width:100px;height:75px;object-fit:cover;border-radius:6px}
+.up-item code{font-size:10px;color:#b9ad9a;word-break:break-all}
+.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,90px);background:linear-gradient(135deg,#eccfa0,#d4af6a);color:#17120b;font-weight:700;padding:13px 26px;border-radius:30px;z-index:999;opacity:0;transition:.3s;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.toast.show{transform:translate(-50%,0);opacity:1}
+@media(max-width:640px){main{padding:18px 14px 80px}.top h1{font-size:14px}}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="logo">К</div>
+  <h1>Админка — Кухни Островский</h1>
+  <a href="/" target="_blank">Открыть сайт ↗</a>
+  <form method="post" action="/admin/logout"><button>Выйти</button></form>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" data-tab="reps">Замены текста</button>
+  <button class="tab-btn" data-tab="page">Вся страница</button>
+  <button class="tab-btn" data-tab="files">Фото</button>
+</div>
+
+<main>
+<div class="tab active" id="tab-reps">
+  <div class="card">
+    <h2>Замены текста на сайте</h2>
+    <div class="hint">Меняй ЛЮБОЙ текст: телефон, заголовки, отзывы, цены, ссылки, URL картинок. Найди точную фразу, которая сейчас на сайте, и укажи, на что её заменить. Сохрани — и сайт сразу обновится.</div>
+    <table>
+      <thead><tr><th style="width:42%">Что найти (текст с сайта)</th><th style="width:48%">На что заменить</th><th></th></tr></thead>
+      <tbody id="repRows">__ROWS__</tbody>
+    </table>
+    <button type="button" class="add" onclick="addRow()">+ Добавить замену</button>
+    <br><button class="btn" onclick="saveReps()">💾 Сохранить замены</button>
+  </div>
+</div>
+
+<div class="tab" id="tab-page">
+  <div class="card">
+    <h2>Вся страница (HTML/CSS/JS)</h2>
+    <div class="hint">Максимальный контроль: здесь лежит весь HTML сайта. Меняй что угодно — вплоть до дизайна и анимаций. Чтобы вернуть как было — нажми «Вернуть оригинал».</div>
+    <textarea id="pageEditor">__PAGE__</textarea>
+    <br>
+    <button class="btn" onclick="savePage()">💾 Сохранить страницу</button>
+    <button class="btn ghost" onclick="resetPage()">↺ Вернуть оригинал</button>
+  </div>
+</div>
+
+<div class="tab" id="tab-files">
+  <div class="card">
+    <h2>Загрузка фото</h2>
+    <div class="hint">Загрузи картинку — получишь ссылку вида /uploads/xxx.jpg. Потом вставь её в замену (например, поменяй URL фото работы). Клик по картинке в списке — скопировать ссылку.</div>
+    <input type="file" id="fileInput" accept=".png,.jpg,.jpeg,.webp,.gif,.svg">
+    <br>
+    <button class="btn" onclick="uploadFile()">⬆ Загрузить</button>
+    <div class="uploads" id="uploadsList"></div>
+  </div>
+</div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2200)}
+document.querySelectorAll('.tab-btn').forEach(function(b){
+  b.addEventListener('click',function(){
+    document.querySelectorAll('.tab-btn').forEach(function(x){x.classList.remove('active')});
+    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active')});
+    b.classList.add('active');
+    document.getElementById('tab-'+b.dataset.tab).classList.add('active');
+  });
+});
+function addRow(){
+  var tr=document.createElement('tr');
+  tr.innerHTML="<td><input type='text' class='f' placeholder='Например: +7 (950) 846-53-97'></td>"+
+               "<td><input type='text' class='r' placeholder='Новый текст'></td>"+
+               "<td><button type='button' class='del' onclick=\"this.parentNode.parentNode.remove()\">✕</button></td>";
+  document.getElementById('repRows').appendChild(tr);
+}
+function saveReps(){
+  var reps=[];
+  document.querySelectorAll('#repRows tr').forEach(function(tr){
+    var f=tr.querySelector('.f'),r=tr.querySelector('.r');
+    if(f&&f.value.trim())reps.push({find:f.value,replace:r?r.value:''});
+  });
+  fetch('/admin/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({replacements:reps})})
+    .then(function(res){return res.json()}).then(function(d){toast(d.ok?'Сохранено ✅':'Ошибка: '+d.error)})
+    .catch(function(e){toast('Ошибка: '+e)});
+}
+function savePage(){
+  var v=document.getElementById('pageEditor').value;
+  fetch('/admin/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({page:v})})
+    .then(function(res){return res.json()}).then(function(d){toast(d.ok?'Страница сохранена ✅':'Ошибка: '+d.error)})
+    .catch(function(e){toast('Ошибка: '+e)});
+}
+function resetPage(){
+  if(!confirm('Вернуть страницу к оригиналу? Все правки HTML пропадут.'))return;
+  fetch('/admin/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({page:''})})
+    .then(function(res){return res.json()}).then(function(d){if(d.ok){toast('Оригинал восстановлен ✅');document.getElementById('pageEditor').value=document.getElementById('pageEditor').dataset.orig||'';}else{toast('Ошибка: '+d.error)}})
+    .catch(function(e){toast('Ошибка: '+e)});
+}
+function uploadFile(){
+  var inp=document.getElementById('fileInput');
+  if(!inp.files.length){toast('Выберите файл');return}
+  var fd=new FormData();fd.append('file',inp.files[0]);
+  fetch('/admin/upload',{method:'POST',body:fd})
+    .then(function(res){return res.json()})
+    .then(function(d){if(d.ok){toast('Загружено! URL: '+d.url);loadUploads()}else{toast('Ошибка: '+d.error)}})
+    .catch(function(e){toast('Ошибка: '+e)});
+}
+function loadUploads(){
+  fetch('/uploads/list.json').then(function(r){return r.json()}).then(function(list){
+    var box=document.getElementById('uploadsList');box.innerHTML='';
+    (list||[]).forEach(function(u){
+      var d=document.createElement('div');d.className='up-item';
+      d.innerHTML='<img src="'+u+'" alt=""><code>'+u+'</code>';
+      d.onclick=function(){if(navigator.clipboard)navigator.clipboard.writeText(u);toast('URL скопирован')};
+      box.appendChild(d);
+    });
+  }).catch(function(){});
+}
+(function(){
+  var ed=document.getElementById('pageEditor');if(ed)ed.dataset.orig=ed.value;
+  loadUploads();
+})();
+</script>
+</body>
+</html>"""
 
 class Handler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
@@ -1094,14 +1395,35 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Cache-Control", cache)
         self.end_headers()
 
-    def do_GET(self):
+        def do_GET(self):
         path = self.path.split("?")[0]
+
+        if path == "/admin":
+            if get_cookie(self, "sc_admin") and verify_token(get_cookie(self, "sc_admin")):
+                self._send(200, admin_page(), "text/html; charset=utf-8", "no-cache")
+            else:
+                self._send(200, ADMIN_LOGIN_PAGE, "text/html; charset=utf-8", "no-cache")
+            return
+
         if path in ("/", "/index.html"):
-            self._send(200, PAGE, "text/html; charset=utf-8", "no-cache")
+            content = load_content()
+            base = content.get("page") or PAGE
+            self._send(200, apply_overrides(base, content), "text/html; charset=utf-8", "no-cache")
         elif path == "/robots.txt":
             self._send(200, ROBOTS, "text/plain; charset=utf-8", "public, max-age=86400")
         elif path == "/sitemap.xml":
             self._send(200, SITEMAP, "application/xml; charset=utf-8", "public, max-age=3600")
+        elif path == "/uploads/list.json":
+            self._send(200, json.dumps(uploads_list(), ensure_ascii=False), "application/json; charset=utf-8", "no-cache")
+        elif path.startswith("/uploads/"):
+            base_dir = os.path.realpath(UPLOAD_DIR)
+            fp = os.path.realpath(os.path.join(UPLOAD_DIR, os.path.basename(path)))
+            if not fp.startswith(base_dir) or not os.path.isfile(fp):
+                self._send(404, PAGE_404, "text/html; charset=utf-8", "no-cache")
+                return
+            ctype = mimetypes.guess_type(fp)[0] or "application/octet-stream"
+            with open(fp, "rb") as f:
+                self._send(200, f.read(), ctype, "public, max-age=86400", gzip_ok=False)
         elif path == "/favicon.ico":
             data = get_favicon()
             if not data:
@@ -1130,10 +1452,112 @@ class Handler(BaseHTTPRequestHandler):
         else:
             self._send(404, PAGE_404, "text/html; charset=utf-8", "no-cache")
 
+      def do_POST(self):
+        path = self.path.split("?")[0]
+        try:
+            if path == "/admin/login":
+                self.admin_login()
+            elif path == "/admin/logout":
+                self.admin_logout()
+            elif path == "/admin/save":
+                self.admin_save()
+            elif path == "/admin/upload":
+                self.admin_upload()
+            else:
+                self._send(404, '{"ok":false,"error":"not found"}', "application/json; charset=utf-8", "no-cache")
+        except Exception as e:
+            self._send(400, json.dumps({"ok": False, "error": str(e)}, ensure_ascii=False), "application/json; charset=utf-8", "no-cache")
+
+    def _read_body(self, max_size=MAX_UPLOAD):
+        length = int(self.headers.get("Content-Length") or 0)
+        if length > max_size:
+            raise ValueError("body too large")
+        return self.rfile.read(length)
+
+    def _is_admin(self):
+        return get_cookie(self, "sc_admin") and verify_token(get_cookie(self, "sc_admin"))
+
+    def admin_login(self):
+        body = self._read_body(64 * 1024).decode("utf-8")
+        form = parse_qs(body)
+        login = form.get("login", [""])[0]
+        pwd = form.get("password", [""])[0]
+        ok_l = hmac.compare_digest(login.encode("utf-8"), ADMIN_LOGIN.encode("utf-8"))
+        ok_p = hmac.compare_digest(pwd.encode("utf-8"), ADMIN_PASSWORD.encode("utf-8"))
+        if ok_l and ok_p:
+            self.send_response(303)
+            self.send_header("Location", "/admin")
+            self.send_header("Set-Cookie", "sc_admin=%s; Path=/; HttpOnly; SameSite=Lax; Max-Age=%d" % (make_token(), SESSION_TTL))
+            self.end_headers()
+        else:
+            page = ADMIN_LOGIN_PAGE.replace("<!--ERR-->", '<div class="err">Неверный логин или пароль</div>')
+            self._send(200, page, "text/html; charset=utf-8", "no-cache")
+
+    def admin_logout(self):
+        self.send_response(303)
+        self.send_header("Location", "/admin")
+        self.send_header("Set-Cookie", "sc_admin=; Path=/; HttpOnly; Max-Age=0")
+        self.end_headers()
+
+    def admin_save(self):
+        if not self._is_admin():
+            self._send(401, '{"ok":false,"error":"auth"}', "application/json; charset=utf-8", "no-cache")
+            return
+        body = self._read_body(2 * 1024 * 1024).decode("utf-8")
+        data = json.loads(body)
+        current = load_content()
+        if "page" in data:
+            current["page"] = data["page"]
+        if "replacements" in data:
+            current["replacements"] = data["replacements"]
+        save_content(current)
+        self._send(200, '{"ok":true}', "application/json; charset=utf-8", "no-cache")
+
+    def admin_upload(self):
+        if not self._is_admin():
+            self._send(401, '{"ok":false,"error":"auth"}', "application/json; charset=utf-8", "no-cache")
+            return
+        ctype = self.headers.get("Content-Type", "")
+        body = self._read_body()
+        m = re.search(r'boundary=(?:"([^"]+)"|([^;]+))', ctype or "")
+        if not m:
+            self._send(400, '{"ok":false,"error":"no boundary"}', "application/json; charset=utf-8", "no-cache")
+            return
+        boundary = (m.group(1) or m.group(2)).strip().encode()
+        fname, fdata = "", b""
+        for raw in body.split(b"--" + boundary):
+            if raw in (b"", b"\r\n", b"--\r\n") or raw.startswith(b"--"):
+                continue
+            head, sep, payload = raw.partition(b"\r\n\r\n")
+            if not sep:
+                continue
+            fm = re.search(r'filename="([^"]*)"', head.decode("utf-8", "ignore"))
+            if not fm:
+                continue
+            fname = fm.group(1)
+            fdata = payload.rstrip(b"\r\n")
+            break
+        if not fname:
+            self._send(400, '{"ok":false,"error":"file not found"}', "application/json; charset=utf-8", "no-cache")
+            return
+        ext = os.path.splitext(fname)[1].lower()
+        if ext not in ALLOWED_EXT:
+            self._send(400, '{"ok":false,"error":"bad format"}', "application/json; charset=utf-8", "no-cache")
+            return
+        os.makedirs(UPLOAD_DIR, exist_ok=True)
+        name = secrets.token_hex(8) + ext
+        with open(os.path.join(UPLOAD_DIR, name), "wb") as f:
+            f.write(fdata)
+        self._send(200, json.dumps({"ok": True, "url": "/uploads/" + name}, ensure_ascii=False), "application/json; charset=utf-8", "no-cache")
+
     def log_message(self, *args):
         pass
 
 
 if __name__ == "__main__":
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    if not os.path.exists(CONTENT_FILE):
+        save_content({"replacements": [], "page": ""})
     print("Кухни Островский сервер запущен на http://0.0.0.0:{}".format(PORT))
+    print("Админка: /admin  (логин: {}, пароль: {})".format(ADMIN_LOGIN, "*" * len(ADMIN_PASSWORD)))
     ThreadingHTTPServer(("0.0.0.0", PORT), Handler).serve_forever()
