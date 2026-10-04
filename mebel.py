@@ -3,68 +3,188 @@
 mebel.py — сайт «Кухни Островский».
 
 Эндпоинты:
-  GET /            — страница сайта
-  GET /robots.txt  — правила для поисковиков
-  GET /sitemap.xml — карта сайта
+  GET /                     — страница сайта
+  GET /robots.txt           — правила для поисковиков
+  GET /sitemap.xml          — карта сайта (с изображениями)
+  GET /favicon.ico          — фавикон (отдаётся с нашего домена)
+  GET /apple-touch-icon.png — иконка для iOS
+  GET /manifest.webmanifest — манифест
+  (любой другой путь)       — красивая страница 404
 """
+import gzip
+import hashlib
+import io
 import os
+import time
+import urllib.request
 from datetime import date
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 PORT = int(os.environ.get("PORT", "8080"))
 DOMAIN = "https://кухниостровский.рф"
 
+FAVICON_URL = "https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1254x1254&from=bu&u=8vUcv8YxPcmfEmzVcjy5cNrPtcWeOIJmbKMc6vln3Q8&cs=1254x0"
+
 ROBOTS = """User-agent: *
 Allow: /
+
+Host: кухниостровский.рф
 
 Sitemap: {domain}/sitemap.xml
 """.format(domain=DOMAIN)
 
 SITEMAP = """<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>{domain}/</loc>
     <lastmod>{today}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <image:image><image:loc>{img1}</image:loc><image:title>Кухня на заказ в Ростове — Кухни Островский</image:title></image:image>
+    <image:image><image:loc>{img2}</image:loc><image:title>Кухня на заказ в Батайске — Кухни Островский</image:title></image:image>
+    <image:image><image:loc>{img3}</image:loc><image:title>Кухня на заказ в Азове — Кухни Островский</image:title></image:image>
+    <image:image><image:loc>{img4}</image:loc><image:title>Мебель на заказ — Кухни Островский</image:title></image:image>
   </url>
 </urlset>
-""".format(domain=DOMAIN, today=date.today().isoformat())
+""".format(
+    domain=DOMAIN,
+    today=date.today().isoformat(),
+    img1="https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&amp;from=bu&amp;u=udyioV6Vl_ghNhYbFZ9zjc-ZU_IjlhkVV114xfpUZJs&amp;cs=1280x0",
+    img2="https://sun9-20.vkuserphoto.ru/s/v1/ig2/9W8TzKo3y8t8-s63NRmlys3yJtHJAKPBOp2QIyuqMSTinG9q-UFuD5sYkz4wbd7QZDv7wQxsZlldmCrAM-PzPlDJ.jpg?quality=95&amp;as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,1800x1200&amp;from=bu&amp;u=kySpH3qK1oaqlWr8kbrP_y7iDDbASMEGWuJ5dgxf5MU&amp;cs=1280x0",
+    img3="https://sun9-11.vkuserphoto.ru/s/v1/ig2/Xh5Xw9Yb1reqhfFznlGk8NjvSQAxCbysuiL5IWRt_f3ELVb8fvoYPg00eFIHV-xiS9I4nhYBj4ttU_FHVkPpX8Z3.jpg?quality=95&amp;as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,1600x1200&amp;from=bu&amp;u=pY-bjOidU1jjNjiF66Dn4Ycgmb6utH_d0Ti7oSJr0qA&amp;cs=1080x0",
+    img4="https://sun9-88.vkuserphoto.ru/s/v1/ig2/vCipZmkZdy5Ix0cFh98i0yhNAYynqzh2gm00rWx5Qr019O4RHjwcs7pN6iKT4L_d1vanDAbUJ9JRrHj_uw13YVhg.jpg?quality=95&amp;as=32x44,48x66,72x99,108x149,160x220,240x331,360x496,480x661,540x744,640x882,720x992,1080x1488,1280x1764,1440x1984,1858x2560&amp;from=bu&amp;u=lrbIDUwRUQKMEvaw12w2pRXFBLE0sHCmc6AYF8H7CIA&amp;cs=1080x0",
+)
+
+MANIFEST = """{
+  "name": "Кухни Островский — кухни на заказ в Ростове, Батайске и Азове",
+  "short_name": "Кухни Островский",
+  "description": "Кухни и корпусная мебель на заказ. Бесплатный замер и 3D-проект.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#14100b",
+  "theme_color": "#14100b",
+  "lang": "ru-RU",
+  "icons": [
+    {"src": "/favicon.ico", "sizes": "any", "type": "image/jpeg", "purpose": "any"}
+  ]
+}
+"""
+
+PAGE_404 = """<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, follow">
+<title>404 — страница не найдена | Кухни Островский</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Manrope',system-ui,sans-serif;background:#14100b;color:#f4ecdc;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center}
+.card{max-width:560px;width:100%}
+.code{font-family:Georgia,serif;font-size:clamp(80px,18vw,160px);line-height:1;background:linear-gradient(135deg,#e6c98a,#c9a45c 55%,#9a7434);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 8px 26px rgba(201,164,92,.4))}
+h1{font-family:Georgia,serif;font-size:clamp(24px,5vw,34px);color:#fff;margin:14px 0 10px;letter-spacing:.4px}
+p{color:#cdbda3;font-size:15px;line-height:1.7;margin-bottom:28px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px 30px;border-radius:14px;background:linear-gradient(135deg,#e6c98a,#c9a45c 55%,#9a7434);color:#17120b;font-weight:700;font-size:13px;letter-spacing:1.2px;text-transform:uppercase;text-decoration:none;box-shadow:0 18px 44px rgba(201,164,92,.3);transition:.3s}
+.btn:hover{transform:translateY(-3px);box-shadow:0 26px 60px rgba(201,164,92,.5)}
+.contacts{margin-top:30px;color:#cdbda3;font-size:13.5px;line-height:1.9}
+.contacts a{color:#e6c98a;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="code">404</div>
+  <h1>Такой страницы нет</h1>
+  <p>Возможно, ссылка устарела или адрес введён с ошибкой. Вернитесь на главную — там вас ждут наши работы, отзывы и контакты.</p>
+  <a class="btn" href="/">На главную</a>
+  <div class="contacts">
+    ☎ <a href="tel:+79508465397">+7 (950) 846-53-97</a><br>
+    ✈ <a href="https://t.me/fanny161" target="_blank" rel="noopener">Telegram</a> ·
+    <a href="https://vk.com/mebel.ostrovsky" target="_blank" rel="noopener">ВКонтакте</a>
+  </div>
+</div>
+</body>
+</html>
+"""
 
 PAGE = """<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Кухни на заказ Ростов, Батайск, Азов — Кухни Островский | Мебель под ключ</title>
-<meta name="description" content="Кухни на заказ в Ростове, Батайске и Азове. Руководитель мебельной мастерской Островского. Замер, проект, производство, монтаж под ключ. ☎ +7 (950) 846-53-97">
-<meta name="keywords" content="кухни островский, кухни батайск, кухни ростов, кухни азов, кухни на заказ ростов, кухни на заказ батайск, кухни на заказ азов, мебель на заказ ростов, корпусная мебель, шкафы купе, гардеробные, прихожие, мебель островский, кухни под ключ, островский ростов">
-<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<title>Кухни Островский — кухни на заказ в Ростове, Батайске и Азове | Мебель под ключ</title>
+<meta name="description" content="Кухни на заказ в Ростове-на-Дону, Батайске и Азове от мастерской «Кухни Островский». Бесплатный замер и 3D-проект, собственное производство, монтаж под ключ. ☎ +7 (950) 846-53-97">
+<meta name="keywords" content="кухни остров, кухни островский, кухни островского, кухни островский ростов, кухни ростов островский, кухни батайск островский, кухни азов островский, кухни на заказ ростов, кухни на заказ батайск, кухни на заказ азов, мебель островского, мебель на заказ ростов, корпусная мебель, шкафы купе, гардеробные, прихожие, кухни под ключ, мебель островский">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 <meta name="geo.region" content="RU-ROS">
 <meta name="geo.placename" content="Ростов-на-Дону">
+<meta name="geo.position" content="47.2357;39.7015">
+<meta name="ICBM" content="47.2357, 39.7015">
 <meta name="theme-color" content="#14100b">
+<meta name="msapplication-TileColor" content="#14100b">
 <link rel="canonical" href="https://кухниостровский.рф/">
+<link rel="alternate" hreflang="ru" href="https://кухниостровский.рф/">
+<link rel="alternate" hreflang="x-default" href="https://кухниостровский.рф/">
 <meta name="yandex-verification" content="f7e96d07aee79bf3">
 <meta name="google-site-verification" content="dNSAELu64Y7aK5sjz_zpmhoz6YKn2PIZ03UKPwrgnCI">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2314100b'/%3E%3Ctext x='50' y='72' font-size='62' font-family='Georgia,serif' font-weight='bold' fill='%23e6c98a' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E">
-<link rel="apple-touch-icon" href="https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1254x1254&from=bu&cs=1254x0">
+<link rel="icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ru_RU">
-<meta property="og:url" content="https://кухниостровский.рф/">
-<meta property="og:title" content="Кухни на заказ Ростов, Батайск, Азов | Кухни Островский">
-<meta property="og:description" content="Кухни и корпусная мебель под ключ. Руководитель мебельной мастерской Островского. Бесплатный замер и проект.">
 <meta property="og:site_name" content="Кухни Островский">
+<meta property="og:url" content="https://кухниостровский.рф/">
+<meta property="og:title" content="Кухни Островский — кухни на заказ в Ростове, Батайске и Азове">
+<meta property="og:description" content="Кухни и корпусная мебель под ключ. Бесплатный замер и 3D-проект, собственное производство, монтаж. ☎ +7 (950) 846-53-97">
 <meta property="og:image" content="https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&from=bu&u=udyioV6Vl_ghNhYbFZ9zjc-ZU_IjlhkVV114xfpUZJs&cs=1280x0">
 <meta property="og:image:width" content="1280">
 <meta property="og:image:height" content="855">
+<meta property="og:image:alt" content="Кухня на заказ — Кухни Островский, Ростов-на-Дону">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Кухни Островский — кухни на заказ в Ростове, Батайске и Азове">
+<meta name="twitter:description" content="Кухни и корпусная мебель под ключ. Бесплатный замер и 3D-проект. ☎ +7 (950) 846-53-97">
+<meta name="twitter:image" content="https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&from=bu&u=udyioV6Vl_ghNhYbFZ9zjc-ZU_IjlhkVV114xfpUZJs&cs=1280x0">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"LocalBusiness","name":"Кухни Островский","alternateName":"Кухни на Заказ — Ростов, Батайск, Азов","url":"https://кухниостровский.рф/","image":"https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&from=bu&u=udyioV6Vl_ghNhYbFZ9zjc-ZU_IjlhkVV114xfpUZJs&cs=1280x0","description":"Кухни и корпусная мебель на заказ в Ростове, Батайске и Азове. Полный цикл под ключ.","telephone":"+79508465397","priceRange":"₽₽","currenciesAccepted":"RUB","address":{"@type":"PostalAddress","addressLocality":"Ростов-на-Дону","addressRegion":"Ростовская область","addressCountry":"RU"},"geo":{"@type":"GeoCoordinates","latitude":47.2357,"longitude":39.7015},"areaServed":[{"@type":"City","name":"Ростов-на-Дону"},{"@type":"City","name":"Батайск"},{"@type":"City","name":"Азов"}],"sameAs":["https://vk.com/mebel.ostrovsky"],"contactPoint":{"@type":"ContactPoint","telephone":"+79508465397","contactType":"customer service","availableLanguage":"Russian"}}
+[
+{
+  "@context": "https://schema.org",
+  "@type": ["LocalBusiness", "HomeAndConstructionBusiness"],
+  "@id": "https://кухниостровский.рф/#business",
+  "name": "Кухни Островский",
+  "alternateName": "Кухни Островский — мебель на заказ в Ростове, Батайске и Азове",
+  "url": "https://кухниостровский.рф/",
+  "logo": "https://кухниостровский.рф/favicon.ico",
+  "image": "https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&from=bu&u=udyioV6Vl_ghNhYbFZ9zjc-ZU_IjlhkVV114xfpUZJs&cs=1280x0",
+  "description": "Кухни и корпусная мебель на заказ в Ростове, Батайске и Азове. Полный цикл под ключ: замер, проект, производство, монтаж.",
+  "telephone": "+79508465397",
+  "priceRange": "₽₽",
+  "currenciesAccepted": "RUB",
+  "address": {"@type": "PostalAddress", "addressLocality": "Ростов-на-Дону", "addressRegion": "Ростовская область", "addressCountry": "RU"},
+  "geo": {"@type": "GeoCoordinates", "latitude": 47.2357, "longitude": 39.7015},
+  "areaServed": [
+    {"@type": "City", "name": "Ростов-на-Дону"},
+    {"@type": "City", "name": "Батайск"},
+    {"@type": "City", "name": "Азов"}
+  ],
+  "sameAs": ["https://vk.com/mebel.ostrovsky", "https://t.me/fanny161"],
+  "contactPoint": {"@type": "ContactPoint", "telephone": "+79508465397", "contactType": "customer service", "availableLanguage": "Russian"}
+},
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "https://кухниостровский.рф/#website",
+  "url": "https://кухниостровский.рф/",
+  "name": "Кухни Островский",
+  "inLanguage": "ru-RU"
+}
+]
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="preload" as="image" fetchpriority="high" href="https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x241,480x321,540x361,640x428,720x481,1080x722,1280x855,1440x962,2560x1711&from=bu&u=udyioV6Vl_ghNhYbFZ9zjc-ZU_IjlhkVV114xfpUZJs&cs=1280x0">
 <link rel="preconnect" href="https://sun9-70.vkuserphoto.ru">
+<link rel="preconnect" href="https://sun9-20.vkuserphoto.ru">
 <link rel="preconnect" href="https://i.ibb.co">
 
 <style>
@@ -199,20 +319,20 @@ h2.k{position:relative;font-size:clamp(34px,4.8vw,50px);color:#faf3e6;font-weigh
 .car-dot.active{background:linear-gradient(135deg,var(--gold-soft),var(--gold));transform:scale(1.4);box-shadow:0 0 12px rgba(230,201,138,.65)}
 .car-slide{flex:0 0 auto;width:min(78vw,440px);scroll-snap-align:center;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line);background:rgba(20,16,11,.62);cursor:zoom-in;transition:transform .5s cubic-bezier(.22,.61,.36,1),box-shadow .5s,border-color .5s;box-shadow:var(--shadow-md)}
 .car-slide:hover{transform:translateY(-8px);border-color:var(--line-strong);box-shadow:var(--shadow-lg)}
-.car-slide img{width:100%;height:300px;object-fit:cover;display:block;transition:transform .7s ease;loading:lazy;decoding:async}
+.car-slide img{width:100%;height:300px;object-fit:cover;display:block;transition:transform .7s ease}
 .car-slide:hover img{transform:scale(1.08)}
 .rev-track{align-items:flex-start}
 .rev-card{scroll-snap-align:center;background:linear-gradient(160deg,rgba(255,255,255,.06),rgba(255,255,255,.02));backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:var(--r-lg);padding:26px 28px;width:min(82vw,520px);flex:0 0 auto;display:flex;flex-direction:column;box-shadow:var(--shadow-md);position:relative;overflow:hidden;transition:transform .5s,box-shadow .5s,border-color .5s}
 .rev-card:hover{transform:translateY(-8px);border-color:var(--line-strong);box-shadow:var(--shadow-lg)}
 .rev-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold-soft),transparent);opacity:.9}
 .rev-head{display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap}
-.rev-ava{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 0 5px rgba(201,164,92,.13),0 0 16px rgba(201,164,92,.4);flex-shrink:0;loading:lazy;decoding:async}
+.rev-ava{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 0 5px rgba(201,164,92,.13),0 0 16px rgba(201,164,92,.4);flex-shrink:0}
 .rev-name{color:#fff;font-weight:700;font-size:15px}
 .rev-sub{color:var(--muted);font-size:11px;margin-top:2px}
 .rev-stars{color:var(--gold-soft);letter-spacing:3px;font-size:15px;margin-left:auto;white-space:nowrap;text-shadow:0 0 14px rgba(230,201,138,.5)}
 .rev-text{color:#ece2cd;font-size:14px;line-height:1.68;font-weight:300;text-align:left;overflow-wrap:break-word;word-break:break-word;letter-spacing:.1px}
 .rev-video{margin-top:14px;border-radius:var(--r-md);overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow-md)}
-.rev-video iframe{width:100%;height:200px;border:0;display:block;loading:lazy}
+.rev-video iframe{width:100%;height:200px;border:0;display:block}
 .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
 .svc{position:relative;background:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.016));backdrop-filter:blur(14px);border:1px solid var(--line);padding:38px 32px;transition:.5s cubic-bezier(.22,.61,.36,1);border-radius:var(--r-lg);overflow-wrap:break-word;overflow:hidden}
 .svc::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(135deg,var(--gold-soft),transparent 40%,transparent 60%,var(--gold-soft));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:.5s;pointer-events:none}
@@ -248,7 +368,7 @@ h2.k{position:relative;font-size:clamp(34px,4.8vw,50px);color:#faf3e6;font-weigh
 .city .city-line{width:46px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:16px auto}
 .city p{color:var(--muted);font-size:14.5px;line-height:1.7;letter-spacing:.1px}
 .video-hero{position:relative;max-width:860px;margin:0 auto;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line-strong);box-shadow:var(--shadow-lg)}
-.video-hero iframe{width:100%;height:430px;border:0;display:block;loading:lazy}
+.video-hero iframe{width:100%;height:430px;border:0;display:block}
 .video-note{max-width:680px;margin:22px auto 0;color:var(--muted);font-size:15px;text-align:center;line-height:1.7;letter-spacing:.2px}
 .video-note b{color:var(--gold-soft)}
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
@@ -324,7 +444,7 @@ footer .flogo span{color:var(--gold-soft);font-size:14px;font-family:var(--sans)
 <header id="header">
   <div class="wrap nav">
     <a href="#top" class="logo" id="logo">
-      <img class="brand-ava" src="https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1254x1254&from=bu&cs=1254x0" alt="Кухни Островский">
+      <img class="brand-ava" src="https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1254x1254&from=bu&cs=1254x0" width="46" height="46" alt="Кухни Островский — кухни на заказ в Ростове, Батайске и Азове">
       <span class="brand-txt"><span class="name">Кухни Островский</span><span class="sub">Ростов · Батайск · Азов</span></span>
     </a>
     <button class="burger" id="burger" aria-label="Меню"><span></span><span></span><span></span></button>
@@ -373,7 +493,7 @@ footer .flogo span{color:var(--gold-soft);font-size:14px;font-family:var(--sans)
   <div class="wrap"><div class="content">
     <div class="about">
       <div class="about-card reveal">
-        <div class="avatar"><img src="https://i.ibb.co/mVchNnp1/photo-2026-09-10-18-48-37.jpg" alt="Роман Островский"></div>
+        <div class="avatar"><img src="https://i.ibb.co/mVchNnp1/photo-2026-09-10-18-48-37.jpg" width="134" height="134" loading="lazy" decoding="async" alt="Роман Островский — руководитель мебельной мастерской Кухни Островский"></div>
         <h3>Роман Островский</h3>
         <div class="role">Руководитель мебельной мастерской Островского</div>
         <div class="sep"></div>
@@ -415,19 +535,19 @@ footer .flogo span{color:var(--gold-soft);font-size:14px;font-family:var(--sans)
     <div class="carousel reveal">
       <button class="car-nav car-prev" id="carPrev">❮</button>
       <div class="car-track" id="carTrack">
-        <div class="car-slide"><img src="https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x241,480x321,540x361,640x428,720x481,1080x722,1280x855,1440x962,2560x1711&from=bu&u=udyioV6Vl_ghNhYbFZ9zjc-ZU_IjlhkVV114xfpUZJs&cs=1080x0" alt="Кухня на заказ Ростов"></div>
-        <div class="car-slide"><img src="https://sun9-20.vkuserphoto.ru/s/v1/ig2/9W8TzKo3y8t8-s63NRmlys3yJtHJAKPBOp2QIyuqMSTinG9q-UFuD5sYkz4wbd7QZDv7wQxsZlldmCrAM-PzPlDJ.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,1800x1200&from=bu&u=kySpH3qK1oaqlWr8kbrP_y7iDDbASMEGWuJ5dgxf5MU&cs=1080x0" alt="Кухня на заказ Батайск"></div>
-        <div class="car-slide"><img src="https://sun9-11.vkuserphoto.ru/s/v1/ig2/Xh5Xw9Yb1reqhfFznlGk8NjvSQAxCbysuiL5IWRt_f3ELVb8fvoYPg00eFIHV-xiS9I4nhYBj4ttU_FHVkPpX8Z3.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,1600x1200&from=bu&u=pY-bjOidU1jjNjiF66Dn4Ycgmb6utH_d0Ti7oSJr0qA&cs=1080x0" alt="Кухня на заказ Азов"></div>
-        <div class="car-slide"><img src="https://sun9-88.vkuserphoto.ru/s/v1/ig2/vCipZmkZdy5Ix0cFh98i0yhNAYynqzh2gm00rWx5Qr019O4RHjwcs7pN6iKT4L_d1vanDAbUJ9JRrHj_uw13YVhg.jpg?quality=95&as=32x44,48x66,72x99,108x149,160x220,240x331,360x496,480x661,540x744,640x882,720x992,1080x1488,1280x1764,1440x1984,1858x2560&from=bu&u=lrbIDUwRUQKMEvaw12w2pRXFBLE0sHCmc6AYF8H7CIA&cs=1080x0" alt="Мебель на заказ Ростов"></div>
-        <div class="car-slide"><img src="https://sun9-87.vkuserphoto.ru/s/v1/ig2/WHkPw7TZze6TV4t2q6Yr2pw61S1zWDeDyp8Dbe2IFm31aAuhXVSQ2DUTnM6AIt5u3cLTp9mh-YN2b_Lb0q5iHCFu.jpg?quality=95&as=32x40,48x60,72x90,108x134,160x199,240x298,360x448,480x597,540x671,640x796,720x895,1080x1343,1280x1591,1440x1790,2059x2560&from=bu&u=bQW477ZK7yLopHDa2oCbH-uA483cvDm58BTlNs29AoE&cs=1080x0" alt="Шкаф купе Ростов"></div>
-        <div class="car-slide"><img src="https://sun9-24.vkuserphoto.ru/s/v1/ig2/lS8MpZ4V9XUKPJ7l9GmjnkCnHW2MGfnq86jH-Gzx6bAgr4m3azL5Xd_fkdPHY_NOsJjST3Zw2iQkuGKGBwYODdgM.jpg?quality=95&as=32x42,48x63,72x95,108x142,160x211,240x316,360x474,480x632,540x711,640x843,720x949,1080x1423,1280x1686,1440x1897,1943x2560&from=bu&u=dLnirpryCPR3qvUPphwt7JaP5ljnoIl1yyGyUNiUjZI&cs=1080x0" alt="Мебель на заказ Батайск"></div>
-        <div class="car-slide"><img src="https://sun9-64.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,2560x1707&from=bu&u=T5NJHPubDiY9E_IwXkmzI6uExoeA0QSNz39xjf4UD5M&cs=1080x0" alt="Кухня на заказ"></div>
-        <div class="car-slide"><img src="https://sun9-39.vkuserphoto.ru/s/v1/ig2/5cyrhjIBSWB5GGZATB29IrmjydaNdVOx-iP_dMNKsMbePp5Ccs2rnkEpLnfft3yAZGeMEE3IfInjMQ7aU6Z6jnHc.jpg?quality=95&as=32x24,48x36,72x54,108x82,160x121,240x181,360x272,480x363,540x408,640x484,720x544,1080x817,1280x968&from=bu&u=l1uWXrXXeEAKk1VMgGM5wyIo7DtKdQGhKlCwMjoS0t8&cs=1080x0" alt="Мебель на заказ"></div>
-        <div class="car-slide"><img src="https://sun9-68.vkuserphoto.ru/s/v1/ig2/6KwHlOiN9pxXNIwTImKO6QGkrSCTVqreybJu-63m8wbhdFFMIl06es9cPeurIdwuwXGtsFTkdJ6IOjMaS1qRtfxJ.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=VgDjFEJKqpW6dWVO-E4y4Q6xcuyoqiL7LxhG36oLPjw&cs=1080x0" alt="Кухня на заказ"></div>
-        <div class="car-slide"><img src="https://sun9-23.vkuserphoto.ru/s/v1/ig2/wfBQoeOzjZbCRCvxmIkx_V3xC0fgMd3TTxRDSRG2CHDMok6B2ZKrG7vCAJ_G1DmrZ6JS1_RC2tr87Q64wJJ4aW9w.jpg?quality=95&as=32x25,48x37,72x56,108x84,160x124,240x186,360x279,480x372,540x419,640x496,720x558,1080x837,1280x992,1440x1117,2560x1985&from=bu&u=kZXvrlzwGUvzrHmYa8tHXbvyhU_JlNlefLxxcCYqM1A&cs=1080x0" alt="Мебель на заказ"></div>
-        <div class="car-slide"><img src="https://sun9-33.vkuserphoto.ru/s/v1/ig2/TQbwf8FdMs_jwKfC_ONoxEHBIpc2L5yf_T0McNeUKRn0tK7fVbC5YbHfsB0TGLlNC_D55htM_2nREACuIw7ykLIx.jpg?quality=95&as=32x43,48x65,72x97,108x145,160x215,240x323,360x484,480x645,540x726,640x860,720x968,1080x1452,1280x1721,1440x1936,1904x2560&from=bu&u=rbH0OM9Bv0PnevamgtW5nYBm9jxFI28R6D1wxzq6fJA&cs=1080x0" alt="Кухня на заказ"></div>
-        <div class="car-slide"><img src="https://sun9-52.vkuserphoto.ru/s/v1/ig2/iD_ZIKN3aW1Ml52LPM3C65Qa7raIjG1CUC-fRrbHZEdxtU9hrsvTAh80W9sM3wI2hBUlsHc86fnHiG43aAOPlRuP.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=mdGpdzTBkRhwLQzuIJS1nz6l-_CWqdnxhW1cwsXNCx8&cs=1080x0" alt="Кухня на заказ"></div>
-        <div class="car-slide"><img src="https://sun9-65.vkuserphoto.ru/s/v1/ig2/z_wfZeGA9H6LHDsevjkijUHpbVyLGWFM38frX4hKrjgOnscfAloGdrVpPUwl4XoXCG_YgcKXTgeeTsDDcWEBvdi1.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=YbZ1WmiK3ZCk0bKWZhf_YKp6dTUU2vbsQo7Ya4Hoi6s&cs=1080x0" alt="Кухня на заказ"></div>
+        <div class="car-slide"><img loading="lazy" decoding="async" src="https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x241,480x321,540x361,640x428,720x481,1080x722,1280x855,1440x962,2560x1711&from=bu&u=udyioV6Vl_ghNhYbFZ9zjc-ZU_IjlhkVV114xfpUZJs&cs=1080x0" alt="Кухня на заказ в Ростове — Кухни Островский"></div>
+        <div class="car-slide"><img loading="lazy" decoding="async" src="https://sun9-20.vkuserphoto.ru/s/v1/ig2/9W8TzKo3y8t8-s63NRmlys3yJtHJAKPBOp2QIyuqMSTinG9q-UFuD5sYkz4wbd7QZDv7wQxsZlldmCrAM-PzPlDJ.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,1800x1200&from=bu&u=kySpH3qK1oaqlWr8kbrP_y7iDDbASMEGWuJ5dgxf5MU&cs=1080x0" alt="Кухня на заказ в Батайске — Кухни Островский"></div>
+        <div class="car-slide"><img loading="lazy" decoding="async" src="https://sun9-11.vkuserphoto.ru/s/v1/ig2/Xh5Xw9Yb1reqhfFznlGk8NjvSQAxCbysuiL5IWRt_f3ELVb8fvoYPg00eFIHV-xiS9I4nhYBj4ttU_FHVkPpX8Z3.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,1600x1200&from=bu&u=pY-bjOidU1jjNjiF66Dn4Ycgmb6utH_d0Ti7oSJr0qA&cs=1080x0" alt="Кухня на заказ в Азове — Кухни Островский"></div>
+        <div class="car-slide"><img loading="lazy" decoding="async" src="https://sun9-88.vkuserphoto.ru/s/v1/ig2/vCipZmkZdy5Ix0cFh98i0yhNAYynqzh2gm00rWx5Qr019O4RHjwcs7pN6iKT4L_d1vanDAbUJ9JRrHj_uw13YVhg.jpg?quality=95&as=32x44,48x66,72x99,108x149,160x220,240x331,360x496,480x661,540x744,640x882,720x992,1080x1488,1280x1764,1440x1984,1858x2560&from=bu&u=lrbIDUwRUQKMEvaw12w2pRXFBLE0sHCmc6AYF8H7CIA&cs=1080x0" alt="Мебель на заказ в Ростове — Кухни Островский"></div>
+        <div class="car-slide"><img loading="lazy" decoding="async" src="https://sun9-87.vkuserphoto.ru/s/v1/ig2/WHkPw7TZze6TV4t2q6Yr2pw61S1zWDeDyp8Dbe2IFm31aAuhXVSQ2DUTnM6AIt5u3cLTp9mh-YN2b_Lb0q5iHCFu.jpg?quality=95&as=32x40,48x60,72x90,108x134,160x199,240x298,360x448,480x597,540x671,640x796,720x895,1080x1343,1280x1591,1440x1790,2059x2560&from=bu&u=bQW477ZK7yLopHDa2oCbH-uA483cvDm58BTlNs29AoE&cs=1080x0" alt="Шкаф-купе на заказ — Кухни Островский"></div>
+        <div class="car-slide"><img loading="lazy" decoding="async" src="https://sun9-24.vkuserphoto.ru/s/v1/ig2/lS8MpZ4V9XUKPJ7l9GmjnkCnHW2MGfnq86jH-Gzx6bAgr4m3azL5Xd_fkdPHY_NOsJjST3Zw2iQkuGKGBwYODdgM.jpg?quality=95&as=32x42,48x63,72x95,108x142,160x211,240x316,360x474,480x632,540x711,640x843,720x949,1080x1423,1280x1686,1440x1897,1943x2560&from=bu&u=dLnirpryCPR3qvUPphwt7JaP5ljnoIl1yyGyUNiUjZI&cs=1080x0" alt="Мебель на заказ в Батайске — Кухни Островский"></div>
+        <div class="car-slide"><img loading="lazy" decoding="async" src="https://sun9-64.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,2560x1707&from=bu&u=T5NJHPubDiY9E_IwXkmzI6uExoeA0QSNz39xjf4UD5M&cs=1080x0" alt="Кухня на заказ — Кухни Островский"></div>
+        <div class="car-slide"><img loading="lazy" decoding="async" src="https://sun9-39.vkuserphoto.ru/s/v1/ig2/5cyrhjIBSWB5GGZATB29IrmjydaNdVOx-iP_dMNKsMbePp5Ccs2rnkEpLnfft3yAZGeMEE3IfInjMQ7aU6Z6jnHc.jpg?quality=95&as=32x24,48x36,72x54,108x82,160x121,240x181,360x272,480x363,540x408,640x484,720x544,1080x817,1280x968&from=bu&u=l1uWXrXXeEAKk1VMgGM5wyIo7DtKdQGhKlCwMjoS0t8&cs=1080x0" alt="Мебель на заказ — Кухни Островский"></div>
+        <div class="car-slide"><img loading="lazy" decoding="async" src="https://sun9-68.vkuserphoto.ru/s/v1/ig2/6KwHlOiN9pxXNIwTImKO6QGkrSCTVqreybJu-63m8wbhdFFMIl06es9cPeurIdwuwXGtsFTkdJ6IOjMaS1qRtfxJ.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=VgDjFEJKqpW6dWVO-E4y4Q6xcuyoqiL7LxhG36oLPjw&cs=1080x0" alt="Кухня на заказ — Кухни Островский"></div>
+        <div class="car-slide"><img loading="lazy" decoding="async" src="https://sun9-23.vkuserphoto.ru/s/v1/ig2/wfBQoeOzjZbCRCvxmIkx_V3xC0fgMd3TTxRDSRG2CHDMok6B2ZKrG7vCAJ_G1DmrZ6JS1_RC2tr87Q64wJJ4aW9w.jpg?quality=95&as=32x25,48x37,72x56,108x84,160x124,240x186,360x279,480x372,540x419,640x496,720x558,1080x837,1280x992,1440x1117,2560x1985&from=bu&u=kZXvrlzwGUvzrHmYa8tHXbvyhU_JlNlefLxxcCYqM1A&cs=1080x0" alt="Мебель на заказ — Кухни Островский"></div>
+        <div class="car-slide"><img loading="lazy" decoding="async" src="https://sun9-33.vkuserphoto.ru/s/v1/ig2/TQbwf8FdMs_jwKfC_ONoxEHBIpc2L5yf_T0McNeUKRn0tK7fVbC5YbHfsB0TGLlNC_D55htM_2nREACuIw7ykLIx.jpg?quality=95&as=32x43,48x65,72x97,108x145,160x215,240x323,360x484,480x645,540x726,640x860,720x968,1080x1452,1280x1721,1440x1936,1904x2560&from=bu&u=rbH0OM9Bv0PnevamgtW5nYBm9jxFI28R6D1wxzq6fJA&cs=1080x0" alt="Кухня на заказ — Кухни Островский"></div>
+        <div class="car-slide"><img loading="lazy" decoding="async" src="https://sun9-52.vkuserphoto.ru/s/v1/ig2/iD_ZIKN3aW1Ml52LPM3C65Qa7raIjG1CUC-fRrbHZEdxtU9hrsvTAh80W9sM3wI2hBUlsHc86fnHiG43aAOPlRuP.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=mdGpdzTBkRhwLQzuIJS1nz6l-_CWqdnxhW1cwsXNCx8&cs=1080x0" alt="Кухня на заказ — Кухни Островский"></div>
+        <div class="car-slide"><img loading="lazy" decoding="async" src="https://sun9-65.vkuserphoto.ru/s/v1/ig2/z_wfZeGA9H6LHDsevjkijUHpbVyLGWFM38frX4hKrjgOnscfAloGdrVpPUwl4XoXCG_YgcKXTgeeTsDDcWEBvdi1.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=YbZ1WmiK3ZCk0bKWZhf_YKp6dTUU2vbsQo7Ya4Hoi6s&cs=1080x0" alt="Кухня на заказ — Кухни Островский"></div>
       </div>
       <button class="car-nav car-next" id="carNext">❯</button>
       <div class="car-dots" id="carDots"></div>
@@ -457,7 +577,7 @@ footer .flogo span{color:var(--gold-soft);font-size:14px;font-family:var(--sans)
       <div class="car-track rev-track" id="revTrack">
         <div class="rev-card">
           <div class="rev-head">
-            <img class="rev-ava" src="https://sun9-3.vkuserphoto.ru/s/v1/ig2/-cVZEipS5I4ROZUZ2fxoIaGJBZXpUs76_WKoUZpPw_r2-gnqqUvgTqjLjYoTZ0R21nsCSvjUPyw_vSn1jxAYJC8K.jpg?quality=95&as=32x30,48x45,72x68,108x101,160x150,240x225,360x338,480x450,540x507,640x601,720x676,1080x1014,1280x1201,1440x1351,2505x2351&from=bu&cs=128x0" alt="">
+            <img class="rev-ava" loading="lazy" decoding="async" width="52" height="52" src="https://sun9-3.vkuserphoto.ru/s/v1/ig2/-cVZEipS5I4ROZUZ2fxoIaGJBZXpUs76_WKoUZpPw_r2-gnqqUvgTqjLjYoTZ0R21nsCSvjUPyw_vSn1jxAYJC8K.jpg?quality=95&as=32x30,48x45,72x68,108x101,160x150,240x225,360x338,480x450,540x507,640x601,720x676,1080x1014,1280x1201,1440x1351,2505x2351&from=bu&cs=128x0" alt="Отзыв: Виктория Брандикова">
             <div><div class="rev-name">Виктория Брандикова</div><div class="rev-sub">Кухня на заказ</div></div>
             <div class="rev-stars">★★★★★</div>
           </div>
@@ -465,7 +585,7 @@ footer .flogo span{color:var(--gold-soft);font-size:14px;font-family:var(--sans)
         </div>
         <div class="rev-card">
           <div class="rev-head">
-            <img class="rev-ava" src="https://sun9-41.vkuserphoto.ru/s/v1/ig2/qi7m_VnJPio2P4oKJhNr6X-9HJD2kCt6f98XGtveyiAxhJ4ru17yVoibjERFJ4-ZWDOm8Lr7xGMwRP6dSudvgPnG.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&u=myRGe7iEVeLqDstzbpBsld7P0jp7l04_xCLynpcz4So&cs=1280x0" alt="">
+            <img class="rev-ava" loading="lazy" decoding="async" width="52" height="52" src="https://sun9-41.vkuserphoto.ru/s/v1/ig2/qi7m_VnJPio2P4oKJhNr6X-9HJD2kCt6f98XGtveyiAxhJ4ru17yVoibjERFJ4-ZWDOm8Lr7xGMwRP6dSudvgPnG.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&u=myRGe7iEVeLqDstzbpBsld7P0jp7l04_xCLynpcz4So&cs=1280x0" alt="Отзыв: Виктория Маренко">
             <div><div class="rev-name">Виктория Маренко</div><div class="rev-sub">Кухня и гардеробная</div></div>
             <div class="rev-stars">★★★★★</div>
           </div>
@@ -473,7 +593,7 @@ footer .flogo span{color:var(--gold-soft);font-size:14px;font-family:var(--sans)
         </div>
         <div class="rev-card">
           <div class="rev-head">
-            <img class="rev-ava" src="https://sun9-53.vkuserphoto.ru/s/v1/ig2/gZheSpaWhz7StIdwlzSoCIfA01e-x8jVUMESDK2u9ONRR1s3txB-b6F7lqLLj-Y6QFqFU5x463yoWmnTxf5T88g2.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&cs=128x0" alt="">
+            <img class="rev-ava" loading="lazy" decoding="async" width="52" height="52" src="https://sun9-53.vkuserphoto.ru/s/v1/ig2/gZheSpaWhz7StIdwlzSoCIfA01e-x8jVUMESDK2u9ONRR1s3txB-b6F7lqLLj-Y6QFqFU5x463yoWmnTxf5T88g2.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&cs=128x0" alt="Отзыв: Любовь Петелько">
             <div><div class="rev-name">Любовь Петелько</div><div class="rev-sub">Шкаф, тумбы, прихожая</div></div>
             <div class="rev-stars">★★★★★</div>
           </div>
@@ -481,7 +601,7 @@ footer .flogo span{color:var(--gold-soft);font-size:14px;font-family:var(--sans)
         </div>
         <div class="rev-card">
           <div class="rev-head">
-            <img class="rev-ava" src="https://sun9-83.vkuserphoto.ru/s/v1/ig2/zYO0FQ_fFsgxDWhaTE85lNpixn2ikScuD58qVoXtqda8vFxoS-LGsT54k9pk9tDVEpzGpJfCw5eg5TNtYgE2Q8_y.jpg?quality=95&as=32x47,48x71,72x106,108x159,160x236,240x353,360x530,480x707,540x795,640x943,720x1061,869x1280&from=bu&cs=128x0" alt="">
+            <img class="rev-ava" loading="lazy" decoding="async" width="52" height="52" src="https://sun9-83.vkuserphoto.ru/s/v1/ig2/zYO0FQ_fFsgxDWhaTE85lNpixn2ikScuD58qVoXtqda8vFxoS-LGsT54k9pk9tDVEpzGpJfCw5eg5TNtYgE2Q8_y.jpg?quality=95&as=32x47,48x71,72x106,108x159,160x236,240x353,360x530,480x707,540x795,640x943,720x1061,869x1280&from=bu&cs=128x0" alt="Отзыв: Дмитрий Юшенко">
             <div><div class="rev-name">Дмитрий Юшенко</div><div class="rev-sub">Шкаф и стенка</div></div>
             <div class="rev-stars">★★★★★</div>
           </div>
@@ -489,7 +609,7 @@ footer .flogo span{color:var(--gold-soft);font-size:14px;font-family:var(--sans)
         </div>
         <div class="rev-card">
           <div class="rev-head">
-            <img class="rev-ava" src="https://sun9-46.vkuserphoto.ru/s/v1/ig2/bVm2vnJWOD92dzHJ3_21NbqhcwF7DW7a05XzjaTWteG9Dviu9nt8LlA5bgzdbsBhGtYbrs7rvOMTylQQIV43cl4T.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&cs=128x0" alt="">
+            <img class="rev-ava" loading="lazy" decoding="async" width="52" height="52" src="https://sun9-46.vkuserphoto.ru/s/v1/ig2/bVm2vnJWOD92dzHJ3_21NbqhcwF7DW7a05XzjaTWteG9Dviu9nt8LlA5bgzdbsBhGtYbrs7rvOMTylQQIV43cl4T.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&cs=128x0" alt="Отзыв: Екатерина Умнягина">
             <div><div class="rev-name">Екатерина Умнягина</div><div class="rev-sub">Кухня на заказ</div></div>
             <div class="rev-stars">★★★★★</div>
           </div>
@@ -497,7 +617,7 @@ footer .flogo span{color:var(--gold-soft);font-size:14px;font-family:var(--sans)
         </div>
         <div class="rev-card">
           <div class="rev-head">
-            <img class="rev-ava" src="https://sun9-48.vkuserphoto.ru/s/v1/ig2/OdS0JaUmpkj7vzQLNz1oyY6PBksnYylZuY54LZ2vnibrqxNc0IimIjE6d6NWySeMm6N2MLIUHG6WLKtAFJ82ICwE.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,960x1280&from=bu&cs=128x0" alt="">
+            <img class="rev-ava" loading="lazy" decoding="async" width="52" height="52" src="https://sun9-48.vkuserphoto.ru/s/v1/ig2/OdS0JaUmpkj7vzQLNz1oyY6PBksnYylZuY54LZ2vnibrqxNc0IimIjE6d6NWySeMm6N2MLIUHG6WLKtAFJ82ICwE.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,960x1280&from=bu&cs=128x0" alt="Отзыв: Анастасия Зайцева">
             <div><div class="rev-name">Анастасия Зайцева</div><div class="rev-sub">Два шкафа, гардеробная</div></div>
             <div class="rev-stars">★★★★★</div>
           </div>
@@ -520,7 +640,7 @@ footer .flogo span{color:var(--gold-soft);font-size:14px;font-family:var(--sans)
       <p>Александр Карташев рассказывает, как мы сделали кухню под нестандартную планировку.</p>
     </div>
     <div class="video-hero reveal">
-      <iframe src="https://vk.ru/video_ext.php?oid=-212015374&id=456239019&hash=6abf300a7c2518d4" frameborder="0" allowfullscreen="1" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      <iframe src="https://vk.ru/video_ext.php?oid=-212015374&id=456239019&hash=6abf300a7c2518d4" frameborder="0" allowfullscreen="1" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Видеоотзыв клиента о кухне на заказ — Кухни Островский"></iframe>
     </div>
     <p class="video-note reveal">«<b>Прям гордость квартиры 😀</b> За приемлемую цену получили отличную кухню: выступ стояка закрыли пеналом, а в ножку барного стола встроили розетки».</p>
   </div></div>
@@ -605,7 +725,7 @@ footer .flogo span{color:var(--gold-soft);font-size:14px;font-family:var(--sans)
 </section>
 
 <section class="panel panel--dark" id="contacts">
-  <div class="bg" style="background-image:url('https://sun9-52.vkuserphoto.ru/s/v1/ig2/iD_ZIKN3aW1Ml52LPM3C65Qa7raIjG1CUC-fRrbHZEdxtU9hrsvTAh80W9sM3wI2hBUlsHc86fnHiG43aAOPlRuP.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=mdGpdzTBkRhwLQzuIJS1nz6l-_CWqdnxhW1cwsXNCx8&cs=1280x0')"></div>
+  <div class="bg" style="background-image:url('https://sun9-52.vkuserphoto.ru/s/v1/ig2/iD_ZIKN3aW1Ml52LPM3C65Qa7raIjG1CUC-fRrbHZEdxtU9hrsvTAh80W9sM3wI2hBUlsHc86fnHiG43aAOPlRuP.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=mdGpdzTBkRhwLQzuIJS1nz6l-_CWqdnxhW1cwsXNCx8&cs=1080x0')"></div>
   <div class="wrap"><div class="content">
     <div class="contact-grid">
       <div class="contact-info reveal">
@@ -694,28 +814,100 @@ document.getElementById('year').textContent=new Date().getFullYear();
 </html>
 """
 
+_favicon_cache = {"data": None, "ts": 0.0}
+FAVICON_TTL = 3600
+
+
+def get_favicon():
+    """Скачивает логотип с CDN один раз в час и отдаёт его с нашего домена."""
+    now = time.time()
+    if _favicon_cache["data"] is None or now - _favicon_cache["ts"] > FAVICON_TTL:
+        try:
+            req = urllib.request.Request(FAVICON_URL, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                _favicon_cache["data"] = resp.read()
+                _favicon_cache["ts"] = now
+        except Exception:
+            return None
+    return _favicon_cache["data"]
+
+
 class Handler(BaseHTTPRequestHandler):
-    def _send(self, code, body, ctype="text/plain; charset=utf-8"):
+    protocol_version = "HTTP/1.1"
+
+    def _send(self, code, body, ctype="text/plain; charset=utf-8", cache="no-cache", gzip_ok=True):
         data = body.encode("utf-8") if isinstance(body, str) else body
-        self.send_response(code)
-        self.send_header("Content-Type", ctype)
-        self.send_header("Content-Length", str(len(data)))
+        etag = '"' + hashlib.sha256(data).hexdigest()[:20] + '"'
+        if code == 200 and self.headers.get("If-None-Match") == etag:
+            self.send_response(304)
+            self.send_header("ETag", etag)
+            self.send_header("Cache-Control", cache)
+            self.end_headers()
+            return
+        accept_encoding = self.headers.get("Accept-Encoding", "")
+        if gzip_ok and isinstance(body, str) and "gzip" in accept_encoding and len(data) > 700:
+            buf = io.BytesIO()
+            with gzip.GzipFile(fileobj=buf, mode="wb", compresslevel=6) as gz:
+                gz.write(data)
+            data = buf.getvalue()
+            self.send_response(code)
+            self.send_header("Content-Type", ctype)
+            self.send_header("Content-Encoding", "gzip")
+            self.send_header("Vary", "Accept-Encoding")
+            self.send_header("Content-Length", str(len(data)))
+            self.send_header("Cache-Control", cache)
+            self.send_header("ETag", etag)
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.send_header("Referrer-Policy", "strict-origin-when-cross-origin")
+            self.end_headers()
+            self.wfile.write(data)
+        else:
+            self.send_response(code)
+            self.send_header("Content-Type", ctype)
+            self.send_header("Content-Length", str(len(data)))
+            self.send_header("Cache-Control", cache)
+            self.send_header("ETag", etag)
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.send_header("Referrer-Policy", "strict-origin-when-cross-origin")
+            if isinstance(body, str):
+                self.send_header("Vary", "Accept-Encoding")
+            self.end_headers()
+            self.wfile.write(data)
+
+    def _redirect(self, location, cache="public, max-age=86400"):
+        self.send_response(302)
+        self.send_header("Location", location)
+        self.send_header("Cache-Control", cache)
         self.end_headers()
-        self.wfile.write(data)
 
     def do_GET(self):
         path = self.path.split("?")[0]
         if path in ("/", "/index.html"):
-            self._send(200, PAGE, "text/html; charset=utf-8")
+            self._send(200, PAGE, "text/html; charset=utf-8", "no-cache")
         elif path == "/robots.txt":
-            self._send(200, ROBOTS, "text/plain; charset=utf-8")
+            self._send(200, ROBOTS, "text/plain; charset=utf-8", "public, max-age=86400")
         elif path == "/sitemap.xml":
-            self._send(200, SITEMAP, "application/xml; charset=utf-8")
+            self._send(200, SITEMAP, "application/xml; charset=utf-8", "public, max-age=3600")
+        elif path == "/favicon.ico":
+            data = get_favicon()
+            if data:
+                self._send(200, data, "image/jpeg", "public, max-age=86400", gzip_ok=False)
+            else:
+                self._redirect(FAVICON_URL)
+        elif path == "/apple-touch-icon.png":
+            data = get_favicon()
+            if data:
+                self._send(200, data, "image/jpeg", "public, max-age=86400", gzip_ok=False)
+            else:
+                self._redirect(FAVICON_URL)
+        elif path == "/manifest.webmanifest":
+            self._send(200, MANIFEST, "application/manifest+json; charset=utf-8", "public, max-age=3600")
         else:
-            self._send(404, "Not found")
+            self._send(404, PAGE_404, "text/html; charset=utf-8", "no-cache")
 
     def log_message(self, *args):
         pass
+
 
 if __name__ == "__main__":
     print("Кухни Островский сервер запущен на http://0.0.0.0:{}".format(PORT))
