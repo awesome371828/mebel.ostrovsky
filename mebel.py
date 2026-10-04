@@ -42,6 +42,7 @@ HOST_FOR_SEO = DOMAIN.replace("https://", "").replace("http://", "")
 def esc(x):
     return html.escape(str(x), quote=True)
 
+
 def load_content():
     """Читаем content.json на каждый запрос — сайт обновляется мгновенно."""
     if not os.path.exists(CONTENT_FILE):
@@ -56,6 +57,7 @@ def load_content():
     deep_merge(merged, data)
     return merged
 
+
 def deep_merge(base, extra):
     for k, v in extra.items():
         if isinstance(v, dict) and isinstance(base.get(k), dict):
@@ -63,11 +65,13 @@ def deep_merge(base, extra):
         else:
             base[k] = v
 
+
 def save_content(content):
     tmp = CONTENT_FILE + ".tmp"
     with open(tmp, "w", encoding="utf-8") as f:
         json.dump(content, f, ensure_ascii=False, indent=2)
     os.replace(tmp, CONTENT_FILE)
+
 
 def deep_get(d, path, default=""):
     cur = d
@@ -77,12 +81,12 @@ def deep_get(d, path, default=""):
         cur = cur[p]
     return cur if cur is not None else default
 
-def set_path(obj, path, value):
-    keys = path.split(".")
-    cur = obj
-    for k in keys[:-1]:
-        cur = cur.setdefault(k, {})
-    cur[keys[-1]] = value
+
+def uploads_list():
+    if not os.path.isdir(UPLOAD_DIR):
+        return []
+    return ["/uploads/" + f for f in sorted(os.listdir(UPLOAD_DIR)) if not f.startswith(".")]
+
 
 # --- сессии ----------------------------------------------------------------
 def make_token():
@@ -90,6 +94,7 @@ def make_token():
     payload = ts + ":" + ADMIN_LOGIN
     sig = hmac.new(SESSION_SECRET.encode(), payload.encode(), hashlib.sha256).hexdigest()
     return payload + "." + sig
+
 
 def verify_token(token):
     try:
@@ -104,6 +109,7 @@ def verify_token(token):
     except Exception:
         return False
 
+
 def get_cookie(req, name):
     raw = req.headers.get("Cookie") or ""
     for part in raw.split(";"):
@@ -111,6 +117,7 @@ def get_cookie(req, name):
         if part.startswith(name + "="):
             return part[len(name) + 1:]
     return None
+
 
 # --- favicon (рисуем сами, без внешних картинок) ---------------------------
 def _make_icons():
@@ -139,10 +146,12 @@ def _make_icons():
         d.line([(cx, 110), (cx, size - 110)], fill=(255, 240, 200), width=lw)
         d.line([(cx, cy), (110, size - 110)], fill=(255, 240, 200), width=lw)
         d.line([(cx, cy), (size - 110, size - 110)], fill=(255, 240, 200), width=lw)
+
         def png_bytes(im):
             b = io.BytesIO()
             im.save(b, "PNG")
             return b.getvalue()
+
         out["512"] = png_bytes(img)
         out["180"] = png_bytes(img.resize((180, 180), Image.LANCZOS))
         out["32"] = png_bytes(img.resize((32, 32), Image.LANCZOS))
@@ -152,7 +161,7 @@ def _make_icons():
         out["ico"] = ico.getvalue()
         out["ok"] = True
     except Exception:
-        # fallback: простой PNG-заглушка (без Pillow)
+        # fallback: простой PNG/SVG-заглушка (без Pillow)
         out["ok"] = False
         svg = (
             '<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512">'
@@ -171,6 +180,7 @@ def _make_icons():
         out["ico"] = svg
     return out
 
+
 ICONS = _make_icons()
 
 # ----------------------------------------------------------------------------
@@ -186,6 +196,14 @@ class Handler(BaseHTTPRequestHandler):
     # ---------- helpers ----------
     def _send(self, body: bytes, ctype: str, status=200, cache="no-cache", etag=None, extra=None):
         try:
+            inm = self.headers.get("If-None-Match")
+            if etag and inm == etag:
+                self.send_response(304)
+                self.send_header("ETag", etag)
+                self.send_header("Cache-Control", cache)
+                self.send_header("Content-Length", "0")
+                self.end_headers()
+                return
             self.send_response(status)
             self.send_header("Content-Type", ctype)
             self.send_header("Cache-Control", cache)
@@ -194,10 +212,6 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("Referrer-Policy", "strict-origin-when-cross-origin")
             if etag:
                 self.send_header("ETag", etag)
-                if self.headers.get("If-None-Match") == etag:
-                    self.send_header("Content-Length", "0")
-                    self.end_headers()
-                    return
             enc = self.headers.get("Accept-Encoding") or ""
             if "gzip" in enc and len(body) > 512 and ctype.startswith(("text/", "application/json", "application/javascript")):
                 body = gzip.compress(body, 6)
@@ -240,7 +254,7 @@ class Handler(BaseHTTPRequestHandler):
             elif path == "/robots.txt":
                 self._send(ROBOTS.encode("utf-8"), "text/plain; charset=utf-8")
             elif path == "/sitemap.xml":
-                self._send(SITEMAP.encode("utf-8"), "application/xml; charset=utf-8")
+                self._send(_sitemap().encode("utf-8"), "application/xml; charset=utf-8")
             elif path == "/manifest.webmanifest":
                 self._send(MANIFEST.encode("utf-8"), "application/manifest+json; charset=utf-8")
             elif path == "/favicon.ico":
@@ -253,6 +267,8 @@ class Handler(BaseHTTPRequestHandler):
                 self._send(ICONS["180"], "image/png", cache="public, max-age=86400")
             elif path == "/favicon-512x512.png":
                 self._send(ICONS["512"], "image/png", cache="public, max-age=86400")
+            elif path == "/uploads/list.json":
+                self._send_json(uploads_list())
             elif path.startswith("/uploads/"):
                 self.send_upload(path)
             else:
@@ -343,6 +359,16 @@ class Handler(BaseHTTPRequestHandler):
         elif section == "MULTI":
             for k, v in data.items():
                 content[k] = v
+        elif section == "hero":
+            about_data = data.pop("about", None)
+            content["hero"] = data
+            if about_data is not None:
+                content["about"] = about_data
+        elif section in ("works", "services", "process", "guarantees"):
+            val = data.get(section)
+            if not isinstance(val, list):
+                val = data if isinstance(data, list) else []
+            content[section] = val
         else:
             content[section] = data
         save_content(content)
@@ -422,6 +448,7 @@ def render_works(items):
         "</div></section>"
     )
 
+
 def render_reviews(items, video):
     cards = ""
     for i, r in enumerate(items):
@@ -453,6 +480,7 @@ def render_reviews(items, video):
         "</div></section>"
     )
 
+
 def render_cards(items, cls, icon_key=True):
     out = ""
     for it in items:
@@ -464,6 +492,7 @@ def render_cards(items, cls, icon_key=True):
         )
     return out
 
+
 def render_process(items):
     out = ""
     for i, it in enumerate(items):
@@ -473,6 +502,7 @@ def render_process(items):
             % (i + 1, esc(it.get("title", "")), esc(it.get("text", "")))
         )
     return out
+
 
 def render_page(c):
     s = c.get("site", {})
@@ -939,6 +969,7 @@ Host: %s
 Sitemap: %s/sitemap.xml
 """ % (HOST_FOR_SEO, DOMAIN)
 
+
 def _sitemap():
     c = load_content()
     items = ""
@@ -955,7 +986,6 @@ def _sitemap():
 <url><loc>%s/#contacts</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
 %s</urlset>""" % (DOMAIN, date.today().isoformat(), DOMAIN, DOMAIN, DOMAIN, DOMAIN, items)
 
-SITEMAP = _sitemap()
 
 MANIFEST = """{
   "name": "Кухни Островский",
@@ -1017,6 +1047,9 @@ a.back{display:block;text-align:center;margin-top:18px;color:#b8a98e;font-size:1
 
 
 def admin_page(c):
+    def js_arr(v):
+        return json.dumps(v, ensure_ascii=False).replace("</", "<\\/")
+
     j = json.dumps(c, ensure_ascii=False, indent=2)
     return ADMIN_TEMPLATE \
         .replace("@@JSON@@", esc(j)) \
@@ -1053,15 +1086,16 @@ def admin_page(c):
         .replace("@@CTA_BTN_HREF@@", esc(deep_get(c, "cta.btnHref"))) \
         .replace("@@FOOTER_TEXT@@", esc(deep_get(c, "footer.text"))) \
         .replace("@@FOOTER_EXTRA@@", esc(deep_get(c, "footer.extra"))) \
-        .replace("@@WORKS_JSON@@", esc(json.dumps(c.get("works", []), ensure_ascii=False))) \
-        .replace("@@REVIEWS_JSON@@", esc(json.dumps(c.get("reviews", []), ensure_ascii=False))) \
+        .replace("%STATS_JSON%", js_arr(c.get("hero", {}).get("stats", []))) \
+        .replace("%WORKS_JSON%", js_arr(c.get("works", []))) \
+        .replace("%REVIEWS_JSON%", js_arr(c.get("reviews", []))) \
+        .replace("%SERVICES_JSON%", js_arr(c.get("services", []))) \
+        .replace("%PROCESS_JSON%", js_arr(c.get("process", []))) \
+        .replace("%GUARANTEES_JSON%", js_arr(c.get("guarantees", []))) \
         .replace("@@VIDEO_ENABLED@@", 'checked' if c.get("video", {}).get("enabled") else '') \
         .replace("@@VIDEO_YOUTUBE@@", esc(deep_get(c, "video.youtube"))) \
         .replace("@@VIDEO_POSTER@@", esc(deep_get(c, "video.poster"))) \
-        .replace("@@VIDEO_AUTHOR@@", esc(deep_get(c, "video.author"))) \
-        .replace("@@SERVICES_JSON@@", esc(json.dumps(c.get("services", []), ensure_ascii=False))) \
-        .replace("@@PROCESS_JSON@@", esc(json.dumps(c.get("process", []), ensure_ascii=False))) \
-        .replace("@@GUARANTEES_JSON@@", esc(json.dumps(c.get("guarantees", []), ensure_ascii=False)))
+        .replace("@@VIDEO_AUTHOR@@", esc(deep_get(c, "video.author")))
 
 
 ADMIN_TEMPLATE = """<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8">
@@ -1144,7 +1178,7 @@ table.tbl input{font-size:14px}
     <div class="hint">Сохранение происходит нажатием кнопки внизу карточки</div>
   </div>
   <div class="card"><h2>Статистика (карточки под шапкой)</h2>
-    <table class="tbl" data-array="stats">
+    <table class="tbl" data-array="stats" data-fields='["icon","title","text"]'>
       <thead><tr><th>Иконка</th><th>Заголовок</th><th>Текст</th><th></th></tr></thead>
       <tbody></tbody>
     </table>
@@ -1163,7 +1197,7 @@ table.tbl input{font-size:14px}
 <form class="tab" id="tab-works" data-section="works">
   <div class="card"><h2>Работы (карусель)</h2>
     <div class="hint" style="margin-bottom:10px">Поля: <b>title</b> — название, <b>city</b> — город, <b>year</b> — год, <b>image</b> — ссылка на фото (можно загрузить во вкладке «Фото» и вставить /uploads/...).</div>
-    <table class="tbl" data-array="works">
+    <table class="tbl" data-array="works" data-fields='["title","city","year","image"]'>
       <thead><tr><th>Название</th><th>Город</th><th>Год</th><th>Фото (URL)</th><th></th></tr></thead>
       <tbody></tbody>
     </table>
@@ -1176,7 +1210,7 @@ table.tbl input{font-size:14px}
 <form class="tab" id="tab-reviews" data-section="MULTI">
   <div class="card"><h2>Отзывы</h2>
     <div class="hint" style="margin-bottom:10px">Поля: <b>name</b> — имя, <b>text</b> — текст отзыва, <b>rating</b> — оценка (1–5).</div>
-    <table class="tbl" data-array="reviews">
+    <table class="tbl" data-array="reviews" data-fields='["name","text","rating"]'>
       <thead><tr><th>Имя</th><th>Текст</th><th>Оценка</th><th></th></tr></thead>
       <tbody></tbody>
     </table>
@@ -1197,7 +1231,7 @@ table.tbl input{font-size:14px}
 <!-- УСЛУГИ -->
 <form class="tab" id="tab-services" data-section="services">
   <div class="card"><h2>Услуги</h2>
-    <table class="tbl" data-array="services">
+    <table class="tbl" data-array="services" data-fields='["icon","title","text"]'>
       <thead><tr><th>Иконка</th><th>Название</th><th>Описание</th><th></th></tr></thead>
       <tbody></tbody>
     </table>
@@ -1209,7 +1243,7 @@ table.tbl input{font-size:14px}
 <!-- ПРОЦЕСС -->
 <form class="tab" id="tab-process" data-section="process">
   <div class="card"><h2>Этапы «Как мы работаем»</h2>
-    <table class="tbl" data-array="process">
+    <table class="tbl" data-array="process" data-fields='["title","text"]'>
       <thead><tr><th>Название</th><th>Описание</th><th></th></tr></thead>
       <tbody></tbody>
     </table>
@@ -1221,7 +1255,7 @@ table.tbl input{font-size:14px}
 <!-- ГАРАНТИИ -->
 <form class="tab" id="tab-guarantees" data-section="guarantees">
   <div class="card"><h2>Гарантии</h2>
-    <table class="tbl" data-array="guarantees">
+    <table class="tbl" data-array="guarantees" data-fields='["title","text"]'>
       <thead><tr><th>Название</th><th>Описание</th><th></th></tr></thead>
       <tbody></tbody>
     </table>
@@ -1362,7 +1396,11 @@ table.tbl input{font-size:14px}
     document.querySelectorAll('table[data-array]').forEach(function(tbl){
       var fields=JSON.parse(tbl.dataset.fields||'[]');
       var data=window.__ADMIN_ARR__&&window.__ADMIN_ARR__[tbl.dataset.array];
-      (data||[]).forEach(function(item){addRow(tbl,fields);var tr=tbl.querySelector('tbody tr:last-child');tr.querySelectorAll('input[data-field]').forEach(function(inp){inp.value=item[inp.dataset.field]||''})});
+      (data||[]).forEach(function(item){
+        addRow(tbl,fields);
+        var tr=tbl.querySelector('tbody tr:last-child');
+        tr.querySelectorAll('input[data-field]').forEach(function(inp){inp.value=item[inp.dataset.field]||''});
+      });
     });
     document.querySelectorAll('.row-add').forEach(function(btn){
       btn.addEventListener('click',function(){
@@ -1374,41 +1412,33 @@ table.tbl input{font-size:14px}
 
   // ---- сохранение форм ----
   document.querySelectorAll('form[data-section]').forEach(function(form){
+    if(form.id==='tab-json') return;
     form.addEventListener('submit',function(e){
       e.preventDefault();
       var section=form.dataset.section,obj={};
       form.querySelectorAll('input[name],textarea[name]').forEach(function(el){
-        var name=el.name;
-        if(name.indexOf('.')>-1){setPath(obj,name,el.value)}
-        else{obj[name]=el.value}
+        setPath(obj,el.name,el.value);
       });
       var arrays=collectArrays(form);
       Object.keys(arrays).forEach(function(k){obj[k]=arrays[k]});
-      // особенности
       if(section==='MULTI'){
-        if(obj['site.cities']!==undefined){
-          if(!obj.site)obj.site={};
-          obj.site.cities=obj['site.cities'].split('\\n').map(function(s){return s.trim()}).filter(Boolean);
-          delete obj['site.cities'];
+        if(obj.site && typeof obj.site.cities === 'string'){
+          obj.site.cities=obj.site.cities.split('\n').map(function(s){return s.trim()}).filter(Boolean);
         }
       }
       if(form.id==='tab-reviews'){
-        obj.video={enabled:document.getElementById('videoEnabled').checked,
+        obj.video={
+          enabled:document.getElementById('videoEnabled').checked,
           youtube:document.getElementById('videoYoutube').value.trim(),
           poster:document.getElementById('videoPoster').value.trim(),
-          author:document.getElementById('videoAuthor').value.trim()};
-        delete obj['video.enabled'];
+          author:document.getElementById('videoAuthor').value.trim()
+        };
       }
       send(section,obj);
     });
   });
 
   function setPath(o,p,v){var ks=p.split('.'),c=o;for(var i=0;i<ks.length-1;i++){c=c[ks[i]]=c[ks[i]]||{}}c[ks[ks.length-1]]=v}
-  function collectSimple(form){
-    var o={};
-    form.querySelectorAll('input[name],textarea[name]').forEach(function(el){setPath(o,el.name,el.value)});
-    return o;
-  }
 
   function send(section,data){
     var fd=new FormData();fd.append('section',section);fd.append('data',JSON.stringify(data));
@@ -1450,7 +1480,6 @@ table.tbl input{font-size:14px}
     }).catch(function(){});
   }
 
-  // данные массивов для таблиц
   window.__ADMIN_ARR__={
     stats:%STATS_JSON%,
     works:%WORKS_JSON%,
