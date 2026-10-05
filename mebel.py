@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-mebel.py — Кухни Островский + админка /admin (Supabase) + анимации.
+mebel.py — Кухни Островский + админка /admin (Supabase).
+Сайт работает мгновенно (не ждёт Supabase). Supabase — для админки.
 """
 import base64
 import concurrent.futures
@@ -44,7 +45,7 @@ ADMIN_PASSWORD_ENV = os.environ.get("ADMIN_PASSWORD", "романкух")
 SESSION_TTL = 86400 * 7
 MAX_UPLOAD = 8 * 1024 * 1024
 DATA_ROW_ID = 1
-CACHE_TTL = 20
+CACHE_TTL = 20  # 20 сек — после этого сайт подтянет свежие данные из БД
 
 FAVICON_URL = "https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1254x1254&from=bu&u=8vUcv8YxPcmfEmzVcjy5cNrPtcWeOIJmbKMc6vln3Q8&cs=1254x0"
 VIDEO_POSTER = "https://sun9-44.vkuserphoto.ru/s/v1/ig2/z3K7MYc56nf_4Ek_wkhJ-j-VZt7iv_VEt9wUN0gJSY0VORuRVxQCX1S5baisBgJyoYuCcrENJNxLajL1WKwdFS91.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x541,1080x811,1280x961,1440x1081,2560x1922&from=bu&u=Fj3HDKPJXUOEmCWl6MePYyPYB6lNmsGien6u_9mlUi8&cs=1280x0"
@@ -83,7 +84,7 @@ SITEMAP = """<?xml version="1.0" encoding="UTF-8"?>
 MANIFEST = """{
   "name": "Кухни Островский — кухни на заказ в Ростове, Батайске и Азове",
   "short_name": "Кухни Островский",
-  "description": "Кухни и корпусная мебель на заказ. Бесплатный замер и 3D-проект.",
+  "description": "Кухни и корпусная мебель на заказ.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0e0c09",
@@ -113,7 +114,7 @@ DEFAULT_DATA = {
     "brand": {
         "name": "Кухни Островский",
         "sub": "Ростов · Батайск · Азов",
-        "logo_url": "https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c.jpg?quality=95&cs=1254x0",
+        "logo_url": "https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1254x1254&from=bu&u=8vUcv8YxPcmfEmzVcjy5cNrPtcWeOIJmbKMc6vln3Q8&cs=1254x0",
         "phone": "+7 (950) 846-53-97",
         "phone_raw": "+79508465397",
         "telegram": "https://t.me/fanny161",
@@ -126,20 +127,20 @@ DEFAULT_DATA = {
         "sub": "Проектируем и изготавливаем кухни, шкафы, гардеробные и другую корпусную мебель в Ростове, Батайске и Азове — по вашему проекту, от замера до монтажа.",
         "btn1": "Получить консультацию",
         "btn2": "Смотреть работы",
-        "bg": "https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&cs=1280x0",
+        "bg": "https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x241,480x321,540x361,640x428,720x481,1080x722,1280x855,1440x962,2560x1711&from=bu&u=udyioV6Vl_ghNhYbFZ9zjc-ZU_IjlhkVV114xfpUZJs&cs=1280x0",
     },
     "stats": {
-        "bg": "https://sun9-20.vkuserphoto.ru/s/v1/ig2/9W8TzKo3y8t8-s63NRmlys3yJtHJAKPBOp2QIyuqMSTinG9q-UFuD5sYkz4wbd7QZDv7wQxsZlldmCrAM-PzPlDJ.jpg?quality=95&cs=1280x0",
+        "bg": "https://sun9-20.vkuserphoto.ru/s/v1/ig2/9W8TzKo3y8t8-s63NRmlys3yJtHJAKPBOp2QIyuqMSTinG9q-UFuD5sYkz4wbd7QZDv7wQxsZlldmCrAM-PzPlDJ.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,1800x1200&from=bu&u=kySpH3qK1oaqlWr8kbrP_y7iDDbASMEGWuJ5dgxf5MU&cs=1280x0",
     },
     "about": {
-        "bg": "https://sun9-50.vkuserphoto.ru/s/v1/ig2/_uJbJ-Gw0zJ3jVPyc4QJRGUErYM5zju63UDQM6FFDezILgQ54i5ycLVvhgSHl5hHPVIKikt0AL9V6DrmqDH7G5C6.jpg?quality=95&cs=1280x0",
+        "bg": "https://sun9-50.vkuserphoto.ru/s/v1/ig2/_uJbJ-Gw0zJ3jVPyc4QJRGUErYM5zju63UDQM6FFDezILgQ54i5ycLVvhgSHl5hHPVIKikt0AL9V6DrmqDH7G5C6.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2208x1656&from=bu&u=9_d3vo4cDIif_5OxDZbDgMLFC1xuAQSKRY1zAPscIwM&cs=1280x0",
         "photo": "https://i.ibb.co/mVchNnp1/photo-2026-09-10-18-48-37.jpg",
         "name": "Роман Островский",
         "role": "Руководитель мебельной мастерской Островского",
-        "text": "С командой изготавливаем кухни и корпусную мебель по индивидуальным проектам.",
+        "text": "С командой изготавливаем кухни и корпусную мебель по индивидуальным проектам — с учётом ваших идей, размеров и задач.",
         "kicker": "О руководителе",
         "title": "Кухни и мебель под ключ — с заботой о деталях",
-        "body": "Мы помогаем с планировкой и подбором материалов, ведём вас от консультации и замера до сборки и установки.",
+        "body": "Мы помогаем с планировкой и подбором материалов, предлагаем решения даже для сложных задач — когда другие разводят руками. Ведём вас от консультации и замера до сборки и установки.",
         "features": [
             "Кухни, шкафы, гардеробные и прихожие",
             "Честный расчёт — без навязывания лишнего",
@@ -148,74 +149,101 @@ DEFAULT_DATA = {
         ],
     },
     "consult": {
-        "bg": "https://sun9-41.vkuserphoto.ru/s/v1/ig2/qi7m_VnJPio2P4oKJhNr6X-9HJD2kCt6f98XGtveyiAxhJ4ru17yVoibjERFJ4-ZWDOm8Lr7xGMwRP6dSudvgPnG.jpg?quality=95&cs=1280x0",
+        "bg": "https://sun9-41.vkuserphoto.ru/s/v1/ig2/qi7m_VnJPio2P4oKJhNr6X-9HJD2kCt6f98XGtveyiAxhJ4ru17yVoibjERFJ4-ZWDOm8Lr7xGMwRP6dSudvgPnG.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&u=myRGe7iEVeLqDstzbpBsld7P0jp7l04_xCLynpcz4So&cs=1280x0",
         "kicker": "Бесплатно",
         "title": "Консультация",
         "text": "Позвоните или напишите нам в Telegram или MAX — расскажем про кухни и мебель, всё обсудим и договоримся о бесплатном замере.",
     },
     "works": {
-        "bg": "https://sun9-32.vkuserphoto.ru/s/v1/ig2/ipQDYrxkEiu9wFqxHUIJNhf4YERP29pOrzOhJ2hTcO6Z-fqWBrPA9D1vCltHlp9RltkldMRefKPMMkB8aD8jhZfR.jpg?quality=95&cs=1280x0",
+        "bg": "https://sun9-32.vkuserphoto.ru/s/v1/ig2/ipQDYrxkEiu9wFqxHUIJNhf4YERP29pOrzOhJ2hTcO6Z-fqWBrPA9D1vCltHlp9RltkldMRefKPMMkB8aD8jhZfR.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,2560x1707&from=bu&u=q3wKCscaGbBU8n3umOUNA0wOvLkQBDAVXIkzDrivHgk&cs=1280x0",
         "kicker": "Наши работы",
         "title": "Кухни и мебель, которые мы сделали",
         "subtitle": "Нажмите на фото, чтобы рассмотреть в большом размере.",
         "items": [
-            {"url": "https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&cs=1080x0", "alt": "Кухня на заказ в Ростове"},
-            {"url": "https://sun9-20.vkuserphoto.ru/s/v1/ig2/9W8TzKo3y8t8-s63NRmlys3yJtHJAKPBOp2QIyuqMSTinG9q-UFuD5sYkz4wbd7QZDv7wQxsZlldmCrAM-PzPlDJ.jpg?quality=95&cs=1080x0", "alt": "Кухня на заказ в Батайске"},
-            {"url": "https://sun9-11.vkuserphoto.ru/s/v1/ig2/Xh5Xw9Yb1reqhfFznlGk8NjvSQAxCbysuiL5IWRt_f3ELVb8fvoYPg00eFIHV-xiS9I4nhYBj4ttU_FHVkPpX8Z3.jpg?quality=95&cs=1080x0", "alt": "Кухня на заказ в Азове"},
-            {"url": "https://sun9-88.vkuserphoto.ru/s/v1/ig2/vCipZmkZdy5Ix0cFh98i0yhNAYynqzh2gm00rWx5Qr019O4RHjwcs7pN6iKT4L_d1vanDAbUJ9JRrHj_uw13YVhg.jpg?quality=95&cs=1080x0", "alt": "Мебель на заказ"},
+            {"url": "https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x241,480x321,540x361,640x428,720x481,1080x722,1280x855,1440x962,2560x1711&from=bu&u=udyioV6Vl_ghNhYbFZ9zjc-ZU_IjlhkVV114xfpUZJs&cs=1080x0", "alt": "Кухня на заказ в Ростове — Кухни Островский"},
+            {"url": "https://sun9-20.vkuserphoto.ru/s/v1/ig2/9W8TzKo3y8t8-s63NRmlys3yJtHJAKPBOp2QIyuqMSTinG9q-UFuD5sYkz4wbd7QZDv7wQxsZlldmCrAM-PzPlDJ.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,1800x1200&from=bu&u=kySpH3qK1oaqlWr8kbrP_y7iDDbASMEGWuJ5dgxf5MU&cs=1080x0", "alt": "Кухня на заказ в Батайске — Кухни Островский"},
+            {"url": "https://sun9-11.vkuserphoto.ru/s/v1/ig2/Xh5Xw9Yb1reqhfFznlGk8NjvSQAxCbysuiL5IWRt_f3ELVb8fvoYPg00eFIHV-xiS9I4nhYBj4ttU_FHVkPpX8Z3.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,1600x1200&from=bu&u=pY-bjOidU1jjNjiF66Dn4Ycgmb6utH_d0Ti7oSJr0qA&cs=1080x0", "alt": "Кухня на заказ в Азове — Кухни Островский"},
+            {"url": "https://sun9-88.vkuserphoto.ru/s/v1/ig2/vCipZmkZdy5Ix0cFh98i0yhNAYynqzh2gm00rWx5Qr019O4RHjwcs7pN6iKT4L_d1vanDAbUJ9JRrHj_uw13YVhg.jpg?quality=95&as=32x44,48x66,72x99,108x149,160x220,240x331,360x496,480x661,540x744,640x882,720x992,1080x1488,1280x1764,1440x1984,1858x2560&from=bu&u=lrbIDUwRUQKMEvaw12w2pRXFBLE0sHCmc6AYF8H7CIA&cs=1080x0", "alt": "Мебель на заказ в Ростове — Кухни Островский"},
+            {"url": "https://sun9-87.vkuserphoto.ru/s/v1/ig2/WHkPw7TZze6TV4t2q6Yr2pw61S1zWDeDyp8Dbe2IFm31aAuhXVSQ2DUTnM6AIt5u3cLTp9mh-YN2b_Lb0q5iHCFu.jpg?quality=95&as=32x40,48x60,72x90,108x134,160x199,240x298,360x448,480x597,540x671,640x796,720x895,1080x1343,1280x1591,1440x1790,2059x2560&from=bu&u=bQW477ZK7yLopHDa2oCbH-uA483cvDm58BTlNs29AoE&cs=1080x0", "alt": "Шкаф-купе на заказ в Ростове — Кухни Островский"},
+            {"url": "https://sun9-24.vkuserphoto.ru/s/v1/ig2/lS8MpZ4V9XUKPJ7l9GmjnkCnHW2MGfnq86jH-Gzx6bAgr4m3azL5Xd_fkdPHY_NOsJjST3Zw2iQkuGKGBwYODdgM.jpg?quality=95&as=32x42,48x63,72x95,108x142,160x211,240x316,360x474,480x632,540x711,640x843,720x949,1080x1423,1280x1686,1440x1897,1943x2560&from=bu&u=dLnirpryCPR3qvUPphwt7JaP5ljnoIl1yyGyUNiUjZI&cs=1080x0", "alt": "Мебель на заказ в Батайске — Кухни Островский"},
+            {"url": "https://sun9-64.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,2560x1707&from=bu&u=T5NJHPubDiY9E_IwXkmzI6uExoeA0QSNz39xjf4UD5M&cs=1080x0", "alt": "Кухня на заказ — Кухни Островский"},
+            {"url": "https://sun9-39.vkuserphoto.ru/s/v1/ig2/5cyrhjIBSWB5GGZATB29IrmjydaNdVOx-iP_dMNKsMbePp5Ccs2rnkEpLnfft3yAZGeMEE3IfInjMQ7aU6Z6jnHc.jpg?quality=95&as=32x24,48x36,72x54,108x82,160x121,240x181,360x272,480x363,540x408,640x484,720x544,1080x817,1280x968&from=bu&u=l1uWXrXXeEAKk1VMgGM5wyIo7DtKdQGhKlCwMjoS0t8&cs=1080x0", "alt": "Мебель на заказ — Кухни Островский"},
+            {"url": "https://sun9-68.vkuserphoto.ru/s/v1/ig2/6KwHlOiN9pxXNIwTImKO6QGkrSCTVqreybJu-63m8wbhdFFMIl06es9cPeurIdwuwXGtsFTkdJ6IOjMaS1qRtfxJ.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=VgDjFEJKqpW6dWVO-E4y4Q6xcuyoqiL7LxhG36oLPjw&cs=1080x0", "alt": "Кухня на заказ в Батайске — Кухни Островский"},
+            {"url": "https://sun9-23.vkuserphoto.ru/s/v1/ig2/wfBQoeOzjZbCRCvxmIkx_V3xC0fgMd3TTxRDSRG2CHDMok6B2ZKrG7vCAJ_G1DmrZ6JS1_RC2tr87Q64wJJ4aW9w.jpg?quality=95&as=32x25,48x37,72x56,108x84,160x124,240x186,360x279,480x372,540x419,640x496,720x558,1080x837,1280x992,1440x1117,2560x1985&from=bu&u=kZXvrlzwGUvzrHmYa8tHXbvyhU_JlNlefLxxcCYqM1A&cs=1080x0", "alt": "Мебель на заказ — Кухни Островский"},
+            {"url": "https://sun9-33.vkuserphoto.ru/s/v1/ig2/TQbwf8FdMs_jwKfC_ONoxEHBIpc2L5yf_T0McNeUKRn0tK7fVbC5YbHfsB0TGLlNC_D55htM_2nREACuIw7ykLIx.jpg?quality=95&as=32x43,48x65,72x97,108x145,160x215,240x323,360x484,480x645,540x726,640x860,720x968,1080x1452,1280x1721,1440x1936,1904x2560&from=bu&u=rbH0OM9Bv0PnevamgtW5nYBm9jxFI28R6D1wxzq6fJA&cs=1080x0", "alt": "Кухня на заказ — Кухни Островский"},
+            {"url": "https://sun9-52.vkuserphoto.ru/s/v1/ig2/iD_ZIKN3aW1Ml52LPM3C65Qa7raIjG1CUC-fRrbHZEdxtU9hrsvTAh80W9sM3wI2hBUlsHc86fnHiG43aAOPlRuP.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=mdGpdzTBkRhwLQzuIJS1nz6l-_CWqdnxhW1cwsXNCx8&cs=1080x0", "alt": "Кухня на заказ — Кухни Островский"},
+            {"url": "https://sun9-65.vkuserphoto.ru/s/v1/ig2/z_wfZeGA9H6LHDsevjkijUHpbVyLGWFM38frX4hKrjgOnscfAloGdrVpPUwl4XoXCG_YgcKXTgeeTsDDcWEBvdi1.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=YbZ1WmiK3ZCk0bKWZhf_YKp6dTUU2vbsQo7Ya4Hoi6s&cs=1080x0", "alt": "Кухня на заказ — Кухни Островский"},
         ],
     },
     "reviews": {
-        "bg": "https://sun9-64.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&cs=1280x0",
+        "bg": "https://sun9-64.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,2560x1707&from=bu&u=T5NJHPubDiY9E_IwXkmzI6uExoeA0QSNz39xjf4UD5M&cs=1280x0",
         "kicker": "Отзывы",
         "title": "Что говорят наши клиенты",
-        "subtitle": "Реальные отзывы о нашей работе.",
+        "subtitle": "Реальные отзывы о нашей работе. Листайте влево-вправо.",
         "items": [
             {"name": "Виктория Брандикова", "sub": "Кухня на заказ", "stars": 5,
-             "avatar": "https://sun9-3.vkuserphoto.ru/s/v1/ig2/-cVZEipS5I4ROZUZ2fxoIaGJBZXpUs76_WKoUZpPw_r2-gnqqUvgTqjLjYoTZ0R21nsCSvjUPyw_vSn1jxAYJC8K.jpg?quality=95&cs=128x0",
-             "text": "Заказывали у Романа кухню, всё прошло на высшем уровне!", "video": ""},
+             "avatar": "https://sun9-3.vkuserphoto.ru/s/v1/ig2/-cVZEipS5I4ROZUZ2fxoIaGJBZXpUs76_WKoUZpPw_r2-gnqqUvgTqjLjYoTZ0R21nsCSvjUPyw_vSn1jxAYJC8K.jpg?quality=95&as=32x30,48x45,72x68,108x101,160x150,240x225,360x338,480x450,540x507,640x601,720x676,1080x1014,1280x1201,1440x1351,2505x2351&from=bu&cs=128x0",
+             "text": "Заказывали у Романа кухню, всё прошло на высшем уровне! Роман супер профессионал своего дела! Кухня была готова в короткие сроки, установкой очень довольны, всё под ключ. За мебелью теперь только к Роману!", "video": ""},
+            {"name": "Виктория Маренко", "sub": "Кухня и гардеробная", "stars": 5,
+             "avatar": "https://sun9-41.vkuserphoto.ru/s/v1/ig2/qi7m_VnJPio2P4oKJhNr6X-9HJD2kCt6f98XGtveyiAxhJ4ru17yVoibjERFJ4-ZWDOm8Lr7xGMwRP6dSudvgPnG.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&u=myRGe7iEVeLqDstzbpBsld7P0jp7l04_xCLynpcz4So&cs=1280x0",
+             "text": "И вновь мы обратились к Роману! Кухня удобная, светлая, но не маркая. Все пожелания учтены и воплощены в жизнь! Однозначно советую обращаться к нему. Гардеробную тоже заказывали у Романа — и она идеальна!", "video": ""},
+            {"name": "Любовь Петелько", "sub": "Шкаф, тумбы, прихожая", "stars": 5,
+             "avatar": "https://sun9-53.vkuserphoto.ru/s/v1/ig2/gZheSpaWhz7StIdwlzSoCIfA01e-x8jVUMESDK2u9ONRR1s3txB-b6F7lqLLj-Y6QFqFU5x463yoWmnTxf5T88g2.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&cs=128x0",
+             "text": "Я заказала у Романа шкаф купе в спальню. Роман дал много советов и рекомендаций по составу и цвету. В итоге решила заказать сразу тумбы, гарнитур под телевизор, и прихожую. Установили всё раньше срока. Очень довольна!", "video": ""},
+            {"name": "Дмитрий Юшенко", "sub": "Шкаф и стенка", "stars": 5,
+             "avatar": "https://sun9-83.vkuserphoto.ru/s/v1/ig2/zYO0FQ_fFsgxDWhaTE85lNpixn2ikScuD58qVoXtqda8vFxoS-LGsT54k9pk9tDVEpzGpJfCw5eg5TNtYgE2Q8_y.jpg?quality=95&as=32x47,48x71,72x106,108x159,160x236,240x353,360x530,480x707,540x795,640x943,720x1061,869x1280&from=bu&cs=1280x0",
+             "text": "Заказывали у Романа шкаф и стенку в спальню. Работа вышла отличной, подсказал несколько удачных решений наших хотелок. Все супер! Спасибо!", "video": ""},
+            {"name": "Екатерина Умнягина", "sub": "Кухня на заказ", "stars": 5,
+             "avatar": "https://sun9-46.vkuserphoto.ru/s/v1/ig2/bVm2vnJWOD92dzHJ3_21NbqhcwF7DW7a05XzjaTWteG9Dviu9nt8LlA5bgzdbsBhGtYbrs7rvOMTylQQIV43cl4T.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&cs=128x0",
+             "text": "Заказывали у Романа кухню, всё очень понравилось! Подбирали всё до мелочей, и Рома всё исполнил, как мы хотели. Спасибо за эту крутую современную кухню!", "video": ""},
+            {"name": "Анастасия Зайцева", "sub": "Два шкафа, гардеробная", "stars": 5,
+             "avatar": "https://sun9-48.vkuserphoto.ru/s/v1/ig2/OdS0JaUmpkj7vzQLNz1oyY6PBksnYylZuY54LZ2vnibrqxNc0IimIjE6d6NWySeMm6N2MLIUHG6WLKtAFJ82ICwE.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,960x1280&from=bu&cs=128x0",
+             "text": "Заказывали у Романа два шкафа. Роман подкинул прекрасную идею, в итоге получилась целая угловая гардеробная, я была в восторге! Работа выполнена в срок и качественно. Спасибо!", "video": ""},
+            {"name": "Александр Карташев", "sub": "Видеоотзыв · Кухня на заказ", "stars": 5,
+             "avatar": "",
+             "text": "«Прям гордость квартиры! За приемлемую цену получили отличную кухню: выступ стояка закрыли пеналом, а в ножку барного стола встроили розетки».", "video": ""},
         ],
     },
     "services": {
-        "bg": "https://sun9-88.vkuserphoto.ru/s/v1/ig2/vCipZmkZdy5Ix0cFh98i0yhNAYynqzh2gm00rWx5Qr019O4RHjwcs7pN6iKT4L_d1vanDAbUJ9JRrHj_uw13YVhg.jpg?quality=95&cs=1280x0",
+        "bg": "https://sun9-88.vkuserphoto.ru/s/v1/ig2/vCipZmkZdy5Ix0cFh98i0yhNAYynqzh2gm00rWx5Qr019O4RHjwcs7pN6iKT4L_d1vanDAbUJ9JRrHj_uw13YVhg.jpg?quality=95&as=32x44,48x66,72x99,108x149,160x220,240x331,360x496,480x661,540x744,640x882,720x992,1080x1488,1280x1764,1440x1984,1858x2560&from=bu&u=lrbIDUwRUQKMEvaw12w2pRXFBLE0sHCmc6AYF8H7CIA&cs=1280x0",
         "kicker": "Что мы делаем",
         "title": "Услуги",
         "subtitle": "Индивидуальный подход к каждому проекту и полный цикл производства.",
         "items": [
-            {"title": "Кухни на заказ", "text": "Проектируем кухню точно под ваш размер, стиль и привычки.", "icon": "M3 9h18M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9M3 9l2-4h14l2 4M8 9v2M12 9v2M16 9v2"},
-            {"title": "Шкафы и гардеробные", "text": "Шкафы-купе, гардеробные, тумбы и комоды.", "icon": "M3 3h18v18H3zM3 8h18M8 8v13M16 8v13"},
-            {"title": "Прихожие и стенки", "text": "Прихожие, стенки, гарнитуры под ТВ.", "icon": "M12 3v18M3 12h18M5 5l14 14M19 5L5 19"},
-            {"title": "Сборка и монтаж", "text": "Профессиональная установка и подключение техники.", "icon": "M14 6l4 4M5 19l7-7M17 3l4 4-4 4-1-1-1 1-4-4 1-1-1-1 4-4z"},
-            {"title": "Замер и проект", "text": "Выезжаем на замер, делаем планировку и 3D-проект.", "icon": "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 3v18M3 12h18"},
-            {"title": "Обновление мебели", "text": "Освежим фасады и фурнитуру существующей кухни.", "icon": "M3 12a9 9 0 1 0 9-9M3 12h6M3 12l4-4M3 12l4 4"},
+            {"title": "Кухни на заказ", "text": "Проектируем кухню точно под ваш размер, стиль и привычки — от классики до минимализма.", "icon": "M3 9h18M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9M3 9l2-4h14l2 4M8 9v2M12 9v2M16 9v2"},
+            {"title": "Шкафы и гардеробные", "text": "Шкафы-купе, гардеробные, тумбы и комоды — встроенные и отдельно стоящие.", "icon": "M3 3h18v18H3zM3 8h18M8 8v13M16 8v13"},
+            {"title": "Прихожие и стенки", "text": "Прихожие, стенки, гарнитуры под ТВ — аккуратно впишем в ваш интерьер.", "icon": "M12 3v18M3 12h18M5 5l14 14M19 5L5 19"},
+            {"title": "Сборка и монтаж", "text": "Профессиональная установка, аккуратная сборка и подключение техники.", "icon": "M14 6l4 4M5 19l7-7M17 3l4 4-4 4-1-1-1 1-4-4 1-1-1-1 4-4z"},
+            {"title": "Замер и проект", "text": "Выезжаем на замер, делаем планировку и 3D-проект — бесплатно.", "icon": "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 3v18M3 12h18"},
+            {"title": "Обновление мебели", "text": "Освежим фасады и фурнитуру существующей кухни — дешевле, чем новая.", "icon": "M3 12a9 9 0 1 0 9-9M3 12h6M3 12l4-4M3 12l4 4"},
         ],
     },
     "process": {
-        "bg": "https://sun9-39.vkuserphoto.ru/s/v1/ig2/xiwu_WFFyjmJc4_VAOD1BHikAdMqBy9N-SuKyiWu7xC8OYE-pfhtW5GkOyO5No0KjOrNQUwcgOW3Gr2bCnjvFp2H.jpg?quality=95&cs=1280x0",
+        "bg": "https://sun9-39.vkuserphoto.ru/s/v1/ig2/xiwu_WFFyjmJc4_VAOD1BHikAdMqBy9N-SuKyiWu7xC8OYE-pfhtW5GkOyO5No0KjOrNQUwcgOW3Gr2bCnjvFp2H.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=VpmAnVyzkXcBCcJLy2DSlVkJJG2zYnSPbLzk7-TXGGk&cs=1280x0",
         "kicker": "Как мы работаем",
         "title": "Путь от идеи до готовой мебели",
         "items": [
-            {"n": "01", "title": "Обращение", "text": "Вы звоните или пишете — обговариваем задачу."},
-            {"n": "02", "title": "Замер", "text": "Выезжаем, снимаем размеры и обсуждаем планировку."},
-            {"n": "03", "title": "Проект", "text": "Готовим 3D-проект и подбираем материалы."},
-            {"n": "04", "title": "Договор", "text": "Фиксируем стоимость и условия."},
+            {"n": "01", "title": "Обращение", "text": "Вы звоните или пишете — обговариваем задачу и пожелания."},
+            {"n": "02", "title": "Замер", "text": "Выезжаем, снимаем размеры и обсуждаем планировку. Бесплатно."},
+            {"n": "03", "title": "Проект", "text": "Готовим 3D-проект и подбираем материалы с фурнитурой."},
+            {"n": "04", "title": "Договор", "text": "Фиксируем стоимость и условия, подписываем договор."},
             {"n": "05", "title": "Производство", "text": "Изготавливаем мебель на собственном производстве."},
-            {"n": "06", "title": "Доставка и монтаж", "text": "Привозим, собираем и устанавливаем."},
+            {"n": "06", "title": "Доставка и монтаж", "text": "Привозим, собираем и устанавливаем. Сдаём с гарантией."},
         ],
     },
     "guarantees": {
-        "bg": "https://sun9-50.vkuserphoto.ru/s/v1/ig2/C_b5sF8D1xkYdXe0s1BPq0c52G5b_U0r8MpWIaYYJzh9CXIE4qk0Q3rnZh2FuNZhpnp78BBveTceOk2Js-tECU_z.jpg?quality=95&cs=1280x0",
+        "bg": "https://sun9-50.vkuserphoto.ru/s/v1/ig2/C_b5sF8D1xkYdXe0s1BPq0c52G5b_U0r8MpWIaYYJzh9CXIE4qk0Q3rnZh2FuNZhpnp78BBveTceOk2Js-tECU_z.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=YCey971XM2nuNjhkwSaIOfPMTMneMAyHLaPyHT4mLyY&cs=1280x0",
         "kicker": "Почему мы",
         "title": "Гарантии и преимущества",
         "items": [
             {"title": "Гарантия качества", "text": "Отвечаем за свою работу и сопровождаем после установки.", "icon": "M12 3l7 3v6c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V6l7-3zM9 12l2 2 4-4"},
             {"title": "Честный расчёт", "text": "Без навязывания лишнего и скрытых доплат.", "icon": "M4 20h16M6 20V8l6-4 6 4v12M9 11h6M9 15h6M10 11v8M14 11v8"},
-            {"title": "Собственное производство", "text": "Без посредников — контролируем качество.", "icon": "M3 21V9l9-5 9 5v12M3 21h18M9 21v-6h6v6M12 9v2"},
-            {"title": "Личное сопровождение", "text": "Вы всегда на связи со специалистом.", "icon": "M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM4 21c0-4 3.6-6 8-6s8 2 8 6"},
+            {"title": "Собственное производство", "text": "Без посредников — контролируем качество на каждом этапе.", "icon": "M3 21V9l9-5 9 5v12M3 21h18M9 21v-6h6v6M12 9v2"},
+            {"title": "Личное сопровождение", "text": "Вы всегда на связи со специалистом — от замера до монтажа.", "icon": "M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM4 21c0-4 3.6-6 8-6s8 2 8 6"},
         ],
     },
     "cities": {
-        "bg": "https://sun9-87.vkuserphoto.ru/s/v1/ig2/WHkPw7TZze6TV4t2q6Yr2pw61S1zWDeDyp8Dbe2IFm31aAuhXVSQ2DUTnM6AIt5u3cLTp9mh-YN2b_Lb0q5iHCFu.jpg?quality=95&cs=1280x0",
+        "bg": "https://sun9-87.vkuserphoto.ru/s/v1/ig2/WHkPw7TZze6TV4t2q6Yr2pw61S1zWDeDyp8Dbe2IFm31aAuhXVSQ2DUTnM6AIt5u3cLTp9mh-YN2b_Lb0q5iHCFu.jpg?quality=95&as=32x40,48x60,72x90,108x134,160x199,240x298,360x448,480x597,540x671,640x796,720x895,1080x1343,1280x1591,1440x1790,2059x2560&from=bu&u=bQW477ZK7yLopHDa2oCbH-uA483cvDm58BTlNs29AoE&cs=1280x0",
         "kicker": "Где работаем",
         "title": "Три города — один стандарт качества",
         "subtitle": "Бесплатный замер и проект в каждом из городов.",
@@ -226,13 +254,13 @@ DEFAULT_DATA = {
         ],
     },
     "cta": {
-        "bg": "https://sun9-64.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&cs=1280x0",
+        "bg": "https://sun9-64.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,2560x1707&from=bu&u=T5NJHPubDiY9E_IwXkmzI6uExoeA0QSNz39xjf4UD5M&cs=1280x0",
         "title": "Готовы обсудить вашу мебель?",
         "text": "Позвоните нам — бесплатно проконсультируем, посчитаем и запишем на замер.",
         "button": "📞 Позвонить специалисту",
     },
     "contacts": {
-        "bg": "https://sun9-52.vkuserphoto.ru/s/v1/ig2/iD_ZIKN3aW1Ml52LPM3C65Qa7raIjG1CUC-fRrbHZEdxtU9hrsvTAh80W9sM3wI2hBUlsHc86fnHiG43aAOPlRuP.jpg?quality=95&cs=1080x0",
+        "bg": "https://sun9-52.vkuserphoto.ru/s/v1/ig2/iD_ZIKN3aW1Ml52LPM3C65Qa7raIjG1CUC-fRrbHZEdxtU9hrsvTAh80W9sM3wI2hBUlsHc86fnHiG43aAOPlRuP.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=mdGpdzTBkRhwLQzuIJS1nz6l-_CWqdnxhW1cwsXNCx8&cs=1080x0",
         "kicker": "Контакты",
         "title": "Создадим мебель, о которой вы мечтали",
         "subtitle": "Позвоните или напишите — ответим быстро и подскажем по всем вопросам.",
@@ -250,7 +278,7 @@ ANIM_STYLE = r"""
 @keyframes fadeUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
 @keyframes shimmerX{0%{background-position:-200% 0}100%{background-position:200% 0}}
 @keyframes goldGradient{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-@keyframes rotateSlow{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes particleFloat{0%{transform:translateY(100vh) scale(.5);opacity:0}10%{opacity:1}90%{opacity:.85}100%{transform:translateY(-100px) scale(1.1);opacity:0}}
 h1,h2.k,.sec-head h2,.about-body h2,.contact-info h2,.cta h2{
   background-image:linear-gradient(90deg,#faf3e6 0%,#faf3e6 30%,#eccfa0 50%,#faf3e6 70%,#faf3e6 100%);
   background-size:220% 100%;-webkit-background-clip:text;background-clip:text;
@@ -264,7 +292,7 @@ h1 em,.shimmer,h1 em.shimmer{
 .js .anim-visible h1,.js h1.anim-visible,.js .anim-visible h2,.js h2.anim-visible{background-position:0% 0;}
 .js .stat,.js .svc,.js .step,.js .guar,.js .city,.js .car-slide,.js .rev-card,.js .about-card,.js .about-body,.js .call-block,.js .contact-info,.js .sec-head{
   opacity:0;transform:translateY(30px);
-  transition:opacity .9s cubic-bezier(.22,.61,.36,1),transform .9s cubic-bezier(.22,.61,.36,1),box-shadow .4s;
+  transition:opacity .9s cubic-bezier(.22,.61,.36,1),transform .9s cubic-bezier(.22,.61,.36,1);
 }
 .js .stat.anim-in,.js .svc.anim-in,.js .step.anim-in,.js .guar.anim-in,.js .city.anim-in,
 .js .car-slide.anim-in,.js .rev-card.anim-in,.js .about-card.anim-in,.js .about-body.anim-in,
@@ -293,7 +321,6 @@ h1 em,.shimmer,h1 em.shimmer{
 .btn-solid{background-size:200% 200%;animation:goldGradient 6s ease infinite;}
 #goldParticles{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;}
 #goldParticles span{position:absolute;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,rgba(236,207,160,.9),rgba(212,175,106,.4) 40%,transparent 70%);box-shadow:0 0 12px rgba(236,207,160,.55);animation:particleFloat linear infinite;}
-@keyframes particleFloat{0%{transform:translateY(100vh) scale(.5);opacity:0}10%{opacity:1}90%{opacity:.85}100%{transform:translateY(-100px) scale(1.1);opacity:0}}
 .svc svg,.guar .ico,.c-ico,.vb-play{transition:transform .55s cubic-bezier(.34,1.56,.64,1);}
 .svc:hover svg{transform:scale(1.18) rotate(-8deg)}
 .guar:hover .ico{transform:scale(1.18) rotate(8deg)}
@@ -343,6 +370,9 @@ def _inject_animations(html):
     return html
 
 
+# =====================================================================
+# SUPABASE (всё в фоне, чтобы не блокировать сайт)
+# =====================================================================
 _sb_read = None
 _sb_write = None
 _sb_lock = threading.Lock()
@@ -406,7 +436,6 @@ _data_lock = threading.Lock()
 
 
 def _deep_fill(target, source):
-    """Дополняет target недостающими полями из source."""
     for k, v in source.items():
         if k not in target:
             target[k] = json.loads(json.dumps(v))
@@ -414,78 +443,106 @@ def _deep_fill(target, source):
             _deep_fill(target[k], v)
 
 
-def _is_empty_or_small(raw):
-    """Проверяет, что в БД реально пусто или мало данных."""
-    if not raw: return True
-    # Считаем общее количество ключей верхнего уровня
-    if len(raw) < len(DEFAULT_DATA) - 2:
+def _fetch_from_supabase(timeout=6):
+    """Пытается получить данные из БД. Возвращает dict или None."""
+    sb = _sb_read_client()
+    if sb is None:
+        return None
+    res = _sb_execute_with_timeout(
+        lambda: sb.table("site_content").select("data").eq("id", DATA_ROW_ID).execute(),
+        timeout=timeout
+    )
+    if res is not None and getattr(res, "data", None):
+        raw = res.data[0].get("data") or {}
+        if raw and isinstance(raw, dict) and len(raw) >= 3:
+            return raw
+    return None
+
+
+def _save_to_supabase(data):
+    """Пишет данные в БД (без блокировки)."""
+    sb = _sb_write_client()
+    if sb is None:
+        print("[save] service_role недоступен", flush=True)
+        return False
+    res = _sb_execute_with_timeout(
+        lambda: sb.table("site_content").upsert({"id": DATA_ROW_ID, "data": data}).execute(),
+        timeout=10
+    )
+    if res is not None:
+        print("[save] OK — данные записаны в Supabase", flush=True)
         return True
-    # Если бренд без имени — точно пусто
-    if isinstance(raw.get("brand"), dict) and not raw["brand"].get("name"):
-        return True
+    print("[save] не удалось записать", flush=True)
     return False
 
 
 def load_data(force=False):
-    """Загружает данные из Supabase. Если БД пуста — заполняет дефолтами и сохраняет."""
+    """
+    Возвращает данные НЕМЕДЛЕННО.
+    - Первый вызов: отдаёт DEFAULT_DATA, параллельно запускает загрузку из Supabase в фоне.
+    - Последующие вызовы: отдаёт кэш (пока не истечёт CACHE_TTL).
+    - force=True: синхронно тянет из Supabase с таймаутом 6с — для админки.
+    """
     global _data_cache, _cache_ts
     now = time.time()
+
+    # force: синхронный запрос в БД (для админки)
+    if force:
+        raw = _fetch_from_supabase(timeout=6)
+        with _data_lock:
+            data = json.loads(json.dumps(DEFAULT_DATA))
+            if raw:
+                _deep_fill(data, raw)
+                print("[load] force: получено из Supabase", flush=True)
+            else:
+                print("[load] force: пусто в БД, отдаём DEFAULT_DATA + пишем в фоне", flush=True)
+                # Пусто в БД — пишем дефолты в фоне
+                threading.Thread(target=_save_to_supabase, args=(data,), daemon=True).start()
+            _data_cache = data
+            _cache_ts = now
+            return data
+
+    # Обычный вызов: отдаём кэш или ставим дефолты + тянем в фоне
     with _data_lock:
-        if not force and _data_cache is not None and now - _cache_ts < CACHE_TTL:
+        if _data_cache is not None and now - _cache_ts < CACHE_TTL:
             return _data_cache
+        if _data_cache is None:
+            _data_cache = json.loads(json.dumps(DEFAULT_DATA))
+            _cache_ts = now
+            threading.Thread(target=_refresh_from_supabase, daemon=True).start()
+            return _data_cache
+        # Кэш устарел — обновим в фоне, но отдадим текущий
+        threading.Thread(target=_refresh_from_supabase, daemon=True).start()
+        return _data_cache
 
-        raw = None
-        sb = _sb_read_client()
-        if sb is not None:
-            res = _sb_execute_with_timeout(
-                lambda: sb.table("site_content").select("data").eq("id", DATA_ROW_ID).execute(),
-                timeout=6
-            )
-            if res is not None and getattr(res, "data", None):
-                raw = res.data[0].get("data") or {}
-                print("[load_data] получено полей: " + str(len(raw)), flush=True)
 
-        # Собираем итоговые данные — дефолты + то, что уже есть в БД
+def _refresh_from_supabase():
+    """Фоновое обновление кэша из Supabase."""
+    global _data_cache, _cache_ts
+    raw = _fetch_from_supabase(timeout=6)
+    if raw is None:
+        return
+    with _data_lock:
         data = json.loads(json.dumps(DEFAULT_DATA))
-        if raw:
-            _deep_fill(data, raw)
-
-        # Если в БД было пусто (или мало данных) — СРАЗУ сохраняем объединённые данные обратно
-        if _is_empty_or_small(raw):
-            wb = _sb_write_client()
-            if wb is not None:
-                res = _sb_execute_with_timeout(
-                    lambda: wb.table("site_content").upsert({"id": DATA_ROW_ID, "data": data}).execute(),
-                    timeout=8
-                )
-                if res is not None:
-                    print("[load_data] засеяли БД дефолтами", flush=True)
-                else:
-                    print("[load_data] не удалось засеять БД", flush=True)
-
+        _deep_fill(data, raw)
         _data_cache = data
-        _cache_ts = now
-        return data
+        _cache_ts = time.time()
+        print("[bg] кэш обновлён из Supabase", flush=True)
 
 
 def save_data(data):
+    """Сохраняет данные в память + асинхронно в Supabase."""
     global _data_cache, _cache_ts
     with _data_lock:
-        sb = _sb_write_client()
-        if sb is None:
-            print("[save_data] service_role недоступен", flush=True); return False
-        res = _sb_execute_with_timeout(
-            lambda: sb.table("site_content").upsert({"id": DATA_ROW_ID, "data": data}).execute(),
-            timeout=10
-        )
-        if res is not None:
-            _data_cache = data; _cache_ts = time.time()
-            print("[save_data] OK", flush=True); return True
-        print("[save_data] ошибка", flush=True); return False
+        _data_cache = data
+        _cache_ts = time.time()
+    threading.Thread(target=_save_to_supabase, args=(data,), daemon=True).start()
+    print("[save] данные приняты, запись в Supabase запущена в фоне", flush=True)
+    return True
 
 
 # =====================================================================
-# PAGE — вшит
+# PAGE — оригинальный HTML со всеми фонами, работами, аватаркой, отзывами
 # =====================================================================
 PAGE = r"""<!DOCTYPE html>
 <html lang="ru" class="js">
@@ -493,26 +550,32 @@ PAGE = r"""<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Кухни Островский — кухни на заказ в Ростове, Батайске и Азове | Мебель под ключ</title>
-<meta name="description" content="Кухни на заказ в Ростове-на-Дону, Батайске и Азове.">
-<meta name="keywords" content="кухни на заказ ростов, кухни батайск, кухни азов, мебель на заказ">
+<meta name="description" content="Кухни на заказ в Ростове-на-Дону, Батайске и Азове от мастерской «Кухни Островский». Бесплатный замер и 3D-проект, собственное производство, монтаж под ключ. ☎ +7 (950) 846-53-97">
+<meta name="keywords" content="кухни остров, кухни островский, кухни на заказ ростов, кухни батайск, кухни азов, мебель на заказ">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#0e0c09">
 <link rel="canonical" href="https://кухниостровский.рф/">
+<meta name="yandex-verification" content="f7e96d07aee79bf3">
+<meta name="google-site-verification" content="dNSAELu64Y7aK5sjz_zpmhoz6YKn2PIZ03UKPwrgnCI">
 <link rel="shortcut icon" href="/favicon.ico">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ru_RU">
 <meta property="og:site_name" content="Кухни Островский">
-<meta property="og:title" content="Кухни Островский">
-<meta property="og:description" content="Кухни и мебель на заказ.">
+<meta property="og:url" content="https://кухниостровский.рф/">
+<meta property="og:title" content="Кухни Островский — кухни на заказ в Ростове, Батайске и Азове">
+<meta property="og:description" content="Кухни и корпусная мебель под ключ. Бесплатный замер и 3D-проект.">
 <meta property="og:image" content="https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c.jpg?quality=95&cs=1254x0">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0e0c09;--gold:#d4af6a;--gold-soft:#eccfa0;--gold-deep:#a37c3f;--text:#f5efe3;--muted:#b9ad9a;--r-lg:24px;--r-md:16px;--r-sm:12px;--shadow-lg:0 34px 80px rgba(0,0,0,.5);--shadow-md:0 18px 46px rgba(0,0,0,.36);--shadow-gold:0 16px 42px rgba(212,175,106,.26);--serif:'Cormorant Garamond',Georgia,serif;--sans:'Manrope',system-ui,sans-serif;}
+:root{--bg:#0e0c09;--gold:#d4af6a;--gold-soft:#eccfa0;--gold-deep:#a37c3f;--text:#f5efe3;--muted:#b9ad9a;--line:rgba(212,175,106,.14);--r-lg:24px;--r-md:16px;--r-sm:12px;--shadow-lg:0 34px 80px rgba(0,0,0,.5);--shadow-md:0 18px 46px rgba(0,0,0,.36);--shadow-gold:0 16px 42px rgba(212,175,106,.26);--serif:'Cormorant Garamond',Georgia,serif;--sans:'Manrope',system-ui,sans-serif;}
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;overflow-x:hidden}
 section{scroll-margin-top:92px}
@@ -555,9 +618,14 @@ header.solid{background:rgba(14,12,9,.92)}
 .panel--dark .bg::after{background:linear-gradient(180deg,rgba(10,8,6,.9),rgba(10,8,6,.7))}
 .panel .content{position:relative;z-index:2;width:100%}
 .panel--center .content{text-align:center}
+.panel + .panel{margin-top:16px}
+.gold-divider{display:flex;align-items:center;justify-content:center;gap:14px;padding:6px 0}
+.gold-divider i{display:inline-block;width:64px;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
+.gold-divider i:last-child{background:linear-gradient(90deg,var(--gold),transparent)}
+.gold-divider b{width:7px;height:7px;transform:rotate(45deg);background:var(--gold);box-shadow:0 0 12px rgba(212,175,106,.55)}
 .eyebrow{display:inline-flex;align-items:center;gap:12px;color:var(--gold-soft);letter-spacing:5px;text-transform:uppercase;font-size:12px;font-weight:600;margin-bottom:20px}
 .eyebrow::before,.eyebrow::after{content:"";width:42px;height:1px;background:var(--gold)}
-h1{font-size:clamp(34px,6vw,76px);font-weight:500;line-height:1.08;color:#fff}
+h1{font-size:clamp(34px,6vw,76px);font-weight:500;line-height:1.08;color:#fff;text-shadow:0 5px 30px rgba(0,0,0,.5)}
 h1 em{font-style:italic}
 .sub{color:rgba(245,239,227,.9);font-size:clamp(16px,1.8vw,19.5px);font-weight:300;margin:24px 0 34px;max-width:580px}
 .btn-row{display:flex;gap:16px;flex-wrap:wrap}
@@ -722,14 +790,12 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
 </section>
 <section class="panel panel--dark">
   <div class="bg" style="background-image:url('https://sun9-20.vkuserphoto.ru/s/v1/ig2/9W8TzKo3y8t8-s63NRmlys3yJtHJAKPBOp2QIyuqMSTinG9q-UFuD5sYkz4wbd7QZDv7wQxsZlldmCrAM-PzPlDJ.jpg?quality=95&cs=1280x0')"></div>
-  <div class="wrap"><div class="content">
-    <div class="stats">
+  <div class="wrap"><div class="content"><div class="stats">
       <div class="stat"><div class="num" data-count="10" data-suffix="+">0</div><div class="lbl">лет опыта</div></div>
-      <div class="stat"><div class="num" data-count="5" data-decimal="1">0</div><div class="lbl">средняя оценка</div></div>
-      <div class="stat"><div class="num" data-count="8" data-suffix="/10">0</div><div class="lbl">по рекомендации</div></div>
-      <div class="stat"><div class="num" data-count="100" data-suffix="%">0</div><div class="lbl">под ключ</div></div>
-    </div>
-  </div></div>
+      <div class="stat"><div class="num" data-count="5" data-decimal="1">0</div><div class="lbl">средняя оценка клиентов</div></div>
+      <div class="stat"><div class="num" data-count="8" data-suffix="/10">0</div><div class="lbl">клиентов по рекомендации</div></div>
+      <div class="stat"><div class="num" data-count="100" data-suffix="%">0</div><div class="lbl">полный цикл под ключ</div></div>
+  </div></div></div>
 </section>
 <section class="panel" id="about">
   <div class="bg" style="background-image:url('https://sun9-50.vkuserphoto.ru/s/v1/ig2/_uJbJ-Gw0zJ3jVPyc4QJRGUErYM5zju63UDQM6FFDezILgQ54i5ycLVvhgSHl5hHPVIKikt0AL9V6DrmqDH7G5C6.jpg?quality=95&cs=1280x0')"></div>
@@ -739,12 +805,12 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
       <h3>Роман Островский</h3>
       <div class="role">Руководитель мебельной мастерской Островского</div>
       <div class="sep"></div>
-      <p>С командой изготавливаем кухни и корпусную мебель по индивидуальным проектам.</p>
+      <p>С командой изготавливаем кухни и корпусную мебель по индивидуальным проектам — с учётом ваших идей, размеров и задач.</p>
     </div>
     <div class="about-body">
       <div class="kicker">О руководителе</div>
       <h2>Кухни и мебель под ключ — с заботой о деталях</h2>
-      <p>Мы помогаем с планировкой и подбором материалов, ведём вас от консультации и замера до сборки и установки.</p>
+      <p>Мы помогаем с планировкой и подбором материалов, предлагаем решения даже для сложных задач — когда другие разводят руками. Ведём вас от консультации и замера до сборки и установки.</p>
       <ul class="features">
         <li>Кухни, шкафы, гардеробные и прихожие</li>
         <li>Честный расчёт — без навязывания лишнего</li>
@@ -754,13 +820,14 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
     </div>
   </div></div></div>
 </section>
+<div class="gold-divider"><i></i><b></b><i></i></div>
 <section class="panel panel--center panel--dark" id="consult">
   <div class="bg" style="background-image:url('https://sun9-41.vkuserphoto.ru/s/v1/ig2/qi7m_VnJPio2P4oKJhNr6X-9HJD2kCt6f98XGtveyiAxhJ4ru17yVoibjERFJ4-ZWDOm8Lr7xGMwRP6dSudvgPnG.jpg?quality=95&cs=1280x0')"></div>
   <div class="wrap"><div class="content consult">
     <span class="kicker" style="color:var(--gold-soft);letter-spacing:6px;text-transform:uppercase;font-size:12px;font-weight:600">Бесплатно</span>
     <h2 class="k">Консультация</h2>
     <a href="tel:+79508465397" class="phone">+7 (950) 846-53-97</a>
-    <p>Позвоните или напишите нам в Telegram или MAX — расскажем про кухни и мебель, всё обсудим и договоримся о бесплатном замере.</p>
+    <p>Позвоните или напишите нам в <b style="color:#fff">Telegram</b> или <b style="color:#fff">MAX</b> — расскажем про кухни и мебель, всё обсудим и договоримся о бесплатном замере.</p>
   </div></div>
 </section>
 <section class="panel panel--center panel--dark" id="works">
@@ -774,6 +841,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
       <div class="car-dots" id="carDots"></div>
       <div class="swipe-hint">Листайте</div>
     </div>
+    <p style="color:var(--muted);margin-top:24px;text-align:center;font-size:13.5px">Больше работ — в сообществе <a href="https://vk.com/mebel.ostrovsky" target="_blank" rel="noopener" style="color:var(--gold-soft);font-weight:600">ВКонтакте</a></p>
   </div></div>
 </section>
 <div class="lightbox" id="lightbox">
@@ -788,7 +856,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
 <section class="panel panel--center" id="reviews">
   <div class="bg" style="background-image:url('https://sun9-64.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&cs=1280x0')"></div>
   <div class="wrap"><div class="content">
-    <div class="sec-head"><div class="kicker">Отзывы</div><h2>Что говорят наши клиенты</h2><p>Реальные отзывы о нашей работе.</p></div>
+    <div class="sec-head"><div class="kicker">Отзывы</div><h2>Что говорят наши клиенты</h2><p>Реальные отзывы о нашей работе. Листайте влево-вправо.</p></div>
     <div class="carousel">
       <button class="car-nav car-prev" id="revPrev">❮</button>
       <div class="car-track rev-track" id="revTrack"></div>
@@ -796,8 +864,10 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
       <div class="car-dots" id="revDots"></div>
       <div class="swipe-hint">Листайте</div>
     </div>
+    <p style="color:var(--muted);margin-top:24px;text-align:center;font-size:13.5px">Больше отзывов — в нашем сообществе <a href="https://vk.com/mebel.ostrovsky" target="_blank" rel="noopener" style="color:var(--gold-soft);font-weight:600">ВКонтакте</a></p>
   </div></div>
 </section>
+<div class="gold-divider"><i></i><b></b><i></i></div>
 <section class="panel panel--dark" id="services">
   <div class="bg" style="background-image:url('https://sun9-88.vkuserphoto.ru/s/v1/ig2/vCipZmkZdy5Ix0cFh98i0yhNAYynqzh2gm00rWx5Qr019O4RHjwcs7pN6iKT4L_d1vanDAbUJ9JRrHj_uw13YVhg.jpg?quality=95&cs=1280x0')"></div>
   <div class="wrap"><div class="content">
@@ -917,15 +987,15 @@ document.getElementById('year').textContent=new Date().getFullYear();
 </html>"""
 
 
-def _sub_exact(html, anchor, replacement):
-    if anchor and anchor in html:
-        return html.replace(anchor, replacement, 1)
-    return html
-
-
+# =====================================================================
+# render_page
+# =====================================================================
 def render_page():
     html = PAGE
     d = load_data()
+    if not d or not isinstance(d, dict) or len(d) < 3:
+        return _inject_animations(html)
+
     b = d.get("brand", {}) or {}
     seo = d.get("seo", {}) or {}
     hero = d.get("hero", {}) or {}
@@ -939,60 +1009,91 @@ def render_page():
     cta = d.get("cta", {}) or {}
     footer = d.get("footer", {}) or {}
 
-    if seo.get("title"):
-        html = re.sub(r"<title>.*?</title>", "<title>" + seo["title"] + "</title>", html, count=1, flags=re.S)
-    if seo.get("description"):
-        html = re.sub(r'<meta name="description" content="[^"]*">', '<meta name="description" content="' + seo["description"] + '">', html, count=1)
-    if seo.get("keywords"):
-        html = re.sub(r'<meta name="keywords" content="[^"]*">', '<meta name="keywords" content="' + seo["keywords"] + '">', html, count=1)
-    if seo.get("og_image"):
-        html = re.sub(r'<meta property="og:image" content="[^"]*">', '<meta property="og:image" content="' + seo["og_image"] + '">', html, count=1)
-    if b.get("name"):
-        html = _sub_exact(html, '<span class="name">Кухни Островский</span>', '<span class="name">' + b["name"] + '</span>')
-    if b.get("sub"):
-        html = _sub_exact(html, '<span class="sub">Ростов · Батайск · Азов</span>', '<span class="sub">' + b["sub"] + '</span>')
-    if b.get("phone"):
-        html = html.replace("+7 (950) 846-53-97", b["phone"])
-    if b.get("phone_raw"):
-        html = html.replace("tel:+79508465397", "tel:" + b["phone_raw"])
-    if b.get("telegram"):
-        html = html.replace("https://t.me/fanny161", b["telegram"])
-    if b.get("vk"):
-        html = html.replace("https://vk.com/mebel.ostrovsky", b["vk"])
-    if hero.get("eyebrow"):
-        html = _sub_exact(html, '<span class="eyebrow">Мебель и кухни на заказ</span>', '<span class="eyebrow">' + hero["eyebrow"] + '</span>')
-    if hero.get("title_before") or hero.get("title_em"):
-        tb = hero.get("title_before", "Мебель, которая ")
-        te = hero.get("title_em", "создаёт настроение")
-        html = re.sub(r'<h1 id="heroTitle">.*?</h1>', '<h1 id="heroTitle">' + tb + '<em class="shimmer">' + te + '</em></h1>', html, count=1, flags=re.S)
-    if hero.get("btn1"):
-        html = _sub_exact(html, '>Получить консультацию<', '>' + hero["btn1"] + '<')
-    if hero.get("btn2"):
-        html = _sub_exact(html, '>Смотреть работы<', '>' + hero["btn2"] + '<')
-    if about.get("photo"):
-        html = _sub_exact(html, 'src="https://i.ibb.co/mVchNnp1/photo-2026-09-10-18-48-37.jpg"', 'src="' + about["photo"] + '"')
-    if about.get("name"):
-        html = _sub_exact(html, '<h3>Роман Островский</h3>', '<h3>' + about["name"] + '</h3>')
-    if about.get("role"):
-        html = _sub_exact(html, '<div class="role">Руководитель мебельной мастерской Островского</div>', '<div class="role">' + about["role"] + '</div>')
-    if about.get("title"):
-        html = _sub_exact(html, '<h2>Кухни и мебель под ключ — с заботой о деталях</h2>', '<h2>' + about["title"] + '</h2>')
-    feats = about.get("features")
-    if isinstance(feats, list) and feats:
-        block = '<ul class="features">' + ''.join('<li>' + str(x) + '</li>' for x in feats) + '</ul>'
-        html = re.sub(r'<ul class="features">.*?</ul>', block, html, count=1, flags=re.S)
+    # SEO
+    if seo.get("title") and seo["title"] != "Кухни Островский — кухни на заказ в Ростове, Батайске и Азове | Мебель под ключ":
+        html = html.replace("<title>Кухни Островский — кухни на заказ в Ростове, Батайске и Азове | Мебель под ключ</title>",
+                            "<title>" + seo["title"] + "</title>")
 
+    # Brand
+    if b.get("name") and b["name"] != "Кухни Островский":
+        html = html.replace('<span class="name">Кухни Островский</span>', '<span class="name">' + b["name"] + '</span>')
+        html = html.replace('>Кухни Островский<span>', '>' + b["name"] + '<span>')
+    if b.get("sub") and b["sub"] != "Ростов · Батайск · Азов":
+        html = html.replace('<span class="sub">Ростов · Батайск · Азов</span>', '<span class="sub">' + b["sub"] + '</span>')
+    if b.get("phone") and b["phone"] != "+7 (950) 846-53-97":
+        html = html.replace("+7 (950) 846-53-97", b["phone"])
+    if b.get("phone_raw") and b["phone_raw"] != "+79508465397":
+        html = html.replace("tel:+79508465397", "tel:" + b["phone_raw"])
+    if b.get("telegram") and b["telegram"] != "https://t.me/fanny161":
+        html = html.replace("https://t.me/fanny161", b["telegram"])
+    if b.get("vk") and b["vk"] != "https://vk.com/mebel.ostrovsky":
+        html = html.replace("https://vk.com/mebel.ostrovsky", b["vk"])
+    if b.get("logo_url") and "2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c" not in b["logo_url"]:
+        html = html.replace(
+            "https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c.jpg?quality=95&cs=1254x0",
+            b["logo_url"])
+
+    # Hero
+    if hero.get("eyebrow") and hero["eyebrow"] != "Мебель и кухни на заказ":
+        html = html.replace('<span class="eyebrow">Мебель и кухни на заказ</span>',
+                            '<span class="eyebrow">' + hero["eyebrow"] + '</span>')
+    if hero.get("title_before") or hero.get("title_em"):
+        old_h1 = '<h1 id="heroTitle">Мебель, которая <em class="shimmer">создаёт настроение</em></h1>'
+        new_h1 = '<h1 id="heroTitle">' + hero.get("title_before", "Мебель, которая ") + '<em class="shimmer">' + hero.get("title_em", "создаёт настроение") + '</em></h1>'
+        html = html.replace(old_h1, new_h1)
+    if hero.get("btn1") and hero["btn1"] != "Получить консультацию":
+        html = html.replace('>Получить консультацию<', '>' + hero["btn1"] + '<')
+    if hero.get("btn2") and hero["btn2"] != "Смотреть работы":
+        html = html.replace('>Смотреть работы<', '>' + hero["btn2"] + '<')
+
+    # About
+    if about.get("photo") and "mVchNnp1" not in about["photo"]:
+        html = html.replace("https://i.ibb.co/mVchNnp1/photo-2026-09-10-18-48-37.jpg", about["photo"])
+    if about.get("name") and about["name"] != "Роман Островский":
+        html = html.replace(">Роман Островский</h3>", ">" + about["name"] + "</h3>")
+    if about.get("role") and about["role"] != "Руководитель мебельной мастерской Островского":
+        html = html.replace(">Руководитель мебельной мастерской Островского<", ">" + about["role"] + "<")
+    if about.get("title") and about["title"] != "Кухни и мебель под ключ — с заботой о деталях":
+        html = html.replace(">Кухни и мебель под ключ — с заботой о деталях<", ">" + about["title"] + "<")
+
+    # Фоны
+    bg_pairs = [
+        (hero.get("bg"), "https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&cs=1280x0"),
+        ((d.get("stats") or {}).get("bg"), "https://sun9-20.vkuserphoto.ru/s/v1/ig2/9W8TzKo3y8t8-s63NRmlys3yJtHJAKPBOp2QIyuqMSTinG9q-UFuD5sYkz4wbd7QZDv7wQxsZlldmCrAM-PzPlDJ.jpg?quality=95&cs=1280x0"),
+        (about.get("bg"), "https://sun9-50.vkuserphoto.ru/s/v1/ig2/_uJbJ-Gw0zJ3jVPyc4QJRGUErYM5zju63UDQM6FFDezILgQ54i5ycLVvhgSHl5hHPVIKikt0AL9V6DrmqDH7G5C6.jpg?quality=95&cs=1280x0"),
+        (d.get("consult", {}).get("bg"), "https://sun9-41.vkuserphoto.ru/s/v1/ig2/qi7m_VnJPio2P4oKJhNr6X-9HJD2kCt6f98XGtveyiAxhJ4ru17yVoibjERFJ4-ZWDOm8Lr7xGMwRP6dSudvgPnG.jpg?quality=95&cs=1280x0"),
+        (works.get("bg"), "https://sun9-32.vkuserphoto.ru/s/v1/ig2/ipQDYrxkEiu9wFqxHUIJNhf4YERP29pOrzOhJ2hTcO6Z-fqWBrPA9D1vCltHlp9RltkldMRefKPMMkB8aD8jhZfR.jpg?quality=95&cs=1280x0"),
+        (reviews.get("bg"), "https://sun9-64.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&cs=1280x0"),
+        (services.get("bg"), "https://sun9-88.vkuserphoto.ru/s/v1/ig2/vCipZmkZdy5Ix0cFh98i0yhNAYynqzh2gm00rWx5Qr019O4RHjwcs7pN6iKT4L_d1vanDAbUJ9JRrHj_uw13YVhg.jpg?quality=95&cs=1280x0"),
+        (process_.get("bg"), "https://sun9-39.vkuserphoto.ru/s/v1/ig2/xiwu_WFFyjmJc4_VAOD1BHikAdMqBy9N-SuKyiWu7xC8OYE-pfhtW5GkOyO5No0KjOrNQUwcgOW3Gr2bCnjvFp2H.jpg?quality=95&cs=1280x0"),
+        (guarantees.get("bg"), "https://sun9-50.vkuserphoto.ru/s/v1/ig2/C_b5sF8D1xkYdXe0s1BPq0c52G5b_U0r8MpWIaYYJzh9CXIE4qk0Q3rnZh2FuNZhpnp78BBveTceOk2Js-tECU_z.jpg?quality=95&cs=1280x0"),
+        (cities.get("bg"), "https://sun9-87.vkuserphoto.ru/s/v1/ig2/WHkPw7TZze6TV4t2q6Yr2pw61S1zWDeDyp8Dbe2IFm31aAuhXVSQ2DUTnM6AIt5u3cLTp9mh-YN2b_Lb0q5iHCFu.jpg?quality=95&cs=1280x0"),
+        (d.get("contacts", {}).get("bg"), "https://sun9-52.vkuserphoto.ru/s/v1/ig2/iD_ZIKN3aW1Ml52LPM3C65Qa7raIjG1CUC-fRrbHZEdxtU9hrsvTAh80W9sM3wI2hBUlsHc86fnHiG43aAOPlRuP.jpg?quality=95&cs=1080x0"),
+    ]
+    for new_bg, old_bg in bg_pairs:
+        if new_bg and isinstance(new_bg, str) and new_bg.strip() and new_bg != old_bg:
+            html = html.replace(old_bg, new_bg)
+
+    # Работы
     items = works.get("items")
     if isinstance(items, list) and items:
         block = ""
         for it in items:
             it = it or {}
-            url = it.get("url", ""); alt = it.get("alt", "")
+            url = (it.get("url") or "").strip()
+            alt = it.get("alt", "")
             if not url: continue
             block += '<div class="car-slide"><img loading="lazy" src="' + url + '" alt="' + alt + '"></div>'
         if block:
-            html = re.sub(r'(<div class="car-track" id="carTrack">).*?(</div>)', r'\1' + block + r'\2', html, count=1, flags=re.S)
+            marker_start = '<div class="car-track" id="carTrack">'
+            marker_end = '</div>\n      <button class="car-nav car-next" id="carNext">'
+            i1 = html.find(marker_start)
+            if i1 >= 0:
+                i2 = html.find(marker_end, i1)
+                if i2 >= 0:
+                    html = html[:i1 + len(marker_start)] + block + html[i2:]
 
+    # Отзывы
     rev_items = reviews.get("items")
     if isinstance(rev_items, list) and rev_items:
         block = ""
@@ -1007,8 +1108,15 @@ def render_page():
                 video_html = '<div class="rev-video"><div class="video-box" data-src="' + video + '" style="background-image:url(\'' + vp + '\')"><span class="vb-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></div></div>'
             block += '<div class="rev-card"><div class="rev-head">' + ava_html + '<div><div class="rev-name">' + name + '</div><div class="rev-sub">' + sub + '</div></div><div class="rev-stars">' + stars + '</div></div>' + video_html + '<p class="rev-text">' + text + '</p></div>'
         if block:
-            html = re.sub(r'(<div class="car-track rev-track" id="revTrack">).*?(</div>)', r'\1' + block + r'\2', html, count=1, flags=re.S)
+            marker_start = '<div class="car-track rev-track" id="revTrack">'
+            marker_end = '</div>\n      <button class="car-nav car-next" id="revNext">'
+            i1 = html.find(marker_start)
+            if i1 >= 0:
+                i2 = html.find(marker_end, i1)
+                if i2 >= 0:
+                    html = html[:i1 + len(marker_start)] + block + html[i2:]
 
+    # Услуги
     svc_items = services.get("items")
     if isinstance(svc_items, list) and svc_items:
         block = ""
@@ -1016,8 +1124,10 @@ def render_page():
             s = s or {}
             block += '<div class="svc reveal"><svg viewBox="0 0 24 24"><path d="' + s.get("icon","") + '"/></svg><h3>' + s.get("title","") + '</h3><p>' + s.get("text","") + '</p></div>'
         if block:
-            html = _sub_exact(html, '<div class="svc-grid" id="svcGrid"></div>', '<div class="svc-grid" id="svcGrid">' + block + '</div>')
+            html = html.replace('<div class="svc-grid" id="svcGrid"></div>',
+                                '<div class="svc-grid" id="svcGrid">' + block + '</div>')
 
+    # Этапы
     st_items = process_.get("items")
     if isinstance(st_items, list) and st_items:
         block = ""
@@ -1025,8 +1135,10 @@ def render_page():
             s = s or {}
             block += '<div class="step reveal"><div class="n">' + s.get("n","") + '</div><h3>' + s.get("title","") + '</h3><p>' + s.get("text","") + '</p></div>'
         if block:
-            html = _sub_exact(html, '<div class="steps" id="stepsBox"></div>', '<div class="steps" id="stepsBox">' + block + '</div>')
+            html = html.replace('<div class="steps" id="stepsBox"></div>',
+                                '<div class="steps" id="stepsBox">' + block + '</div>')
 
+    # Гарантии
     g_items = guarantees.get("items")
     if isinstance(g_items, list) and g_items:
         block = ""
@@ -1034,8 +1146,10 @@ def render_page():
             g = g or {}
             block += '<div class="guar reveal"><div class="ico"><svg viewBox="0 0 24 24"><path d="' + g.get("icon","") + '"/></svg></div><h3>' + g.get("title","") + '</h3><p>' + g.get("text","") + '</p></div>'
         if block:
-            html = _sub_exact(html, '<div class="guar-grid" id="guarGrid"></div>', '<div class="guar-grid" id="guarGrid">' + block + '</div>')
+            html = html.replace('<div class="guar-grid" id="guarGrid"></div>',
+                                '<div class="guar-grid" id="guarGrid">' + block + '</div>')
 
+    # Города
     c_items = cities.get("items")
     if isinstance(c_items, list) and c_items:
         block = ""
@@ -1043,12 +1157,8 @@ def render_page():
             c = c or {}
             block += '<div class="city reveal"><div class="city-name">' + c.get("name","") + '</div><div class="city-line"></div><p>' + c.get("text","") + '</p></div>'
         if block:
-            html = _sub_exact(html, '<div class="city-grid" id="cityGrid"></div>', '<div class="city-grid" id="cityGrid">' + block + '</div>')
-
-    if cta.get("title"):
-        html = _sub_exact(html, '<h2 class="shimmer">Готовы обсудить вашу мебель?</h2>', '<h2 class="shimmer">' + cta["title"] + '</h2>')
-    if footer.get("line"):
-        html = _sub_exact(html, '<p>Кухни и корпусная мебель на заказ — Ростов, Батайск, Азов</p>', '<p>' + footer["line"] + '</p>')
+            html = html.replace('<div class="city-grid" id="cityGrid"></div>',
+                                '<div class="city-grid" id="cityGrid">' + block + '</div>')
 
     html = _inject_animations(html)
     return html
@@ -1075,9 +1185,7 @@ def _make_icons(data):
         def _png(size):
             c = img.copy(); c.thumbnail((size, size))
             buf = io.BytesIO(); c.save(buf, format="PNG"); return buf.getvalue()
-        _icons_cache["png16"] = _png(16)
-        _icons_cache["png32"] = _png(32)
-        _icons_cache["png180"] = _png(180)
+        _icons_cache["png16"] = _png(16); _icons_cache["png32"] = _png(32); _icons_cache["png180"] = _png(180)
     except Exception:
         pass
 
@@ -1124,8 +1232,8 @@ button:hover{transform:translateY(-3px);box-shadow:0 18px 44px rgba(212,175,106,
 
 ADMIN_HTML = r"""<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Админка — Кухни Островский</title><style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--gold:#d4af6a;--gold-soft:#eccfa0;--gold-deep:#a37c3f;--bg:#0e0c09;--line:rgba(236,207,160,.16);--sans:system-ui,sans-serif}
-body{font-family:var(--sans);background:var(--bg);color:#f5efe3;min-height:100vh;line-height:1.55;position:relative;overflow-x:hidden}
+:root{--gold:#d4af6a;--gold-soft:#eccfa0;--bg:#0e0c09;--line:rgba(236,207,160,.16)}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:#f5efe3;min-height:100vh;line-height:1.55;position:relative}
 body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(1200px 700px at 85% -10%,rgba(212,175,106,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(212,175,106,.08),transparent 55%),linear-gradient(180deg,#12100b,#0c0a07 45%,#100d09)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
 @keyframes shimmerX{0%{background-position:-200% 0}100%{background-position:200% 0}}
@@ -1145,10 +1253,9 @@ header{background:rgba(14,12,9,.95);border-bottom:1px solid var(--line);padding:
 .btn .ripple-el{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.5),transparent 70%);transform:scale(0);animation:rippleAnim .8s ease-out forwards;pointer-events:none}
 .layout{display:flex;min-height:calc(100vh - 65px)}
 nav.side{width:230px;background:rgba(0,0,0,.28);border-right:1px solid var(--line);padding:16px 0;flex-shrink:0;overflow-y:auto;position:sticky;top:65px;height:calc(100vh - 65px);animation:fadeUp .6s ease}
-nav.side a{display:block;padding:12px 22px;color:#b9ad9a;font-size:14px;border-left:3px solid transparent;cursor:pointer;transition:all .3s cubic-bezier(.22,.61,.36,1);position:relative}
+nav.side a{display:block;padding:12px 22px;color:#b9ad9a;font-size:14px;border-left:3px solid transparent;cursor:pointer;transition:all .3s cubic-bezier(.22,.61,.36,1)}
 nav.side a:hover{color:#fff;background:rgba(255,255,255,.04);padding-left:26px}
 nav.side a.active{color:var(--gold-soft);border-left-color:var(--gold);background:rgba(212,175,106,.08)}
-nav.side a.active::before{content:"";position:absolute;right:0;top:50%;transform:translateY(-50%);width:3px;height:50%;background:linear-gradient(180deg,transparent,var(--gold),transparent);border-radius:2px}
 main{flex:1;padding:28px 34px;max-width:1100px;overflow-x:hidden;animation:fadeUp .6s ease}
 h2{font-family:Georgia,serif;font-size:26px;color:#fff;margin-bottom:6px;background:linear-gradient(120deg,#fff,var(--gold-soft));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 p.hint{color:#b9ad9a;font-size:13px;margin-bottom:22px}
@@ -1389,7 +1496,6 @@ class Handler(BaseHTTPRequestHandler):
 if __name__ == "__main__":
     print("BOOT: старт приложения", flush=True)
     print("BOOT: PORT = " + str(PORT), flush=True)
-    print("BOOT: SUPABASE_LIB = " + str(_SUPABASE_LIB), flush=True)
     try:
         server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
         print("BOOT: слушаем http://0.0.0.0:" + str(PORT), flush=True)
