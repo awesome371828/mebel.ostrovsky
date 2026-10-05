@@ -1701,13 +1701,25 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    if not _SUPABASE_LIB:
-        print("WARN: supabase не установлен: pip install supabase")
+    print("BOOT: старт приложения", flush=True)
+    print("BOOT: PORT = " + str(PORT), flush=True)
+    print("BOOT: SUPABASE_LIB = " + str(_SUPABASE_LIB), flush=True)
+    print("BOOT: SUPABASE_URL = " + SUPABASE_URL, flush=True)
+
+    if _SUPABASE_LIB and SUPABASE_URL:
+        try:
+            load_data(force=True)
+            print("BOOT: Supabase OK", flush=True)
+        except Exception as e:
+            print("BOOT: Supabase error: " + str(e), flush=True)
+    else:
+        print("BOOT: Supabase отключён — работаем на дефолтах", flush=True)
+
     try:
-        load_data(force=True)
-        print("OK: Supabase подключён")
+        server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+        print("BOOT: слушаем http://0.0.0.0:" + str(PORT), flush=True)
+        print("BOOT: админка http://0.0.0.0:" + str(PORT) + "/admin", flush=True)
+        server.serve_forever()
     except Exception as e:
-        print("WARN: Supabase: " + str(e))
-    print("Server: http://0.0.0.0:" + str(PORT))
-    print("Admin: http://0.0.0.0:" + str(PORT) + "/admin  (логин: " + ADMIN_LOGIN_ENV + ")")
-    ThreadingHTTPServer(("0.0.0.0", PORT), Handler).serve_forever()
+        print("BOOT: FATAL — не смог занять порт: " + str(e), flush=True)
+        raise
