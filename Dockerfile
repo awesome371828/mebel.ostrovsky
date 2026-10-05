@@ -4,10 +4,9 @@ WORKDIR /app
 
 # Python без буферизации — чтобы логи сразу шли в RelaxDev
 ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PORT=8080
+    PYTHONDONTWRITEBYTECODE=1
 
-# Pillow — для favicon (ICO/PNG), supabase — для админки
+# Pillow — для favicon, supabase — для админки
 RUN pip install --no-cache-dir pillow supabase
 
 COPY mebel.py content.json ./
