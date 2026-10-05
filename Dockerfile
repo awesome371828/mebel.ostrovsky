@@ -2,16 +2,15 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Python без буферизации — чтобы логи сразу шли в RelaxDev
 ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1
+    PYTHONDONTWRITEBYTECODE=1 \
+    PORT=8080
 
-# Pillow — для favicon, supabase — для админки
 RUN pip install --no-cache-dir pillow supabase
 
-COPY mebel.py content.json ./
+COPY mebel.py ./
 RUN mkdir -p uploads
 
 EXPOSE 8080
 
-CMD ["python", "mebel.py"]
+CMD ["python", "-u", "mebel.py"]
