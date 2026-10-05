@@ -2,16 +2,16 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Pillow нужен для настоящего favicon (ICO/PNG)
-RUN pip install --no-cache-dir pillow
+# Python без буферизации — чтобы логи сразу шли в RelaxDev
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PORT=8080
+
+# Pillow — для favicon (ICO/PNG), supabase — для админки
+RUN pip install --no-cache-dir pillow supabase
 
 COPY mebel.py content.json ./
 RUN mkdir -p uploads
-
-ENV PORT=8080 \
-    DOMAIN=https://кухниостровский.рф \
-    ADMIN_LOGIN=кухнироманост \
-    ADMIN_PASSWORD=kuhroman
 
 EXPOSE 8080
 
