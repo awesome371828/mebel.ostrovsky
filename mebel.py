@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 mebel.py — Кухни Островский + админка /admin (Supabase) + анимации.
-Один файл. Все зависимости встроены. Таймауты на Supabase, чтобы сайт не вис.
 """
 import base64
 import concurrent.futures
@@ -97,30 +96,12 @@ MANIFEST = """{
 }
 """
 
-PAGE_404 = """<!DOCTYPE html>
-<html lang="ru"><head><meta charset="UTF-8">
+PAGE_404 = """<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noindex, follow">
-<title>404 — страница не найдена | Кухни Островский</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Manrope',system-ui,sans-serif;background:#0e0c09;color:#f5efe3;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center}
-.card{max-width:560px}
-.code{font-family:Georgia,serif;font-size:clamp(80px,18vw,160px);line-height:1;background:linear-gradient(135deg,#eccfa0,#d4af6a 55%,#a37c3f);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-h1{font-family:Georgia,serif;font-size:clamp(24px,5vw,34px);color:#fff;margin:14px 0 10px}
-p{color:#b9ad9a;font-size:15px;line-height:1.7;margin-bottom:28px}
-.btn{display:inline-block;padding:15px 30px;border-radius:14px;background:linear-gradient(135deg,#eccfa0,#d4af6a 55%,#a37c3f);color:#17120b;font-weight:700;font-size:13px;letter-spacing:1.2px;text-transform:uppercase;text-decoration:none}
-.contacts{margin-top:30px;color:#b9ad9a;font-size:13.5px;line-height:1.9}
-.contacts a{color:#eccfa0;text-decoration:none}
-</style></head><body>
-<div class="card"><div class="code">404</div>
-<h1>Такой страницы нет</h1>
-<p>Возможно, ссылка устарела или адрес введён с ошибкой. Вернитесь на главную.</p>
-<a class="btn" href="/">На главную</a>
-<div class="contacts">☎ <a href="tel:+79508465397">+7 (950) 846-53-97</a><br>
-✈ <a href="https://t.me/fanny161" target="_blank" rel="noopener">Telegram</a> ·
-<a href="https://vk.com/mebel.ostrovsky" target="_blank" rel="noopener">ВКонтакте</a></div>
-</div></body></html>"""
+<meta name="robots" content="noindex, follow"><title>404 — страница не найдена</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui;background:#0e0c09;color:#f5efe3;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center}.code{font-family:Georgia,serif;font-size:clamp(80px,18vw,160px);background:linear-gradient(135deg,#eccfa0,#d4af6a 55%,#a37c3f);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}h1{color:#fff;margin:14px 0 10px}p{color:#b9ad9a;margin-bottom:28px}.btn{display:inline-block;padding:15px 30px;border-radius:14px;background:linear-gradient(135deg,#eccfa0,#d4af6a 55%,#a37c3f);color:#17120b;font-weight:700;text-decoration:none}</style>
+</head><body><div><div class="code">404</div><h1>Такой страницы нет</h1>
+<p>Вернитесь на главную.</p><a class="btn" href="/">На главную</a></div></body></html>"""
 
 DEFAULT_DATA = {
     "seo": {
@@ -155,10 +136,10 @@ DEFAULT_DATA = {
         "photo": "https://i.ibb.co/mVchNnp1/photo-2026-09-10-18-48-37.jpg",
         "name": "Роман Островский",
         "role": "Руководитель мебельной мастерской Островского",
-        "text": "С командой изготавливаем кухни и корпусную мебель по индивидуальным проектам — с учётом ваших идей, размеров и задач.",
+        "text": "С командой изготавливаем кухни и корпусную мебель по индивидуальным проектам.",
         "kicker": "О руководителе",
         "title": "Кухни и мебель под ключ — с заботой о деталях",
-        "body": "Мы помогаем с планировкой и подбором материалов, предлагаем решения даже для сложных задач — когда другие разводят руками. Ведём вас от консультации и замера до сборки и установки.",
+        "body": "Мы помогаем с планировкой и подбором материалов, ведём вас от консультации и замера до сборки и установки.",
         "features": [
             "Кухни, шкафы, гардеробные и прихожие",
             "Честный расчёт — без навязывания лишнего",
@@ -170,7 +151,7 @@ DEFAULT_DATA = {
         "bg": "https://sun9-41.vkuserphoto.ru/s/v1/ig2/qi7m_VnJPio2P4oKJhNr6X-9HJD2kCt6f98XGtveyiAxhJ4ru17yVoibjERFJ4-ZWDOm8Lr7xGMwRP6dSudvgPnG.jpg?quality=95&cs=1280x0",
         "kicker": "Бесплатно",
         "title": "Консультация",
-        "text": "Позвоните или напишите нам в <b style=\"color:#fff\">Telegram</b> или <b style=\"color:#fff\">MAX</b> — расскажем про кухни и мебель, всё обсудим и договоримся о бесплатном замере.",
+        "text": "Позвоните или напишите нам в Telegram или MAX — расскажем про кухни и мебель, всё обсудим и договоримся о бесплатном замере.",
     },
     "works": {
         "bg": "https://sun9-32.vkuserphoto.ru/s/v1/ig2/ipQDYrxkEiu9wFqxHUIJNhf4YERP29pOrzOhJ2hTcO6Z-fqWBrPA9D1vCltHlp9RltkldMRefKPMMkB8aD8jhZfR.jpg?quality=95&cs=1280x0",
@@ -188,14 +169,11 @@ DEFAULT_DATA = {
         "bg": "https://sun9-64.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&cs=1280x0",
         "kicker": "Отзывы",
         "title": "Что говорят наши клиенты",
-        "subtitle": "Реальные отзывы о нашей работе. Листайте влево-вправо.",
+        "subtitle": "Реальные отзывы о нашей работе.",
         "items": [
             {"name": "Виктория Брандикова", "sub": "Кухня на заказ", "stars": 5,
              "avatar": "https://sun9-3.vkuserphoto.ru/s/v1/ig2/-cVZEipS5I4ROZUZ2fxoIaGJBZXpUs76_WKoUZpPw_r2-gnqqUvgTqjLjYoTZ0R21nsCSvjUPyw_vSn1jxAYJC8K.jpg?quality=95&cs=128x0",
-             "text": "Заказывали у Романа кухню, всё прошло на высшем уровне! Роман супер профессионал своего дела! За мебелью теперь только к Роману, всем рекомендую!", "video": ""},
-            {"name": "Александр Карташев", "sub": "Видеоотзыв · Кухня на заказ", "stars": 5,
-             "avatar": "",
-             "text": "«Прям гордость квартиры! За приемлемую цену получили отличную кухню».", "video": ""},
+             "text": "Заказывали у Романа кухню, всё прошло на высшем уровне!", "video": ""},
         ],
     },
     "services": {
@@ -205,11 +183,11 @@ DEFAULT_DATA = {
         "subtitle": "Индивидуальный подход к каждому проекту и полный цикл производства.",
         "items": [
             {"title": "Кухни на заказ", "text": "Проектируем кухню точно под ваш размер, стиль и привычки.", "icon": "M3 9h18M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9M3 9l2-4h14l2 4M8 9v2M12 9v2M16 9v2"},
-            {"title": "Шкафы и гардеробные", "text": "Шкафы-купе, гардеробные, тумбы и комоды — встроенные и отдельно стоящие.", "icon": "M3 3h18v18H3zM3 8h18M8 8v13M16 8v13"},
-            {"title": "Прихожие и стенки", "text": "Прихожие, стенки, гарнитуры под ТВ — аккуратно впишем в интерьер.", "icon": "M12 3v18M3 12h18M5 5l14 14M19 5L5 19"},
-            {"title": "Сборка и монтаж", "text": "Профессиональная установка, аккуратная сборка и подключение техники.", "icon": "M14 6l4 4M5 19l7-7M17 3l4 4-4 4-1-1-1 1-4-4 1-1-1-1 4-4z"},
-            {"title": "Замер и проект", "text": "Выезжаем на замер, делаем планировку и 3D-проект — бесплатно.", "icon": "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 3v18M3 12h18"},
-            {"title": "Обновление мебели", "text": "Освежим фасады и фурнитуру существующей кухни — дешевле, чем новая.", "icon": "M3 12a9 9 0 1 0 9-9M3 12h6M3 12l4-4M3 12l4 4"},
+            {"title": "Шкафы и гардеробные", "text": "Шкафы-купе, гардеробные, тумбы и комоды.", "icon": "M3 3h18v18H3zM3 8h18M8 8v13M16 8v13"},
+            {"title": "Прихожие и стенки", "text": "Прихожие, стенки, гарнитуры под ТВ.", "icon": "M12 3v18M3 12h18M5 5l14 14M19 5L5 19"},
+            {"title": "Сборка и монтаж", "text": "Профессиональная установка и подключение техники.", "icon": "M14 6l4 4M5 19l7-7M17 3l4 4-4 4-1-1-1 1-4-4 1-1-1-1 4-4z"},
+            {"title": "Замер и проект", "text": "Выезжаем на замер, делаем планировку и 3D-проект.", "icon": "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 3v18M3 12h18"},
+            {"title": "Обновление мебели", "text": "Освежим фасады и фурнитуру существующей кухни.", "icon": "M3 12a9 9 0 1 0 9-9M3 12h6M3 12l4-4M3 12l4 4"},
         ],
     },
     "process": {
@@ -217,12 +195,12 @@ DEFAULT_DATA = {
         "kicker": "Как мы работаем",
         "title": "Путь от идеи до готовой мебели",
         "items": [
-            {"n": "01", "title": "Обращение", "text": "Вы звоните или пишете — обговариваем задачу и пожелания."},
-            {"n": "02", "title": "Замер", "text": "Выезжаем, снимаем размеры и обсуждаем планировку. Бесплатно."},
-            {"n": "03", "title": "Проект", "text": "Готовим 3D-проект и подбираем материалы с фурнитурой."},
-            {"n": "04", "title": "Договор", "text": "Фиксируем стоимость и условия, подписываем договор."},
+            {"n": "01", "title": "Обращение", "text": "Вы звоните или пишете — обговариваем задачу."},
+            {"n": "02", "title": "Замер", "text": "Выезжаем, снимаем размеры и обсуждаем планировку."},
+            {"n": "03", "title": "Проект", "text": "Готовим 3D-проект и подбираем материалы."},
+            {"n": "04", "title": "Договор", "text": "Фиксируем стоимость и условия."},
             {"n": "05", "title": "Производство", "text": "Изготавливаем мебель на собственном производстве."},
-            {"n": "06", "title": "Доставка и монтаж", "text": "Привозим, собираем и устанавливаем. Сдаём с гарантией."},
+            {"n": "06", "title": "Доставка и монтаж", "text": "Привозим, собираем и устанавливаем."},
         ],
     },
     "guarantees": {
@@ -232,8 +210,8 @@ DEFAULT_DATA = {
         "items": [
             {"title": "Гарантия качества", "text": "Отвечаем за свою работу и сопровождаем после установки.", "icon": "M12 3l7 3v6c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V6l7-3zM9 12l2 2 4-4"},
             {"title": "Честный расчёт", "text": "Без навязывания лишнего и скрытых доплат.", "icon": "M4 20h16M6 20V8l6-4 6 4v12M9 11h6M9 15h6M10 11v8M14 11v8"},
-            {"title": "Собственное производство", "text": "Без посредников — контролируем качество на каждом этапе.", "icon": "M3 21V9l9-5 9 5v12M3 21h18M9 21v-6h6v6M12 9v2"},
-            {"title": "Личное сопровождение", "text": "Вы всегда на связи со специалистом — от замера до монтажа.", "icon": "M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM4 21c0-4 3.6-6 8-6s8 2 8 6"},
+            {"title": "Собственное производство", "text": "Без посредников — контролируем качество.", "icon": "M3 21V9l9-5 9 5v12M3 21h18M9 21v-6h6v6M12 9v2"},
+            {"title": "Личное сопровождение", "text": "Вы всегда на связи со специалистом.", "icon": "M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM4 21c0-4 3.6-6 8-6s8 2 8 6"},
         ],
     },
     "cities": {
@@ -267,17 +245,12 @@ DEFAULT_DATA = {
 }
 
 
-# =====================================================================
-# АНИМАЦИИ
-# =====================================================================
 ANIM_STYLE = r"""
 <style id="goldAnimations">
 @keyframes fadeUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
 @keyframes shimmerX{0%{background-position:-200% 0}100%{background-position:200% 0}}
-@keyframes pulseGold{0%,100%{box-shadow:0 0 0 0 rgba(212,175,106,.4)}50%{box-shadow:0 0 0 14px rgba(212,175,106,0)}}
-@keyframes rotateSlow{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 @keyframes goldGradient{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-
+@keyframes rotateSlow{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 h1,h2.k,.sec-head h2,.about-body h2,.contact-info h2,.cta h2{
   background-image:linear-gradient(90deg,#faf3e6 0%,#faf3e6 30%,#eccfa0 50%,#faf3e6 70%,#faf3e6 100%);
   background-size:220% 100%;-webkit-background-clip:text;background-clip:text;
@@ -289,15 +262,13 @@ h1 em,.shimmer,h1 em.shimmer{
   -webkit-text-fill-color:transparent;animation:shimmerX 4s linear infinite;
 }
 .js .anim-visible h1,.js h1.anim-visible,.js .anim-visible h2,.js h2.anim-visible{background-position:0% 0;}
-
 .js .stat,.js .svc,.js .step,.js .guar,.js .city,.js .car-slide,.js .rev-card,.js .about-card,.js .about-body,.js .call-block,.js .contact-info,.js .sec-head{
   opacity:0;transform:translateY(30px);
-  transition:opacity .9s cubic-bezier(.22,.61,.36,1),transform .9s cubic-bezier(.22,.61,.36,1),box-shadow .4s,border-color .4s;
+  transition:opacity .9s cubic-bezier(.22,.61,.36,1),transform .9s cubic-bezier(.22,.61,.36,1),box-shadow .4s;
 }
 .js .stat.anim-in,.js .svc.anim-in,.js .step.anim-in,.js .guar.anim-in,.js .city.anim-in,
 .js .car-slide.anim-in,.js .rev-card.anim-in,.js .about-card.anim-in,.js .about-body.anim-in,
 .js .call-block.anim-in,.js .contact-info.anim-in,.js .sec-head.anim-in{opacity:1;transform:translateY(0);}
-
 .js .stats .stat:nth-child(2){transition-delay:.12s}
 .js .stats .stat:nth-child(3){transition-delay:.24s}
 .js .stats .stat:nth-child(4){transition-delay:.36s}
@@ -316,37 +287,25 @@ h1 em,.shimmer,h1 em.shimmer{
 .js .guar-grid .guar:nth-child(4){transition-delay:.36s}
 .js .city-grid .city:nth-child(2){transition-delay:.14s}
 .js .city-grid .city:nth-child(3){transition-delay:.28s}
-
-.btn{position:relative;overflow:hidden;transform:translateZ(0);will-change:transform}
+.btn{position:relative;overflow:hidden;transform:translateZ(0)}
 .btn .ripple-el{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.55),transparent 70%);transform:scale(0);animation:rippleAnim .8s ease-out forwards;pointer-events:none;}
 @keyframes rippleAnim{to{transform:scale(4);opacity:0}}
 .btn-solid{background-size:200% 200%;animation:goldGradient 6s ease infinite;}
-.c-action{position:relative;overflow:hidden}
-
 #goldParticles{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;}
-#goldParticles span{position:absolute;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,rgba(236,207,160,.9),rgba(212,175,106,.4) 40%,transparent 70%);box-shadow:0 0 12px rgba(236,207,160,.55);animation:particleFloat linear infinite;will-change:transform,opacity;}
+#goldParticles span{position:absolute;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,rgba(236,207,160,.9),rgba(212,175,106,.4) 40%,transparent 70%);box-shadow:0 0 12px rgba(236,207,160,.55);animation:particleFloat linear infinite;}
 @keyframes particleFloat{0%{transform:translateY(100vh) scale(.5);opacity:0}10%{opacity:1}90%{opacity:.85}100%{transform:translateY(-100px) scale(1.1);opacity:0}}
-
-.svc svg,.guar .ico,.c-ico,.vb-play{transition:transform .55s cubic-bezier(.34,1.56,.64,1),background .35s,color .35s;}
+.svc svg,.guar .ico,.c-ico,.vb-play{transition:transform .55s cubic-bezier(.34,1.56,.64,1);}
 .svc:hover svg{transform:scale(1.18) rotate(-8deg)}
 .guar:hover .ico{transform:scale(1.18) rotate(8deg)}
 .c-line:hover .c-ico{transform:scale(1.16) rotate(-6deg)}
-
 .rev-stars{background:linear-gradient(90deg,#eccfa0,#fff 50%,#eccfa0 100%);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerX 3s linear infinite;}
-
-.consult .phone,.call-block .cb-num{transition:transform .4s,filter .4s;display:inline-block;}
-.consult .phone:hover,.call-block .cb-num:hover{transform:scale(1.04);filter:drop-shadow(0 10px 30px rgba(212,175,106,.6));}
-
+.consult .phone,.call-block .cb-num{transition:transform .4s;display:inline-block;}
+.consult .phone:hover,.call-block .cb-num:hover{transform:scale(1.04);}
 .eyebrow,.kicker,.sec-head .kicker{background:linear-gradient(90deg,rgba(236,207,160,.85),#fff 50%,rgba(236,207,160,.85));background-size:220% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerX 4.5s linear infinite;}
-
 .car-slide img{transition:transform 1.1s cubic-bezier(.22,.61,.36,1);}
 .car-slide:hover img{transform:scale(1.12)}
 html{scroll-behavior:smooth}
-
-@media (prefers-reduced-motion: reduce){
-  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;}
-  .js .stat,.js .svc,.js .step,.js .guar,.js .city,.js .car-slide,.js .rev-card,.js .about-card,.js .about-body,.js .call-block,.js .contact-info,.js .sec-head{opacity:1 !important;transform:none !important;}
-}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important;}.js .stat,.js .svc,.js .step,.js .guar,.js .city,.js .car-slide,.js .rev-card,.js .about-card,.js .about-body,.js .call-block,.js .contact-info,.js .sec-head{opacity:1 !important;transform:none !important;}}
 </style>
 """
 
@@ -356,63 +315,21 @@ ANIM_SCRIPT = r"""
   if (!('IntersectionObserver' in window)) return;
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
     document.querySelectorAll('.stat,.svc,.step,.guar,.city,.car-slide,.rev-card,.about-card,.about-body,.call-block,.contact-info,.sec-head').forEach(function(el){el.classList.add('anim-in');});
-    document.documentElement.classList.remove('js');
-    return;
+    document.documentElement.classList.remove('js'); return;
   }
-  var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if (e.isIntersecting){ e.target.classList.add('anim-in'); io.unobserve(e.target); }
-    });
-  }, {threshold:0.12, rootMargin:'0px 0px -50px 0px'});
+  var io = new IntersectionObserver(function(entries){entries.forEach(function(e){if (e.isIntersecting){ e.target.classList.add('anim-in'); io.unobserve(e.target); }});}, {threshold:0.12});
   document.querySelectorAll('.stat,.svc,.step,.guar,.city,.car-slide,.rev-card,.about-card,.about-body,.call-block,.contact-info,.sec-head').forEach(function(el){ io.observe(el); });
-
-  var headIo = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if (e.isIntersecting){ e.target.classList.add('anim-visible'); headIo.unobserve(e.target); }
-    });
-  }, {threshold:0.5});
+  var headIo = new IntersectionObserver(function(entries){entries.forEach(function(e){if (e.isIntersecting){ e.target.classList.add('anim-visible'); headIo.unobserve(e.target); }});}, {threshold:0.5});
   document.querySelectorAll('h1,h2.k,.sec-head h2,.about-body h2,.contact-info h2,.cta h2').forEach(function(el){ headIo.observe(el); });
-
-  (function(){
-    var container = document.createElement('div'); container.id = 'goldParticles'; document.body.appendChild(container);
-    var count = window.innerWidth < 700 ? 12 : 24;
-    for (var i=0;i<count;i++){
-      var s = document.createElement('span');
-      var size = 3 + Math.random()*5;
-      s.style.width = size + 'px'; s.style.height = size + 'px';
-      s.style.left = (Math.random()*100) + '%';
-      s.style.animationDuration = (14 + Math.random()*18) + 's';
-      s.style.animationDelay = (-Math.random()*20) + 's';
-      s.style.opacity = (0.35 + Math.random()*0.55);
-      container.appendChild(s);
-    }
-  })();
-
+  (function(){var c=document.createElement('div');c.id='goldParticles';document.body.appendChild(c);var n=window.innerWidth<700?12:24;for(var i=0;i<n;i++){var s=document.createElement('span');var sz=3+Math.random()*5;s.style.width=sz+'px';s.style.height=sz+'px';s.style.left=(Math.random()*100)+'%';s.style.animationDuration=(14+Math.random()*18)+'s';s.style.animationDelay=(-Math.random()*20)+'s';s.style.opacity=(0.35+Math.random()*0.55);c.appendChild(s);}})();
   document.addEventListener('click', function(e){
-    var btn = e.target.closest('.btn, .c-action, .car-dot, .soc');
-    if (!btn) return;
-    var rect = btn.getBoundingClientRect();
-    var ripple = document.createElement('span'); ripple.className = 'ripple-el';
-    var size = Math.max(rect.width, rect.height);
-    ripple.style.width = size + 'px'; ripple.style.height = size + 'px';
-    ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
-    ripple.style.top  = (e.clientY - rect.top  - size/2) + 'px';
-    btn.appendChild(ripple);
-    setTimeout(function(){ ripple.remove(); }, 850);
+    var btn = e.target.closest('.btn, .c-action, .car-dot, .soc'); if(!btn) return;
+    var r = btn.getBoundingClientRect(); var rp = document.createElement('span'); rp.className='ripple-el';
+    var s = Math.max(r.width, r.height);
+    rp.style.width=s+'px'; rp.style.height=s+'px';
+    rp.style.left=(e.clientX-r.left-s/2)+'px'; rp.style.top=(e.clientY-r.top-s/2)+'px';
+    btn.appendChild(rp); setTimeout(function(){rp.remove();},850);
   }, {passive:true});
-
-  var fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
-  if (fine) {
-    document.querySelectorAll('.btn-solid, .c-action.c-call').forEach(function(btn){
-      btn.addEventListener('mousemove', function(e){
-        var r = btn.getBoundingClientRect();
-        var dx = (e.clientX - r.left - r.width/2) / r.width;
-        var dy = (e.clientY - r.top  - r.height/2) / r.height;
-        btn.style.transform = 'translate(' + (dx*6) + 'px,' + (dy*6 - 4) + 'px)';
-      });
-      btn.addEventListener('mouseleave', function(){ btn.style.transform = ''; });
-    });
-  }
 })();
 </script>
 """
@@ -426,9 +343,6 @@ def _inject_animations(html):
     return html
 
 
-# =====================================================================
-# SUPABASE
-# =====================================================================
 _sb_read = None
 _sb_write = None
 _sb_lock = threading.Lock()
@@ -455,14 +369,11 @@ def _sb_write_client():
 def _sb_execute_with_timeout(fn, timeout=6):
     try:
         with concurrent.futures.ThreadPoolExecutor(max_workers=1) as ex:
-            future = ex.submit(fn)
-            return future.result(timeout=timeout)
+            return ex.submit(fn).result(timeout=timeout)
     except concurrent.futures.TimeoutError:
-        print("[supabase] TIMEOUT " + str(timeout) + "s", flush=True)
-        return None
+        print("[supabase] TIMEOUT " + str(timeout) + "s", flush=True); return None
     except Exception as e:
-        print("[supabase] error: " + str(e), flush=True)
-        return None
+        print("[supabase] error: " + str(e), flush=True); return None
 
 
 _auth_lock = threading.Lock()
@@ -492,21 +403,37 @@ def _drop_session(token):
 _data_cache = None
 _cache_ts = 0.0
 _data_lock = threading.Lock()
-_initialized_db = False
 
 
 def _deep_fill(target, source):
+    """Дополняет target недостающими полями из source."""
     for k, v in source.items():
-        if k not in target: target[k] = json.loads(json.dumps(v))
-        elif isinstance(v, dict) and isinstance(target[k], dict): _deep_fill(target[k], v)
+        if k not in target:
+            target[k] = json.loads(json.dumps(v))
+        elif isinstance(v, dict) and isinstance(target[k], dict):
+            _deep_fill(target[k], v)
+
+
+def _is_empty_or_small(raw):
+    """Проверяет, что в БД реально пусто или мало данных."""
+    if not raw: return True
+    # Считаем общее количество ключей верхнего уровня
+    if len(raw) < len(DEFAULT_DATA) - 2:
+        return True
+    # Если бренд без имени — точно пусто
+    if isinstance(raw.get("brand"), dict) and not raw["brand"].get("name"):
+        return True
+    return False
 
 
 def load_data(force=False):
-    global _data_cache, _cache_ts, _initialized_db
+    """Загружает данные из Supabase. Если БД пуста — заполняет дефолтами и сохраняет."""
+    global _data_cache, _cache_ts
     now = time.time()
     with _data_lock:
         if not force and _data_cache is not None and now - _cache_ts < CACHE_TTL:
             return _data_cache
+
         raw = None
         sb = _sb_read_client()
         if sb is not None:
@@ -516,19 +443,28 @@ def load_data(force=False):
             )
             if res is not None and getattr(res, "data", None):
                 raw = res.data[0].get("data") or {}
-                print("[load_data] OK, полей: " + str(len(raw)), flush=True)
+                print("[load_data] получено полей: " + str(len(raw)), flush=True)
+
+        # Собираем итоговые данные — дефолты + то, что уже есть в БД
         data = json.loads(json.dumps(DEFAULT_DATA))
-        if raw: _deep_fill(data, raw)
-        elif not _initialized_db:
-            _initialized_db = True
+        if raw:
+            _deep_fill(data, raw)
+
+        # Если в БД было пусто (или мало данных) — СРАЗУ сохраняем объединённые данные обратно
+        if _is_empty_or_small(raw):
             wb = _sb_write_client()
             if wb is not None:
-                _sb_execute_with_timeout(
+                res = _sb_execute_with_timeout(
                     lambda: wb.table("site_content").upsert({"id": DATA_ROW_ID, "data": data}).execute(),
-                    timeout=6
+                    timeout=8
                 )
-                print("[load_data] засеяли дефолтами", flush=True)
-        _data_cache = data; _cache_ts = now
+                if res is not None:
+                    print("[load_data] засеяли БД дефолтами", flush=True)
+                else:
+                    print("[load_data] не удалось засеять БД", flush=True)
+
+        _data_cache = data
+        _cache_ts = now
         return data
 
 
@@ -545,7 +481,7 @@ def save_data(data):
         if res is not None:
             _data_cache = data; _cache_ts = time.time()
             print("[save_data] OK", flush=True); return True
-        print("[save_data] не сохранилось", flush=True); return False
+        print("[save_data] ошибка", flush=True); return False
 
 
 # =====================================================================
@@ -557,13 +493,11 @@ PAGE = r"""<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Кухни Островский — кухни на заказ в Ростове, Батайске и Азове | Мебель под ключ</title>
-<meta name="description" content="Кухни на заказ в Ростове-на-Дону, Батайске и Азове от мастерской «Кухни Островский».">
+<meta name="description" content="Кухни на заказ в Ростове-на-Дону, Батайске и Азове.">
 <meta name="keywords" content="кухни на заказ ростов, кухни батайск, кухни азов, мебель на заказ">
-<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="robots" content="index, follow">
 <meta name="theme-color" content="#0e0c09">
 <link rel="canonical" href="https://кухниостровский.рф/">
-<meta name="yandex-verification" content="f7e96d07aee79bf3">
-<meta name="google-site-verification" content="dNSAELu64Y7aK5sjz_zpmhoz6YKn2PIZ03UKPwrgnCI">
 <link rel="shortcut icon" href="/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -571,16 +505,14 @@ PAGE = r"""<!DOCTYPE html>
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ru_RU">
 <meta property="og:site_name" content="Кухни Островский">
-<meta property="og:url" content="https://кухниостровский.рф/">
-<meta property="og:title" content="Кухни Островский — кухни на заказ">
-<meta property="og:description" content="Кухни и корпусная мебель под ключ. Бесплатный замер и 3D-проект.">
+<meta property="og:title" content="Кухни Островский">
+<meta property="og:description" content="Кухни и мебель на заказ.">
 <meta property="og:image" content="https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c.jpg?quality=95&cs=1254x0">
-<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0e0c09;--gold:#d4af6a;--gold-soft:#eccfa0;--gold-deep:#a37c3f;--text:#f5efe3;--muted:#b9ad9a;--line:rgba(212,175,106,.14);--r-lg:24px;--r-md:16px;--r-sm:12px;--shadow-lg:0 34px 80px rgba(0,0,0,.5);--shadow-md:0 18px 46px rgba(0,0,0,.36);--shadow-gold:0 16px 42px rgba(212,175,106,.26);--serif:'Cormorant Garamond',Georgia,serif;--sans:'Manrope',system-ui,sans-serif;}
+:root{--bg:#0e0c09;--gold:#d4af6a;--gold-soft:#eccfa0;--gold-deep:#a37c3f;--text:#f5efe3;--muted:#b9ad9a;--r-lg:24px;--r-md:16px;--r-sm:12px;--shadow-lg:0 34px 80px rgba(0,0,0,.5);--shadow-md:0 18px 46px rgba(0,0,0,.36);--shadow-gold:0 16px 42px rgba(212,175,106,.26);--serif:'Cormorant Garamond',Georgia,serif;--sans:'Manrope',system-ui,sans-serif;}
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;overflow-x:hidden}
 section{scroll-margin-top:92px}
@@ -625,7 +557,7 @@ header.solid{background:rgba(14,12,9,.92)}
 .panel--center .content{text-align:center}
 .eyebrow{display:inline-flex;align-items:center;gap:12px;color:var(--gold-soft);letter-spacing:5px;text-transform:uppercase;font-size:12px;font-weight:600;margin-bottom:20px}
 .eyebrow::before,.eyebrow::after{content:"";width:42px;height:1px;background:var(--gold)}
-h1{font-size:clamp(34px,6vw,76px);font-weight:500;line-height:1.08;color:#fff;text-shadow:0 5px 30px rgba(0,0,0,.5)}
+h1{font-size:clamp(34px,6vw,76px);font-weight:500;line-height:1.08;color:#fff}
 h1 em{font-style:italic}
 .sub{color:rgba(245,239,227,.9);font-size:clamp(16px,1.8vw,19.5px);font-weight:300;margin:24px 0 34px;max-width:580px}
 .btn-row{display:flex;gap:16px;flex-wrap:wrap}
@@ -828,17 +760,13 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
     <span class="kicker" style="color:var(--gold-soft);letter-spacing:6px;text-transform:uppercase;font-size:12px;font-weight:600">Бесплатно</span>
     <h2 class="k">Консультация</h2>
     <a href="tel:+79508465397" class="phone">+7 (950) 846-53-97</a>
-    <p>Позвоните или напишите нам в <b style="color:#fff">Telegram</b> или <b style="color:#fff">MAX</b> — расскажем про кухни и мебель, всё обсудим и договоримся о бесплатном замере.</p>
+    <p>Позвоните или напишите нам в Telegram или MAX — расскажем про кухни и мебель, всё обсудим и договоримся о бесплатном замере.</p>
   </div></div>
 </section>
 <section class="panel panel--center panel--dark" id="works">
   <div class="bg" style="background-image:url('https://sun9-32.vkuserphoto.ru/s/v1/ig2/ipQDYrxkEiu9wFqxHUIJNhf4YERP29pOrzOhJ2hTcO6Z-fqWBrPA9D1vCltHlp9RltkldMRefKPMMkB8aD8jhZfR.jpg?quality=95&cs=1280x0')"></div>
   <div class="wrap"><div class="content">
-    <div class="sec-head">
-      <div class="kicker">Наши работы</div>
-      <h2>Кухни и мебель, которые мы сделали</h2>
-      <p>Нажмите на фото, чтобы рассмотреть в большом размере.</p>
-    </div>
+    <div class="sec-head"><div class="kicker">Наши работы</div><h2>Кухни и мебель, которые мы сделали</h2><p>Нажмите на фото, чтобы рассмотреть в большом размере.</p></div>
     <div class="carousel">
       <button class="car-nav car-prev" id="carPrev">❮</button>
       <div class="car-track" id="carTrack"></div>
@@ -860,11 +788,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
 <section class="panel panel--center" id="reviews">
   <div class="bg" style="background-image:url('https://sun9-64.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&cs=1280x0')"></div>
   <div class="wrap"><div class="content">
-    <div class="sec-head">
-      <div class="kicker">Отзывы</div>
-      <h2>Что говорят наши клиенты</h2>
-      <p>Реальные отзывы о нашей работе. Листайте влево-вправо.</p>
-    </div>
+    <div class="sec-head"><div class="kicker">Отзывы</div><h2>Что говорят наши клиенты</h2><p>Реальные отзывы о нашей работе.</p></div>
     <div class="carousel">
       <button class="car-nav car-prev" id="revPrev">❮</button>
       <div class="car-track rev-track" id="revTrack"></div>
@@ -877,21 +801,14 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
 <section class="panel panel--dark" id="services">
   <div class="bg" style="background-image:url('https://sun9-88.vkuserphoto.ru/s/v1/ig2/vCipZmkZdy5Ix0cFh98i0yhNAYynqzh2gm00rWx5Qr019O4RHjwcs7pN6iKT4L_d1vanDAbUJ9JRrHj_uw13YVhg.jpg?quality=95&cs=1280x0')"></div>
   <div class="wrap"><div class="content">
-    <div class="sec-head">
-      <div class="kicker">Что мы делаем</div>
-      <h2>Услуги</h2>
-      <p>Индивидуальный подход к каждому проекту и полный цикл производства.</p>
-    </div>
+    <div class="sec-head"><div class="kicker">Что мы делаем</div><h2>Услуги</h2><p>Индивидуальный подход к каждому проекту и полный цикл производства.</p></div>
     <div class="svc-grid" id="svcGrid"></div>
   </div></div>
 </section>
 <section class="panel" id="process">
   <div class="bg" style="background-image:url('https://sun9-39.vkuserphoto.ru/s/v1/ig2/xiwu_WFFyjmJc4_VAOD1BHikAdMqBy9N-SuKyiWu7xC8OYE-pfhtW5GkOyO5No0KjOrNQUwcgOW3Gr2bCnjvFp2H.jpg?quality=95&cs=1280x0')"></div>
   <div class="wrap"><div class="content">
-    <div class="sec-head">
-      <div class="kicker">Как мы работаем</div>
-      <h2>Путь от идеи до готовой мебели</h2>
-    </div>
+    <div class="sec-head"><div class="kicker">Как мы работаем</div><h2>Путь от идеи до готовой мебели</h2></div>
     <div class="steps" id="stepsBox"></div>
   </div></div>
 </section>
@@ -905,11 +822,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
 <section class="panel panel--center panel--dark" id="cities">
   <div class="bg" style="background-image:url('https://sun9-87.vkuserphoto.ru/s/v1/ig2/WHkPw7TZze6TV4t2q6Yr2pw61S1zWDeDyp8Dbe2IFm31aAuhXVSQ2DUTnM6AIt5u3cLTp9mh-YN2b_Lb0q5iHCFu.jpg?quality=95&cs=1280x0')"></div>
   <div class="wrap"><div class="content">
-    <div class="sec-head">
-      <div class="kicker">Где работаем</div>
-      <h2>Три города — один стандарт качества</h2>
-      <p>Бесплатный замер и проект в каждом из городов.</p>
-    </div>
+    <div class="sec-head"><div class="kicker">Где работаем</div><h2>Три города — один стандарт качества</h2><p>Бесплатный замер и проект в каждом из городов.</p></div>
     <div class="city-grid" id="cityGrid"></div>
   </div></div>
 </section>
@@ -967,14 +880,8 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
 const header=document.getElementById('header');
 const progress=document.getElementById('progress');
 const burger=document.getElementById('burger'),menu=document.getElementById('menu'),scrim=document.getElementById('scrim');
-let menuOpen=false;
-let ticking=false;
-function onScroll(){if(ticking)return;ticking=true;requestAnimationFrame(function(){
-  const h=document.documentElement;
-  const sc=h.scrollHeight>h.clientHeight?h.scrollTop/(h.scrollHeight-h.clientHeight):0;
-  if(progress)progress.style.width=(sc*100)+'%';
-  header.classList.toggle('solid',h.scrollTop>40);
-  ticking=false;});}
+let menuOpen=false,ticking=false;
+function onScroll(){if(ticking)return;ticking=true;requestAnimationFrame(function(){const h=document.documentElement;const sc=h.scrollHeight>h.clientHeight?h.scrollTop/(h.scrollHeight-h.clientHeight):0;if(progress)progress.style.width=(sc*100)+'%';header.classList.toggle('solid',h.scrollTop>40);ticking=false;});}
 window.addEventListener('scroll',onScroll,{passive:true});onScroll();
 function closeMenu(){burger.classList.remove('open');menu.classList.remove('open');scrim.classList.remove('show');menuOpen=false;}
 function openMenu(){burger.classList.add('open');menu.classList.add('open');scrim.classList.add('show');menuOpen=true;}
@@ -982,10 +889,10 @@ burger.addEventListener('click',function(){menuOpen?closeMenu():openMenu();});
 scrim.addEventListener('click',closeMenu);
 menu.querySelectorAll('a').forEach(function(a){a.addEventListener('click',closeMenu);});
 document.getElementById('logo').addEventListener('click',function(e){e.preventDefault();window.scrollTo({top:0,behavior:'smooth'});});
-function animateCount(el){var target=parseFloat(el.dataset.count);var dec=parseInt(el.dataset.decimal||'0');var suffix=el.dataset.suffix||'';var dur=1200,start=performance.now();function tick(t){var p=Math.min((t-start)/dur,1);p=1-Math.pow(1-p,3);var val=(target*p).toFixed(dec);el.textContent=(dec?val:Math.round(val))+suffix;if(p<1)requestAnimationFrame(tick);}requestAnimationFrame(tick);}
+function animateCount(el){var t=parseFloat(el.dataset.count);var d=parseInt(el.dataset.decimal||'0');var s=el.dataset.suffix||'';var dur=1200,start=performance.now();function tick(now){var p=Math.min((now-start)/dur,1);p=1-Math.pow(1-p,3);var v=(t*p).toFixed(d);el.textContent=(d?v:Math.round(v))+s;if(p<1)requestAnimationFrame(tick);}requestAnimationFrame(tick);}
 var statIO=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){animateCount(e.target);statIO.unobserve(e.target);}});},{threshold:.5});
 document.querySelectorAll('.stat .num').forEach(function(el){statIO.observe(el);});
-function initCarousel(trackId,prevId,nextId,dotsId){var track=document.getElementById(trackId);if(!track)return;var prev=document.getElementById(prevId),next=document.getElementById(nextId),dotsBox=document.getElementById(dotsId);var items=Array.prototype.slice.call(track.children);if(!items.length)return;dotsBox.innerHTML='';items.forEach(function(_,i){var d=document.createElement('button');d.className='car-dot'+(i===0?' active':'');d.setAttribute('aria-label','Слайд '+(i+1));d.addEventListener('click',function(){items[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});});dotsBox.appendChild(d);});var dots=Array.prototype.slice.call(dotsBox.children);var step=function(){return items[0].offsetWidth+20;};var sTick=false;track.addEventListener('scroll',function(){if(sTick)return;sTick=true;requestAnimationFrame(function(){var idx=Math.round(track.scrollLeft/step());dots.forEach(function(d,i){d.classList.toggle('active',i===idx);});sTick=false;});},{passive:true});prev.addEventListener('click',function(){track.scrollBy({left:-step(),behavior:'smooth'});});next.addEventListener('click',function(){track.scrollBy({left:step(),behavior:'smooth'});});}
+function initCarousel(trackId,prevId,nextId,dotsId){var track=document.getElementById(trackId);if(!track)return;var prev=document.getElementById(prevId),next=document.getElementById(nextId),dotsBox=document.getElementById(dotsId);var items=Array.prototype.slice.call(track.children);if(!items.length)return;dotsBox.innerHTML='';items.forEach(function(_,i){var d=document.createElement('button');d.className='car-dot'+(i===0?' active':'');d.addEventListener('click',function(){items[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});});dotsBox.appendChild(d);});var dots=Array.prototype.slice.call(dotsBox.children);var step=function(){return items[0].offsetWidth+20;};var sT=false;track.addEventListener('scroll',function(){if(sT)return;sT=true;requestAnimationFrame(function(){var idx=Math.round(track.scrollLeft/step());dots.forEach(function(d,i){d.classList.toggle('active',i===idx);});sT=false;});},{passive:true});prev.addEventListener('click',function(){track.scrollBy({left:-step(),behavior:'smooth'});});next.addEventListener('click',function(){track.scrollBy({left:step(),behavior:'smooth'});});}
 initCarousel('carTrack','carPrev','carNext','carDots');
 initCarousel('revTrack','revPrev','revNext','revDots');
 var lightbox=document.getElementById('lightbox'),lbImg=document.getElementById('lbImg'),lbCount=document.getElementById('lbCount');
@@ -999,10 +906,10 @@ document.getElementById('lbPrev').addEventListener('click',function(e){e.stopPro
 document.getElementById('lbNext').addEventListener('click',function(e){e.stopPropagation();lbStep(1);});
 lightbox.addEventListener('click',function(e){if(e.target===lightbox)closeLb();});
 document.addEventListener('keydown',function(e){if(lightbox.classList.contains('open')){if(e.key==='Escape')closeLb();if(e.key==='ArrowLeft')lbStep(-1);if(e.key==='ArrowRight')lbStep(1);}});
-document.querySelectorAll('.video-box').forEach(function(box){box.addEventListener('click',function(){if(box.querySelector('iframe'))return;var iframe=document.createElement('iframe');iframe.src=box.dataset.src;iframe.setAttribute('allow','autoplay; encrypted-media; fullscreen');iframe.setAttribute('allowfullscreen','1');box.innerHTML='';box.appendChild(iframe);});});
-var cookieBar=document.getElementById('cookieBar'),cookieOk=document.getElementById('cookieOk');
-if(!localStorage.getItem('cookiesAccepted')){setTimeout(function(){cookieBar.classList.add('show');},900);}
-cookieOk.addEventListener('click',function(){localStorage.setItem('cookiesAccepted','1');cookieBar.classList.remove('show');});
+document.querySelectorAll('.video-box').forEach(function(box){box.addEventListener('click',function(){if(box.querySelector('iframe'))return;var f=document.createElement('iframe');f.src=box.dataset.src;f.setAttribute('allow','autoplay; encrypted-media; fullscreen');f.setAttribute('allowfullscreen','1');box.innerHTML='';box.appendChild(f);});});
+var cb=document.getElementById('cookieBar'),co=document.getElementById('cookieOk');
+if(!localStorage.getItem('cookiesAccepted')){setTimeout(function(){cb.classList.add('show');},900);}
+co.addEventListener('click',function(){localStorage.setItem('cookiesAccepted','1');cb.classList.remove('show');});
 document.getElementById('year').textContent=new Date().getFullYear();
 })();
 </script>
@@ -1010,9 +917,6 @@ document.getElementById('year').textContent=new Date().getFullYear();
 </html>"""
 
 
-# =====================================================================
-# RENDER
-# =====================================================================
 def _sub_exact(html, anchor, replacement):
     if anchor and anchor in html:
         return html.replace(anchor, replacement, 1)
@@ -1026,7 +930,6 @@ def render_page():
     seo = d.get("seo", {}) or {}
     hero = d.get("hero", {}) or {}
     about = d.get("about", {}) or {}
-    consult = d.get("consult", {}) or {}
     works = d.get("works", {}) or {}
     reviews = d.get("reviews", {}) or {}
     services = d.get("services", {}) or {}
@@ -1034,26 +937,20 @@ def render_page():
     guarantees = d.get("guarantees", {}) or {}
     cities = d.get("cities", {}) or {}
     cta = d.get("cta", {}) or {}
-    contacts = d.get("contacts", {}) or {}
     footer = d.get("footer", {}) or {}
 
     if seo.get("title"):
         html = re.sub(r"<title>.*?</title>", "<title>" + seo["title"] + "</title>", html, count=1, flags=re.S)
     if seo.get("description"):
-        html = re.sub(r'<meta name="description" content="[^"]*">',
-                      '<meta name="description" content="' + seo["description"] + '">', html, count=1)
+        html = re.sub(r'<meta name="description" content="[^"]*">', '<meta name="description" content="' + seo["description"] + '">', html, count=1)
     if seo.get("keywords"):
-        html = re.sub(r'<meta name="keywords" content="[^"]*">',
-                      '<meta name="keywords" content="' + seo["keywords"] + '">', html, count=1)
+        html = re.sub(r'<meta name="keywords" content="[^"]*">', '<meta name="keywords" content="' + seo["keywords"] + '">', html, count=1)
     if seo.get("og_image"):
-        html = re.sub(r'<meta property="og:image" content="[^"]*">',
-                      '<meta property="og:image" content="' + seo["og_image"] + '">', html, count=1)
+        html = re.sub(r'<meta property="og:image" content="[^"]*">', '<meta property="og:image" content="' + seo["og_image"] + '">', html, count=1)
     if b.get("name"):
-        html = _sub_exact(html, '<span class="name">Кухни Островский</span>',
-                          '<span class="name">' + b["name"] + '</span>')
+        html = _sub_exact(html, '<span class="name">Кухни Островский</span>', '<span class="name">' + b["name"] + '</span>')
     if b.get("sub"):
-        html = _sub_exact(html, '<span class="sub">Ростов · Батайск · Азов</span>',
-                          '<span class="sub">' + b["sub"] + '</span>')
+        html = _sub_exact(html, '<span class="sub">Ростов · Батайск · Азов</span>', '<span class="sub">' + b["sub"] + '</span>')
     if b.get("phone"):
         html = html.replace("+7 (950) 846-53-97", b["phone"])
     if b.get("phone_raw"):
@@ -1063,28 +960,23 @@ def render_page():
     if b.get("vk"):
         html = html.replace("https://vk.com/mebel.ostrovsky", b["vk"])
     if hero.get("eyebrow"):
-        html = _sub_exact(html, '<span class="eyebrow">Мебель и кухни на заказ</span>',
-                          '<span class="eyebrow">' + hero["eyebrow"] + '</span>')
+        html = _sub_exact(html, '<span class="eyebrow">Мебель и кухни на заказ</span>', '<span class="eyebrow">' + hero["eyebrow"] + '</span>')
     if hero.get("title_before") or hero.get("title_em"):
         tb = hero.get("title_before", "Мебель, которая ")
         te = hero.get("title_em", "создаёт настроение")
-        new_h1 = '<h1 id="heroTitle">' + tb + '<em class="shimmer">' + te + '</em></h1>'
-        html = re.sub(r'<h1 id="heroTitle">.*?</h1>', new_h1, html, count=1, flags=re.S)
+        html = re.sub(r'<h1 id="heroTitle">.*?</h1>', '<h1 id="heroTitle">' + tb + '<em class="shimmer">' + te + '</em></h1>', html, count=1, flags=re.S)
     if hero.get("btn1"):
         html = _sub_exact(html, '>Получить консультацию<', '>' + hero["btn1"] + '<')
     if hero.get("btn2"):
         html = _sub_exact(html, '>Смотреть работы<', '>' + hero["btn2"] + '<')
     if about.get("photo"):
-        html = _sub_exact(html, 'src="https://i.ibb.co/mVchNnp1/photo-2026-09-10-18-48-37.jpg"',
-                          'src="' + about["photo"] + '"')
+        html = _sub_exact(html, 'src="https://i.ibb.co/mVchNnp1/photo-2026-09-10-18-48-37.jpg"', 'src="' + about["photo"] + '"')
     if about.get("name"):
         html = _sub_exact(html, '<h3>Роман Островский</h3>', '<h3>' + about["name"] + '</h3>')
     if about.get("role"):
-        html = _sub_exact(html, '<div class="role">Руководитель мебельной мастерской Островского</div>',
-                          '<div class="role">' + about["role"] + '</div>')
+        html = _sub_exact(html, '<div class="role">Руководитель мебельной мастерской Островского</div>', '<div class="role">' + about["role"] + '</div>')
     if about.get("title"):
-        html = _sub_exact(html, '<h2>Кухни и мебель под ключ — с заботой о деталях</h2>',
-                          '<h2>' + about["title"] + '</h2>')
+        html = _sub_exact(html, '<h2>Кухни и мебель под ключ — с заботой о деталях</h2>', '<h2>' + about["title"] + '</h2>')
     feats = about.get("features")
     if isinstance(feats, list) and feats:
         block = '<ul class="features">' + ''.join('<li>' + str(x) + '</li>' for x in feats) + '</ul>'
@@ -1099,8 +991,7 @@ def render_page():
             if not url: continue
             block += '<div class="car-slide"><img loading="lazy" src="' + url + '" alt="' + alt + '"></div>'
         if block:
-            html = re.sub(r'(<div class="car-track" id="carTrack">).*?(</div>)',
-                          r'\1' + block + r'\2', html, count=1, flags=re.S)
+            html = re.sub(r'(<div class="car-track" id="carTrack">).*?(</div>)', r'\1' + block + r'\2', html, count=1, flags=re.S)
 
     rev_items = reviews.get("items")
     if isinstance(rev_items, list) and rev_items:
@@ -1116,8 +1007,7 @@ def render_page():
                 video_html = '<div class="rev-video"><div class="video-box" data-src="' + video + '" style="background-image:url(\'' + vp + '\')"><span class="vb-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></div></div>'
             block += '<div class="rev-card"><div class="rev-head">' + ava_html + '<div><div class="rev-name">' + name + '</div><div class="rev-sub">' + sub + '</div></div><div class="rev-stars">' + stars + '</div></div>' + video_html + '<p class="rev-text">' + text + '</p></div>'
         if block:
-            html = re.sub(r'(<div class="car-track rev-track" id="revTrack">).*?(</div>)',
-                          r'\1' + block + r'\2', html, count=1, flags=re.S)
+            html = re.sub(r'(<div class="car-track rev-track" id="revTrack">).*?(</div>)', r'\1' + block + r'\2', html, count=1, flags=re.S)
 
     svc_items = services.get("items")
     if isinstance(svc_items, list) and svc_items:
@@ -1157,14 +1047,8 @@ def render_page():
 
     if cta.get("title"):
         html = _sub_exact(html, '<h2 class="shimmer">Готовы обсудить вашу мебель?</h2>', '<h2 class="shimmer">' + cta["title"] + '</h2>')
-    if cta.get("text"):
-        html = _sub_exact(html, '<p>Позвоните нам — бесплатно проконсультируем, посчитаем и запишем на замер.</p>', '<p>' + cta["text"] + '</p>')
-    if cta.get("button"):
-        html = _sub_exact(html, '>📞 Позвонить специалисту<', '>' + cta["button"] + '<')
     if footer.get("line"):
         html = _sub_exact(html, '<p>Кухни и корпусная мебель на заказ — Ростов, Батайск, Азов</p>', '<p>' + footer["line"] + '</p>')
-    if footer.get("copyright"):
-        html = re.sub(r'© <span id="year"></span>[^<]*', '© <span id="year"></span> ' + footer["copyright"], html, count=1)
 
     html = _inject_animations(html)
     return html
@@ -1217,13 +1101,15 @@ def get_favicon():
 ADMIN_LOGIN_HTML = """<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Вход в админку</title><style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui,sans-serif;background:linear-gradient(135deg,#0e0c09,#1a1611);color:#f5efe3;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.card{background:rgba(255,255,255,.04);border:1px solid rgba(236,207,160,.2);border-radius:20px;padding:42px 38px;width:100%;max-width:420px}
-h1{font-family:Georgia,serif;font-size:28px;color:#fff;margin-bottom:8px;text-align:center}
+.card{background:rgba(255,255,255,.04);border:1px solid rgba(236,207,160,.2);border-radius:20px;padding:42px 38px;width:100%;max-width:420px;animation:cardIn .7s cubic-bezier(.22,.61,.36,1)}
+@keyframes cardIn{from{opacity:0;transform:translateY(30px) scale(.96)}to{opacity:1;transform:none}}
+h1{font-family:Georgia,serif;font-size:28px;color:#fff;margin-bottom:8px;text-align:center;background:linear-gradient(120deg,#fff,#eccfa0);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 p.sub{color:#b9ad9a;font-size:13.5px;text-align:center;margin-bottom:28px}
 label{display:block;color:#eccfa0;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;font-weight:600}
-input{width:100%;padding:14px 16px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#fff;font-size:15px;font-family:inherit;margin-bottom:18px}
-input:focus{outline:none;border-color:#d4af6a}
-button{width:100%;padding:15px;background:linear-gradient(135deg,#eccfa0,#d4af6a 55%,#a37c3f);color:#17120b;font-weight:700;font-size:14px;letter-spacing:1.2px;text-transform:uppercase;border:none;border-radius:12px;cursor:pointer}
+input{width:100%;padding:14px 16px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#fff;font-size:15px;font-family:inherit;margin-bottom:18px;transition:.3s}
+input:focus{outline:none;border-color:#d4af6a;box-shadow:0 0 0 4px rgba(212,175,106,.15)}
+button{width:100%;padding:15px;background:linear-gradient(135deg,#eccfa0,#d4af6a 55%,#a37c3f);color:#17120b;font-weight:700;font-size:14px;letter-spacing:1.2px;text-transform:uppercase;border:none;border-radius:12px;cursor:pointer;transition:.3s}
+button:hover{transform:translateY(-3px);box-shadow:0 18px 44px rgba(212,175,106,.4)}
 .err{background:rgba(220,60,60,.14);border:1px solid rgba(220,60,60,.4);color:#ff9a9a;padding:12px 14px;border-radius:10px;font-size:13px;margin-bottom:18px;text-align:center}
 </style></head><body>
 <form class="card" method="POST" action="/admin/login">
@@ -1236,43 +1122,56 @@ button{width:100%;padding:15px;background:linear-gradient(135deg,#eccfa0,#d4af6a
 </form></body></html>"""
 
 
-ADMIN_HTML = r"""<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Админка</title><style>
+ADMIN_HTML = r"""<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Админка — Кухни Островский</title><style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--gold:#d4af6a;--gold-soft:#eccfa0;--bg:#0e0c09;--line:rgba(236,207,160,.16)}
-body{font-family:system-ui,sans-serif;background:var(--bg);color:#f5efe3;min-height:100vh;line-height:1.55}
-header{background:rgba(14,12,9,.95);border-bottom:1px solid var(--line);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;flex-wrap:wrap;gap:12px}
-.brand{font-family:Georgia,serif;font-size:20px;color:#fff}
-.brand span{color:var(--gold-soft);font-size:13px;margin-left:8px}
+:root{--gold:#d4af6a;--gold-soft:#eccfa0;--gold-deep:#a37c3f;--bg:#0e0c09;--line:rgba(236,207,160,.16);--sans:system-ui,sans-serif}
+body{font-family:var(--sans);background:var(--bg);color:#f5efe3;min-height:100vh;line-height:1.55;position:relative;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(1200px 700px at 85% -10%,rgba(212,175,106,.14),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(212,175,106,.08),transparent 55%),linear-gradient(180deg,#12100b,#0c0a07 45%,#100d09)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@keyframes shimmerX{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes pulseGold{0%,100%{box-shadow:0 0 0 0 rgba(212,175,106,.5)}50%{box-shadow:0 0 0 12px rgba(212,175,106,0)}}
+@keyframes particleFloat{0%{transform:translateY(100vh) scale(.5);opacity:0}10%{opacity:1}90%{opacity:.85}100%{transform:translateY(-100px) scale(1.1);opacity:0}}
+@keyframes rippleAnim{to{transform:scale(4);opacity:0}}
+#goldParticles{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+#goldParticles span{position:absolute;width:5px;height:5px;border-radius:50%;background:radial-gradient(circle,rgba(236,207,160,.9),rgba(212,175,106,.4) 40%,transparent 70%);box-shadow:0 0 12px rgba(236,207,160,.55);animation:particleFloat linear infinite}
+header{background:rgba(14,12,9,.95);border-bottom:1px solid var(--line);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;flex-wrap:wrap;gap:12px;backdrop-filter:blur(12px);animation:fadeUp .5s ease}
+.brand{font-family:Georgia,serif;font-size:20px;color:#fff;background:linear-gradient(120deg,#fff,var(--gold-soft));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.brand span{color:var(--gold-soft);font-size:13px;margin-left:8px;-webkit-text-fill-color:var(--gold-soft)}
 .actions{display:flex;gap:10px;flex-wrap:wrap}
-.btn{padding:10px 18px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:#f5efe3;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;font-family:inherit}
-.btn:hover{border-color:var(--gold);color:var(--gold-soft)}
-.btn-gold{background:linear-gradient(135deg,#eccfa0,#d4af6a 55%,#a37c3f);color:#17120b;border:none}
+.btn{position:relative;overflow:hidden;padding:10px 18px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:#f5efe3;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;font-family:inherit;transition:transform .3s,border-color .3s,box-shadow .3s}
+.btn:hover{border-color:var(--gold);color:var(--gold-soft);transform:translateY(-2px);box-shadow:0 10px 24px rgba(212,175,106,.2)}
+.btn-gold{background:linear-gradient(135deg,#eccfa0,#d4af6a 55%,#a37c3f);background-size:200% 200%;color:#17120b;border:none;animation:shimmerX 6s linear infinite}
 .btn-red{background:rgba(220,60,60,.14);border-color:rgba(220,60,60,.35);color:#ff9a9a}
+.btn .ripple-el{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.5),transparent 70%);transform:scale(0);animation:rippleAnim .8s ease-out forwards;pointer-events:none}
 .layout{display:flex;min-height:calc(100vh - 65px)}
-nav.side{width:230px;background:rgba(0,0,0,.25);border-right:1px solid var(--line);padding:16px 0;flex-shrink:0;overflow-y:auto;position:sticky;top:65px;height:calc(100vh - 65px)}
-nav.side a{display:block;padding:12px 22px;color:#b9ad9a;font-size:14px;border-left:3px solid transparent;cursor:pointer}
-nav.side a:hover{color:#fff;background:rgba(255,255,255,.03)}
-nav.side a.active{color:var(--gold-soft);border-left-color:var(--gold);background:rgba(212,175,106,.06)}
-main{flex:1;padding:28px 34px;max-width:1100px;overflow-x:hidden}
-h2{font-family:Georgia,serif;font-size:26px;color:#fff;margin-bottom:6px}
+nav.side{width:230px;background:rgba(0,0,0,.28);border-right:1px solid var(--line);padding:16px 0;flex-shrink:0;overflow-y:auto;position:sticky;top:65px;height:calc(100vh - 65px);animation:fadeUp .6s ease}
+nav.side a{display:block;padding:12px 22px;color:#b9ad9a;font-size:14px;border-left:3px solid transparent;cursor:pointer;transition:all .3s cubic-bezier(.22,.61,.36,1);position:relative}
+nav.side a:hover{color:#fff;background:rgba(255,255,255,.04);padding-left:26px}
+nav.side a.active{color:var(--gold-soft);border-left-color:var(--gold);background:rgba(212,175,106,.08)}
+nav.side a.active::before{content:"";position:absolute;right:0;top:50%;transform:translateY(-50%);width:3px;height:50%;background:linear-gradient(180deg,transparent,var(--gold),transparent);border-radius:2px}
+main{flex:1;padding:28px 34px;max-width:1100px;overflow-x:hidden;animation:fadeUp .6s ease}
+h2{font-family:Georgia,serif;font-size:26px;color:#fff;margin-bottom:6px;background:linear-gradient(120deg,#fff,var(--gold-soft));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 p.hint{color:#b9ad9a;font-size:13px;margin-bottom:22px}
-.field{margin-bottom:16px}
+.field{margin-bottom:16px;animation:fadeUp .5s ease}
 .field label{display:block;color:var(--gold-soft);font-size:11.5px;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:7px;font-weight:600}
-.field input,.field textarea{width:100%;padding:11px 14px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:9px;color:#fff;font-size:14px;font-family:inherit}
+.field input,.field textarea{width:100%;padding:11px 14px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:9px;color:#fff;font-size:14px;font-family:inherit;transition:all .3s}
 .field textarea{resize:vertical;min-height:80px}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 4px rgba(212,175,106,.15);background:rgba(0,0,0,.5)}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.item{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:18px;margin-bottom:14px}
+.item{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:18px;margin-bottom:14px;transition:all .35s cubic-bezier(.22,.61,.36,1);animation:fadeUp .5s ease}
+.item:hover{border-color:rgba(236,207,160,.28);box-shadow:0 12px 30px rgba(0,0,0,.3),0 0 30px rgba(212,175,106,.08);transform:translateY(-2px)}
 .item-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px;flex-wrap:wrap}
 .item-head strong{color:var(--gold-soft);font-size:13.5px}
 .mini{padding:6px 12px;font-size:12px;border-radius:8px}
-.img-preview{width:100%;max-width:220px;height:auto;border-radius:10px;border:1px solid var(--line);margin-top:8px;display:block}
-.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,140%);background:linear-gradient(135deg,#eccfa0,#d4af6a);color:#17120b;padding:14px 26px;border-radius:12px;font-weight:700;font-size:14px;z-index:9999;transition:transform .4s}
+.img-preview{width:100%;max-width:220px;height:auto;border-radius:10px;border:1px solid var(--line);margin-top:8px;display:block;transition:transform .4s}
+.img-preview:hover{transform:scale(1.03)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,140%);background:linear-gradient(135deg,#eccfa0,#d4af6a);color:#17120b;padding:14px 26px;border-radius:12px;font-weight:700;font-size:14px;z-index:9999;transition:transform .4s cubic-bezier(.22,.61,.36,1);box-shadow:0 18px 44px rgba(212,175,106,.45)}
 .toast.show{transform:translate(-50%,0)}
 .toast.err{background:linear-gradient(135deg,#ff8a8a,#e04a4a);color:#fff}
-.drop{display:block;border:2px dashed var(--line);border-radius:12px;padding:22px;text-align:center;color:#b9ad9a;font-size:13px;cursor:pointer;margin-top:8px}
-.drop:hover{border-color:var(--gold)}
-.status{font-size:12px;padding:6px 12px;border-radius:8px;display:inline-block}
-.status.ok{background:rgba(80,200,120,.15);color:#7ee0a0;border:1px solid rgba(80,200,120,.4)}
+.drop{display:block;border:2px dashed var(--line);border-radius:12px;padding:22px;text-align:center;color:#b9ad9a;font-size:13px;cursor:pointer;margin-top:8px;transition:.3s}
+.drop:hover{border-color:var(--gold);color:var(--gold-soft);background:rgba(212,175,106,.05)}
+.status{font-size:12px;padding:6px 12px;border-radius:8px;display:inline-block;transition:.3s}
+.status.ok{background:rgba(80,200,120,.15);color:#7ee0a0;border:1px solid rgba(80,200,120,.4);animation:pulseGold 3s infinite}
 .status.bad{background:rgba(220,60,60,.15);color:#ff9a9a;border:1px solid rgba(220,60,60,.4)}
 @media(max-width:800px){nav.side{position:fixed;left:0;top:65px;bottom:0;transform:translateX(-100%);transition:.3s;z-index:99;width:240px}nav.side.open{transform:none}.row{grid-template-columns:1fr}main{padding:20px 18px}}
 </style></head><body>
@@ -1308,6 +1207,8 @@ p.hint{color:#b9ad9a;font-size:13px;margin-bottom:22px}
 </div>
 <div class="toast" id="toast"></div>
 <script>
+(function(){var c=document.createElement('div');c.id='goldParticles';document.body.appendChild(c);for(var i=0;i<18;i++){var s=document.createElement('span');var sz=3+Math.random()*4;s.style.width=sz+'px';s.style.height=sz+'px';s.style.left=(Math.random()*100)+'%';s.style.animationDuration=(14+Math.random()*18)+'s';s.style.animationDelay=(-Math.random()*20)+'s';s.style.opacity=(0.3+Math.random()*0.5);c.appendChild(s);}})();
+document.addEventListener('click',function(e){var b=e.target.closest('.btn');if(!b)return;var r=b.getBoundingClientRect();var rp=document.createElement('span');rp.className='ripple-el';var s=Math.max(r.width,r.height);rp.style.width=s+'px';rp.style.height=s+'px';rp.style.left=(e.clientX-r.left-s/2)+'px';rp.style.top=(e.clientY-r.top-s/2)+'px';b.appendChild(rp);setTimeout(function(){rp.remove();},850);},{passive:true});
 let DATA=null;
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function toast(m,e){var t=document.getElementById('toast');t.textContent=m;t.classList.toggle('err',!!e);t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2200);}
@@ -1323,17 +1224,17 @@ function addItem(p,v){getPath(DATA,p).push(v);render();}
 function delItem(p,i){if(!confirm('Удалить?'))return;getPath(DATA,p).splice(i,1);render();}
 function moveItem(p,i,d){var a=getPath(DATA,p),j=i+d;if(j<0||j>=a.length)return;var t=a[i];a[i]=a[j];a[j]=t;render();}
 var TABS={};
-TABS.seo=function(){return '<h2>SEO</h2>'+field('Title','seo.title',{rows:2})+field('Description','seo.description',{rows:3})+field('Keywords','seo.keywords',{rows:3})+field('OG-картинка','seo.og_image');};
-TABS.brand=function(){return '<h2>Бренд</h2><div class="row">'+field('Название','brand.name')+field('Подзаголовок','brand.sub')+'</div>'+imgField('Логотип','brand.logo_url')+'<div class="row">'+field('Телефон','brand.phone')+field('Телефон (tel:)','brand.phone_raw')+'</div><div class="row">'+field('Telegram','brand.telegram')+field('VK','brand.vk')+'</div>';};
-TABS.hero=function(){return '<h2>Главный экран</h2>'+field('Надзаголовок','hero.eyebrow')+field('Заголовок до','hero.title_before')+field('Заголовок выделенный','hero.title_em')+field('Подзаголовок','hero.sub',{rows:3})+'<div class="row">'+field('Кнопка 1','hero.btn1')+field('Кнопка 2','hero.btn2')+'</div>'+imgField('Фон','hero.bg');};
-TABS.about=function(){return '<h2>О специалисте</h2>'+imgField('Фото','about.photo')+'<div class="row">'+field('Имя','about.name')+field('Должность','about.role')+'</div>'+field('Описание','about.text',{rows:3})+field('Заголовок','about.title')+field('Текст','about.body',{rows:4})+imgField('Фон','about.bg');};
+TABS.seo=function(){return '<h2>SEO</h2><p class="hint">Мета-теги сайта.</p>'+field('Title','seo.title',{rows:2})+field('Description','seo.description',{rows:3})+field('Keywords','seo.keywords',{rows:3})+field('OG-картинка','seo.og_image');};
+TABS.brand=function(){return '<h2>Бренд</h2>'+field('Название','brand.name')+field('Подзаголовок','brand.sub')+imgField('Логотип','brand.logo_url')+field('Телефон (визуал)','brand.phone')+field('Телефон (tel:)','brand.phone_raw')+field('Telegram','brand.telegram')+field('VK','brand.vk');};
+TABS.hero=function(){return '<h2>Главный экран</h2>'+field('Надзаголовок','hero.eyebrow')+field('Заголовок до','hero.title_before')+field('Заголовок выделенный','hero.title_em')+field('Подзаголовок','hero.sub',{rows:3})+field('Кнопка 1','hero.btn1')+field('Кнопка 2','hero.btn2')+imgField('Фон','hero.bg');};
+TABS.about=function(){return '<h2>О специалисте</h2>'+imgField('Фото','about.photo')+field('Имя','about.name')+field('Должность','about.role')+field('Описание','about.text',{rows:3})+field('Заголовок','about.title')+field('Текст','about.body',{rows:4})+imgField('Фон','about.bg');};
 TABS.consult=function(){return '<h2>Консультация</h2>'+field('Надзаголовок','consult.kicker')+field('Заголовок','consult.title')+field('Текст','consult.text',{rows:4})+imgField('Фон','consult.bg');};
-TABS.works=function(){var items=(DATA.works&&DATA.works.items)||[];return '<h2>Работы</h2>'+field('Надзаголовок','works.kicker')+field('Заголовок','works.title')+field('Подзаголовок','works.subtitle')+imgField('Фон','works.bg')+items.map(function(it,i){return '<div class="item"><div class="item-head"><strong>Фото '+(i+1)+'</strong><div><button class="btn mini" onclick="moveItem(\'works.items\','+i+',-1)">^</button> <button class="btn mini" onclick="moveItem(\'works.items\','+i+',1)">v</button> <button class="btn btn-red mini" onclick="delItem(\'works.items\','+i+')">Удалить</button></div></div>'+imgField('Картинка','works.items.'+i+'.url')+field('Alt','works.items.'+i+'.alt')+'</div>';}).join('')+'<button class="btn" onclick="addItem(\'works.items\',{url:\'\',alt:\'\'})">+ Добавить фото</button>';};
-TABS.reviews=function(){var items=(DATA.reviews&&DATA.reviews.items)||[];return '<h2>Отзывы</h2>'+field('Надзаголовок','reviews.kicker')+field('Заголовок','reviews.title')+field('Подзаголовок','reviews.subtitle')+imgField('Фон','reviews.bg')+items.map(function(it,i){return '<div class="item"><div class="item-head"><strong>'+esc(it.name||'')+'</strong><div><button class="btn mini" onclick="moveItem(\'reviews.items\','+i+',-1)">^</button> <button class="btn mini" onclick="moveItem(\'reviews.items\','+i+',1)">v</button> <button class="btn btn-red mini" onclick="delItem(\'reviews.items\','+i+')">Удалить</button></div></div><div class="row">'+field('Имя','reviews.items.'+i+'.name')+field('Подпись','reviews.items.'+i+'.sub')+'</div>'+field('Звёзд','reviews.items.'+i+'.stars')+imgField('Аватар','reviews.items.'+i+'.avatar')+field('Текст','reviews.items.'+i+'.text',{rows:4})+'<div class="row">'+field('Видео URL','reviews.items.'+i+'.video')+field('Постер','reviews.items.'+i+'.video_poster')+'</div></div>';}).join('')+'<button class="btn" onclick="addItem(\'reviews.items\',{name:\'\',sub:\'\',stars:5,avatar:\'\',text:\'\',video:\'\',video_poster:\'\'})">+ Добавить отзыв</button>';};
-TABS.services=function(){var items=(DATA.services&&DATA.services.items)||[];return '<h2>Услуги</h2>'+field('Надзаголовок','services.kicker')+field('Заголовок','services.title')+field('Подзаголовок','services.subtitle')+imgField('Фон','services.bg')+items.map(function(it,i){return '<div class="item"><div class="item-head"><strong>'+esc(it.title||'')+'</strong><button class="btn btn-red mini" onclick="delItem(\'services.items\','+i+')">Удалить</button></div>'+field('Название','services.items.'+i+'.title')+field('Описание','services.items.'+i+'.text',{rows:2})+field('SVG icon','services.items.'+i+'.icon')+'</div>';}).join('')+'<button class="btn" onclick="addItem(\'services.items\',{title:\'\',text:\'\',icon:\'\'})">+ Добавить</button>';};
-TABS.process=function(){var items=(DATA.process&&DATA.process.items)||[];return '<h2>Этапы</h2>'+field('Надзаголовок','process.kicker')+field('Заголовок','process.title')+imgField('Фон','process.bg')+items.map(function(it,i){return '<div class="item"><div class="item-head"><strong>'+esc(it.n||'')+' '+esc(it.title||'')+'</strong><button class="btn btn-red mini" onclick="delItem(\'process.items\','+i+')">Удалить</button></div><div class="row">'+field('Номер','process.items.'+i+'.n')+field('Заголовок','process.items.'+i+'.title')+'</div>'+field('Текст','process.items.'+i+'.text',{rows:2})+'</div>';}).join('')+'<button class="btn" onclick="addItem(\'process.items\',{n:\'\',title:\'\',text:\'\'})">+ Добавить</button>';};
-TABS.guarantees=function(){var items=(DATA.guarantees&&DATA.guarantees.items)||[];return '<h2>Гарантии</h2>'+field('Надзаголовок','guarantees.kicker')+field('Заголовок','guarantees.title')+imgField('Фон','guarantees.bg')+items.map(function(it,i){return '<div class="item"><div class="item-head"><strong>'+esc(it.title||'')+'</strong><button class="btn btn-red mini" onclick="delItem(\'guarantees.items\','+i+')">Удалить</button></div>'+field('Заголовок','guarantees.items.'+i+'.title')+field('Текст','guarantees.items.'+i+'.text',{rows:2})+field('SVG icon','guarantees.items.'+i+'.icon')+'</div>';}).join('')+'<button class="btn" onclick="addItem(\'guarantees.items\',{title:\'\',text:\'\',icon:\'\'})">+ Добавить</button>';};
-TABS.cities=function(){var items=(DATA.cities&&DATA.cities.items)||[];return '<h2>Города</h2>'+field('Надзаголовок','cities.kicker')+field('Заголовок','cities.title')+field('Подзаголовок','cities.subtitle')+imgField('Фон','cities.bg')+items.map(function(it,i){return '<div class="item"><div class="item-head"><strong>'+esc(it.name||'')+'</strong><button class="btn btn-red mini" onclick="delItem(\'cities.items\','+i+')">Удалить</button></div>'+field('Название','cities.items.'+i+'.name')+field('Описание','cities.items.'+i+'.text',{rows:2})+'</div>';}).join('')+'<button class="btn" onclick="addItem(\'cities.items\',{name:\'\',text:\'\'})">+ Добавить</button>';};
+TABS.works=function(){var items=(DATA.works&&DATA.works.items)||[];return '<h2>Работы</h2>'+field('Надзаголовок','works.kicker')+field('Заголовок','works.title')+field('Подзаголовок','works.subtitle')+imgField('Фон','works.bg')+'<div class="item-head"><strong>Фото ('+items.length+')</strong></div>'+items.map(function(it,i){return '<div class="item"><div class="item-head"><strong>Фото '+(i+1)+'</strong><div><button class="btn mini" onclick="moveItem(\'works.items\','+i+',-1)">^</button> <button class="btn mini" onclick="moveItem(\'works.items\','+i+',1)">v</button> <button class="btn btn-red mini" onclick="delItem(\'works.items\','+i+')">Удалить</button></div></div>'+imgField('Картинка','works.items.'+i+'.url')+field('Alt','works.items.'+i+'.alt')+'</div>';}).join('')+'<button class="btn" onclick="addItem(\'works.items\',{url:\'\',alt:\'\'})">+ Добавить фото</button>';};
+TABS.reviews=function(){var items=(DATA.reviews&&DATA.reviews.items)||[];return '<h2>Отзывы</h2>'+field('Надзаголовок','reviews.kicker')+field('Заголовок','reviews.title')+field('Подзаголовок','reviews.subtitle')+imgField('Фон','reviews.bg')+'<div class="item-head"><strong>Отзывы ('+items.length+')</strong></div>'+items.map(function(it,i){return '<div class="item"><div class="item-head"><strong>'+esc(it.name||'Отзыв '+(i+1))+'</strong><div><button class="btn mini" onclick="moveItem(\'reviews.items\','+i+',-1)">^</button> <button class="btn mini" onclick="moveItem(\'reviews.items\','+i+',1)">v</button> <button class="btn btn-red mini" onclick="delItem(\'reviews.items\','+i+')">Удалить</button></div></div>'+field('Имя','reviews.items.'+i+'.name')+field('Подпись','reviews.items.'+i+'.sub')+field('Звёзд','reviews.items.'+i+'.stars')+imgField('Аватар','reviews.items.'+i+'.avatar')+field('Текст','reviews.items.'+i+'.text',{rows:4})+field('Видео URL','reviews.items.'+i+'.video')+field('Постер видео','reviews.items.'+i+'.video_poster')+'</div>';}).join('')+'<button class="btn" onclick="addItem(\'reviews.items\',{name:\'\',sub:\'\',stars:5,avatar:\'\',text:\'\',video:\'\',video_poster:\'\'})">+ Добавить отзыв</button>';};
+TABS.services=function(){var items=(DATA.services&&DATA.services.items)||[];return '<h2>Услуги</h2>'+field('Надзаголовок','services.kicker')+field('Заголовок','services.title')+field('Подзаголовок','services.subtitle')+imgField('Фон','services.bg')+items.map(function(it,i){return '<div class="item"><div class="item-head"><strong>'+esc(it.title||'Услуга '+(i+1))+'</strong><button class="btn btn-red mini" onclick="delItem(\'services.items\','+i+')">Удалить</button></div>'+field('Название','services.items.'+i+'.title')+field('Описание','services.items.'+i+'.text',{rows:2})+field('SVG icon (path)','services.items.'+i+'.icon')+'</div>';}).join('')+'<button class="btn" onclick="addItem(\'services.items\',{title:\'\',text:\'\',icon:\'\'})">+ Добавить</button>';};
+TABS.process=function(){var items=(DATA.process&&DATA.process.items)||[];return '<h2>Этапы</h2>'+field('Надзаголовок','process.kicker')+field('Заголовок','process.title')+imgField('Фон','process.bg')+items.map(function(it,i){return '<div class="item"><div class="item-head"><strong>'+esc(it.n||'')+' '+esc(it.title||'')+'</strong><button class="btn btn-red mini" onclick="delItem(\'process.items\','+i+')">Удалить</button></div>'+field('Номер','process.items.'+i+'.n')+field('Заголовок','process.items.'+i+'.title')+field('Текст','process.items.'+i+'.text',{rows:2})+'</div>';}).join('')+'<button class="btn" onclick="addItem(\'process.items\',{n:\'\',title:\'\',text:\'\'})">+ Добавить</button>';};
+TABS.guarantees=function(){var items=(DATA.guarantees&&DATA.guarantees.items)||[];return '<h2>Гарантии</h2>'+field('Надзаголовок','guarantees.kicker')+field('Заголовок','guarantees.title')+imgField('Фон','guarantees.bg')+items.map(function(it,i){return '<div class="item"><div class="item-head"><strong>'+esc(it.title||'Гарантия '+(i+1))+'</strong><button class="btn btn-red mini" onclick="delItem(\'guarantees.items\','+i+')">Удалить</button></div>'+field('Заголовок','guarantees.items.'+i+'.title')+field('Текст','guarantees.items.'+i+'.text',{rows:2})+field('SVG icon','guarantees.items.'+i+'.icon')+'</div>';}).join('')+'<button class="btn" onclick="addItem(\'guarantees.items\',{title:\'\',text:\'\',icon:\'\'})">+ Добавить</button>';};
+TABS.cities=function(){var items=(DATA.cities&&DATA.cities.items)||[];return '<h2>Города</h2>'+field('Надзаголовок','cities.kicker')+field('Заголовок','cities.title')+field('Подзаголовок','cities.subtitle')+imgField('Фон','cities.bg')+items.map(function(it,i){return '<div class="item"><div class="item-head"><strong>'+esc(it.name||'Город '+(i+1))+'</strong><button class="btn btn-red mini" onclick="delItem(\'cities.items\','+i+')">Удалить</button></div>'+field('Название','cities.items.'+i+'.name')+field('Описание','cities.items.'+i+'.text',{rows:2})+'</div>';}).join('')+'<button class="btn" onclick="addItem(\'cities.items\',{name:\'\',text:\'\'})">+ Добавить</button>';};
 TABS.cta=function(){return '<h2>CTA</h2>'+field('Заголовок','cta.title')+field('Текст','cta.text',{rows:3})+field('Кнопка','cta.button')+imgField('Фон','cta.bg');};
 TABS.contacts=function(){return '<h2>Контакты</h2>'+field('Надзаголовок','contacts.kicker')+field('Заголовок','contacts.title')+field('Подзаголовок','contacts.subtitle',{rows:2})+field('Регионы','contacts.regions')+imgField('Фон','contacts.bg');};
 TABS.footer=function(){return '<h2>Подвал</h2>'+field('Строка','footer.line')+field('Копирайт','footer.copyright');};
@@ -1489,11 +1390,9 @@ if __name__ == "__main__":
     print("BOOT: старт приложения", flush=True)
     print("BOOT: PORT = " + str(PORT), flush=True)
     print("BOOT: SUPABASE_LIB = " + str(_SUPABASE_LIB), flush=True)
-    print("BOOT: SUPABASE_URL = " + SUPABASE_URL, flush=True)
     try:
         server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
         print("BOOT: слушаем http://0.0.0.0:" + str(PORT), flush=True)
-        print("BOOT: админка http://0.0.0.0:" + str(PORT) + "/admin", flush=True)
         server.serve_forever()
     except Exception as e:
         print("BOOT: FATAL " + str(e), flush=True)
