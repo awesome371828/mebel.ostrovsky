@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 mebel.py — Кухни Островский + админка /admin (Supabase) + анимации.
-Один файл, всё внутри.
 """
 import base64
 import gzip
