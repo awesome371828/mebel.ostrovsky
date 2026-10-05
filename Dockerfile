@@ -14,3 +14,4 @@ RUN mkdir -p uploads
 EXPOSE 8080
 
 CMD ["python", "-u", "mebel.py"]
+#х
