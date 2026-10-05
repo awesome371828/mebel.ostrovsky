@@ -1706,14 +1706,9 @@ if __name__ == "__main__":
     print("BOOT: SUPABASE_LIB = " + str(_SUPABASE_LIB), flush=True)
     print("BOOT: SUPABASE_URL = " + SUPABASE_URL, flush=True)
 
-    if _SUPABASE_LIB and SUPABASE_URL:
-        try:
-            load_data(force=True)
-            print("BOOT: Supabase OK", flush=True)
-        except Exception as e:
-            print("BOOT: Supabase error: " + str(e), flush=True)
-    else:
-        print("BOOT: Supabase отключён — работаем на дефолтах", flush=True)
+    # ПРОПУСКАЕМ проверку Supabase на старте — она может висеть
+    # Первый запрос к Supabase всё равно произойдёт при обращении к сайту,
+    # но уже с таймаутом (см. правки в load_data/save_data ниже).
 
     try:
         server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
