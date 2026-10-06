@@ -80,8 +80,7 @@ IMG_TIMEOUT = int(os.environ.get("IMG_TIMEOUT", "8"))
 IMG_PROXY = (os.environ.get("IMG_PROXY", "1") or "1").lower() not in ("0", "false", "no", "off")
 HTTP_TIMEOUT = 12
 
-FAVICON_URL = ("https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c.jpg"
-               "?quality=95&cs=1254x0")
+FAVICON_URL = "https://sun9-71.vkuserphoto.ru/s/v1/ig2/vrD0P7wnU0dU8cSoW8yBUOc-naoKs1vJN5OXMrUFeAdLJQi9qfWScCGH9JV3-r4btxsDfbPh--pJ1tSjOlkfiVRw2Celdw.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1254x1254&from=bu&u=-mZnLUrNq7bsSRyuT0gwpcYkWHU9MA-lwwC3ZYRE2Uw&cs=1254x0"
 
 # ============================================================
 #  АНИМАЦИИ (вставляются в page.html, если их там ещё нет)
@@ -90,9 +89,9 @@ FAVICON_URL = ("https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeH
 #  ДЕФОЛТНЫЙ КОНТЕНТ (актуальная версия сайта; БД перекрывает эти значения)
 # ============================================================
 # <<<DEFAULT_DATA_START>>>
-DEFAULT_DATA = {'seo': {'title': 'Кухни Островский — кухни на заказ в Ростове, Батайске и Азове | Мебель под ключ',
+DEFAULT_DATA = {'seo': {'favicon_url': 'https://sun9-71.vkuserphoto.ru/s/v1/ig2/vrD0P7wnU0dU8cSoW8yBUOc-naoKs1vJN5OXMrUFeAdLJQi9qfWScCGH9JV3-r4btxsDfbPh--pJ1tSjOlkfiVRw2Celdw.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1254x1254&from=bu&u=-mZnLUrNq7bsSRyuT0gwpcYkWHU9MA-lwwC3ZYRE2Uw&cs=1254x0', 'title': 'Кухни Островский — кухни на заказ в Ростове, Батайске и Азове | Мебель под ключ',
          'keywords': 'кухни остров, кухни островский, кухни на заказ ростов, кухни батайск, кухни азов, мебель на заказ',
-         'og_image': 'https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1254x1254&from=bu&u=8vUcv8YxPcmfEmzVcjy5cNrPtcWeOIJmbKMc6vln3Q8&cs=1254x0',
+         'og_image': 'https://sun9-71.vkuserphoto.ru/s/v1/ig2/vrD0P7wnU0dU8cSoW8yBUOc-naoKs1vJN5OXMrUFeAdLJQi9qfWScCGH9JV3-r4btxsDfbPh--pJ1tSjOlkfiVRw2Celdw.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1254x1254&from=bu&u=-mZnLUrNq7bsSRyuT0gwpcYkWHU9MA-lwwC3ZYRE2Uw&cs=1254x0',
          'description': 'Кухни на заказ в Ростове-на-Дону, Батайске и Азове от мастерской «Кухни Островский». Бесплатный замер и '
                         '3D-проект, собственное производство, монтаж под ключ. ☎ +7 (950) 846-53-97',
          'og_title': 'Кухни Островский — кухни на заказ в Ростове, Батайске и Азове',
@@ -123,7 +122,7 @@ DEFAULT_DATA = {'seo': {'title': 'Кухни Островский — кухни
            'sub': 'Ростов · Батайск · Азов',
            'name': 'Кухни Островский',
            'phone': '+7 (950) 846-53-97',
-           'logo_url': 'https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1254x1254&from=bu&u=8vUcv8YxPcmfEmzVcjy5cNrPtcWeOIJmbKMc6vln3Q8&cs=1254x0',
+           'logo_url': 'https://sun9-71.vkuserphoto.ru/s/v1/ig2/vrD0P7wnU0dU8cSoW8yBUOc-naoKs1vJN5OXMrUFeAdLJQi9qfWScCGH9JV3-r4btxsDfbPh--pJ1tSjOlkfiVRw2Celdw.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1254x1254&from=bu&u=-mZnLUrNq7bsSRyuT0gwpcYkWHU9MA-lwwC3ZYRE2Uw&cs=1254x0',
            'telegram': 'https://t.me/fanny161',
            'phone_raw': '+79508465397'},
  'nav': {'items': [{'label': 'Специалист', 'href': '#about'},
@@ -440,10 +439,10 @@ PAGE = r"""<!DOCTYPE html>
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/jpeg" sizes="any" href="{{brand.logo_url}}">
+<link rel="icon" type="image/jpeg" sizes="any" href="{{favicon}}">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="apple-touch-icon" sizes="any" href="{{brand.logo_url}}">
+<link rel="apple-touch-icon" sizes="any" href="{{favicon}}">
 <meta name="msapplication-TileImage" content="/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta property="og:type" content="website">
@@ -827,6 +826,104 @@ header.solid{background:{{design.bg}}eb}
 .empty{color:var(--muted);font-size:15px;text-align:center;max-width:560px;margin:0 auto;padding:28px;border:1px dashed rgba(236,207,160,.25);border-radius:var(--r-lg)}
 .section-note{color:var(--muted);margin-top:24px;text-align:center;font-size:13.5px}
 .section-note a{color:var(--gold-soft);font-weight:600}
+</style>
+<style id="beautyCSS">
+/* ====== Анимации и оформление (CMS) ====== */
+@keyframes rvUp{from{opacity:0;transform:translateY(36px);filter:blur(12px)}to{opacity:1;transform:none;filter:none}}
+@keyframes rvR{from{opacity:0;transform:translateX(42px)}to{opacity:1;transform:none}}
+@keyframes rvZ{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes sweepX{0%{background-position:160% 0}100%{background-position:-160% 0}}
+@keyframes shineMove{0%{transform:translateX(-160%) skewX(-18deg)}100%{transform:translateX(320%) skewX(-18deg)}}
+@keyframes rippleGo{to{transform:scale(3.4);opacity:0}}
+@keyframes pulseGold{0%,100%{box-shadow:0 16px 42px rgba(212,175,106,.26)}50%{box-shadow:0 22px 58px rgba(236,207,160,.5),0 0 34px rgba(212,175,106,.32)}}
+@keyframes numGlow{0%,100%{filter:drop-shadow(0 5px 16px rgba(212,175,106,.35))}50%{filter:drop-shadow(0 10px 30px rgba(236,207,160,.62))}}
+@keyframes driftGlow{0%,100%{opacity:.35}50%{opacity:.9}}
+@keyframes wordUp{from{opacity:0;transform:translateY(30px) rotate(1.6deg)}to{opacity:1;transform:none}}
+@keyframes lineGrow{from{transform:scaleX(0);opacity:0}to{transform:scaleX(1);opacity:.75}}
+@keyframes particleFloat{0%{transform:translateY(102vh) scale(.6);opacity:0}12%{opacity:.9}88%{opacity:.72}100%{transform:translateY(-8vh) scale(1.15);opacity:0}}
+
+/* появление по скроллу */
+.js .rv{opacity:0;transform:translateY(36px);filter:blur(12px);transition:opacity .95s cubic-bezier(.22,.61,.36,1),transform .95s cubic-bezier(.22,.61,.36,1),filter .95s cubic-bezier(.22,.61,.36,1)}
+.js .rv.rv-right{transform:translateX(42px)}
+.js .rv.rv-zoom{transform:scale(.92)}
+.js .rv.in{opacity:1;transform:none;filter:none}
+
+/* карточки: подъём, свечение, бегущий блик (исправляет перебитый hover у .reveal) */
+.svc,.step,.guar,.city,.rev-card,.about-card,.call-block,.stat{position:relative;transition:transform .55s cubic-bezier(.22,.61,.36,1),box-shadow .55s,border-color .55s,background .55s}
+.js .svc.reveal.in:hover,.js .step.reveal.in:hover,.js .guar.reveal.in:hover,.js .city.reveal.in:hover,
+.js .rev-card.reveal.in:hover,.js .stat.reveal.in:hover,.js .about-card.reveal.in:hover,.js .call-block.reveal.in:hover,
+.svc:hover,.step:hover,.guar:hover,.city:hover,.rev-card:hover,.about-card:hover,.call-block:hover,.stat:hover{transform:translateY(-10px);border-color:rgba(236,207,160,.36);box-shadow:0 32px 74px rgba(0,0,0,.55),0 0 46px rgba(212,175,106,.16)}
+.svc::after,.step::after,.guar::after,.city::after,.rev-card::after,.stat::after,.about-card::after,.call-block::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;background:linear-gradient(115deg,transparent 34%,rgba(236,207,160,.12) 50%,transparent 66%);background-size:260% 100%;background-position:160% 0;transition:opacity .45s}
+.svc:hover::after,.step:hover::after,.guar:hover::after,.city:hover::after,.rev-card:hover::after,.stat:hover::after,.about-card:hover::after,.call-block:hover::after{opacity:1;animation:sweepX 1.7s ease-in-out}
+.svc svg,.guar .ico,.c-ico,.step .n{animation:floatY 5.2s ease-in-out infinite}
+.svc:nth-child(2n) svg,.guar:nth-child(2n) .ico,.c-line:nth-child(2n) .c-ico,.step:nth-child(2n) .n{animation-delay:-1.4s}
+.svc:nth-child(3n) svg,.guar:nth-child(3n) .ico,.c-line:nth-child(3n) .c-ico,.step:nth-child(3n) .n{animation-delay:-2.7s}
+.c-line:hover .c-ico{animation-play-state:paused}
+
+/* заголовки секций: золотые линии «прорастают» */
+.sec-head h2::before,.sec-head h2::after{transform:translateY(-50%) scaleX(0);opacity:0;transition:transform .95s cubic-bezier(.22,.61,.36,1),opacity .7s}
+.sec-head.in h2::before,.sec-head.in h2::after{transform:translateY(-50%) scaleX(1);opacity:.75}
+.sec-head h2{text-shadow:0 6px 26px rgba(0,0,0,.5),0 0 46px rgba(212,175,106,.18)}
+.gold-divider b{animation:pulseGold 3s ease-in-out infinite}
+.gold-divider i{animation:lineGrow .9s cubic-bezier(.22,.61,.36,1) both}
+
+/* кнопки: блик, отклик, свечение */
+.btn{transition:transform .42s cubic-bezier(.22,.61,.36,1),box-shadow .42s,filter .42s,background .42s,color .42s}
+.btn:hover{transform:translateY(-4px) scale(1.02)}
+.btn:active{transform:translateY(-1px) scale(.985)}
+.btn-solid{overflow:hidden}
+.btn-solid::before{content:"";position:absolute;top:0;left:-40%;width:45%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);animation:shineMove 3.9s ease-in-out infinite;pointer-events:none;z-index:1}
+.btn-solid:hover::before{animation-duration:1.3s}
+.btn-line{overflow:hidden}
+.btn-line::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(236,207,160,.18),transparent 55%);opacity:0;transition:opacity .45s}
+.btn-line:hover::before{opacity:1}
+.c-action,.soc,.car-dot,.car-nav,.lb-nav,.lb-close,.menu a,.svc,.step,.guar,.city,.rev-card,.stat,.c-line,.btn{position:relative;overflow:hidden}
+.ripple-el{position:absolute;border-radius:50%;pointer-events:none;z-index:4;background:radial-gradient(circle,rgba(255,255,255,.55),rgba(255,255,255,0) 70%);transform:scale(0);animation:rippleGo .8s cubic-bezier(.2,.6,.3,1) forwards}
+.btn-solid>.ripple-el,.c-action.c-call>.ripple-el,.soc>.ripple-el,.car-dot.active>.ripple-el{background:radial-gradient(circle,rgba(23,18,11,.38),rgba(23,18,11,0) 70%)}
+.c-action:hover{transform:translateY(-4px) scale(1.015)}
+.soc:hover{transform:translateY(-5px) rotate(6deg) scale(1.06)}
+.car-dot:hover{transform:scale(1.3)}
+.car-nav{transition:background .35s,transform .35s,box-shadow .35s}
+.car-nav:hover{transform:translateY(-50%) scale(1.12)}
+.lb-nav:hover{transform:scale(1.12)}
+.lb-close:hover{transform:rotate(90deg) scale(1.06)}
+.c-line:hover{transform:translateX(8px)}
+
+/* подчёркивание «прорастает» у ссылок */
+.c-line a.val,.section-note a,footer a,.cookie-bar a{background-image:linear-gradient(90deg,var(--gold-soft),var(--gold));background-repeat:no-repeat;background-size:0 1px;background-position:0 100%;transition:background-size .45s,color .3s}
+.c-line a.val:hover,.section-note a:hover,footer a:hover,.cookie-bar a:hover{background-size:100% 1px;color:var(--gold-soft)}
+
+/* главный экран, цифры, подсказки */
+#heroTitle{text-shadow:0 8px 42px rgba(0,0,0,.62),0 0 80px rgba(212,175,106,.16)}
+#heroTitle.split .w{display:inline-block;opacity:0;animation:wordUp .95s cubic-bezier(.22,.61,.36,1) forwards}
+#heroTitle.split-done .w{opacity:1!important;animation:none!important}
+.stat .num{animation:numGlow 3.6s ease-in-out infinite}
+.stat:hover .num{transform:scale(1.06)}
+.swipe-hint,.scroll-cue{animation:hintPulse 2s ease-in-out infinite}
+.about-card .avatar{animation:floatY 6s ease-in-out infinite}
+.empty{animation:driftGlow 3s ease-in-out infinite}
+.city .city-name{background:linear-gradient(120deg,#fff 18%,var(--gold-soft) 55%,#fff 92%);background-size:220% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:sweepX 7s linear infinite}
+.call-block .cb-num{background:linear-gradient(120deg,#fff 8%,var(--gold-soft) 55%,#fff 95%);background-size:230% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:sweepX 7.5s linear infinite}
+.cookie-bar .btn{animation:pulseGold 3.4s ease-in-out infinite}
+.cookie-bar.show{animation:rvUp .6s cubic-bezier(.22,.61,.36,1)}
+.lightbox.open .lb-stage img{animation:rvZ .5s cubic-bezier(.22,.61,.36,1)}
+.menu.open li{animation:rvR .5s cubic-bezier(.22,.61,.36,1) both}
+.menu.open li:nth-child(1){animation-delay:.02s}.menu.open li:nth-child(2){animation-delay:.06s}.menu.open li:nth-child(3){animation-delay:.1s}
+.menu.open li:nth-child(4){animation-delay:.14s}.menu.open li:nth-child(5){animation-delay:.18s}.menu.open li:nth-child(6){animation-delay:.22s}
+.menu.open li:nth-child(7){animation-delay:.26s}.menu.open li:nth-child(8){animation-delay:.3s}.menu.open li:nth-child(9){animation-delay:.34s}
+#goldParticles{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+#goldParticles span{position:absolute;width:5px;height:5px;border-radius:50%;background:radial-gradient(circle,rgba(236,207,160,.95),rgba(212,175,106,.35) 45%,transparent 72%);box-shadow:0 0 12px rgba(236,207,160,.6);animation:particleFloat linear infinite}
+#toTop{position:fixed;right:22px;bottom:104px;z-index:390;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--gold-soft),var(--gold) 55%,var(--gold-deep));color:#17120b;border:none;cursor:pointer;box-shadow:0 18px 40px rgba(212,175,106,.35);opacity:0;visibility:hidden;transform:translateY(18px) scale(.9);transition:opacity .45s,transform .45s,visibility .45s}
+#toTop.show{opacity:1;visibility:visible;transform:none}
+#toTop:hover{transform:translateY(-5px) scale(1.07)}
+#toTop svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:860px){#toTop{right:14px;bottom:96px;width:46px;height:46px}}
+@media (prefers-reduced-motion: reduce){
+ #goldParticles{display:none}.js .rv{opacity:1;transform:none;filter:none}
+ #heroTitle.split .w,.cookie-bar.show,.lightbox.open .lb-stage img,.menu.open li{animation:none!important;opacity:1!important}
+ .svc svg,.guar .ico,.c-ico,.step .n,.stat .num,.city .city-name,.call-block .cb-num,.about-card .avatar,.gold-divider b,.gold-divider i,.btn-solid::before,.cookie-bar .btn,.empty,.swipe-hint,.scroll-cue{animation:none!important}
+}
 </style>
 <style id="customCss">{{{design.custom_css}}}</style>
 {{#if seo.metrika_id}}<script>(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js','ym');ym({{seo.metrika_id}},'init',{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});</script><noscript><div><img src="https://mc.yandex.ru/watch/{{seo.metrika_id}}" style="position:absolute;left:-9999px" alt=""></div></noscript>{{/if}}
@@ -1262,6 +1359,134 @@ try{
 const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYear();
 })();
 </script>
+<script id="beautyScript">
+(function(){
+  var reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fine=matchMedia('(hover:hover) and (pointer:fine)').matches;
+  var d=document;
+  function all(sel,root){return Array.prototype.slice.call((root||d).querySelectorAll(sel));}
+
+  /* 1. Заголовок героя — появление по словам */
+  var h1=d.getElementById('heroTitle');
+  if(h1&&!reduced){
+    var texts=[];
+    (function collect(n){for(var i=0;i<n.childNodes.length;i++){var c=n.childNodes[i];
+      if(c.nodeType===3&&c.nodeValue.trim())texts.push(c);else if(c.nodeType===1)collect(c);}})(h1);
+    var idx=0;
+    texts.forEach(function(txt){
+      var parts=txt.nodeValue.split(/(\s+)/),frag=d.createDocumentFragment();
+      parts.forEach(function(p){
+        if(!p)return;
+        if(/^\s+$/.test(p)){frag.appendChild(d.createTextNode(p));return;}
+        var sp=d.createElement('span');sp.className='w';sp.textContent=p;
+        sp.style.animationDelay=(0.15+idx*0.08).toFixed(2)+'s';idx++;
+        frag.appendChild(sp);
+      });
+      txt.parentNode.replaceChild(frag,txt);
+    });
+    if(idx)h1.classList.add('split');
+    setTimeout(function(){h1.classList.add('split-done');},2600);
+  }
+  /* плавное появление первого экрана */
+  if(!reduced){
+    ['.panel--hero .eyebrow','.panel--hero .sub','.panel--hero .btn-row','.panel--hero .scroll-cue'].forEach(function(sel,i){
+      all(sel).forEach(function(el){
+        el.style.opacity='0';el.style.transform='translateY(24px)';
+        el.style.transition='opacity 1s cubic-bezier(.22,.61,.36,1) '+(0.5+i*0.16)+'s,transform 1s cubic-bezier(.22,.61,.36,1) '+(0.5+i*0.16)+'s';
+        setTimeout(function(){el.style.opacity='1';el.style.transform='none';},60);
+      });
+    });
+  }
+
+  /* 2. Появление блоков по скроллу (у .reveal уже своё — его не трогаем) */
+  var RV='.c-line,.features li,.gold-divider,.section-note,.swipe-hint,.lb-bar,.eyebrow,.sub,.btn-row,.scroll-cue,.rev-text,.svc p,.step p,.guar p,.city p,.stat .lbl,footer .flogo,footer .social-row,footer p,.cookie-bar';
+  var rvEls=all(RV).filter(function(el){return !el.classList.contains('reveal')&&!el.closest('#heroTitle');});
+  if(reduced||!('IntersectionObserver' in window)){rvEls.forEach(function(el){el.classList.add('rv','in')});}
+  else{
+    rvEls.forEach(function(el,i){el.classList.add('rv');el.style.transitionDelay=((i%6)*70)+'ms';});
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+    rvEls.forEach(function(el){io.observe(el)});
+  }
+  /* ступенчатая задержка карточек в сетках */
+  all('.svc-grid,.steps,.guar-grid,.city-grid,.stats,.features').forEach(function(grid){
+    all(':scope > *',grid).forEach(function(el,i){ if(!el.style.transitionDelay) el.style.transitionDelay=(Math.min(i,6)*80)+'ms'; });
+  });
+
+  /* 3. Волна от клика на всех кнопках и ссылках */
+  d.addEventListener('click',function(e){
+    if(reduced)return;
+    var t=e.target.closest('.btn,.c-action,.soc,.car-dot,.car-nav,.lb-nav,.lb-close,.menu a,.svc,.step,.guar,.city,.rev-card,.stat,.c-line');
+    if(!t||t.tagName==='A'&&t.getAttribute('href')&&t.getAttribute('href').length<1)return;
+    var r=t.getBoundingClientRect(),size=Math.max(r.width,r.height);
+    if(!size)return;
+    var sp=d.createElement('span');sp.className='ripple-el';
+    sp.style.width=sp.style.height=size+'px';
+    sp.style.left=(e.clientX-r.left-size/2)+'px';
+    sp.style.top=(e.clientY-r.top-size/2)+'px';
+    if(getComputedStyle(t).position==='static')t.style.position='relative';
+    t.appendChild(sp);
+    setTimeout(function(){if(sp.parentNode)sp.parentNode.removeChild(sp);},840);
+  },{passive:true});
+
+  /* 4. Золотые частицы */
+  if(!reduced){
+    var box=d.createElement('div');box.id='goldParticles';box.setAttribute('aria-hidden','true');d.body.appendChild(box);
+    var n=innerWidth<700?12:26;
+    for(var i=0;i<n;i++){
+      var sp2=d.createElement('span'),sz=(3+Math.random()*5);
+      sp2.style.width=sp2.style.height=sz.toFixed(1)+'px';
+      sp2.style.left=(Math.random()*100).toFixed(2)+'%';
+      sp2.style.animationDuration=(15+Math.random()*20).toFixed(1)+'s';
+      sp2.style.animationDelay=(-Math.random()*22).toFixed(1)+'s';
+      sp2.style.opacity=(0.35+Math.random()*0.55).toFixed(2);
+      box.appendChild(sp2);
+    }
+  }
+
+  /* 5. Кнопка «наверх» */
+  var top=d.createElement('button');top.id='toTop';top.type='button';top.setAttribute('aria-label','Наверх');
+  top.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
+  d.body.appendChild(top);
+  top.addEventListener('click',function(){window.scrollTo({top:0,behavior:reduced?'auto':'smooth'});});
+  var tTick=false;
+  window.addEventListener('scroll',function(){
+    if(tTick)return;tTick=true;
+    requestAnimationFrame(function(){top.classList.toggle('show',window.scrollY>700);tTick=false;});
+  },{passive:true});
+
+  /* 6. Лёгкий наклон карточек под курсором + магнитные кнопки */
+  if(fine&&!reduced){
+    all('.svc,.step,.guar,.city,.rev-card,.about-card,.call-block,.stat').forEach(function(card){
+      card.addEventListener('mouseenter',function(){card.style.transitionDuration='.18s';});
+      card.addEventListener('mousemove',function(e){
+        var r=card.getBoundingClientRect();
+        var px=(e.clientX-r.left)/r.width-.5,py=(e.clientY-r.top)/r.height-.5;
+        card.style.transform='perspective(900px) translateY(-10px) rotateX('+(-py*4.5).toFixed(2)+'deg) rotateY('+(px*5.5).toFixed(2)+'deg)';
+      });
+      card.addEventListener('mouseleave',function(){card.style.transform='';card.style.transitionDuration='';});
+    });
+    all('.btn-solid,.c-action.c-call').forEach(function(btn){
+      btn.addEventListener('mousemove',function(e){
+        var r=btn.getBoundingClientRect();
+        var dx=(e.clientX-r.left-r.width/2)/r.width,dy=(e.clientY-r.top-r.height/2)/r.height;
+        btn.style.transform='translate('+(dx*6).toFixed(1)+'px,'+(dy*6-3).toFixed(1)+'px) scale(1.02)';
+      });
+      btn.addEventListener('mouseleave',function(){btn.style.transform='';});
+    });
+    /* орбы реагируют на курсор */
+    var orbs=all('.orb');
+    if(orbs.length){
+      var ox=0,oy=0,ox2=0,oy2=0;
+      window.addEventListener('mousemove',function(e){ox=(e.clientX/innerWidth-.5);oy=(e.clientY/innerHeight-.5);},{passive:true});
+      (function loop(){
+        ox2+=(ox-ox2)*.05;oy2+=(oy-oy2)*.05;
+        orbs.forEach(function(o,i){o.style.marginLeft=(ox2*(18+i*12)).toFixed(1)+'px';o.style.marginTop=(oy2*(14+i*10)).toFixed(1)+'px';});
+        requestAnimationFrame(loop);
+      })();
+    }
+  }
+})();
+</script>
 {{{code.body}}}
 </body>
 </html>
@@ -1536,6 +1761,7 @@ def _normalize_context(data):
     fix_icons((ctx.get("footer") or {}).get("socials"))
     ctx["year"] = str(date.today().year)
     ctx["domain"] = _domain(ctx)
+    ctx["favicon"] = favicon_source(ctx)
     return ctx
 
 
@@ -1629,26 +1855,67 @@ def _save_to_supabase(data):
     return False
 
 
-_bucket_state = {"checked": False, "ok": False}
+BACKUP_BUCKET = os.environ.get("SUPABASE_BACKUP_BUCKET", "site-backups")
+_bucket_state = {"checked": {}, "ok": {}}
 _bucket_lock = threading.Lock()
 
 
-def _bucket_ensure():
+def _bucket_ensure(name=None, public=True):
+    name = name or BUCKET
     with _bucket_lock:
-        if _bucket_state["checked"]:
-            return _bucket_state["ok"]
-        _bucket_state["checked"] = True
+        if _bucket_state["checked"].get(name):
+            return _bucket_state["ok"].get(name, False)
+        _bucket_state["checked"][name] = True
         if not (SUPABASE_URL and SUPABASE_SERVICE):
             return False
         base = SUPABASE_URL + "/storage/v1/bucket"
-        st, js, body = _http("GET", base + "/" + BUCKET, headers=_sb_headers())
+        st, js, body = _http("GET", base + "/" + name, headers=_sb_headers())
         if st == 200:
-            _bucket_state["ok"] = True
+            _bucket_state["ok"][name] = True
             return True
-        st, js, body = _http("POST", base, payload={"id": BUCKET, "name": BUCKET, "public": True}, headers=_sb_headers())
-        _bucket_state["ok"] = st in (200, 201)
-        print("[storage] создать бакет {}: HTTP {} {}".format(BUCKET, st, (body or b"")[:200]), flush=True)
-        return _bucket_state["ok"]
+        st, js, body = _http("POST", base, payload={"id": name, "name": name, "public": bool(public)},
+                             headers=_sb_headers())
+        _bucket_state["ok"][name] = st in (200, 201)
+        print("[storage] создать бакет {}: HTTP {} {}".format(name, st, (body or b"")[:200]), flush=True)
+        return _bucket_state["ok"][name]
+
+
+def _storage_put(bucket, name, blob, mime="application/json", upsert=True):
+    if not _bucket_ensure(bucket, public=False):
+        return None
+    url = "{}/storage/v1/object/{}/{}".format(SUPABASE_URL, bucket, name)
+    headers = _sb_headers()
+    headers.update({"Content-Type": mime, "x-upsert": "true" if upsert else "false"})
+    st, js, body = _http("POST", url, headers=headers, raw_body=blob, timeout=45)
+    if 200 <= st < 300:
+        return name
+    print("[storage] put {}: HTTP {} {}".format(name, st, (body or b"")[:200]), flush=True)
+    return None
+
+
+def _storage_get(bucket, name):
+    url = "{}/storage/v1/object/{}/{}".format(SUPABASE_URL, bucket, name)
+    st, js, body = _http("GET", url, headers=_sb_headers(), timeout=30)
+    return body if st == 200 else None
+
+
+def _storage_list_bucket(bucket, limit=200):
+    if not _bucket_ensure(bucket, public=False):
+        return []
+    url = "{}/storage/v1/object/list/{}".format(SUPABASE_URL, bucket)
+    payload = {"prefix": "", "limit": limit, "offset": 0, "sortBy": {"column": "name", "order": "desc"}}
+    st, js, body = _http("POST", url, payload=payload, headers=_sb_headers(), timeout=20)
+    if st == 200 and isinstance(js, list):
+        return [it for it in js if isinstance(it, dict) and it.get("id") and it.get("name")]
+    return []
+
+
+def _storage_delete(bucket, names):
+    if not names:
+        return False
+    url = "{}/storage/v1/object/{}".format(SUPABASE_URL, bucket)
+    st, js, body = _http("DELETE", url, payload={"prefixes": list(names)}, headers=_sb_headers(), timeout=20)
+    return 200 <= st < 300
 
 
 def _storage_public_url(name):
@@ -1943,6 +2210,68 @@ def save_data(data):
     return ok
 
 
+def _meta_of(data):
+    m = data.get("_meta") if isinstance(data, dict) else None
+    if not isinstance(m, dict):
+        m = {}
+    try:
+        rev = int(m.get("rev") or 0)
+    except Exception:
+        rev = 0
+    return {"rev": rev, "at": str(m.get("at") or ""), "by": str(m.get("by") or "")}
+
+
+def _backup_save(data, rev, keep=40):
+    """Копия текущего содержимого в приватный бакет перед перезаписью."""
+    try:
+        name = "rev-{:05d}-{}.json".format(int(rev), time.strftime("%Y-%m-%d_%H-%M-%S"))
+        blob = json.dumps(data, ensure_ascii=False, indent=1).encode("utf-8")
+        saved = _storage_put(BACKUP_BUCKET, name, blob, "application/json")
+        items = _storage_list_bucket(BACKUP_BUCKET, 200)
+        if len(items) > keep:
+            old = [it["name"] for it in items[keep:]]
+            if old:
+                _storage_delete(BACKUP_BUCKET, old)
+        return saved
+    except Exception as e:
+        print("[backup] {}".format(e), flush=True)
+        return None
+
+
+def save_versioned(data, client_rev=None, force=False, who=""):
+    """Сохранение с защитой от перезаписи чужого снимка (другая вкладка/устройство)."""
+    global _data_cache, _cache_ts
+    current = load_fresh()
+    cur_rev = _meta_of(current)["rev"]
+    try:
+        client_rev = cur_rev if client_rev is None else int(client_rev)
+    except Exception:
+        client_rev = cur_rev
+    if not force and client_rev != cur_rev:
+        return {"ok": False, "conflict": True, "server_rev": cur_rev, "client_rev": client_rev,
+                "server_at": _meta_of(current)["at"],
+                "message": "База уже обновлена (rev {}), у вас снимок rev {}.".format(cur_rev, client_rev)}
+    backup = _backup_save(current, cur_rev)
+    new = _json_clone(data)
+    new.pop("_meta", None)
+    new["_meta"] = {"rev": cur_rev + 1, "at": time.strftime("%Y-%m-%dT%H:%M:%S"), "by": who[:60]}
+    ok = _save_to_supabase(new)
+    _db_state["write"] = ok
+    if not ok:
+        return {"ok": False, "error": "запись в Supabase не прошла (проверьте SUPABASE_SERVICE_KEY на хостинге)"}
+    verified = False
+    check, ok_read = _fetch_from_supabase(timeout=10)
+    if ok_read and isinstance(check, dict):
+        stored = _merge_deep(DEFAULT_DATA, _migrate(check))
+        verified = (_meta_of(check)["rev"] == cur_rev + 1)
+    else:
+        stored = new
+    with _data_lock:
+        _data_cache = stored
+        _cache_ts = time.time()
+    return {"ok": True, "rev": cur_rev + 1, "verified": bool(verified), "backup": backup}
+
+
 # ============================================================
 #  ПРОКСИ VK-КАРТИНОК
 # ============================================================
@@ -2107,8 +2436,12 @@ def build_manifest(data):
         "theme_color": design.get("bg", "#0e0c09"),
         "lang": "ru-RU",
         "icons": [
+            {"src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"},
             {"src": "/favicon.ico", "sizes": "16x16 32x32 48x48 64x64", "type": "image/x-icon", "purpose": "any"},
+            {"src": "/favicon-16x16.png", "sizes": "16x16", "type": "image/png", "purpose": "any"},
+            {"src": "/favicon-32x32.png", "sizes": "32x32", "type": "image/png", "purpose": "any"},
             {"src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any"},
+            {"src": "/favicon-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
         ],
     }, ensure_ascii=False)
 
@@ -2178,7 +2511,7 @@ def build_404(data):
 # ============================================================
 #  FAVICON
 # ============================================================
-_fc = {"data": None, "ts": 0.0}
+_fc = {"url": "", "data": None, "ts": 0.0}
 _ic = {"ico": None, "png16": None, "png32": None, "png180": None, "png192": None}
 _fc_lock = threading.Lock()
 
@@ -2209,18 +2542,49 @@ def _make_icons(data):
         print("[favicon] {}".format(e), flush=True)
 
 
-def get_favicon():
+def favicon_source(data=None):
+    """Откуда брать иконку: seo.favicon_url -> brand.logo_url -> FAVICON_URL."""
+    d = data if isinstance(data, dict) else None
+    if d is None:
+        try:
+            d = load_data()
+        except Exception:
+            d = None
+    urls = []
+    if isinstance(d, dict):
+        urls.append(str((d.get("seo") or {}).get("favicon_url") or "").strip())
+        urls.append(str((d.get("brand") or {}).get("logo_url") or "").strip())
+    urls.append(FAVICON_URL)
+    for u in urls:
+        if u:
+            return u
+    return FAVICON_URL
+
+
+def get_favicon(url=None):
+    """Скачивает аватарку и держит её в памяти; при смене URL обновляет."""
+    url = url or favicon_source()
     now = time.time()
     with _fc_lock:
-        if _fc["data"] is not None and now - _fc["ts"] < 3600:
+        if _fc["data"] is not None and _fc["url"] == url and now - _fc["ts"] < 3600:
             return _fc["data"]
-    data, _ct = _fetch_image(FAVICON_URL)
+    data, _ct = _fetch_image(url)
     if data:
         with _fc_lock:
+            _fc["url"] = url
             _fc["data"] = data
             _fc["ts"] = now
         _make_icons(data)
     return data
+
+
+def favicon_svg(url=None):
+    """SVG-иконка поверх той же аватарки (для современных браузеров)."""
+    url = url or favicon_source()
+    return ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">'
+            '<defs><clipPath id="r"><rect width="64" height="64" rx="14"/></clipPath></defs>'
+            '<image href="' + _escape(url) + '" width="64" height="64" '
+            'preserveAspectRatio="xMidYMid slice" clip-path="url(#r)"/></svg>')
 
 
 # ============================================================
@@ -2244,6 +2608,7 @@ ADMIN_SCHEMA = [
          {"path": "seo.og_title", "label": "OG title", "type": "text"},
          {"path": "seo.og_description", "label": "OG description", "type": "textarea", "rows": 2},
          {"path": "seo.og_image", "label": "OG картинка (превью в соцсетях)", "type": "image"},
+         {"path": "seo.favicon_url", "label": "Favicon (иконка вкладки и телефона)", "type": "image", "hint": "Пусто = берётся логотип."},
          {"path": "seo.geo_region", "label": "Регион (geo.region)", "type": "text"},
          {"path": "seo.geo_placename", "label": "Город (geo.placename)", "type": "text"},
          {"path": "seo.geo_lat", "label": "Широта", "type": "text"},
@@ -2540,6 +2905,13 @@ ADMIN_SCHEMA = [
              {"act": "reload", "label": "Отменить изменения", "cls": "btn-red"},
          ]},
          {"type": "info", "text": "<div id=\"toolsOut\" class=\"info\">Нажмите «Проверить связи», чтобы увидеть состояние базы, хранилища и AI.</div>"},
+         {"type": "info", "text": "<b>Как сохраняется контент</b>\nТексты и фото лежат в Supabase, а не в файле mebel.py — поэтому деплой на хостинге их не сбрасывает.\nКаждое сохранение делает резервную копию (вкладка «История версий»).\nЕсли база изменилась из другого окна или с другого устройства — админка предупредит и не даст молча перезаписать."},
+     ]},
+    {"id": "history", "group": "Инструменты", "title": "История версий",
+     "hint": "Резервные копии делаются автоматически при каждом сохранении (последние 40).",
+     "fields": [
+         {"type": "buttons", "buttons": [{"act": "history", "label": "Обновить список", "cls": "btn-gold"}]},
+         {"type": "info", "text": "<div id=\"histOut\">Нажмите «Обновить список».</div>"},
      ]},
 ]
 
@@ -2645,7 +3017,7 @@ p.hint{color:#b9ad9a;font-size:13px;margin-bottom:18px}
 <div class="modal" id="modal"><div class="modal-card"><div class="modal-head"><strong>Медиатека (Supabase Storage)</strong><button class="btn mini" id="mClose">Закрыть</button></div><div class="media-grid" id="mediaGrid"></div></div></div>
 <input type="file" id="importFile" accept="application/json,.json" hidden>
 <script>
-var SCHEMA=__SCHEMA__, DATA=null, TAB=(__SCHEMA__[0]||{}).id, dirty=false, mediaTarget=null;
+var SCHEMA=__SCHEMA__, DATA=null, TAB=(__SCHEMA__[0]||{}).id, dirty=false, mediaTarget=null, REV=0, SERVER_AT='';
 
 function q(s){return document.querySelector(s)}
 function qa(s){return Array.prototype.slice.call(document.querySelectorAll(s))}
@@ -2804,7 +3176,8 @@ function showStatus(){
       +row(j.ai.yandex||j.ai.gigachat,'AI: '+(j.ai.yandex?'YandexGPT готов':'YandexGPT нет ключа')+', '+(j.ai.gigachat?'GigaChat готов':'GigaChat нет ключа'))
       +'\n<b>Контент</b>\n'
       +'<div>Размер данных: '+Math.round((j.size||0)/1024)+' КБ · работ: '+(j.counts.works||0)+' · отзывов: '+(j.counts.reviews||0)+' · услуг: '+(j.counts.services||0)+'</div>'
-      +'<div>Домен: '+esc(j.domain)+' · адресов в sitemap: '+j.sitemap_urls+' · картинок в sitemap: '+j.sitemap_images+'</div>');
+      +'<div>Домен: '+esc(j.domain)+' · адресов в sitemap: '+j.sitemap_urls+' · картинок в sitemap: '+j.sitemap_images+'</div>'
+      +'\n<b>Версии</b>\n<div>Версия в базе: rev '+(j.rev||0)+(j.at?(' · '+esc(j.at)):'')+' · резервных копий: '+(j.backups||0)+'</div>');
   }).catch(function(e){out('Ошибка проверки: '+esc(e.message))});
 }
 
@@ -2830,28 +3203,86 @@ function doAction(act){
   if(act==='export'){location.href='/admin/api/export';return}
   if(act==='import'){q('#importFile').click();return}
   if(act==='status'){showStatus();return}
+  if(act==='history'){loadBackups();return}
   if(act==='ai-seo'){aiSeo();return}
 }
 
-function save(){
+function save(force){
   if(!DATA){toast('Данные ещё не загрузились',true);return}
-  setStatus('Сохранение...','saving');
-  fetch('/admin/api/save',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(DATA)})
+  setStatus(force?'Перезапись...':'Сохранение...','saving');
+  fetch('/admin/api/save',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({data:DATA,rev:REV,force:!!force})})
     .then(function(r){return r.json()})
     .then(function(j){
-      if(j&&j.ok){setStatus('Сохранено','ok');setDirty(false);toast('Сохранено в Supabase')}
-      else{setStatus('Не сохранилось','bad');toast('Ошибка записи! Проверьте SUPABASE_SERVICE_KEY',true)}
+      if(j&&j.ok){
+        REV=j.rev||REV+1; setDirty(false);
+        setStatus('Сохранено · rev '+REV,'ok');
+        toast(j.verified?('Сохранено и проверено в базе (rev '+REV+')'):('Сохранено (rev '+REV+')'));
+      }else if(j&&j.conflict){
+        setStatus('Конфликт версий','bad');
+        var msg='В базе уже версия rev '+j.server_rev+(j.server_at?(' от '+j.server_at):'')+', а у вас открыт снимок rev '+j.client_rev+'.\n\n'
+          +'Такое бывает, если админка открыта в двух вкладках/окнах или на двух устройствах.\n\n'
+          +'OK — перезаписать базу тем, что сейчас в этой вкладке.\n'
+          +'Отмена — загрузить свежие данные из базы (несохранённые правки этой вкладки пропадут).';
+        if(confirm(msg)){save(true);}else{load();}
+      }else{
+        setStatus('Не сохранилось','bad');
+        toast('Ошибка записи: '+((j&&(j.error||j.message))||'проверьте SUPABASE_SERVICE_KEY на хостинге'),true);
+      }
     }).catch(function(e){setStatus('Ошибка','bad');toast('Ошибка: '+e.message,true)});
 }
 
 function load(){
   api('/admin/api/data').then(function(j){
     if(!j||typeof j!=='object'){throw new Error('пустой ответ')}
-    DATA=j;setDirty(false);render();setStatus('Готово','ok');
+    DATA=j; REV=(j._meta&&j._meta.rev)||0; SERVER_AT=(j._meta&&j._meta.at)||'';
+    setDirty(false);render();setStatus('Готово · rev '+REV,'ok');
   }).catch(function(e){
     setStatus('Ошибка загрузки','bad');
     q('#main').innerHTML='<h2>Не удалось загрузить данные</h2><p class="hint">'+esc(e.message)+'</p><p class="hint">Проверьте SUPABASE_URL и SUPABASE_SERVICE_KEY на хостинге, затем обновите страницу.</p>';
   });
+}
+
+/* тихо подтягиваем свежие данные, когда возвращаемся в окно */
+function checkRemote(){
+  if(dirty)return;
+  api('/admin/api/data').then(function(j){
+    var r=(j&&j._meta&&j._meta.rev)||0;
+    if(r!==REV){
+      DATA=j;REV=r;SERVER_AT=(j._meta&&j._meta.at)||'';render();
+      setStatus('Обновлено из базы · rev '+REV,'ok');
+      toast('Данные обновлены из базы (rev '+REV+')');
+    }
+  }).catch(function(){});
+}
+window.addEventListener('focus',checkRemote);
+document.addEventListener('visibilitychange',function(){if(!document.hidden)checkRemote();});
+
+/* история версий */
+function out2(html){var el=q('#histOut'); if(el)el.innerHTML=html; else toast('Откройте вкладку «История версий»')}
+function loadBackups(){
+  out2('Загружаю список...');
+  api('/admin/api/history').then(function(j){
+    if(!j||!j.items||!j.items.length){out2('Резервных копий пока нет — они появятся после первого сохранения.');return}
+    var h='<b>Резервные копии: '+j.items.length+'</b>\n';
+    j.items.forEach(function(it){
+      var dt=String(it.at||'').replace('T',' ').slice(0,19);
+      var kb=it.size?(' · '+Math.round(it.size/1024)+' КБ'):'';
+      h+='<div style="display:flex;justify-content:space-between;gap:10px;align-items:center;border-bottom:1px solid rgba(236,207,160,.12);padding:6px 0">'
+        +'<span>'+esc(it.name)+'<span style="color:#6f6659"> · '+esc(dt)+kb+'</span></span>'
+        +'<span><button class="btn mini" data-restore="'+esc(it.name)+'">Подставить</button></span></div>';
+    });
+    out2(h+'\n«Подставить» загрузит копию в редактор — затем нажмите «Сохранить».');
+    qa('[data-restore]').forEach(function(b){b.addEventListener('click',function(){restore(b.dataset.restore)})});
+  }).catch(function(e){out2('Ошибка: '+esc(e.message))});
+}
+function restore(name){
+  api('/admin/api/history?name='+encodeURIComponent(name)).then(function(j){
+    if(!j||typeof j!=='object'){toast('Копия пустая',true);return}
+    if(!confirm('Подставить копию '+name+' в редактор? Несохранённые правки пропадут.'))return;
+    DATA=j;REV=(j._meta&&j._meta.rev)||0;setDirty(true);render();
+    toast('Копия загружена — нажмите «Сохранить»');
+  }).catch(function(e){toast('Ошибка: '+e.message,true)});
 }
 
 document.addEventListener('click',function(e){
@@ -3063,6 +3494,29 @@ class Handler(BaseHTTPRequestHandler):
                 return
             self._json({"items": _storage_list(), "bucket": BUCKET})
             return
+        if path == "/admin/api/history":
+            if not self._admin():
+                self._json({"error": "no auth"}, 401)
+                return
+            qs = parse_qs(self.path.split("?", 1)[1] if "?" in self.path else "")
+            name = (qs.get("name") or [""])[0]
+            if name:
+                if not re.match(r"^[A-Za-z0-9._-]+$", name) or ".." in name:
+                    self._json({"error": "плохое имя"}, 400)
+                    return
+                blob = _storage_get(BACKUP_BUCKET, name)
+                if blob is None:
+                    self._json({"error": "копия не найдена"}, 404)
+                    return
+                self._send(200, blob, "application/json; charset=utf-8", "no-cache")
+                return
+            items = _storage_list_bucket(BACKUP_BUCKET, 200)
+            out = []
+            for it in items:
+                meta = it.get("metadata") if isinstance(it.get("metadata"), dict) else {}
+                out.append({"name": it.get("name"), "size": meta.get("size"), "at": it.get("created_at")})
+            self._json({"items": out, "bucket": BACKUP_BUCKET})
+            return
         if path == "/admin/api/status":
             if not self._admin():
                 self._json({"error": "no auth"}, 401)
@@ -3088,7 +3542,8 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/manifest.webmanifest":
             self._send(200, build_manifest(load_data()), "application/manifest+json; charset=utf-8", "public, max-age=86400")
             return
-        if path in ("/favicon.ico", "/favicon-16x16.png", "/favicon-32x32.png", "/apple-touch-icon.png", "/favicon-192x192.png"):
+        if path in ("/favicon.ico", "/favicon.svg", "/favicon-16x16.png", "/favicon-32x32.png",
+                    "/apple-touch-icon.png", "/favicon-192x192.png"):
             self._route_favicon(path)
             return
 
@@ -3123,14 +3578,18 @@ class Handler(BaseHTTPRequestHandler):
                 self._json({"error": "no auth"}, 401)
                 return
             try:
-                obj = json.loads(self._body().decode("utf-8"))
+                body = json.loads(self._body().decode("utf-8") or "{}")
             except Exception:
                 self._json({"error": "bad json"}, 400)
                 return
-            if not isinstance(obj, dict):
+            if not isinstance(body, dict):
                 self._json({"error": "not an object"}, 400)
                 return
-            self._json({"ok": bool(save_data(obj))})
+            if isinstance(body.get("data"), dict):
+                payload, client_rev, force = body["data"], body.get("rev"), bool(body.get("force"))
+            else:                       # старый формат: сразу объект данных
+                payload, client_rev, force = body, None, True
+            self._json(save_versioned(payload, client_rev, force, self._ip()))
             return
 
         if path == "/admin/api/upload":
@@ -3215,6 +3674,9 @@ class Handler(BaseHTTPRequestHandler):
         self._send(200, blob, ct, "public, max-age=604800", gzip_ok=False)
 
     def _route_favicon(self, path):
+        if path == "/favicon.svg":
+            self._send(200, favicon_svg(), "image/svg+xml", "public, max-age=86400", gzip_ok=False)
+            return
         if path == "/favicon.ico":
             d = get_favicon()
             if _ic["ico"]:
@@ -3258,7 +3720,13 @@ class Handler(BaseHTTPRequestHandler):
             items = (data.get(key) or {}).get("items")
             counts[key] = len(items) if isinstance(items, list) else 0
         sm = build_sitemap(data)
+        meta = _meta_of(data)
+        try:
+            backups = len(_storage_list_bucket(BACKUP_BUCKET, 200))
+        except Exception:
+            backups = 0
         return {
+            "rev": meta["rev"], "at": meta["at"], "backups": backups,
             "db_read": bool(_db_state.get("read")),
             "db_write": _db_state.get("write"),
             "storage": _bucket_ensure(),
