@@ -384,7 +384,6 @@ def render(tpl, ctx):
             else:
                 out.append(_apply_filter(filt, val))
     return "".join(out)
-
 PAGE_TEMPLATE = r'''<!DOCTYPE html>
 <html lang="ru" class="js">
 <head>
@@ -1370,8 +1369,7 @@ def render_site():
         print("[render] {}".format(e), flush=True)
         html = _page_template()
     return html
-
-def build_robots(data):
+  def build_robots(data):
     dom, host = _domain(data), _host(data)
     s = data.get("seo") or {}
     custom = (s.get("robots") or "").strip()
