@@ -434,10 +434,13 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
 # <<<DEFAULT_DATA_END>>>
 
 PAGE = r"""<!DOCTYPE html>
-<html lang="ru" class="js" data-build="2026-10-06-v5">
+<html lang="ru" class="js" data-build="2026-10-06-v6">
 <head>
 <meta charset="UTF-8">
-<!-- Кухни Островский · сборка 2026-10-06-v5: анимации, аватарка и favicon из Supabase, защита сохранения (rev), история версий -->
+<script>/* шим: если браузер не умеет IntersectionObserver, показываем блоки сразу (без «мёртвых» скрытых секций) */
+window.IntersectionObserver=window.IntersectionObserver||function(cb){return{observe:function(el){try{cb([{isIntersecting:true,target:el}],this);}catch(e){}},unobserve:function(){},disconnect:function(){}};};
+</script>
+<!-- Кухни Островский · сборка 2026-10-06-v6: анимации, аватарка и favicon из Supabase, защита сохранения (rev), история версий -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{seo.title}}</title>
 <meta name="description" content="{{seo.description}}">
@@ -538,6 +541,8 @@ PAGE = r"""<!DOCTYPE html>
 }
 ]
 </script>
+{{#if img_origin}}<link rel="preconnect" href="{{img_origin}}" crossorigin>
+<link rel="dns-prefetch" href="{{img_origin}}">{{/if}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{{design.fonts_url}}" rel="stylesheet">
@@ -897,7 +902,7 @@ header.solid{background:{{design.bg}}eb}
 .btn-line{overflow:hidden}
 .btn-line::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(236,207,160,.18),transparent 55%);opacity:0;transition:opacity .45s}
 .btn-line:hover::before{opacity:1}
-.c-action,.soc,.car-dot,.car-nav,.lb-nav,.lb-close,.menu a,.svc,.step,.guar,.city,.rev-card,.stat,.c-line,.btn{position:relative;overflow:hidden}
+.c-action,.soc,.car-dot,.lb-nav,.menu a,.svc,.step,.guar,.city,.rev-card,.stat,.c-line,.btn{position:relative;overflow:hidden}
 .ripple-el{position:absolute;border-radius:50%;pointer-events:none;z-index:4;background:radial-gradient(circle,rgba(255,255,255,.55),rgba(255,255,255,0) 70%);transform:scale(0);animation:rippleGo .8s cubic-bezier(.2,.6,.3,1) forwards}
 .btn-solid>.ripple-el,.c-action.c-call>.ripple-el,.soc>.ripple-el,.car-dot.active>.ripple-el{background:radial-gradient(circle,rgba(23,18,11,.38),rgba(23,18,11,0) 70%)}
 .c-action:hover{transform:translateY(-4px) scale(1.015)}
@@ -907,6 +912,7 @@ header.solid{background:{{design.bg}}eb}
 .car-nav:hover{transform:translateY(-50%) scale(1.12)}
 .lb-nav:hover{transform:scale(1.12)}
 .lb-close:hover{transform:rotate(90deg) scale(1.06)}
+.lb-close{overflow:hidden}
 .c-line:hover{transform:translateX(8px)}
 
 /* подчёркивание «прорастает» у ссылок */
@@ -1002,15 +1008,144 @@ img{transition:opacity 1s cubic-bezier(.16,1,.3,1),transform .95s cubic-bezier(.
 .rev-card:hover .rev-head{gap:18px}
 .step:hover .n,.stat:hover .num{transition:transform .8s cubic-bezier(.16,1,.3,1)}
 .svc:hover h3,.step:hover h3,.guar:hover h3,.city:hover .city-name{color:#fff}
-@media (prefers-reduced-motion: reduce){
- #goldParticles{display:none}.js .rv{opacity:1;transform:none;filter:none}
- #heroTitle.split .w,.cookie-bar.show,.lightbox.open .lb-stage img,.menu.open li{animation:none!important;opacity:1!important}
- .svc svg,.guar .ico,.c-ico,.step .n,.stat .num,.city .city-name,.call-block .cb-num,.about-card .avatar,.gold-divider b,.gold-divider i,.btn-solid::before,.cookie-bar .btn,.empty,.swipe-hint,.scroll-cue{animation:none!important}
+/* ====== стрелки карусели по бокам ====== */
+.carousel{position:relative}
+.car-nav{position:absolute;top:50%;left:-18px;transform:translateY(-50%);overflow:hidden;width:54px;height:54px;border-radius:50%;background:rgba(18,15,11,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(236,207,160,.3);color:var(--gold-soft);font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;box-shadow:0 16px 36px rgba(0,0,0,.5);z-index:6;transition:background .45s cubic-bezier(.16,1,.3,1),color .45s,border-color .45s,transform .45s cubic-bezier(.16,1,.3,1),opacity .45s}
+.car-next{left:auto;right:-18px}
+.car-nav:hover{background:var(--gold);border-color:var(--gold);color:#17120b;transform:translateY(-50%) scale(1.07)}
+.car-nav:active{transform:translateY(-50%) scale(.94)}
+.car-nav.is-off{opacity:.28;pointer-events:none}
+.car-track{scroll-padding:0 8px}
+@media(max-width:1200px){.car-nav{left:-8px}.car-next{left:auto;right:-8px}}
+@media(max-width:860px){.car-nav{display:flex;left:0;width:44px;height:44px;font-size:17px}.car-next{left:auto;right:0}.car-track{padding-left:6px;padding-right:6px}}
+@media(max-width:520px){.car-nav{width:38px;height:38px;font-size:15px;background:rgba(18,15,11,.82)}.rev-track,.car-track{padding-left:2px;padding-right:2px}}
+
+/* ====== сдержанные, «не-иишные» кнопки ====== */
+.btn{border-radius:11px;letter-spacing:1px;font-size:12.5px;font-weight:700;padding:15px 28px;min-height:48px;text-transform:uppercase;animation:none;transition:transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s,background .5s,border-color .5s,color .5s}
+.btn-solid{background:linear-gradient(180deg,#e7d2a7 0%,#d4af6a 62%,#c09a53 100%);color:#1b1509;box-shadow:0 10px 26px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.34);animation:none}
+.btn-solid:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.42);filter:none}
+.btn-solid:active{transform:translateY(0);box-shadow:0 6px 16px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.3)}
+.btn-solid::before{display:none}
+.btn-line{border:1px solid rgba(236,207,160,.32);background:rgba(255,255,255,.025);color:#fff}
+.btn-line:hover{background:rgba(236,207,160,.1);border-color:rgba(236,207,160,.55);transform:translateY(-2px);box-shadow:0 12px 30px rgba(0,0,0,.34)}
+.btn::after{background:linear-gradient(120deg,transparent,rgba(255,255,255,.22),transparent)}
+.c-action{border-radius:11px;letter-spacing:.3px;font-weight:700}
+.c-action.c-call{background:linear-gradient(180deg,#e7d2a7,#d4af6a 62%,#c09a53);color:#1b1509;box-shadow:0 10px 26px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.3)}
+.c-action.c-call:hover{filter:none;transform:translateY(-2px);box-shadow:0 16px 34px rgba(0,0,0,.4)}
+.c-action.c-tg{background:rgba(64,169,242,.09);border:1px solid rgba(64,169,242,.3)}
+.c-action.c-tg:hover{background:rgba(64,169,242,.17);transform:translateY(-2px)}
+.c-action.c-max{background:rgba(177,88,252,.09);border:1px solid rgba(177,88,252,.3)}
+.c-action.c-max:hover{background:rgba(177,88,252,.17);transform:translateY(-2px)}
+.cta .btn-solid,.cookie-bar .btn{animation:none}
+.menu a.active{animation:none;color:var(--gold-soft)}
+.stat .num{animation:none;filter:drop-shadow(0 6px 18px rgba(212,175,106,.28))}
+.stat:hover .num{filter:drop-shadow(0 8px 24px rgba(236,207,160,.45))}
+.empty,.swipe-hint,.scroll-cue,.car-nav{animation:none}
+.brand-ava-w::before{animation:ringPulse 5s ease-in-out infinite}
+.rev-ava-w::after{animation:ringPulse 5.5s ease-in-out infinite}
+.soc{background:rgba(255,255,255,.03)}
+.soc:hover{background:var(--gold);color:#17120b;transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,0,0,.35)}
+.car-dot{background:rgba(255,255,255,.18)}
+.car-dot.active{background:var(--gold);box-shadow:none}
+.gold-divider i{animation:none;opacity:.5}
+
+/* ====== меньше «картона»: глубина вместо рамок ====== */
+.svc,.step,.guar,.city,.rev-card,.about-card,.call-block,.stat{border-color:rgba(255,255,255,.055);background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.018));box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 22px 48px -26px rgba(0,0,0,.75)}
+.svc:hover,.step:hover,.guar:hover,.city:hover,.rev-card:hover,.about-card:hover,.call-block:hover,.stat:hover{background:linear-gradient(180deg,rgba(255,255,255,.065),rgba(255,255,255,.025));box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 30px 62px -24px rgba(0,0,0,.8),0 0 42px rgba(212,175,106,.1)}
+.svc::before,.guar::before,.city::before,.step::before{background:linear-gradient(90deg,transparent,rgba(236,207,160,.55),transparent)}
+.sec-head p,.about-body p,.city p,.svc p,.step p,.guar p{color:#bdb2a0}
+h2.k,.sec-head h2,.about-body h2,.contact-info h2{text-shadow:0 4px 20px rgba(0,0,0,.5)}
+.panel .bg::after{background:linear-gradient(to right,rgba(10,8,6,.93) 18%,rgba(10,8,6,.62) 58%,rgba(10,8,6,.8))}
+
+/* ====== полная адаптация ====== */
+*{min-width:0}
+html,body{max-width:100%;overflow-x:hidden}
+img,svg,video,iframe{max-width:100%}
+.wrap{padding:0 clamp(14px,3.4vw,20px)}
+@media(min-width:1600px){.wrap{max-width:1260px}.menu{right:max(24px,calc((100vw - 1300px)/2))}}
+@media(max-width:1200px){.car-slide img{height:280px}}
+@media(max-width:1024px){
+ .about{gap:44px}.contact-grid{gap:40px}.panel{padding:126px 0}
+ .stats{gap:20px}.svc-grid,.steps{gap:18px}.guar-grid,.city-grid{gap:18px}
 }
+@media(max-width:900px){
+ .svc-grid{grid-template-columns:1fr 1fr}.guar-grid{grid-template-columns:1fr 1fr}
+ .city-grid{grid-template-columns:1fr 1fr}.car-slide{width:min(74vw,420px)}
+}
+@media(max-width:860px){
+ .about-card{padding:38px 26px}.call-block{padding:38px 24px}
+ .rev-card{width:88vw}.car-slide{width:80vw}
+ .panel{padding:112px 0}
+ .sec-head{margin-bottom:40px}
+ .menu.open li a{padding:12px 6px}
+}
+@media(max-width:640px){
+ .stats{grid-template-columns:1fr 1fr;gap:14px}.stat{padding:24px 12px}
+ .svc-grid,.steps,.guar-grid,.city-grid{grid-template-columns:1fr}
+ .features{grid-template-columns:1fr}
+ .panel{padding:96px 0 64px}
+ h1{font-size:clamp(28px,8.4vw,40px)}
+ .sub{font-size:15px;margin:16px 0 24px}
+ .btn{padding:14px 20px;font-size:12px}
+ .btn-row{gap:10px}
+ .car-slide{width:84vw}.car-slide img{height:230px}
+ .rev-card{width:90vw;padding:18px}.rev-text{font-size:13px}
+ .video-box{height:210px}
+ .consult .phone{font-size:clamp(24px,7.4vw,32px)}
+ .call-block .cb-num{font-size:clamp(20px,6.4vw,26px)}
+ .city{padding:30px 22px}.stat .num{font-size:42px}
+ .gold-divider i{width:42px}
+ .cookie-bar{flex-direction:column;align-items:stretch;gap:12px;bottom:calc(10px + env(safe-area-inset-bottom))}
+ .cookie-bar .btn{width:100%}
+ .lb-stage{height:calc(100vh - 132px)}.lb-stage img{max-width:96%;border-radius:16px}
+ .lb-bar{gap:14px}
+}
+@media(max-width:420px){
+ .wrap{padding:0 14px}
+ .logo .brand-txt .name{font-size:19px}.logo .brand-txt .sub{font-size:9px;letter-spacing:1.1px}
+ .brand-ava{width:40px;height:40px}
+ .stats{grid-template-columns:1fr 1fr;gap:12px}
+ .car-slide{width:88vw}.car-slide img{height:200px}
+ .rev-card{width:92vw;padding:15px}.rev-head{gap:10px}
+ .rev-ava-w{width:44px;height:44px}.rev-ava-txt{font-size:20px}
+ .video-box{height:180px}
+ .city .city-name{font-size:24px}
+ .step{padding:26px 20px}.svc{padding:28px 22px}.guar{padding:28px 20px}
+ .menu{padding:10px 18px calc(16px + env(safe-area-inset-bottom))}
+ .menu a{font-size:17px;padding:11px 6px}
+ .footer{padding:40px 16px 48px}
+}
+@media(max-width:340px){
+ .car-slide{width:90vw}.car-slide img{height:180px}
+ h1{font-size:26px}.btn{font-size:11px;letter-spacing:.6px}
+ .stat .num{font-size:36px}
+}
+@media(orientation:landscape) and (max-height:560px){
+ .panel{min-height:auto;padding:96px 0 56px}
+ .menu{max-height:88vh}
+ .lb-stage{height:calc(100vh - 96px)}
+}
+@media(hover:none){
+ .svc,.step,.guar,.city,.rev-card,.stat,.about-card,.call-block{transform:none!important}
+ .btn,.c-action,.soc,.car-dot,.car-nav,.lb-nav,.lb-close{min-height:44px}
+ .car-nav{display:flex}
+ .menu a{min-height:48px}
+}
+@media print{
+ .menu,header,.cookie-bar,.car-nav,#goldParticles,#cursorGlow,.grain,.orb{display:none!important}
+ body{background:#fff;color:#000}
+}
+/* Мягкий режим при «уменьшенном движении» в системе: анимации не выключаются полностью,
+   а становятся спокойными (только прозрачность + короткие переходы). */
 @media (prefers-reduced-motion: reduce){
- header,.brand-ava-w,.banner,.menu a.active,footer .flogo,.sec-head h2,.about-body h2,.contact-info h2,h2.k,.eyebrow,.kicker,.rev-stars,[data-watermark]::before,.car-slide.pop,.rev-card.pop,.cta .btn-solid,.cookie-bar .btn,body,.rev-ava-w::after{animation:none!important}
- .spark{display:none}.js .rv,.js .reveal,.img-fade{opacity:1!important;transform:none!important;filter:none!important}
- .car-nav,.rev-card .rev-head{animation:none!important}
+ #goldParticles{display:none}.spark{display:none}
+ *,*::before,*::after{animation:none!important;transition-duration:.4s!important}
+ body,.brand-ava-w,.rev-ava-w::after,footer .flogo,.sec-head h2,.about-body h2,.contact-info h2,h2.k,.eyebrow,.kicker,
+ .rev-stars,[data-watermark]::before,.car-slide.pop,.rev-card.pop,.gold-divider b,.gold-divider i,.svc svg,.guar .ico,
+ .c-ico,.step .n,.stat .num,.city .city-name,.call-block .cb-num,.about-card .avatar,.empty,.swipe-hint,.scroll-cue{animation:none!important;opacity:1!important;transform:none!important}
+ .js .rv,.js .reveal{opacity:0;transform:none!important;filter:none!important;transition:opacity .7s ease!important}
+ .js .rv.in,.js .reveal.in{opacity:1}
+ .js .car-slide img,.js .rev-photo img,.js .avatar img{opacity:1!important}
 }
 </style>
 <style id="customCss">{{{design.custom_css}}}</style>
@@ -1602,6 +1737,32 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
   });
   setTimeout(function(){all('img.img-fade').forEach(function(im){im.classList.remove('img-fade');im.classList.add('img-ready');});},4000);
 
+  /* 10. Стрелки карусели: показываем «неактивной» на краях */
+  all('.car-track').forEach(function(track){
+    var box=track.closest('.carousel');
+    if(!box)return;
+    var prev=box.querySelector('.car-nav.car-prev'),next=box.querySelector('.car-nav.car-next');
+    if(!prev||!next)return;
+    function upd(){
+      var max=track.scrollWidth-track.clientWidth-2;
+      prev.classList.toggle('is-off',track.scrollLeft<=2);
+      next.classList.toggle('is-off',track.scrollLeft>=max);
+    }
+    track.addEventListener('scroll',function(){requestAnimationFrame(upd);},{passive:true});
+    window.addEventListener('resize',upd);
+    setTimeout(upd,300);setTimeout(upd,1500);
+  });
+
+  /* 11. Страховка: если блок в поле зрения, но так и не показался — показываем */
+  function forceVisible(){
+    all('.rv:not(.in),.reveal:not(.in)').forEach(function(el){
+      var r=el.getBoundingClientRect();
+      if(r.top<window.innerHeight*0.95&&r.bottom>0){el.classList.add('in');}
+    });
+  }
+  setTimeout(forceVisible,2500);
+  window.addEventListener('load',function(){setTimeout(forceVisible,600);});
+
   /* 7. Искры от клика */
   d.addEventListener('click',function(e){
     if(reduced&&!FORCE)return;
@@ -1635,7 +1796,7 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
       io2.observe(track);
     });
   }
-  console.log('%cКухни Островский · сборка 2026-10-06-v5 · анимации включены'+(reduced?' (у вас в системе отключена анимация — принудительно: добавьте ?anim=1 к адресу)':''),'color:#d4af6a');
+  console.log('%cКухни Островский · сборка 2026-10-06-v6 · анимации включены'+(reduced?' (у вас в системе отключена анимация — принудительно: добавьте ?anim=1 к адресу)':''),'color:#d4af6a');
 })();
 </script>
 {{{code.body}}}
@@ -1914,6 +2075,15 @@ def _normalize_context(data):
         if isinstance(r, dict):
             nm = str(r.get("name") or "").strip()
             r["initial"] = (nm[:1] or "О").upper()
+    origin = ""
+    try:
+        u = str(((ctx.get("brand") or {}).get("logo_url")) or ((ctx.get("seo") or {}).get("favicon_url")) or "")
+        if u.startswith("http"):
+            pr = urllib.parse.urlparse(u)
+            origin = "{}://{}".format(pr.scheme, pr.netloc)
+    except Exception:
+        origin = ""
+    ctx["img_origin"] = origin
     ctx["year"] = str(date.today().year)
     ctx["domain"] = _domain(ctx)
     ctx["favicon"] = favicon_source(ctx)
@@ -2343,15 +2513,37 @@ def load_fresh():
             print("[load] из БД: {} разделов".format(len(raw)), flush=True)
         _data_cache = data
         _cache_ts = time.time()
+        _bump_data_sig()
     return data
 
 
+_refresh_lock = threading.Lock()
+_refreshing = [False]
+
+
+def _bg_refresh():
+    try:
+        load_fresh()
+    except Exception as e:
+        print("[load] фон-обновление: {}".format(e), flush=True)
+    finally:
+        _refreshing[0] = False
+
+
 def load_data():
+    """Отдаёт кэш МГНОВЕННО; если он устарел — обновляет в фоне (страница не ждёт Supabase)."""
     global _cache_ts
     with _data_lock:
-        if _data_cache is not None and time.time() - _cache_ts < CACHE_TTL:
-            return _data_cache
-    return load_fresh()
+        cached = _data_cache
+        fresh = cached is not None and (time.time() - _cache_ts < CACHE_TTL)
+    if cached is None:
+        return load_fresh()
+    if not fresh and not _refreshing[0]:
+        with _refresh_lock:
+            if not _refreshing[0]:
+                _refreshing[0] = True
+                threading.Thread(target=_bg_refresh, daemon=True).start()
+    return cached
 
 
 def save_data(data):
@@ -2424,6 +2616,7 @@ def save_versioned(data, client_rev=None, force=False, who=""):
     with _data_lock:
         _data_cache = stored
         _cache_ts = time.time()
+        _bump_data_sig()
     return {"ok": True, "rev": cur_rev + 1, "verified": bool(verified), "backup": backup}
 
 
@@ -2515,15 +2708,35 @@ def _page_template():
     return PAGE
 
 
+_render_cache = {"sig": None, "html": ""}
+_render_lock = threading.Lock()
+_data_sig = [0]
+
+
+def _bump_data_sig():
+    _data_sig[0] += 1
+
+
 def render_site():
+    """Готовый HTML кэшируется до смены данных — страница отдаётся мгновенно."""
     data = load_data()
+    with _page_lock:
+        mt = _page_cache.get("mtime")
+    sig = (_data_sig[0], mt, id(data))
+    with _render_lock:
+        if _render_cache["sig"] == sig and _render_cache["html"]:
+            return _render_cache["html"]
     ctx = _normalize_context(data)
     try:
         html = render(_page_template(), ctx)
     except Exception as e:
         print("[render] ОШИБКА: {}".format(e), flush=True)
         html = _page_template()
-    return _proxify_urls(html)
+    html = _proxify_urls(html)
+    with _render_lock:
+        _render_cache["sig"] = sig
+        _render_cache["html"] = html
+    return html
 
 
 def build_robots(data):
