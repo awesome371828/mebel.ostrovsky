@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""mebel.py — Кухни Островский. Один файл: сайт + админка + Supabase + AI."""
+"""mebel.py — Кухни Островский. VK-картинки идут через wsrv.nl proxy."""
 import base64, gzip, hashlib, hmac, html as _html, io, json, os, re, secrets, ssl, threading, time
 import urllib.error, urllib.parse, urllib.request, uuid
 from datetime import date
@@ -26,7 +26,27 @@ MAX_UPLOAD = 8 * 1024 * 1024
 DATA_ROW_ID = 1
 CACHE_TTL = 15
 HTTP_TIMEOUT = 12
-FAVICON_URL = "https://sun9-71.vkuserphoto.ru/s/v1/ig2/vrD0P7wnU0dU8cSoW8yBUOc-naoKs1vJN5OXMrUFeAdLJQi9qfWScCGH9JV3-r4btxsDfbPh--pJ1tSjOlkfiVRw2Celdw.jpg?quality=95&from=bu&u=-mZnLUrNq7bsSRyuT0gwpcYkWHU9MA-lwwC3ZYRE2Uw&cs=512x0"
+
+# ============ VK через wsrv.nl ============
+_VK_ORIG_FAVICON = "https://sun9-71.vkuserphoto.ru/s/v1/ig2/vrD0P7wnU0dU8cSoW8yBUOc-naoKs1vJN5OXMrUFeAdLJQi9qfWScCGH9JV3-r4btxsDfbPh--pJ1tSjOlkfiVRw2Celdw.jpg?quality=95&from=bu&u=-mZnLUrNq7bsSRyuT0gwpcYkWHU9MA-lwwC3ZYRE2Uw&cs=512x0"
+
+def _vk_wrap(url, w=1920, q=85, fmt="webp"):
+    """Оборачивает VK-ссылку в wsrv.nl прокси."""
+    if not isinstance(url, str) or not url: return url
+    if "wsrv.nl" in url or "weserv.nl" in url: return url
+    if "vkuserphoto.ru" in url:
+        enc = urllib.parse.quote(url, safe="")
+        return "https://wsrv.nl/?url=" + enc + "&w={}&output={}&q={}&n=-1&we&il".format(w, fmt, q)
+    return url
+
+def _deep_wrap(obj, w=1920, q=85, fmt="webp"):
+    """Рекурсивно проходит по dict/list/str и оборачивает все VK-ссылки."""
+    if isinstance(obj, str): return _vk_wrap(obj, w, q, fmt)
+    if isinstance(obj, list): return [_deep_wrap(x, w, q, fmt) for x in obj]
+    if isinstance(obj, dict): return {k: _deep_wrap(v, w, q, fmt) for k, v in obj.items()}
+    return obj
+
+FAVICON_URL = _vk_wrap(_VK_ORIG_FAVICON, w=256, q=90, fmt="png")
 
 ANIM_STYLE = """<style id="goldAnimations">
 @keyframes shimmerX{0%{background-position:-200% 0}100%{background-position:200% 0}}
@@ -306,12 +326,12 @@ def render(tpl, ctx):
             else: out.append(_apply_filter(filt, val))
     return "".join(out)
 
+# ============ PAGE TEMPLATE ============
 PAGE_TEMPLATE = r'''<!DOCTYPE html>
 <html lang="ru" class="js">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="referrer" content="no-referrer">
 <title>{{seo.title}}</title>
 <meta name="description" content="{{seo.description}}">
 <meta name="keywords" content="{{seo.keywords}}">
@@ -430,12 +450,12 @@ h1 em.shimmer{-webkit-text-fill-color:transparent}
 .sec-head p{color:var(--muted);font-size:15.5px;max-width:620px;margin:0 auto}
 h2.k{position:relative;font-size:clamp(32px,4.6vw,48px);color:#faf3e6;font-weight:500;margin:16px 0 14px;text-align:center;text-shadow:0 4px 22px rgba(0,0,0,.45),0 0 40px rgba(212,175,106,.14)}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:center}
-.stat{padding:32px 16px;border-radius:var(--r-md);background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);transition:transform .45s,border-color .45s,box-shadow .45s}
+.stat{padding:32px 16px;border-radius:var(--r-md);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);transition:transform .45s,border-color .45s,box-shadow .45s;backdrop-filter:blur(4px)}
 .stat:hover{transform:translateY(-6px);border-color:rgba(236,207,160,.3);box-shadow:0 22px 54px rgba(0,0,0,.42)}
 .stat .num{font-family:var(--serif);font-size:58px;font-weight:500;line-height:1;background:linear-gradient(160deg,var(--gold-soft),var(--gold) 60%,var(--gold-deep));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .stat .lbl{color:var(--muted);font-size:13.5px;margin-top:12px}
 .about{display:grid;grid-template-columns:1fr 1.1fr;gap:64px;align-items:center}
-.about-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);padding:48px 40px;text-align:center;border-radius:var(--r-lg);box-shadow:var(--shadow-md);position:relative;overflow:hidden}
+.about-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);padding:48px 40px;text-align:center;border-radius:var(--r-lg);box-shadow:var(--shadow-md);position:relative;overflow:hidden;backdrop-filter:blur(4px)}
 .about-card::before{content:"";position:absolute;top:0;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,var(--gold-soft),transparent);opacity:.6}
 .avatar{width:130px;height:130px;border-radius:50%;margin:0 auto 22px;overflow:hidden;border:1.5px solid rgba(236,207,160,.65);box-shadow:0 0 0 7px rgba(212,175,106,.12),0 16px 40px rgba(0,0,0,.5);position:relative}
 .avatar img{width:100%;height:100%;object-fit:cover}
@@ -469,7 +489,7 @@ h2.k{position:relative;font-size:clamp(32px,4.6vw,48px);color:#faf3e6;font-weigh
 .car-slide:hover{transform:translateY(-8px);border-color:rgba(236,207,160,.3);box-shadow:var(--shadow-lg)}
 .car-slide img{width:100%;height:320px;object-fit:cover;display:block}
 .rev-track{align-items:flex-start}
-.rev-card{scroll-snap-align:center;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:var(--r-lg);padding:24px 26px;width:min(82vw,520px);flex:0 0 auto;display:flex;flex-direction:column;box-shadow:var(--shadow-md);position:relative;overflow:hidden;transition:transform .5s,box-shadow .5s}
+.rev-card{scroll-snap-align:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:var(--r-lg);padding:24px 26px;width:min(82vw,520px);flex:0 0 auto;display:flex;flex-direction:column;box-shadow:var(--shadow-md);position:relative;overflow:hidden;transition:transform .5s,box-shadow .5s;backdrop-filter:blur(4px)}
 .rev-card:hover{transform:translateY(-8px);border-color:rgba(236,207,160,.28);box-shadow:var(--shadow-lg)}
 .rev-head{display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap}
 .rev-ava{width:50px;height:50px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(236,207,160,.6);flex-shrink:0}
@@ -483,26 +503,26 @@ h2.k{position:relative;font-size:clamp(32px,4.6vw,48px);color:#faf3e6;font-weigh
 .vb-play svg{width:22px;height:22px;fill:currentColor;margin-left:3px}
 .video-box iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.svc{position:relative;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);padding:38px 30px;transition:transform .5s cubic-bezier(.22,.61,.36,1),box-shadow .5s,border-color .5s;border-radius:var(--r-lg);overflow:hidden;backdrop-filter:blur(4px)}
-.svc:hover{transform:translateY(-8px);background:rgba(255,255,255,.07);box-shadow:var(--shadow-lg);border-color:rgba(236,207,160,.26)}
+.svc{position:relative;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:38px 30px;transition:transform .5s cubic-bezier(.22,.61,.36,1),box-shadow .5s,border-color .5s;border-radius:var(--r-lg);overflow:hidden;backdrop-filter:blur(6px)}
+.svc:hover{transform:translateY(-8px);background:rgba(255,255,255,.08);box-shadow:var(--shadow-lg);border-color:rgba(236,207,160,.26)}
 .svc svg{width:34px;height:34px;stroke:var(--gold-soft);fill:none;stroke-width:1.4;margin-bottom:20px}
 .svc h3{font-size:23px;color:#fff;margin-bottom:9px}
 .svc p{color:var(--muted);font-size:14px;line-height:1.7}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.step{position:relative;padding:34px 26px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:var(--r-lg);transition:transform .45s,box-shadow .45s,border-color .45s;overflow:hidden;backdrop-filter:blur(4px)}
+.step{position:relative;padding:34px 26px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:var(--r-lg);transition:transform .45s,box-shadow .45s,border-color .45s;overflow:hidden;backdrop-filter:blur(6px)}
 .step:hover{transform:translateY(-7px);border-color:rgba(236,207,160,.28);box-shadow:var(--shadow-md)}
 .step .n{font-family:var(--serif);font-size:54px;line-height:1;background:linear-gradient(160deg,var(--gold-soft),var(--gold-deep));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .step h3{font-size:22px;color:#fff;margin:14px 0 8px}
 .step p{color:var(--muted);font-size:14px;line-height:1.7}
 .guar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
-.guar{position:relative;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);padding:38px 26px;text-align:center;transition:transform .45s,box-shadow .45s,border-color .45s;border-radius:var(--r-lg);overflow:hidden;backdrop-filter:blur(4px)}
+.guar{position:relative;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:38px 26px;text-align:center;transition:transform .45s,box-shadow .45s,border-color .45s;border-radius:var(--r-lg);overflow:hidden;backdrop-filter:blur(6px)}
 .guar:hover{transform:translateY(-8px);box-shadow:var(--shadow-lg);border-color:rgba(236,207,160,.26)}
 .guar .ico{width:54px;height:54px;margin:0 auto 18px;border:1px solid rgba(236,207,160,.35);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold-soft);background:radial-gradient(circle at 30% 30%,rgba(236,207,160,.16),rgba(212,175,106,.03));transition:transform .45s}
 .guar .ico svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.5}
 .guar h3{font-size:18px;color:#fff;margin-bottom:8px}
 .guar p{color:var(--muted);font-size:13px;line-height:1.7}
 .city-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.city{position:relative;padding:38px 28px;border-radius:var(--r-lg);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);text-align:center;transition:transform .45s,box-shadow .45s,border-color .45s;overflow:hidden;backdrop-filter:blur(4px)}
+.city{position:relative;padding:38px 28px;border-radius:var(--r-lg);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);text-align:center;transition:transform .45s,box-shadow .45s,border-color .45s;overflow:hidden;backdrop-filter:blur(6px)}
 .city:hover{transform:translateY(-7px);box-shadow:var(--shadow-lg);border-color:rgba(236,207,160,.26)}
 .city .city-name{font-family:var(--serif);font-size:28px;color:#fff;font-weight:500}
 .city .city-line{width:42px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:14px auto}
@@ -518,7 +538,7 @@ h2.k{position:relative;font-size:clamp(32px,4.6vw,48px);color:#faf3e6;font-weigh
 .c-line .lab{font-size:10.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
 .c-line .val{font-size:18px;font-weight:600;color:var(--text);word-break:break-word}
 .c-line a.val:hover{color:var(--gold-soft)}
-.call-block{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);padding:46px 36px;text-align:center;border-radius:var(--r-lg);box-shadow:var(--shadow-md);position:relative;overflow:hidden;backdrop-filter:blur(6px)}
+.call-block{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:46px 36px;text-align:center;border-radius:var(--r-lg);box-shadow:var(--shadow-md);position:relative;overflow:hidden;backdrop-filter:blur(8px)}
 .call-block::before{content:"";position:absolute;top:0;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,var(--gold-soft),transparent);opacity:.6}
 .call-block .cb-lab{font-size:12px;letter-spacing:4px;text-transform:uppercase;color:var(--gold-soft)}
 .call-block .cb-num{display:block;font-weight:800;font-size:clamp(27px,3.6vw,44px);color:#fff;margin:14px 0 18px;white-space:nowrap;transition:color .3s;text-shadow:0 5px 22px rgba(0,0,0,.42)}
@@ -904,6 +924,8 @@ def _migrate(raw):
     return d
 def _normalize_context(data):
     ctx = _json_clone(data)
+    # Обернуть все VK-ссылки в wsrv.nl
+    ctx = _deep_wrap(ctx, w=1920, q=85, fmt="webp")
     ctx["year"] = str(date.today().year); ctx["domain"] = _domain(ctx)
     return ctx
 def _domain(data=None):
@@ -1062,7 +1084,7 @@ def _ai_ask(data, task, path, value):
     base = "Компания: {}. Города: {}. Услуги: {}. Телефон: {}. Сайт: {}.".format(
         brand.get("name","Кухни Островский"), cities or "Ростов-на-Дону, Батайск, Азов",
         services or "кухни и корпусная мебель на заказ", brand.get("phone",""), seo.get("domain") or DOMAIN)
-    system = "Ты опытный русскоязычный копирайтер и SEO-специалист. Пиши живым языком, без воды, без markdown, без кавычек."
+    system = "Ты опытный русскоязычный копирайтер и SEO-специалист. Пиши живым языком."
     user = base + "\n\n"
     if task == "seo_title": user += "Составь SEO Title до 65 символов."
     elif task == "seo_description": user += "Составь meta description до 160 символов."
@@ -1074,7 +1096,7 @@ def _ai_ask(data, task, path, value):
     elif task == "cta_text": user += "Напиши короткий призыв к действию до 180 символов."
     elif task == "shorten": user += "Сократи текст до 1-2 предложений:\n" + (value or "")
     elif task == "expand": user += "Улучши текст до 3 предложений:\n" + (value or "")
-    else: user += "Улучши текст, сохрани смысл:\n" + (value or "")
+    else: user += "Улучши текст:\n" + (value or "")
     return system, user
 
 _data_lock = threading.Lock(); _data_cache = None; _cache_ts = 0.0
@@ -1175,7 +1197,7 @@ def build_manifest(data):
 def build_404(data):
     p = data.get("page404") or {}
     t = p.get("title") or "Страница не найдена"
-    x = p.get("text") or "Возможно, страница переехала или удалена."
+    x = p.get("text") or "Возможно, страница переехала."
     b = p.get("button") or "На главную"
     return ("<!DOCTYPE html><html lang=\"ru\"><head><meta charset=\"UTF-8\"><title>{t}</title></head>"
         "<body style=\"margin:0;background:#0e0c09;color:#f5efe3;font-family:system-ui;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center\">"
@@ -1183,15 +1205,15 @@ def build_404(data):
         "<a href=\"/\" style=\"display:inline-block;margin-top:22px;padding:14px 26px;border-radius:12px;background:linear-gradient(135deg,#eccfa0,#d4af6a 55%,#a37c3f);color:#17120b;font-weight:700;text-decoration:none\">{b}</a></div>"
         "</body></html>").format(t=_escape(t), x=_escape(x), b=_escape(b))
 
-_fc = {"data": None, "ts": 0.0, "ct": "image/jpeg"}; _fc_lock = threading.Lock()
+_fc = {"data": None, "ts": 0.0, "ct": "image/webp"}; _fc_lock = threading.Lock()
 def get_favicon():
     now = time.time()
     with _fc_lock:
         if _fc["data"] is not None and now - _fc["ts"] < 3600: return _fc["data"], _fc["ct"]
     try:
-        req = urllib.request.Request(FAVICON_URL, headers={"User-Agent": "Mozilla/5.0", "Referer": "https://vk.com/"})
+        req = urllib.request.Request(FAVICON_URL, headers={"User-Agent": "Mozilla/5.0"})
         with urllib.request.urlopen(req, timeout=15) as r:
-            data = r.read(); ct = r.headers.get("Content-Type", "image/jpeg")
+            data = r.read(); ct = r.headers.get("Content-Type", "image/webp")
         with _fc_lock: _fc["data"] = data; _fc["ts"] = now; _fc["ct"] = ct
         return data, ct
     except Exception as e:
@@ -1653,7 +1675,7 @@ def _parse_multipart(body, boundary):
 
 class Handler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
-    server_version = "OstrovskyCMS/7.0"
+    server_version = "OstrovskyCMS/8.0"
     _head_only = False
     def _tok(self):
         raw = self.headers.get("Cookie", "")
@@ -1736,14 +1758,9 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/robots.txt": self._send(200, build_robots(load_data()), "text/plain; charset=utf-8", "public, max-age=3600"); return
         if path == "/sitemap.xml": self._send(200, build_sitemap(load_data()), "application/xml; charset=utf-8", "public, max-age=3600"); return
         if path == "/manifest.webmanifest": self._send(200, build_manifest(load_data()), "application/manifest+json; charset=utf-8", "public, max-age=86400"); return
-        if path == "/favicon.ico" or path == "/favicon.png":
+        if path == "/favicon.ico" or path == "/favicon.png" or path == "/favicon-32x32.png" or path == "/favicon-192x192.png" or path == "/apple-touch-icon.png":
             data, ct = get_favicon()
-            if data: self._send(200, data, ct or "image/jpeg", "public, max-age=86400", gzip_ok=False)
-            else: self._redir(FAVICON_URL)
-            return
-        if path in ("/favicon-16x16.png","/favicon-32x32.png","/apple-touch-icon.png","/favicon-192x192.png"):
-            data, ct = get_favicon()
-            if data: self._send(200, data, ct or "image/jpeg", "public, max-age=86400", gzip_ok=False)
+            if data: self._send(200, data, ct or "image/webp", "public, max-age=86400", gzip_ok=False)
             else: self._redir(FAVICON_URL)
             return
         if self._serve_static(path): return
@@ -1818,10 +1835,11 @@ class Handler(BaseHTTPRequestHandler):
         if os.environ.get("VERBOSE"): print("[http] " + (fmt % args), flush=True)
 
 def main():
-    print("BOOT: Кухни Островский CMS (v7)", flush=True)
+    print("BOOT: Кухни Островский CMS (v8, wsrv.nl proxy)", flush=True)
     print("BOOT: PORT = {}".format(PORT), flush=True)
     print("BOOT: DOMAIN = {} ({})".format(_domain(), _host()), flush=True)
     print("BOOT: Supabase = {}".format(SUPABASE_URL), flush=True)
+    print("BOOT: VK -> wsrv.nl proxy active", flush=True)
     print("BOOT: AI = yandex:{} gigachat:{}".format(bool(YANDEX_API_KEY and FOLDER_ID), bool(GIGACHAT_AUTH_KEY)), flush=True)
     try: load_fresh()
     except Exception as e: print("BOOT: {}".format(e), flush=True)
