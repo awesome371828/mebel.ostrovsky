@@ -31,12 +31,11 @@ HTTP_TIMEOUT = 12
 _VK_ORIG_FAVICON = "https://sun9-71.vkuserphoto.ru/s/v1/ig2/vrD0P7wnU0dU8cSoW8yBUOc-naoKs1vJN5OXMrUFeAdLJQi9qfWScCGH9JV3-r4btxsDfbPh--pJ1tSjOlkfiVRw2Celdw.jpg?quality=95&from=bu&u=-mZnLUrNq7bsSRyuT0gwpcYkWHU9MA-lwwC3ZYRE2Uw&cs=512x0"
 
 def _vk_wrap(url, w=1920, q=85, fmt="webp"):
-    """Оборачивает VK-ссылку в wsrv.nl прокси."""
     if not isinstance(url, str) or not url: return url
-    if "wsrv.nl" in url or "weserv.nl" in url: return url
+    if "duckduckgo" in url: return url
     if "vkuserphoto.ru" in url:
         enc = urllib.parse.quote(url, safe="")
-        return "https://wsrv.nl/?url=" + enc + "&w={}&output={}&q={}&n=-1&we&il".format(w, fmt, q)
+        return "https://external-content.duckduckgo.com/iu/?u=" + enc + "&f=1&nofb=1"
     return url
 
 def _deep_wrap(obj, w=1920, q=85, fmt="webp"):
@@ -1210,14 +1209,22 @@ def get_favicon():
     now = time.time()
     with _fc_lock:
         if _fc["data"] is not None and now - _fc["ts"] < 3600: return _fc["data"], _fc["ct"]
-    try:
-        req = urllib.request.Request(FAVICON_URL, headers={"User-Agent": "Mozilla/5.0"})
-        with urllib.request.urlopen(req, timeout=15) as r:
-            data = r.read(); ct = r.headers.get("Content-Type", "image/webp")
-        with _fc_lock: _fc["data"] = data; _fc["ts"] = now; _fc["ct"] = ct
-        return data, ct
-    except Exception as e:
-        print("[favicon] {}".format(e), flush=True); return None, None
+    candidates = [_vk_wrap(_VK_ORIG_FAVICON), _VK_ORIG_FAVICON]
+    for url in candidates:
+        try:
+            req = urllib.request.Request(url, headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0 Safari/537.36",
+                "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+            })
+            with urllib.request.urlopen(req, timeout=15) as r:
+                data = r.read(); ct = r.headers.get("Content-Type", "image/jpeg")
+            if data and len(data) > 100:
+                with _fc_lock: _fc["data"] = data; _fc["ts"] = now; _fc["ct"] = ct
+                print("[favicon] OK len={} from {}".format(len(data), url[:60]), flush=True)
+                return data, ct
+        except Exception as e:
+            print("[favicon] {} -> {}".format(url[:60], e), flush=True)
+    return None, None
 
 def _svg_icon(_=None): return {"path": "icon", "label": "Иконка", "type": "textarea", "rows": 2, "mono": True, "hint": "Содержимое d у path"}
 
