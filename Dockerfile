@@ -1,7 +1,8 @@
 FROM python:3.11-slim
 WORKDIR /app
-ENV PYTHONUNBUFFERED=1
-RUN pip install --no-cache-dir pillow supabase
-COPY mebel.py page.html ./
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY mebel.py .
+ENV PORT=8080
 EXPOSE 8080
-CMD ["python", "-u", "mebel.py"]
+CMD ["python", "mebel.py"]
