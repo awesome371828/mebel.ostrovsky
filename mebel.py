@@ -152,7 +152,7 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
                    {'label': 'Контакты', 'href': '#contacts'}],
          'cta_label': 'Позвонить специалисту',
          'cta_href': 'tel:+79508465397'},
- 'hero': {'bg': 'https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x241,480x321,540x361,640x428,720x481,1080x722,1280x855,1440x962,2560x1711&from=bu&u=udyioV6Vl_ghNhYbFZ9zjc-ZU_IjlhkVV114xfpUZJs&cs=1080x0',
+ 'hero': {'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w01.jpg',
           'sub': 'Проектируем и изготавливаем кухни, шкафы, гардеробные и другую корпусную мебель в Ростове, Батайске и Азове — по '
                  'вашему проекту, от замера до монтажа.',
           'btn1': 'Получить консультацию',
@@ -164,15 +164,15 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
           'btn2_href': '#works',
           'watermark': 'Мебель',
           'scroll_cue': 'Листайте'},
- 'stats': {'bg': 'https://sun9-20.vkuserphoto.ru/s/v1/ig2/9W8TzKo3y8t8-s63NRmlys3yJtHJAKPBOp2QIyuqMSTinG9q-UFuD5sYkz4wbd7QZDv7wQxsZlldmCrAM-PzPlDJ.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,1800x1200&from=bu&u=kySpH3qK1oaqlWr8kbrP_y7iDDbASMEGWuJ5dgxf5MU&cs=1080x0',
+ 'stats': {'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w02.jpg',
            'items': [{'prefix': '', 'num': '10', 'suffix': '+', 'decimal': '', 'label': 'лет опыта'},
                      {'prefix': '', 'num': '5', 'suffix': '', 'decimal': '1', 'label': 'средняя оценка клиентов'},
                      {'prefix': '', 'num': '8', 'suffix': '/10', 'decimal': '', 'label': 'клиентов по рекомендации'},
                      {'prefix': '', 'num': '100', 'suffix': '%', 'decimal': '', 'label': 'полный цикл под ключ'}]},
- 'about': {'bg': 'https://sun9-50.vkuserphoto.ru/s/v1/ig2/_uJbJ-Gw0zJ3jVPyc4QJRGUErYM5zju63UDQM6FFDezILgQ54i5ycLVvhgSHl5hHPVIKikt0AL9V6DrmqDH7G5C6.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2208x1656&from=bu&u=9_d3vo4cDIif_5OxDZbDgMLFC1xuAQSKRY1zAPscIwM&cs=1280x0',
+ 'about': {'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/bg/about.jpg',
            'name': 'Роман Островский',
            'role': 'Руководитель мебельной мастерской Островского',
-           'photo': 'https://i.ibb.co/mVchNnp1/photo-2026-09-10-18-48-37.jpg',
+           'photo': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/about/roman.jpg',
            'title': 'Кухни и мебель под ключ — с заботой о деталях',
            'kicker': 'О руководителе',
            'features': ['Кухни, шкафы, гардеробные и прихожие',
@@ -183,40 +183,40 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
                         'и задач.',
            'text': 'Мы помогаем с планировкой и подбором материалов, предлагаем решения даже для сложных задач — когда другие разводят '
                    'руками. Ведём вас от консультации и замера до сборки и установки.'},
- 'consult': {'bg': 'https://sun9-41.vkuserphoto.ru/s/v1/ig2/qi7m_VnJPio2P4oKJhNr6X-9HJD2kCt6f98XGtveyiAxhJ4ru17yVoibjERFJ4-ZWDOm8Lr7xGMwRP6dSudvgPnG.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&u=myRGe7iEVeLqDstzbpBsld7P0jp7l04_xCLynpcz4So&cs=1280x0',
+ 'consult': {'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/bg/consult.jpg',
              'text': 'Позвоните или напишите нам в Telegram или MAX — расскажем про кухни и мебель, всё обсудим и договоримся о '
                      'бесплатном замере.',
              'title': 'Консультация',
              'kicker': 'Бесплатно',
              'phone': '+7 (950) 846-53-97',
              'phone_raw': '+79508465397'},
- 'works': {'bg': 'https://sun9-32.vkuserphoto.ru/s/v1/ig2/ipQDYrxkEiu9wFqxHUIJNhf4YERP29pOrzOhJ2hTcO6Z-fqWBrPA9D1vCltHlp9RltkldMRefKPMMkB8aD8jhZfR.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,2560x1707&from=bu&u=q3wKCscaGbBU8n3umOUNA0wOvLkQBDAVXIkzDrivHgk&cs=1280x0',
+ 'works': {'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/bg/works.jpg',
            'items': [{'alt': 'Кухня на заказ в Ростове',
-                      'url': 'https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x241,480x321,540x361,640x428,720x481,1080x722,1280x855,1440x962,2560x1711&from=bu&u=udyioV6Vl_ghNhYbFZ9zjc-ZU_IjlhkVV114xfpUZJs&cs=1080x0'},
+                      'url': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w01.jpg'},
                      {'alt': 'Кухня на заказ в Батайске',
-                      'url': 'https://sun9-20.vkuserphoto.ru/s/v1/ig2/9W8TzKo3y8t8-s63NRmlys3yJtHJAKPBOp2QIyuqMSTinG9q-UFuD5sYkz4wbd7QZDv7wQxsZlldmCrAM-PzPlDJ.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,1800x1200&from=bu&u=kySpH3qK1oaqlWr8kbrP_y7iDDbASMEGWuJ5dgxf5MU&cs=1080x0'},
+                      'url': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w02.jpg'},
                      {'alt': 'Кухня на заказ в Азове',
-                      'url': 'https://sun9-11.vkuserphoto.ru/s/v1/ig2/Xh5Xw9Yb1reqhfFznlGk8NjvSQAxCbysuiL5IWRt_f3ELVb8fvoYPg00eFIHV-xiS9I4nhYBj4ttU_FHVkPpX8Z3.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,1600x1200&from=bu&u=pY-bjOidU1jjNjiF66Dn4Ycgmb6utH_d0Ti7oSJr0qA&cs=1080x0'},
+                      'url': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w03.jpg'},
                      {'alt': 'Мебель на заказ в Ростове',
-                      'url': 'https://sun9-88.vkuserphoto.ru/s/v1/ig2/vCipZmkZdy5Ix0cFh98i0yhNAYynqzh2gm00rWx5Qr019O4RHjwcs7pN6iKT4L_d1vanDAbUJ9JRrHj_uw13YVhg.jpg?quality=95&as=32x44,48x66,72x99,108x149,160x220,240x331,360x496,480x661,540x744,640x882,720x992,1080x1488,1280x1764,1440x1984,1858x2560&from=bu&u=lrbIDUwRUQKMEvaw12w2pRXFBLE0sHCmc6AYF8H7CIA&cs=1080x0'},
+                      'url': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w04.jpg'},
                      {'alt': 'Шкаф-купе на заказ',
-                      'url': 'https://sun9-87.vkuserphoto.ru/s/v1/ig2/WHkPw7TZze6TV4t2q6Yr2pw61S1zWDeDyp8Dbe2IFm31aAuhXVSQ2DUTnM6AIt5u3cLTp9mh-YN2b_Lb0q5iHCFu.jpg?quality=95&as=32x40,48x60,72x90,108x134,160x199,240x298,360x448,480x597,540x671,640x796,720x895,1080x1343,1280x1591,1440x1790,2059x2560&from=bu&u=bQW477ZK7yLopHDa2oCbH-uA483cvDm58BTlNs29AoE&cs=1080x0'},
+                      'url': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w05.jpg'},
                      {'alt': 'Мебель на заказ в Батайске',
-                      'url': 'https://sun9-24.vkuserphoto.ru/s/v1/ig2/lS8MpZ4V9XUKPJ7l9GmjnkCnHW2MGfnq86jH-Gzx6bAgr4m3azL5Xd_fkdPHY_NOsJjST3Zw2iQkuGKGBwYODdgM.jpg?quality=95&as=32x42,48x63,72x95,108x142,160x211,240x316,360x474,480x632,540x711,640x843,720x949,1080x1423,1280x1686,1440x1897,1943x2560&from=bu&u=dLnirpryCPR3qvUPphwt7JaP5ljnoIl1yyGyUNiUjZI&cs=1080x0'},
+                      'url': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w06.jpg'},
                      {'alt': 'Кухня на заказ',
-                      'url': 'https://sun9-64.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,2560x1707&from=bu&u=T5NJHPubDiY9E_IwXkmzI6uExoeA0QSNz39xjf4UD5M&cs=1080x0'},
+                      'url': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w07.jpg'},
                      {'alt': 'Мебель на заказ',
-                      'url': 'https://sun9-39.vkuserphoto.ru/s/v1/ig2/5cyrhjIBSWB5GGZATB29IrmjydaNdVOx-iP_dMNKsMbePp5Ccs2rnkEpLnfft3yAZGeMEE3IfInjMQ7aU6Z6jnHc.jpg?quality=95&as=32x24,48x36,72x54,108x82,160x121,240x181,360x272,480x363,540x408,640x484,720x544,1080x817,1280x968&from=bu&u=l1uWXrXXeEAKk1VMgGM5wyIo7DtKdQGhKlCwMjoS0t8&cs=1080x0'},
+                      'url': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w08.jpg'},
                      {'alt': 'Кухня на заказ в Батайске',
-                      'url': 'https://sun9-68.vkuserphoto.ru/s/v1/ig2/6KwHlOiN9pxXNIwTImKO6QGkrSCTVqreybJu-63m8wbhdFFMIl06es9cPeurIdwuwXGtsFTkdJ6IOjMaS1qRtfxJ.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=VgDjFEJKqpW6dWVO-E4y4Q6xcuyoqiL7LxhG36oLPjw&cs=1080x0'},
+                      'url': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w09.jpg'},
                      {'alt': 'Мебель на заказ',
-                      'url': 'https://sun9-23.vkuserphoto.ru/s/v1/ig2/wfBQoeOzjZbCRCvxmIkx_V3xC0fgMd3TTxRDSRG2CHDMok6B2ZKrG7vCAJ_G1DmrZ6JS1_RC2tr87Q64wJJ4aW9w.jpg?quality=95&as=32x25,48x37,72x56,108x84,160x124,240x186,360x279,480x372,540x419,640x496,720x558,1080x837,1280x992,1440x1117,2560x1985&from=bu&u=kZXvrlzwGUvzrHmYa8tHXbvyhU_JlNlefLxxcCYqM1A&cs=1080x0'},
+                      'url': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w10.jpg'},
                      {'alt': 'Кухня на заказ',
-                      'url': 'https://sun9-33.vkuserphoto.ru/s/v1/ig2/TQbwf8FdMs_jwKfC_ONoxEHBIpc2L5yf_T0McNeUKRn0tK7fVbC5YbHfsB0TGLlNC_D55htM_2nREACuIw7ykLIx.jpg?quality=95&as=32x43,48x65,72x97,108x145,160x215,240x323,360x484,480x645,540x726,640x860,720x968,1080x1452,1280x1721,1440x1936,1904x2560&from=bu&u=rbH0OM9Bv0PnevamgtW5nYBm9jxFI28R6D1wxzq6fJA&cs=1080x0'},
+                      'url': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w11.jpg'},
                      {'alt': 'Кухня на заказ',
-                      'url': 'https://sun9-52.vkuserphoto.ru/s/v1/ig2/iD_ZIKN3aW1Ml52LPM3C65Qa7raIjG1CUC-fRrbHZEdxtU9hrsvTAh80W9sM3wI2hBUlsHc86fnHiG43aAOPlRuP.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=mdGpdzTBkRhwLQzuIJS1nz6l-_CWqdnxhW1cwsXNCx8&cs=1080x0'},
+                      'url': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w12.jpg'},
                      {'alt': 'Кухня на заказ',
-                      'url': 'https://sun9-65.vkuserphoto.ru/s/v1/ig2/z_wfZeGA9H6LHDsevjkijUHpbVyLGWFM38frX4hKrjgOnscfAloGdrVpPUwl4XoXCG_YgcKXTgeeTsDDcWEBvdi1.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=YbZ1WmiK3ZCk0bKWZhf_YKp6dTUU2vbsQo7Ya4Hoi6s&cs=1080x0'}],
+                      'url': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w13.jpg'}],
            'title': 'Кухни и мебель, которые мы сделали',
            'kicker': 'Наши работы',
            'subtitle': 'Нажмите на фото, чтобы рассмотреть в большом размере.',
@@ -225,7 +225,7 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
            'more_text': 'Больше работ — в сообществе',
            'more_label': 'ВКонтакте',
            'more_href': 'https://vk.com/mebel.ostrovsky'},
- 'reviews': {'bg': 'https://sun9-64.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,2560x1707&from=bu&u=T5NJHPubDiY9E_IwXkmzI6uExoeA0QSNz39xjf4UD5M&cs=1280x0',
+ 'reviews': {'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/bg/reviews.jpg',
              'items': [{'sub': 'Кухня на заказ',
                         'name': 'Виктория Брандикова',
                         'text': 'Заказывали у Романа кухню, всё прошло на высшем уровне, начиная от замеров, до установки! Мы очень '
@@ -241,7 +241,7 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
                                 'рекомендовать!!!',
                         'stars': 5,
                         'video': '',
-                        'avatar': 'https://sun9-3.vkuserphoto.ru/s/v1/ig2/-cVZEipS5I4ROZUZ2fxoIaGJBZXpUs76_WKoUZpPw_r2-gnqqUvgTqjLjYoTZ0R21nsCSvjUPyw_vSn1jxAYJC8K.jpg?quality=95&as=32x30,48x45,72x68,108x101,160x150,240x225,360x338,480x450,540x507,640x601,720x676,1080x1014,1280x1201,1440x1351,2505x2351&from=bu&cs=128x0'},
+                        'avatar': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/reviews/ava-01.jpg'},
                        {'sub': 'Кухня и гардеробная',
                         'name': 'Виктория Маренко',
                         'text': 'И вновь мы обратились к Роману! Понадобилась кухня. Кухня на самом деле очень удобная! Как и хотелось '
@@ -252,7 +252,7 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
                                 'для нас важны.',
                         'stars': 5,
                         'video': '',
-                        'avatar': 'https://sun9-41.vkuserphoto.ru/s/v1/ig2/qi7m_VnJPio2P4oKJhNr6X-9HJD2kCt6f98XGtveyiAxhJ4ru17yVoibjERFJ4-ZWDOm8Lr7xGMwRP6dSudvgPnG.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&u=myRGe7iEVeLqDstzbpBsld7P0jp7l04_xCLynpcz4So&cs=1280x0'},
+                        'avatar': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/reviews/ava-02.jpg'},
                        {'sub': 'Шкаф, тумбы, прихожая',
                         'name': 'Любовь Петелько',
                         'text': 'Всем здравствуйте. Я заказала у Романа шкаф купе в спальню. Когда Роман приехал, я не совсем понимала '
@@ -262,14 +262,14 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
                                 'заказывать зону хранения балкона и самое главное кухню мечты. Спасибо!',
                         'stars': 5,
                         'video': '',
-                        'avatar': 'https://sun9-53.vkuserphoto.ru/s/v1/ig2/gZheSpaWhz7StIdwlzSoCIfA01e-x8jVUMESDK2u9ONRR1s3txB-b6F7lqLLj-Y6QFqFU5x463yoWmnTxf5T88g2.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&cs=128x0'},
+                        'avatar': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/reviews/ava-03.jpg'},
                        {'sub': 'Шкаф и стенка',
                         'name': 'Дмитрий Юшенко',
                         'text': 'Заказывали у Романа шкаф и стенку в спальню. Работа вышла отличной, подсказал несколько удачных '
                                 'решений наших хотелок. Все супер! Спасибо!',
                         'stars': 5,
                         'video': '',
-                        'avatar': 'https://sun9-83.vkuserphoto.ru/s/v1/ig2/zYO0FQ_fFsgxDWhaTE85lNpixn2ikScuD58qVoXtqda8vFxoS-LGsT54k9pk9tDVEpzGpJfCw5eg5TNtYgE2Q8_y.jpg?quality=95&as=32x47,48x71,72x106,108x159,160x236,240x353,360x530,480x707,540x795,640x943,720x1061,869x1280&from=bu&cs=1280x0'},
+                        'avatar': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/reviews/ava-04.jpg'},
                        {'sub': 'Кухня на заказ',
                         'name': 'Екатерина Умнягина',
                         'text': 'Заказывали у Романа кухню, всё очень понравилось! Подбирали всё до мелочей, и Рома всё исполнил, как '
@@ -277,7 +277,7 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
                                 'видно, и получилось очень красиво. Спасибо, Рома, за эту крутую современную кухню!!!',
                         'stars': 5,
                         'video': '',
-                        'avatar': 'https://sun9-46.vkuserphoto.ru/s/v1/ig2/bVm2vnJWOD92dzHJ3_21NbqhcwF7DW7a05XzjaTWteG9Dviu9nt8LlA5bgzdbsBhGtYbrs7rvOMTylQQIV43cl4T.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&cs=128x0'},
+                        'avatar': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/reviews/ava-05.jpg'},
                        {'sub': 'Два шкафа, гардеробная',
                         'name': 'Анастасия Зайцева',
                         'text': 'Заказывали у Романа два шкафа. Во время замеров у нас не было определённой идеи, как сделать '
@@ -287,7 +287,7 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
                                 'воплощение нашей мечты!',
                         'stars': 5,
                         'video': '',
-                        'avatar': 'https://sun9-48.vkuserphoto.ru/s/v1/ig2/OdS0JaUmpkj7vzQLNz1oyY6PBksnYylZuY54LZ2vnibrqxNc0IimIjE6d6NWySeMm6N2MLIUHG6WLKtAFJ82ICwE.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,960x1280&from=bu&cs=128x0'},
+                        'avatar': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/reviews/ava-06.jpg'},
                        {'sub': 'Видеоотзыв · Кухня на заказ',
                         'name': 'Александр Карташев',
                         'text': '«Прям гордость квартиры! За приемлемую цену получили отличную кухню: выступ стояка закрыли пеналом, а '
@@ -300,11 +300,11 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
              'subtitle': 'Реальные отзывы о нашей работе. Листайте влево-вправо.',
              'hint': 'Листайте',
              'watermark': 'Отзывы',
-             'video_poster': 'https://sun9-64.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,2560x1707&from=bu&u=T5NJHPubDiY9E_IwXkmzI6uExoeA0QSNz39xjf4UD5M&cs=1280x0',
+             'video_poster': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/bg/reviews.jpg',
              'more_text': 'Больше отзывов — в нашем сообществе',
              'more_label': 'ВКонтакте',
              'more_href': 'https://vk.com/mebel.ostrovsky'},
- 'services': {'bg': 'https://sun9-88.vkuserphoto.ru/s/v1/ig2/vCipZmkZdy5Ix0cFh98i0yhNAYynqzh2gm00rWx5Qr019O4RHjwcs7pN6iKT4L_d1vanDAbUJ9JRrHj_uw13YVhg.jpg?quality=95&as=32x44,48x66,72x99,108x149,160x220,240x331,360x496,480x661,540x744,640x882,720x992,1080x1488,1280x1764,1440x1984,1858x2560&from=bu&u=lrbIDUwRUQKMEvaw12w2pRXFBLE0sHCmc6AYF8H7CIA&cs=1280x0',
+ 'services': {'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/bg/services.jpg',
               'items': [{'icon': 'M3 9h18M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9M3 9l2-4h14l2 4M8 9v2M12 9v2M16 9v2',
                          'text': 'Проектируем кухню точно под ваш размер, стиль и привычки — от классики до минимализма.',
                          'title': 'Кухни на заказ'},
@@ -327,7 +327,7 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
               'kicker': 'Что мы делаем',
               'subtitle': 'Индивидуальный подход к каждому проекту и полный цикл производства.',
               'watermark': 'Услуги'},
- 'process': {'bg': 'https://sun9-39.vkuserphoto.ru/s/v1/ig2/xiwu_WFFyjmJc4_VAOD1BHikAdMqBy9N-SuKyiWu7xC8OYE-pfhtW5GkOyO5No0KjOrNQUwcgOW3Gr2bCnjvFp2H.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=VpmAnVyzkXcBCcJLy2DSlVkJJG2zYnSPbLzk7-TXGGk&cs=1280x0',
+ 'process': {'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/bg/process.jpg',
              'items': [{'n': '01', 'text': 'Вы звоните или пишете — обговариваем задачу и пожелания.', 'title': 'Обращение'},
                        {'n': '02', 'text': 'Выезжаем, снимаем размеры и обсуждаем планировку. Бесплатно.', 'title': 'Замер'},
                        {'n': '03', 'text': 'Готовим 3D-проект и подбираем материалы с фурнитурой.', 'title': 'Проект'},
@@ -336,7 +336,7 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
                        {'n': '06', 'text': 'Привозим, собираем и устанавливаем. Сдаём с гарантией.', 'title': 'Доставка и монтаж'}],
              'title': 'Путь от идеи до готовой мебели',
              'kicker': 'Как мы работаем'},
- 'guarantees': {'bg': 'https://sun9-50.vkuserphoto.ru/s/v1/ig2/C_b5sF8D1xkYdXe0s1BPq0c52G5b_U0r8MpWIaYYJzh9CXIE4qk0Q3rnZh2FuNZhpnp78BBveTceOk2Js-tECU_z.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=YCey971XM2nuNjhkwSaIOfPMTMneMAyHLaPyHT4mLyY&cs=1280x0',
+ 'guarantees': {'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/bg/guarantees.jpg',
                 'items': [{'icon': 'M12 3l7 3v6c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V6l7-3zM9 12l2 2 4-4',
                            'text': 'Отвечаем за свою работу и сопровождаем после установки.',
                            'title': 'Гарантия качества'},
@@ -351,18 +351,18 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
                            'title': 'Личное сопровождение'}],
                 'title': 'Гарантии и преимущества',
                 'kicker': 'Почему мы'},
- 'cities': {'bg': 'https://sun9-87.vkuserphoto.ru/s/v1/ig2/WHkPw7TZze6TV4t2q6Yr2pw61S1zWDeDyp8Dbe2IFm31aAuhXVSQ2DUTnM6AIt5u3cLTp9mh-YN2b_Lb0q5iHCFu.jpg?quality=95&as=32x40,48x60,72x90,108x134,160x199,240x298,360x448,480x597,540x671,640x796,720x895,1080x1343,1280x1591,1440x1790,2059x2560&from=bu&u=bQW477ZK7yLopHDa2oCbH-uA483cvDm58BTlNs29AoE&cs=1280x0',
+ 'cities': {'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/bg/cities.jpg',
             'items': [{'name': 'Ростов-на-Дону', 'text': 'Выезд на замер, проектирование, производство и монтаж мебели под ключ.'},
                       {'name': 'Батайск', 'text': 'Кухни и корпусная мебель с бесплатным замером и 3D-проектом.'},
                       {'name': 'Азов', 'text': 'Индивидуальные проекты, доставка, сборка и установка с гарантией.'}],
             'title': 'Три города — один стандарт качества',
             'kicker': 'Где работаем',
             'subtitle': 'Бесплатный замер и проект в каждом из городов.'},
- 'cta': {'bg': 'https://sun9-64.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,2560x1707&from=bu&u=T5NJHPubDiY9E_IwXkmzI6uExoeA0QSNz39xjf4UD5M&cs=1280x0',
+ 'cta': {'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/bg/reviews.jpg',
          'text': 'Позвоните нам — бесплатно проконсультируем, посчитаем и запишем на замер.',
          'title': 'Готовы обсудить вашу мебель?',
          'button': '📞 Позвонить специалисту'},
- 'contacts': {'bg': 'https://sun9-52.vkuserphoto.ru/s/v1/ig2/iD_ZIKN3aW1Ml52LPM3C65Qa7raIjG1CUC-fRrbHZEdxtU9hrsvTAh80W9sM3wI2hBUlsHc86fnHiG43aAOPlRuP.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=mdGpdzTBkRhwLQzuIJS1nz6l-_CWqdnxhW1cwsXNCx8&cs=1080x0',
+ 'contacts': {'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w12.jpg',
               'title': 'Создадим мебель, о которой вы мечтали',
               'kicker': 'Контакты',
               'regions': 'Ростов-на-Дону, Батайск, Азов',
@@ -434,10 +434,10 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
 # <<<DEFAULT_DATA_END>>>
 
 PAGE = r"""<!DOCTYPE html>
-<html lang="ru" class="js" data-build="2026-10-06-v4">
+<html lang="ru" class="js" data-build="2026-10-06-v5">
 <head>
 <meta charset="UTF-8">
-<!-- Кухни Островский · сборка 2026-10-06-v4: анимации, аватарка и favicon из Supabase, защита сохранения (rev), история версий -->
+<!-- Кухни Островский · сборка 2026-10-06-v5: анимации, аватарка и favicon из Supabase, защита сохранения (rev), история версий -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{seo.title}}</title>
 <meta name="description" content="{{seo.description}}">
@@ -933,11 +933,6 @@ header.solid{background:{{design.bg}}eb}
 .menu.open li:nth-child(7){animation-delay:.26s}.menu.open li:nth-child(8){animation-delay:.3s}.menu.open li:nth-child(9){animation-delay:.34s}
 #goldParticles{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
 #goldParticles span{position:absolute;width:5px;height:5px;border-radius:50%;background:radial-gradient(circle,rgba(236,207,160,.95),rgba(212,175,106,.35) 45%,transparent 72%);box-shadow:0 0 12px rgba(236,207,160,.6);animation:particleFloat linear infinite}
-#toTop{position:fixed;right:22px;bottom:104px;z-index:390;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--gold-soft),var(--gold) 55%,var(--gold-deep));color:#17120b;border:none;cursor:pointer;box-shadow:0 18px 40px rgba(212,175,106,.35);opacity:0;visibility:hidden;transform:translateY(18px) scale(.9);transition:opacity .45s,transform .45s,visibility .45s}
-#toTop.show{opacity:1;visibility:visible;transform:none}
-#toTop:hover{transform:translateY(-5px) scale(1.07)}
-#toTop svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-@media(max-width:860px){#toTop{right:14px;bottom:96px;width:46px;height:46px}}
 /* ====== усиленные анимации ====== */
 @keyframes h2sweep{0%{background-position:180% 0}100%{background-position:-180% 0}}
 @keyframes starShine{0%{background-position:190% 0}100%{background-position:-190% 0}}
@@ -963,14 +958,59 @@ header{animation:headerDown .75s cubic-bezier(.22,.61,.36,1) both}
 footer .flogo{background:linear-gradient(100deg,#fff 20%,var(--gold-soft) 55%,#fff 90%);background-size:220% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:h2sweep 7s linear infinite}
 .svc h3,.step h3,.guar h3{transition:text-shadow .4s}
 .svc:hover h3,.step:hover h3,.guar:hover h3{text-shadow:0 0 22px rgba(236,207,160,.5)}
+/* ====== плавность и полировка ====== */
+@keyframes bodyIn{from{opacity:0}to{opacity:1}}
+body{animation:bodyIn .9s ease both}
+.js .rv{transition:opacity 1.15s cubic-bezier(.16,1,.3,1),transform 1.15s cubic-bezier(.16,1,.3,1),filter 1.15s cubic-bezier(.16,1,.3,1)}
+.js .reveal{transition:opacity 1.15s cubic-bezier(.16,1,.3,1),transform 1.15s cubic-bezier(.16,1,.3,1),filter 1.15s cubic-bezier(.16,1,.3,1)}
+.rev-ava-w{position:relative;display:inline-flex;width:50px;height:50px;flex-shrink:0}
+.rev-ava-w::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(236,207,160,.35);opacity:.55;animation:ringPulse 4s ease-in-out infinite}
+.rev-ava-txt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:50%;border:1.5px solid rgba(236,207,160,.6);background:linear-gradient(135deg,rgba(212,175,106,.3),rgba(14,12,9,.92));color:var(--gold-soft);font-family:var(--serif);font-size:23px;font-weight:600;box-shadow:0 0 0 4px rgba(212,175,106,.1),0 0 16px rgba(212,175,106,.3)}
+.rev-ava{position:absolute;inset:0;z-index:1}
+.rev-photo{margin-top:14px;border-radius:var(--r-md);overflow:hidden;border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow-md)}
+.rev-photo img{width:100%;height:180px;object-fit:cover;transition:transform .8s cubic-bezier(.16,1,.3,1)}
+.rev-photo:hover img{transform:scale(1.07)}
+.img-fade{opacity:0}
+.img-ready{opacity:1;transition:opacity 1s cubic-bezier(.16,1,.3,1)}
+.img-failed{background:linear-gradient(135deg,rgba(212,175,106,.16),rgba(14,12,9,.9));display:flex;align-items:center;justify-content:center;min-height:120px}
+.img-failed::after{content:attr(data-alt);color:var(--muted);font-size:13px;text-align:center;padding:18px;font-family:var(--sans)}
+.car-slide{transition:transform .7s cubic-bezier(.16,1,.3,1),box-shadow .7s,border-color .7s}
+.svc,.step,.guar,.city,.rev-card,.about-card,.call-block,.stat{transition:transform .7s cubic-bezier(.16,1,.3,1),box-shadow .7s,border-color .7s,background .7s}
+.btn{transition:transform .55s cubic-bezier(.16,1,.3,1),box-shadow .55s,filter .55s,background .55s,color .55s}
+.c-action,.soc,.car-dot,.car-nav,.lb-nav,.lb-close,.menu a{transition:transform .5s cubic-bezier(.16,1,.3,1),background .5s,color .5s,box-shadow .5s,border-color .5s}
+.stat::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% -10%,rgba(236,207,160,.16),transparent 62%);transition:opacity .7s}
+.stat:hover::before{opacity:1}
+.city::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 120%,rgba(212,175,106,.18),transparent 62%);transition:opacity .7s}
+.city:hover::after{opacity:1}
+.panel--dark .bg::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(900px 420px at 50% -12%,rgba(212,175,106,.13),transparent 70%)}
+.about-card .avatar,.call-block{transition:transform .8s cubic-bezier(.16,1,.3,1),box-shadow .8s,border-color .8s}
+.about-card:hover .avatar{transform:translateY(-6px) scale(1.03)}
+.sec-head h2,.about-body h2,.contact-info h2,h2.k{transition:letter-spacing .8s cubic-bezier(.16,1,.3,1)}
+.sec-head.in h2{letter-spacing:.6px}
+.car-track{scroll-behavior:smooth}
+.car-slide img,.rev-photo img,.avatar img{transition:transform .9s cubic-bezier(.16,1,.3,1),opacity 1s cubic-bezier(.16,1,.3,1)}
+.svc svg,.guar .ico,.c-ico{transition:transform .7s cubic-bezier(.16,1,.3,1),filter .7s,box-shadow .7s}
+/* ====== финальные штрихи плавности ====== */
+a{transition:color .45s cubic-bezier(.16,1,.3,1),opacity .45s cubic-bezier(.16,1,.3,1)}
+img{transition:opacity 1s cubic-bezier(.16,1,.3,1),transform .95s cubic-bezier(.16,1,.3,1)}
+.car-nav{animation:navGlow 3.8s ease-in-out infinite}
+.gold-divider i{transition:transform 1.1s cubic-bezier(.16,1,.3,1),opacity 1.1s}
+.soc,.c-action,.car-dot,.lb-nav,.lb-close{will-change:transform}
+.panel .content{transition:transform .6s cubic-bezier(.16,1,.3,1)}
+.swipe-hint,.scroll-cue{transition:opacity .6s ease}
+.rev-head{transition:gap .5s cubic-bezier(.16,1,.3,1)}
+.rev-card:hover .rev-head{gap:18px}
+.step:hover .n,.stat:hover .num{transition:transform .8s cubic-bezier(.16,1,.3,1)}
+.svc:hover h3,.step:hover h3,.guar:hover h3,.city:hover .city-name{color:#fff}
 @media (prefers-reduced-motion: reduce){
  #goldParticles{display:none}.js .rv{opacity:1;transform:none;filter:none}
  #heroTitle.split .w,.cookie-bar.show,.lightbox.open .lb-stage img,.menu.open li{animation:none!important;opacity:1!important}
  .svc svg,.guar .ico,.c-ico,.step .n,.stat .num,.city .city-name,.call-block .cb-num,.about-card .avatar,.gold-divider b,.gold-divider i,.btn-solid::before,.cookie-bar .btn,.empty,.swipe-hint,.scroll-cue{animation:none!important}
 }
 @media (prefers-reduced-motion: reduce){
- header,.brand-ava-w,.banner,.menu a.active,footer .flogo,.sec-head h2,.about-body h2,.contact-info h2,h2.k,.eyebrow,.kicker,.rev-stars,[data-watermark]::before,.car-slide.pop,.rev-card.pop,.cta .btn-solid,.cookie-bar .btn{animation:none!important}
- .spark{display:none}
+ header,.brand-ava-w,.banner,.menu a.active,footer .flogo,.sec-head h2,.about-body h2,.contact-info h2,h2.k,.eyebrow,.kicker,.rev-stars,[data-watermark]::before,.car-slide.pop,.rev-card.pop,.cta .btn-solid,.cookie-bar .btn,body,.rev-ava-w::after{animation:none!important}
+ .spark{display:none}.js .rv,.js .reveal,.img-fade{opacity:1!important;transform:none!important;filter:none!important}
+ .car-nav,.rev-card .rev-head{animation:none!important}
 }
 </style>
 <style id="customCss">{{{design.custom_css}}}</style>
@@ -1116,7 +1156,7 @@ footer .flogo{background:linear-gradient(100deg,#fff 20%,var(--gold-soft) 55%,#f
       <div class="car-track rev-track" id="revTrack">
         {{#each reviews.items}}<div class="rev-card">
           <div class="rev-head">
-            {{#if this.avatar}}<img class="rev-ava" loading="lazy" decoding="async" width="50" height="50" src="{{this.avatar}}" alt="Отзыв: {{this.name}}">{{/if}}
+            <span class="rev-ava-w"><span class="rev-ava-txt" aria-hidden="true">{{this.initial}}</span>{{#if this.avatar}}<img class="rev-ava" loading="lazy" decoding="async" width="50" height="50" src="{{this.avatar}}" alt="Отзыв: {{this.name}}">{{/if}}</span>
             <div><div class="rev-name">{{this.name}}</div><div class="rev-sub">{{this.sub}}</div></div>
             {{#if this.stars}}<div class="rev-stars">{{this.stars|stars}}</div>{{/if}}
           </div>
@@ -1126,6 +1166,7 @@ footer .flogo{background:linear-gradient(100deg,#fff 20%,var(--gold-soft) 55%,#f
             </div>
           </div>{{/if}}
           <p class="rev-text">{{this.text|nl2br}}</p>
+          {{#if this.photo}}<div class="rev-photo"><img loading="lazy" decoding="async" src="{{this.photo}}" alt="Фото к отзыву {{this.name}}"></div>{{/if}}
         </div>
         {{/each}}
       </div>
@@ -1512,17 +1553,6 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
     }
   }
 
-  /* 5. Кнопка «наверх» */
-  var top=d.createElement('button');top.id='toTop';top.type='button';top.setAttribute('aria-label','Наверх');
-  top.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
-  d.body.appendChild(top);
-  top.addEventListener('click',function(){window.scrollTo({top:0,behavior:reduced?'auto':'smooth'});});
-  var tTick=false;
-  window.addEventListener('scroll',function(){
-    if(tTick)return;tTick=true;
-    requestAnimationFrame(function(){top.classList.toggle('show',window.scrollY>700);tTick=false;});
-  },{passive:true});
-
   /* 6. Лёгкий наклон карточек под курсором + магнитные кнопки */
   if(fine&&!reduced){
     all('.svc,.step,.guar,.city,.rev-card,.about-card,.call-block,.stat').forEach(function(card){
@@ -1554,6 +1584,23 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
       })();
     }
   }
+
+  /* 9. Плавное появление фото + аккуратная заглушка, если фото не открылось */
+  all('img').forEach(function(im){
+    if(im.classList.contains('rev-ava')||im.classList.contains('brand-ava')||im.closest('#lbStage'))return;
+    if(!reduced){im.classList.add('img-fade');}
+    function ready(){im.classList.remove('img-fade');im.classList.add('img-ready');}
+    function failed(){
+      if(im.classList.contains('rev-ava')){im.parentNode&&im.parentNode.removeChild(im);return;}
+      im.style.display='none';
+      var p=im.parentNode;
+      if(p&&!p.classList.contains('img-failed')){p.classList.add('img-failed');p.setAttribute('data-alt',im.getAttribute('alt')||'Фото');}
+    }
+    if(im.complete){ if(im.naturalWidth>0){ready();}else{failed();} }
+    im.addEventListener('load',ready);
+    im.addEventListener('error',failed);
+  });
+  setTimeout(function(){all('img.img-fade').forEach(function(im){im.classList.remove('img-fade');im.classList.add('img-ready');});},4000);
 
   /* 7. Искры от клика */
   d.addEventListener('click',function(e){
@@ -1588,7 +1635,7 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
       io2.observe(track);
     });
   }
-  console.log('%cКухни Островский · сборка 2026-10-06-v4 · анимации включены'+(reduced?' (у вас в системе отключена анимация — принудительно: добавьте ?anim=1 к адресу)':''),'color:#d4af6a');
+  console.log('%cКухни Островский · сборка 2026-10-06-v5 · анимации включены'+(reduced?' (у вас в системе отключена анимация — принудительно: добавьте ?anim=1 к адресу)':''),'color:#d4af6a');
 })();
 </script>
 {{{code.body}}}
@@ -1863,6 +1910,10 @@ def _normalize_context(data):
     fix_icons(contacts.get("lines"))
     fix_icons(contacts.get("buttons"))
     fix_icons((ctx.get("footer") or {}).get("socials"))
+    for r in ((ctx.get("reviews") or {}).get("items") or []):
+        if isinstance(r, dict):
+            nm = str(r.get("name") or "").strip()
+            r["initial"] = (nm[:1] or "О").upper()
     ctx["year"] = str(date.today().year)
     ctx["domain"] = _domain(ctx)
     ctx["favicon"] = favicon_source(ctx)
@@ -2858,13 +2909,14 @@ ADMIN_SCHEMA = [
      ],
      "lists": [
          {"path": "reviews.items", "label": "Отзывы", "titleField": "name",
-          "tpl": {"name": "", "sub": "", "stars": 5, "avatar": "", "text": "", "video": "", "poster": ""},
+          "tpl": {"name": "", "sub": "", "stars": 5, "avatar": "", "text": "", "video": "", "poster": "", "photo": ""},
           "item": [
               {"path": "name", "label": "Имя", "type": "text"},
               {"path": "sub", "label": "Что заказывали", "type": "text"},
               {"path": "stars", "label": "Звёзд (1-5)", "type": "text"},
               {"path": "avatar", "label": "Аватар", "type": "image"},
               {"path": "text", "label": "Текст отзыва", "type": "textarea", "rows": 4},
+              {"path": "photo", "label": "Фото к отзыву (необязательно)", "type": "image", "hint": "Покажется под текстом отзыва."},
               {"path": "video", "label": "Видео: ссылка для iframe (vk video_ext.php)", "type": "text"},
               {"path": "poster", "label": "Превью видео", "type": "image"},
           ]},
