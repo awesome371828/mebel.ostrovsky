@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-mebel.py — Кухни Островский. Один файл: сайт + админка + Supabase + AI.
-Все картинки грузятся напрямую из VK через браузер (referrerpolicy=no-referrer).
-"""
-
+"""mebel.py — Кухни Островский. Один файл: сайт + админка + Supabase + AI."""
 import base64, gzip, hashlib, hmac, html as _html, io, json, os, re, secrets, ssl, threading, time
 import urllib.error, urllib.parse, urllib.request, uuid
 from datetime import date
@@ -11,34 +7,27 @@ from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs
 
-# ============ КОНФИГ ============
 PORT = int(os.environ.get("PORT", "8080"))
 DOMAIN = os.environ.get("DOMAIN", "https://кухниостровский.рф").rstrip("/")
 ROOT = os.path.dirname(os.path.abspath(__file__))
-
 SUPABASE_URL = os.environ.get("SUPABASE_URL") or "https://hliafkrpvmntpctmqwfu.supabase.co"
 SUPABASE_ANON = os.environ.get("SUPABASE_ANON_KEY") or "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhsaWFma3Jwdm1udHBjdG1xd2Z1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyMDQ1NzYsImV4cCI6MjEwNjc4MDU3Nn0.yi57-Ty1iIfhnEh80_zvifhX1W_JX2qCl7QrARuJ2ns"
 SUPABASE_SERVICE = os.environ.get("SUPABASE_SERVICE_KEY") or "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhsaWFma3Jwdm1udHBjdG1xd2Z1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MTIwNDU3NiwiZXhwIjoyMTA2NzgwNTc2fQ.Yr4z9vx6kF9ZINNNUjUn43GYi-A2BmBfg8uyrOtmDWo"
 BUCKET = os.environ.get("SUPABASE_BUCKET", "site-images")
-
 ADMIN_LOGIN_ENV = os.environ.get("ADMIN_LOGIN", "кухниост")
 ADMIN_PASSWORD_ENV = os.environ.get("ADMIN_PASSWORD", "романкух")
-
 YANDEX_API_KEY = os.environ.get("YANDEX_API_KEY") or "AQVNyfn82epL9dy8C_kftzeypq6eF9lFd6SZnFzV"
 FOLDER_ID = os.environ.get("FOLDER_ID") or "b1g4aq87c7j61c6g3i5l"
 GIGACHAT_AUTH_KEY = os.environ.get("GIGACHAT_AUTH_KEY") or "MDFhMDBkNmEtMmExNC03M2JkLWFlZmMtOTQ0OWVlOTc5M2U1OmE1ZWJhM2NlLTQwYjAtNDZlYi1iMmY2LTE3OTFmYzhhYTQ2MA=="
 AI_PROVIDER = (os.environ.get("AI_PROVIDER", "auto") or "auto").lower()
-
 DATA_TABLE = os.environ.get("SUPABASE_TABLE", "site_content")
 SESSION_TTL = 604800
 MAX_UPLOAD = 8 * 1024 * 1024
 DATA_ROW_ID = 1
 CACHE_TTL = 15
 HTTP_TIMEOUT = 12
-
 FAVICON_URL = "https://sun9-71.vkuserphoto.ru/s/v1/ig2/vrD0P7wnU0dU8cSoW8yBUOc-naoKs1vJN5OXMrUFeAdLJQi9qfWScCGH9JV3-r4btxsDfbPh--pJ1tSjOlkfiVRw2Celdw.jpg?quality=95&cs=1254x0"
 
-# ============ АНИМАЦИИ ============
 ANIM_STYLE = """<style id="goldAnimations">
 @keyframes shimmerX{0%{background-position:-200% 0}100%{background-position:200% 0}}
 @keyframes goldGradient{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
@@ -46,27 +35,39 @@ ANIM_STYLE = """<style id="goldAnimations">
 @keyframes rippleAnim{to{transform:scale(4);opacity:0}}
 @keyframes glowPulse{0%,100%{text-shadow:0 0 10px rgba(236,207,160,.3)}50%{text-shadow:0 0 30px rgba(236,207,160,.8),0 0 60px rgba(212,175,106,.5)}}
 @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
-@keyframes floatCard{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes floatSlow{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(3deg)}}
 @keyframes fadeInSoft{from{opacity:0}to{opacity:1}}
+@keyframes pulseGlow{0%,100%{box-shadow:0 16px 42px rgba(212,175,106,.26)}50%{box-shadow:0 26px 70px rgba(236,207,160,.6)}}
+@keyframes ringPulse{0%,100%{transform:scale(.94);opacity:.35}50%{transform:scale(1.08);opacity:.75}}
+@keyframes playPulse{0%,100%{box-shadow:0 0 0 8px rgba(212,175,106,.14),0 0 30px rgba(212,175,106,.4)}50%{box-shadow:0 0 0 14px rgba(212,175,106,.08),0 0 44px rgba(212,175,106,.6)}}
+@keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+@keyframes hintArrow{0%,100%{transform:translateX(0);opacity:.5}50%{transform:translateX(7px);opacity:1}}
+@keyframes hintPulse{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.15)}}
+@keyframes fadeInUp{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
 h1,h2.k,.sec-head h2,.about-body h2,.contact-info h2,.cta h2{background-image:linear-gradient(90deg,#faf3e6 0%,#faf3e6 30%,#eccfa0 50%,#faf3e6 70%,#faf3e6 100%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;transition:background-position 1.6s ease;background-position:100% 0}
 h1 em,.shimmer,h1 em.shimmer{background-image:linear-gradient(90deg,#eccfa0,#fff 35%,#eccfa0 70%,#eccfa0 100%);background-size:220% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerX 4s linear infinite}
 .js .anim-visible h1,.js h1.anim-visible,.js .anim-visible h2,.js h2.anim-visible{background-position:0% 0}
-.js .stat,.js .svc,.js .step,.js .guar,.js .city,.js .car-slide,.js .rev-card,.js .about-card,.js .about-body,.js .call-block,.js .contact-info,.js .sec-head,.js .c-line,.js .features li,.js .btn-row .btn,.js .gold-divider,.js .swipe-hint{opacity:0;transform:translateY(30px);transition:opacity .9s cubic-bezier(.22,.61,.36,1),transform .9s cubic-bezier(.22,.61,.36,1)}
-.js .stat.anim-in,.js .svc.anim-in,.js .step.anim-in,.js .guar.anim-in,.js .city.anim-in,.js .car-slide.anim-in,.js .rev-card.anim-in,.js .about-card.anim-in,.js .about-body.anim-in,.js .call-block.anim-in,.js .contact-info.anim-in,.js .sec-head.anim-in,.js .c-line.anim-in,.js .features li.anim-in,.js .btn-row .btn.anim-in,.js .gold-divider.anim-in,.js .swipe-hint.anim-in{opacity:1;transform:translateY(0)}
-.js .stats .stat:nth-child(2){transition-delay:.12s}.js .stats .stat:nth-child(3){transition-delay:.24s}.js .stats .stat:nth-child(4){transition-delay:.36s}
-.js .svc-grid .svc:nth-child(2){transition-delay:.1s}.js .svc-grid .svc:nth-child(3){transition-delay:.2s}.js .svc-grid .svc:nth-child(4){transition-delay:.3s}.js .svc-grid .svc:nth-child(5){transition-delay:.4s}.js .svc-grid .svc:nth-child(6){transition-delay:.5s}
-.js .steps .step:nth-child(2){transition-delay:.1s}.js .steps .step:nth-child(3){transition-delay:.2s}.js .steps .step:nth-child(4){transition-delay:.3s}.js .steps .step:nth-child(5){transition-delay:.4s}.js .steps .step:nth-child(6){transition-delay:.5s}
-.js .guar-grid .guar:nth-child(2){transition-delay:.12s}.js .guar-grid .guar:nth-child(3){transition-delay:.24s}.js .guar-grid .guar:nth-child(4){transition-delay:.36s}
-.js .city-grid .city:nth-child(2){transition-delay:.14s}.js .city-grid .city:nth-child(3){transition-delay:.28s}
-.js .features li:nth-child(2){transition-delay:.1s}.js .features li:nth-child(3){transition-delay:.2s}.js .features li:nth-child(4){transition-delay:.3s}
+.js .stat,.js .svc,.js .step,.js .guar,.js .city,.js .car-slide,.js .rev-card,.js .about-card,.js .about-body,.js .call-block,.js .contact-info,.js .sec-head,.js .c-line,.js .features li,.js .btn-row .btn,.js .gold-divider,.js .swipe-hint{opacity:0;transform:translateY(70px) scale(.94);filter:blur(6px);transition:opacity 1.2s cubic-bezier(.22,.61,.36,1),transform 1.2s cubic-bezier(.22,.61,.36,1),filter 1.2s ease}
+.js .stat.anim-in,.js .svc.anim-in,.js .step.anim-in,.js .guar.anim-in,.js .city.anim-in,.js .car-slide.anim-in,.js .rev-card.anim-in,.js .about-card.anim-in,.js .about-body.anim-in,.js .call-block.anim-in,.js .contact-info.anim-in,.js .sec-head.anim-in,.js .c-line.anim-in,.js .features li.anim-in,.js .btn-row .btn.anim-in,.js .gold-divider.anim-in,.js .swipe-hint.anim-in{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+.js .stats .stat:nth-child(1){transition-delay:.05s}.js .stats .stat:nth-child(2){transition-delay:.18s}.js .stats .stat:nth-child(3){transition-delay:.31s}.js .stats .stat:nth-child(4){transition-delay:.44s}
+.js .svc-grid .svc:nth-child(1){transition-delay:.05s}.js .svc-grid .svc:nth-child(2){transition-delay:.15s}.js .svc-grid .svc:nth-child(3){transition-delay:.25s}.js .svc-grid .svc:nth-child(4){transition-delay:.35s}.js .svc-grid .svc:nth-child(5){transition-delay:.45s}.js .svc-grid .svc:nth-child(6){transition-delay:.55s}
+.js .steps .step:nth-child(1){transition-delay:.05s}.js .steps .step:nth-child(2){transition-delay:.15s}.js .steps .step:nth-child(3){transition-delay:.25s}.js .steps .step:nth-child(4){transition-delay:.35s}.js .steps .step:nth-child(5){transition-delay:.45s}.js .steps .step:nth-child(6){transition-delay:.55s}
+.js .guar-grid .guar:nth-child(1){transition-delay:.05s}.js .guar-grid .guar:nth-child(2){transition-delay:.17s}.js .guar-grid .guar:nth-child(3){transition-delay:.29s}.js .guar-grid .guar:nth-child(4){transition-delay:.41s}
+.js .city-grid .city:nth-child(1){transition-delay:.05s}.js .city-grid .city:nth-child(2){transition-delay:.19s}.js .city-grid .city:nth-child(3){transition-delay:.33s}
+.js .features li:nth-child(1){transition-delay:.05s}.js .features li:nth-child(2){transition-delay:.14s}.js .features li:nth-child(3){transition-delay:.23s}.js .features li:nth-child(4){transition-delay:.32s}
 .btn{position:relative;overflow:hidden;transform:translateZ(0)}
 .btn .ripple-el{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.55),transparent 70%);transform:scale(0);animation:rippleAnim .8s ease-out forwards;pointer-events:none}
-.btn-solid{background-size:200% 200%;animation:goldGradient 6s ease infinite}
+.btn-solid{background-size:200% 200%;animation:goldGradient 6s ease infinite,pulseGlow 3.6s ease-in-out infinite}
 #goldParticles{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
-#goldParticles span{position:absolute;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,rgba(236,207,160,.9),rgba(212,175,106,.4) 40%,transparent 70%);box-shadow:0 0 12px rgba(236,207,160,.55);animation:particleFloat linear infinite}
+#goldParticles span{position:absolute;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,rgba(236,207,160,.95),rgba(212,175,106,.4) 40%,transparent 70%);box-shadow:0 0 14px rgba(236,207,160,.7);animation:particleFloat linear infinite}
 .svc svg,.guar .ico,.c-ico,.vb-play,.soc svg{transition:transform .55s cubic-bezier(.34,1.56,.64,1),filter .35s,box-shadow .35s}
-.svc:hover svg{transform:scale(1.18) rotate(-8deg);filter:drop-shadow(0 0 12px rgba(236,207,160,.9))}
-.guar:hover .ico{transform:scale(1.18) rotate(8deg);box-shadow:0 0 30px rgba(236,207,160,.5)}
+.svc svg{animation:floatSlow 5s ease-in-out infinite}
+.svc:nth-child(2n) svg{animation-delay:-2.5s}
+.guar .ico{animation:floatSlow 6s ease-in-out infinite}
+.guar:nth-child(2n) .ico{animation-delay:-3s}
+.svc:hover svg{transform:scale(1.22) rotate(-10deg);filter:drop-shadow(0 0 16px rgba(236,207,160,1))}
+.guar:hover .ico{transform:scale(1.22) rotate(10deg);box-shadow:0 0 36px rgba(236,207,160,.7)}
 .c-line:hover .c-ico{transform:scale(1.16) rotate(-6deg);box-shadow:0 0 22px rgba(236,207,160,.55)}
 .rev-stars{background:linear-gradient(90deg,#eccfa0,#fff 50%,#eccfa0 100%);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerX 3s linear infinite}
 .eyebrow,.kicker,.sec-head .kicker,.about-body .kicker,.contact-info .kicker{background:linear-gradient(90deg,rgba(236,207,160,.85),#fff 50%,rgba(236,207,160,.85));background-size:220% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerX 4.5s linear infinite}
@@ -74,238 +75,148 @@ h1 em,.shimmer,h1 em.shimmer{background-image:linear-gradient(90deg,#eccfa0,#fff
 .car-slide:hover img{transform:scale(1.12)}
 .gold-divider b{animation:glowPulse 2.8s ease-in-out infinite}
 .logo .brand-ava-w::before{animation:ringPulse 3.6s ease-in-out infinite,breathe 4s ease-in-out infinite}
-.avatar,.rev-ava{animation:fadeInSoft .8s ease}
-.stat,.svc,.step,.guar,.city{will-change:transform,opacity}
-.stat:hover,.svc:hover,.step:hover,.guar:hover,.city:hover{animation:floatCard 3s ease-in-out infinite}
-.rev-card:hover,.about-card:hover{box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 40px rgba(212,175,106,.15)}
+.brand-ava{animation:breathe 5s ease-in-out infinite}
+.avatar,.rev-ava{animation:fadeInSoft .9s ease}
+.stat .num{transition:transform .6s cubic-bezier(.34,1.56,.64,1)}
+.stat:hover .num{transform:scale(1.08)}
+.vb-play{animation:playPulse 2.4s ease-in-out infinite}
+.car-dot.active{animation:pulseGlow 2.4s ease-in-out infinite}
+.hero-glow{animation:breathe 8s ease-in-out infinite}
 .panel .bg{transition:transform 1.2s cubic-bezier(.22,.61,.36,1)}
-.panel .bg-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block}
-.hero-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(236,207,160,.08),transparent 65%);pointer-events:none;z-index:1;animation:breathe 8s ease-in-out infinite}
-@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}}
+.panel .bg-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;z-index:0}
+.scroll-cue .line{animation:drip 2.4s infinite}
+.swipe-hint::after{animation:hintArrow 1.4s ease-in-out infinite}
+.panel--hero .bg-img{animation:kenburns 22s ease-in-out infinite alternate}
 </style>"""
 
 ANIM_SCRIPT = """<script id="goldAnimationScript">
 (function(){
   var SEL='.stat,.svc,.step,.guar,.city,.car-slide,.rev-card,.about-card,.about-body,.call-block,.contact-info,.sec-head,.c-line,.features li,.btn-row .btn,.gold-divider,.swipe-hint';
   function showAll(){var n=document.querySelectorAll(SEL);for(var i=0;i<n.length;i++)n[i].classList.add('anim-in')}
-  if(!('IntersectionObserver' in window)){showAll();document.documentElement.classList.remove('js');return;}
-  if(matchMedia('(prefers-reduced-motion: reduce)').matches){showAll();document.documentElement.classList.remove('js');return;}
+  if(!('IntersectionObserver' in window)){showAll();return;}
   try{
-    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('anim-in');io.unobserve(e.target)}})},{threshold:0.12});
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('anim-in');io.unobserve(e.target)}})},{threshold:0.08,rootMargin:'0px 0px -60px 0px'});
     document.querySelectorAll(SEL).forEach(function(el){io.observe(el)});
-    var headIo=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('anim-visible');headIo.unobserve(e.target)}})},{threshold:0.5});
+    var headIo=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('anim-visible');headIo.unobserve(e.target)}})},{threshold:0.3});
     document.querySelectorAll('h1,h2.k,.sec-head h2,.about-body h2,.contact-info h2,.cta h2').forEach(function(el){headIo.observe(el)});
   }catch(err){showAll()}
-  setTimeout(showAll,3000);
-  (function(){var c=document.createElement('div');c.id='goldParticles';document.body.appendChild(c);var n=window.innerWidth<700?14:28;for(var i=0;i<n;i++){var s=document.createElement('span');var sz=3+Math.random()*5;s.style.width=sz+'px';s.style.height=sz+'px';s.style.left=(Math.random()*100)+'%';s.style.animationDuration=(14+Math.random()*18)+'s';s.style.animationDelay=(-Math.random()*20)+'s';s.style.opacity=(0.35+Math.random()*0.55);c.appendChild(s)}})();
+  setTimeout(showAll,2500);
+  (function(){var c=document.createElement('div');c.id='goldParticles';document.body.appendChild(c);var n=window.innerWidth<700?18:36;for(var i=0;i<n;i++){var s=document.createElement('span');var sz=3+Math.random()*6;s.style.width=sz+'px';s.style.height=sz+'px';s.style.left=(Math.random()*100)+'%';s.style.animationDuration=(12+Math.random()*16)+'s';s.style.animationDelay=(-Math.random()*20)+'s';s.style.opacity=(0.4+Math.random()*0.6);c.appendChild(s)}})();
   document.addEventListener('click',function(e){var btn=e.target.closest('.btn, .c-action, .car-dot, .soc');if(!btn)return;var r=btn.getBoundingClientRect();var rp=document.createElement('span');rp.className='ripple-el';var s=Math.max(r.width,r.height);rp.style.width=s+'px';rp.style.height=s+'px';rp.style.left=(e.clientX-r.left-s/2)+'px';rp.style.top=(e.clientY-r.top-s/2)+'px';btn.appendChild(rp);setTimeout(function(){rp.remove()},850)},{passive:true});
   var fine=matchMedia('(hover:hover) and (pointer:fine)').matches;
   if(fine){
-    document.querySelectorAll('.btn-solid, .c-action.c-call').forEach(function(btn){btn.addEventListener('mousemove',function(e){var r=btn.getBoundingClientRect();var dx=(e.clientX-r.left-r.width/2)/r.width;var dy=(e.clientY-r.top-r.height/2)/r.height;btn.style.transform='translate('+(dx*5)+'px,'+(dy*5-3)+'px)'});btn.addEventListener('mouseleave',function(){btn.style.transform=''})});
-    document.querySelectorAll('.car-slide').forEach(function(slide){var img=slide.querySelector('img');if(!img)return;slide.addEventListener('mousemove',function(e){var r=slide.getBoundingClientRect();var dx=(e.clientX-r.left)/r.width-.5;var dy=(e.clientY-r.top)/r.height-.5;img.style.transform='scale(1.12) translate('+(dx*10)+'px,'+(dy*10)+'px)'});slide.addEventListener('mouseleave',function(){img.style.transform=''})});
+    document.querySelectorAll('.btn-solid, .c-action.c-call').forEach(function(btn){btn.addEventListener('mousemove',function(e){var r=btn.getBoundingClientRect();var dx=(e.clientX-r.left-r.width/2)/r.width;var dy=(e.clientY-r.top-r.height/2)/r.height;btn.style.transform='translate('+(dx*6)+'px,'+(dy*6-4)+'px)'});btn.addEventListener('mouseleave',function(){btn.style.transform=''})});
+    document.querySelectorAll('.car-slide').forEach(function(slide){var img=slide.querySelector('img');if(!img)return;slide.addEventListener('mousemove',function(e){var r=slide.getBoundingClientRect();var dx=(e.clientX-r.left)/r.width-.5;var dy=(e.clientY-r.top)/r.height-.5;img.style.transform='scale(1.12) translate('+(dx*12)+'px,'+(dy*12)+'px)'});slide.addEventListener('mouseleave',function(){img.style.transform=''})});
     var bgs=document.querySelectorAll('.panel .bg');var ticking=false;
-    function updateBgs(){if(ticking)return;ticking=true;requestAnimationFrame(function(){bgs.forEach(function(bg){var r=bg.parentElement.getBoundingClientRect();var center=r.top+r.height/2;var offset=(center-window.innerHeight/2)/window.innerHeight;bg.style.transform='translateY('+(-offset*25)+'px) scale('+(1+Math.abs(offset)*0.05)+')'});ticking=false})}
+    function updateBgs(){if(ticking)return;ticking=true;requestAnimationFrame(function(){bgs.forEach(function(bg){var r=bg.parentElement.getBoundingClientRect();var center=r.top+r.height/2;var offset=(center-window.innerHeight/2)/window.innerHeight;bg.style.transform='translateY('+(-offset*30)+'px) scale('+(1+Math.abs(offset)*0.06)+')'});ticking=false})}
     window.addEventListener('scroll',updateBgs,{passive:true});updateBgs();
   }
-  document.querySelectorAll('#top .eyebrow, #top h1, #top .sub, #top .btn-row').forEach(function(el,i){el.style.opacity='0';el.style.transform='translateY(30px)';el.style.transition='opacity 1s cubic-bezier(.22,.61,.36,1), transform 1s cubic-bezier(.22,.61,.36,1)';setTimeout(function(){el.style.opacity='1';el.style.transform='none'},200+i*180)});
+  document.querySelectorAll('#top .eyebrow, #top h1, #top .sub, #top .btn-row').forEach(function(el,i){el.style.opacity='0';el.style.transform='translateY(40px)';el.style.transition='opacity 1.1s cubic-bezier(.22,.61,.36,1), transform 1.1s cubic-bezier(.22,.61,.36,1)';setTimeout(function(){el.style.opacity='1';el.style.transform='none'},250+i*200)});
 })();
 </script>"""
 
-# ============ DEFAULT_DATA ============
 DEFAULT_DATA = {
- 'seo': {
-  'title': 'Кухни Островский — кухни на заказ в Ростове, Батайске и Азове | Мебель под ключ',
-  'keywords': 'кухни остров, кухни островский, кухни островского, кухни островский ростов, кухни ростов островский, кухни батайск островский, кухни азов островский, кухни на заказ ростов, кухни на заказ батайск, кухни на заказ азов, мебель островского, мебель на заказ ростов, корпусная мебель, шкафы купе, гардеробные, прихожие, кухни под ключ, мебель островский',
-  'og_image': 'https://sun9-71.vkuserphoto.ru/s/v1/ig2/vrD0P7wnU0dU8cSoW8yBUOc-naoKs1vJN5OXMrUFeAdLJQi9qfWScCGH9JV3-r4btxsDfbPh--pJ1tSjOlkfiVRw2Celdw.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1254x1254&from=bu&u=-mZnLUrNq7bsSRyuT0gwpcYkWHU9MA-lwwC3ZYRE2Uw&cs=1254x0',
-  'description': 'Кухни на заказ в Ростове-на-Дону, Батайске и Азове от мастерской «Кухни Островский». Бесплатный замер и 3D-проект, собственное производство, монтаж под ключ. ☎ +7 (950) 846-53-97',
-  'og_title': 'Кухни Островский — кухни и корпусная мебель на заказ',
-  'og_description': 'Кухни, шкафы и гардеробные под ключ в Ростове-на-Дону, Батайске и Азове. Бесплатный замер и 3D-проект.',
-  'domain': 'https://кухниостровский.рф',
-  'canonical': 'https://кухниостровский.рф/',
-  'yandex_verification': 'f7e96d07aee79bf3',
-  'google_verification': 'dNSAELu64Y7aK5sjz_zpmhoz6YKn2PIZ03UKPwrgnCI',
-  'metrika_id': '', 'robots': '', 'extra_urls': []
- },
- 'code': {'head': '', 'body': ''},
- 'design': {
-  'bg': '#0e0c09', 'gold': '#d4af6a', 'gold_soft': '#eccfa0', 'gold_deep': '#a37c3f',
-  'text': '#f5efe3', 'muted': '#b9ad9a',
-  'fonts_url': 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Manrope:wght@300;400;500;600;700;800&display=swap',
-  'custom_css': ''
- },
- 'brand': {
-  'vk': 'https://vk.com/mebel.ostrovsky', 'sub': 'Ростов · Батайск · Азов',
-  'name': 'Кухни Островский', 'phone': '+7 (950) 846-53-97',
-  'logo_url': 'https://sun9-71.vkuserphoto.ru/s/v1/ig2/vrD0P7wnU0dU8cSoW8yBUOc-naoKs1vJN5OXMrUFeAdLJQi9qfWScCGH9JV3-r4btxsDfbPh--pJ1tSjOlkfiVRw2Celdw.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1254x1254&from=bu&u=-mZnLUrNq7bsSRyuT0gwpcYkWHU9MA-lwwC3ZYRE2Uw&cs=1254x0',
-  'telegram': 'https://t.me/fanny161', 'phone_raw': '+79508465397'
- },
- 'nav': {
-  'items': [{'label':'Специалист','href':'#about'},{'label':'Работы','href':'#works'},{'label':'Отзывы','href':'#reviews'},{'label':'Услуги','href':'#services'},{'label':'Как работаем','href':'#process'},{'label':'Города','href':'#cities'},{'label':'Контакты','href':'#contacts'}],
-  'cta_label': 'Позвонить', 'cta_href': 'tel:+79508465397'
- },
- 'hero': {
-  'bg': 'https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x241,480x321,540x361,640x428,720x481,1080x722,1280x855,1440x962,2560x1711&from=bu&u=udyioV6Vl_ghNhYbFZ9zjc-ZU_IjlhkVV114xfpUZJs&cs=640x0',
-  'sub': 'Проектируем и изготавливаем кухни, шкафы, гардеробные и другую корпусную мебель в Ростове, Батайске и Азове — по вашему проекту, от замера до монтажа.',
-  'btn1': 'Получить консультацию', 'btn2': 'Смотреть работы',
-  'eyebrow': 'Мебель и кухни на заказ', 'title_em': 'создаёт настроение', 'title_before': 'Мебель, которая ',
-  'btn1_href': '#consult', 'btn2_href': '#works'
- },
- 'stats': {
-  'bg': 'https://sun9-20.vkuserphoto.ru/s/v1/ig2/9W8TzKo3y8t8-s63NRmlys3yJtHJAKPBOp2QIyuqMSTinG9q-UFuD5sYkz4wbd7QZDv7wQxsZlldmCrAM-PzPlDJ.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,1800x1200&from=bu&u=kySpH3qK1oaqlWr8kbrP_y7iDDbASMEGWuJ5dgxf5MU&cs=1080x0',
-  'items': [
-   {'prefix':'','num':'10','suffix':'+','decimal':'','label':'лет опыта'},
-   {'prefix':'','num':'5','suffix':'','decimal':'1','label':'средняя оценка клиентов'},
-   {'prefix':'','num':'8','suffix':'/10','decimal':'','label':'клиентов по рекомендации'},
-   {'prefix':'','num':'100','suffix':'%','decimal':'','label':'полный цикл под ключ'}
-  ]
- },
- 'about': {
-  'bg': 'https://sun9-50.vkuserphoto.ru/s/v1/ig2/_uJbJ-Gw0zJ3jVPyc4QJRGUErYM5zju63UDQM6FFDezILgQ54i5ycLVvhgSHl5hHPVIKikt0AL9V6DrmqDH7G5C6.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2208x1656&from=bu&u=9_d3vo4cDIif_5OxDZbDgMLFC1xuAQSKRY1zAPscIwM&cs=1280x0',
-  'name': 'Роман Островский', 'role': 'Руководитель мебельной мастерской Островского',
-  'photo': 'https://i.ibb.co/mVchNnp1/photo-2026-09-10-18-48-37.jpg',
-  'title': 'Кухни и мебель под ключ — с заботой о деталях', 'kicker': 'О руководителе',
-  'features': ['Кухни, шкафы, гардеробные и прихожие','Честный расчёт — без навязывания лишнего','Аккуратность, пунктуальность, сопровождение','Гарантия качества'],
-  'card_text': 'С командой изготавливаем кухни и корпусную мебель по индивидуальным проектам — с учётом ваших идей, размеров и задач.',
-  'text': 'Мы помогаем с планировкой и подбором материалов, предлагаем решения даже для сложных задач — когда другие разводят руками. Ведём вас от консультации и замера до сборки и установки.'
- },
- 'consult': {
-  'bg': 'https://sun9-41.vkuserphoto.ru/s/v1/ig2/qi7m_VnJPio2P4oKJhNr6X-9HJD2kCt6f98XGtveyiAxhJ4ru17yVoibjERFJ4-ZWDOm8Lr7xGMwRP6dSudvgPnG.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&u=myRGe7iEVeLqDstzbpBsld7P0jp7l04_xCLynpcz4So&cs=1280x0',
-  'text': 'Позвоните или напишите нам в Telegram или MAX — расскажем про кухни и мебель, всё обсудим и договоримся о бесплатном замере.',
-  'title': 'Консультация', 'kicker': 'Бесплатно', 'phone': '+7 (950) 846-53-97', 'phone_raw': '+79508465397'
- },
- 'works': {
-  'bg': 'https://sun9-32.vkuserphoto.ru/s/v1/ig2/ipQDYrxkEiu9wFqxHUIJNhf4YERP29pOrzOhJ2hTcO6Z-fqWBrPA9D1vCltHlp9RltkldMRefKPMMkB8aD8jhZfR.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,2560x1707&from=bu&u=q3wKCscaGbBU8n3umOUNA0wOvLkQBDAVXIkzDrivHgk&cs=1280x0',
-  'items': [
-   {'alt':'Кухня на заказ в Ростове','url':'https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x241,480x321,540x361,640x428,720x481,1080x722,1280x855,1440x962,2560x1711&from=bu&u=udyioV6Vl_ghNhYbFZ9zjc-ZU_IjlhkVV114xfpUZJs&cs=640x0'},
-   {'alt':'Кухня на заказ в Батайске','url':'https://sun9-8.vkuserphoto.ru/s/v1/ig2/AoDEQQq8KCsEBOBqdk9RRlULuWjVVgCUagW7IM8b_22MwfOkqLPub-TPecVvAY3Ke9SQAv0kJ2TNClg7D6J-A8exIN_BuA.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,1800x1200&from=bu&u=xBWfVkxER60DRx2RPw1WHR9rn8qTl1UR9ISeVZcgPwg&cs=640x0'},
-   {'alt':'Кухня на заказ в Азове','url':'https://sun9-16.vkuserphoto.ru/s/v1/ig2/ixSL4F3j2Ap0i5_nVXsAKJNZZNAI7zoUPBfzKGHoj3gghnjX-hMD-JRLJaSlCoWevjw84ikJrGOfVeMqWyZ7ftzM.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1280x1280,1440x1440,2304x2304&from=bu&u=Hi5Fq7gERANWB1IvzcabCXeXmxxxNUnpsZZcwxzz4Uw&cs=640x0'},
-   {'alt':'Мебель на заказ в Ростове','url':'https://sun9-6.vkuserphoto.ru/s/v1/ig2/JKHhwxCxe9S8QiEr0nEM-BhAyX2i0e3uIKGPBdi__ZkSecHlRyd93LMhVldSePb2ePDSA6kgE41mw1rNGCHoKdAnBE3sGg.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,2560x1707&from=bu&u=x10vDKxOA2tCTtvYOJ9020Oa_0vK-gO85qQ9ePr3Sio&cs=640x0'},
-   {'alt':'Кухня на заказ','url':'https://sun9-4.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,2560x1707&from=bu&u=Nvm4RvDsPWiWKPcNY4MqobV8Bzui8CgGtcwB8fhQDqA&cs=640x0'},
-   {'alt':'Шкаф-купе на заказ','url':'https://sun9-71.vkuserphoto.ru/s/v1/ig2/4XeUobSuuxA-pHVDGYziNB5aAnUsbLzt1Bgi8TtDa5yKbWt2yRxo8Egt_2a_Sz_jAYg1f2sxfOOy-ngKWvlDbjuqyHjSaQ.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&u=FR7AP1mjCAEcKAjTUpmgUXVIbDqMTCaV2XHXrDjnsaM&cs=1080x0'},
-   {'alt':'Мебель на заказ в Батайске','url':'https://sun9-39.vkuserphoto.ru/s/v1/ig2/xiwu_WFFyjmJc4_VAOD1BHikAdMqBy9N-SuKyiWu7xC8OYE-pfhtW5GkOyO5No0KjOrNQUwcgOW3Gr2bCnjvFp2H.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=VpmAnVyzkXcBCcJLy2DSlVkJJG2zYnSPbLzk7-TXGGk&cs=540x0'},
-   {'alt':'Кухня на заказ','url':'https://sun9-50.vkuserphoto.ru/s/v1/ig2/C_b5sF8D1xkYdXe0s1BPq0c52G5b_U0r8MpWIaYYJzh9CXIE4qk0Q3rnZh2FuNZhpnp78BBveTceOk2Js-tECU_z.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=YCey971XM2nuNjhkwSaIOfPMTMneMAyHLaPyHT4mLyY&cs=2560x0'},
-   {'alt':'Кухня на заказ','url':'https://sun9-16.vkuserphoto.ru/s/v1/ig2/_AK_Czw9ThnFAWSmhSfPYvg9RvHW0QYDGS9DhqW75-oe2hQSjQob1DbdypL9Hx3wBn09V3pUvlfCN6Efcbojr7T81tfxQQ.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=nJxYjuRlnA-5zI6wLLGQAWZA3D28y3FozWX9Lt_c7hQ&cs=540x0'},
-   {'alt':'Мебель на заказ','url':'https://sun9-65.vkuserphoto.ru/s/v1/ig2/X4rCpkIxEZW50prB2rGftYiyGQpOQ3E_QQl-211zjBdRmXjKBx5Si91JffsT0LxA1oPbjqueZA0oI1diMrJIRBFMkYuglw.jpg?quality=95&as=32x25,48x37,72x56,108x84,160x124,240x186,360x279,480x372,540x419,640x496,720x558,1080x837,1280x992,1440x1117,2560x1985&from=bu&u=AkkVsl6OGh2zXPquIZAnWBgglzMZurNFJTsT_Gmceiw&cs=540x0'},
-   {'alt':'Кухня на заказ в Батайске','url':'https://sun9-40.vkuserphoto.ru/s/v1/ig2/6mMk6psQJqaVgakjpP8A0DWbiwzLbWcoj3Gxz_Om-TUclffQ0Ic3VfIW1-fA1hDVhIHu6cqb3QifLlY7mNhIvynD.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2450x1838&from=bu&u=VjAzanpxFEJgraidqUpXWR5EqjEzuffXEUVvjgoVjrE&cs=540x0'},
-   {'alt':'Мебель на заказ','url':'https://sun9-72.vkuserphoto.ru/s/v1/ig2/NEuGxEzenp7yiZvM8YDHtxZdKGuEE4RvCN46VZcwJR0oWlxofxoJAu0QLcnyALApDuTlQ_exYkbXwlk4iu00Z5UBO0cfeQ.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x319,360x478,480x638,540x718,640x851,720x957,1080x1436,1280x1701,1440x1914,1926x2560&from=bu&u=lvIk2iwchHkWHCSIv-jhCB1idqUsfpO2CVjs3OxL-u0&cs=640x0'},
-   {'alt':'Кухня на заказ','url':'https://sun9-40.vkuserphoto.ru/s/v1/ig2/rA9HFBKMnfFIVA28MtcyfJNKYeenK9q0xNcFimhjyZhCsOgl_QUYo8FRlHhpkZroHhqfIdCWMKV476q_reTRf3a341bQyA.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1200x1600&from=bu&u=qEc7bVmCiRSShSpucxSXh4goIyyXAVULZ-iPIInq_x8&cs=640x0'},
-   {'alt':'Кухня на заказ','url':'https://sun9-56.vkuserphoto.ru/s/v1/ig2/_T-Vhn73AJldw70Jxj_hZ9GbeGonrHRdbUUgTMk3T0A3wmwmLdlqPLry0AHGdd1gi0t46exXUpHT-KcFycxQVkfuyGb5SA.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,1600x1200&from=bu&u=12zCsrGnvSg4ptA7clGDI6gvnN-L7bDoOSbcHm04HXo&cs=540x0'},
-   {'alt':'Шкаф-купе на заказ','url':'https://sun9-87.vkuserphoto.ru/s/v1/ig2/WHkPw7TZze6TV4t2q6Yr2pw61S1zWDeDyp8Dbe2IFm31aAuhXVSQ2DUTnM6AIt5u3cLTp9mh-YN2b_Lb0q5iHCFu.jpg?quality=95&as=32x40,48x60,72x90,108x134,160x199,240x298,360x448,480x597,540x671,640x796,720x895,1080x1343,1280x1591,1440x1790,2059x2560&from=bu&u=bQW477ZK7yLopHDa2oCbH-uA483cvDm58BTlNs29AoE&cs=640x0'}
-  ],
-  'title': 'Кухни и мебель, которые мы сделали', 'kicker': 'Наши работы',
-  'subtitle': 'Нажмите на фото, чтобы рассмотреть в большом размере.', 'hint': 'Листайте'
- },
- 'reviews': {
-  'bg': 'https://sun9-4.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,2560x1707&from=bu&u=Nvm4RvDsPWiWKPcNY4MqobV8Bzui8CgGtcwB8fhQDqA&cs=640x0',
-  'items': [
-   {'sub':'Кухня на заказ','name':'Виктория Брандикова',
-    'text':'Заказывали у Романа кухню, всё прошло на высшем уровне, начиная от замеров, до установки! Мы очень рады, что обратились именно к нему (нашли в объявлении и нам крупно повезло), Роман супер профессионал своего дела!!! Кухня у нас маленькая, не стандартная, сверху выступы, вся на трубах, расположение мойки и кухонной плиты не удобное и вытяжку мы хотели, но нам некуда было её устанавливать (как мы думали), но Роман всё разрешил, практично разместил технику (в том числе и вытяжку), переставил мойку, установил подсветку сделал кухню функциональной светлой, практичной и современной. Кухня была готова в короткие сроки, установкой очень довольны, всё под ключ с установкой техники и подключением, всё быстро, качественно, и чисто! Мы не ожидали такого результата, просто не верится, что у нас теперь удобная, вместительная, современная кухня, о такой даже и не мечтали, даже несмотря на то, что кухня бюджетная. За мебелью теперь только к Роману!!! Однозначно всем буду рекомендовать!!!',
-    'stars':5,'video':'','avatar':'https://sun9-3.vkuserphoto.ru/s/v1/ig2/-cVZEipS5I4ROZUZ2fxoIaGJBZXpUs76_WKoUZpPw_r2-gnqqUvgTqjLjYoTZ0R21nsCSvjUPyw_vSn1jxAYJC8K.jpg?quality=95&as=32x30,48x45,72x68,108x101,160x150,240x225,360x338,480x450,540x507,640x601,720x676,1080x1014,1280x1201,1440x1351,2505x2351&from=bu&cs=128x0'},
-   {'sub':'Кухня и гардеробная','name':'Виктория Маренко',
-    'text':'И вновь мы обратились к Роману! Понадобилась кухня. Кухня на самом деле очень удобная! Как и хотелось она светлая, но не маркая. Как всегда учтены все пожелания и воплощены в жизнь! Очень трудно нам дался выбор цветов, но Роман спокойно вынес все наши метания, выполнил работу достойно, внимательно и аккуратно! Однозначно советую обращаться к нему. Гардеробную так же заказывали у Романа, и она идеальна! Ответственный подход, качество, внимательность и чистота исполнения - его качества, которые для нас важны.',
-    'stars':5,'video':'','avatar':'https://sun9-41.vkuserphoto.ru/s/v1/ig2/qi7m_VnJPio2P4oKJhNr6X-9HJD2kCt6f98XGtveyiAxhJ4ru17yVoibjERFJ4-ZWDOm8Lr7xGMwRP6dSudvgPnG.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&u=myRGe7iEVeLqDstzbpBsld7P0jp7l04_xCLynpcz4So&cs=1280x0'},
-   {'sub':'Шкаф, тумбы, прихожая','name':'Любовь Петелько',
-    'text':'Всем здравствуйте. Я заказала у Романа шкаф купе в спальню. Когда Роман приехал, я не совсем понимала что я хочу, пообщавшись с ним, получила много советов и рекомендаций по составу и цвету шкафа. В итоге решила в комплект заказать сразу тумбы, гарнитур под телевизор, и прихожую. Установили все раньше обещанного срока. Я очень довольна и всем рекомендую. Роман специалист своего дела. Скоро буду заказывать зону хранения балкона и самое главное кухню мечты. Спасибо!',
-    'stars':5,'video':'','avatar':'https://sun9-53.vkuserphoto.ru/s/v1/ig2/gZheSpaWhz7StIdwlzSoCIfA01e-x8jVUMESDK2u9ONRR1s3txB-b6F7lqLLj-Y6QFqFU5x463yoWmnTxf5T88g2.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&cs=128x0'},
-   {'sub':'Шкаф и стенка','name':'Дмитрий Юшенко',
-    'text':'Заказывали у Романа шкаф и стенку в спальню. Работа вышла отличной, подсказал несколько удачных решений наших хотелок. Все супер! Спасибо!',
-    'stars':5,'video':'','avatar':'https://sun9-83.vkuserphoto.ru/s/v1/ig2/zYO0FQ_fFsgxDWhaTE85lNpixn2ikScuD58qVoXtqda8vFxoS-LGsT54k9pk9tDVEpzGpJfCw5eg5TNtYgE2Q8_y.jpg?quality=95&as=32x47,48x71,72x106,108x159,160x236,240x353,360x530,480x707,540x795,640x943,720x1061,869x1280&from=bu&cs=1280x0'},
-   {'sub':'Кухня на заказ','name':'Екатерина Умнягина',
-    'text':'Заказывали у Романа кухню, всё очень понравилось! Подбирали всё до мелочей, и Рома всё исполнил, как мы хотели, за это мы ему очень благодарны. Всё сделано идеально, спрятали то, что не должно быть видно, и получилось очень красиво. Спасибо, Рома, за эту крутую современную кухню!!!',
-    'stars':5,'video':'','avatar':'https://sun9-46.vkuserphoto.ru/s/v1/ig2/bVm2vnJWOD92dzHJ3_21NbqhcwF7DW7a05XzjaTWteG9Dviu9nt8LlA5bgzdbsBhGtYbrs7rvOMTylQQIV43cl4T.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&cs=128x0'},
-   {'sub':'Два шкафа, гардеробная','name':'Анастасия Зайцева',
-    'text':'Заказывали у Романа два шкафа. Во время замеров у нас не было определённой идеи, как сделать вместительный шкаф в нашу небольшую спальню, ещё и с несущей колонной. Роман подкинул прекрасную идею, в итоге получился не просто шкаф, а целая угловая гардеробная, я была в восторге! Большой выбор цветов и текстур. Работа выполнена в оговорённый срок и качественно. Большое спасибо за эстетичное воплощение нашей мечты!',
-    'stars':5,'video':'','avatar':'https://sun9-48.vkuserphoto.ru/s/v1/ig2/OdS0JaUmpkj7vzQLNz1oyY6PBksnYylZuY54LZ2vnibrqxNc0IimIjE6d6NWySeMm6N2MLIUHG6WLKtAFJ82ICwE.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,960x1280&from=bu&cs=128x0'},
-   {'sub':'Видеоотзыв · Кухня на заказ','name':'Александр Карташев',
-    'text':'«Прям гордость квартиры! За приемлемую цену получили отличную кухню: выступ стояка закрыли пеналом, а в ножку барного стола встроили розетки».',
-    'stars':5,'video':'https://vk.ru/video_ext.php?oid=-212015374&id=456239019&hash=6abf300a7c2518d4','avatar':''}
-  ],
-  'title': 'Что говорят наши клиенты', 'kicker': 'Отзывы',
-  'subtitle': 'Реальные отзывы о нашей работе. Листайте влево-вправо.', 'hint': 'Листайте',
-  'video_poster': 'https://sun9-4.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,2560x1707&from=bu&u=Nvm4RvDsPWiWKPcNY4MqobV8Bzui8CgGtcwB8fhQDqA&cs=640x0'
- },
- 'services': {
-  'bg': 'https://sun9-88.vkuserphoto.ru/s/v1/ig2/vCipZmkZdy5Ix0cFh98i0yhNAYynqzh2gm00rWx5Qr019O4RHjwcs7pN6iKT4L_d1vanDAbUJ9JRrHj_uw13YVhg.jpg?quality=95&as=32x44,48x66,72x99,108x149,160x220,240x331,360x496,480x661,540x744,640x882,720x992,1080x1488,1280x1764,1440x1984,1858x2560&from=bu&u=lrbIDUwRUQKMEvaw12w2pRXFBLE0sHCmc6AYF8H7CIA&cs=1280x0',
-  'items': [
+ 'seo': {'title':'Кухни Островский — кухни на заказ в Ростове, Батайске и Азове | Мебель под ключ',
+  'keywords':'кухни остров, кухни островский, кухни островского, кухни островский ростов, кухни ростов островский, кухни батайск островский, кухни азов островский, кухни на заказ ростов, кухни на заказ батайск, кухни на заказ азов, мебель островского, мебель на заказ ростов, корпусная мебель, шкафы купе, гардеробные, прихожие, кухни под ключ, мебель островский',
+  'og_image':'https://sun9-71.vkuserphoto.ru/s/v1/ig2/vrD0P7wnU0dU8cSoW8yBUOc-naoKs1vJN5OXMrUFeAdLJQi9qfWScCGH9JV3-r4btxsDfbPh--pJ1tSjOlkfiVRw2Celdw.jpg?quality=95&from=bu&u=-mZnLUrNq7bsSRyuT0gwpcYkWHU9MA-lwwC3ZYRE2Uw&cs=1254x0',
+  'description':'Кухни на заказ в Ростове-на-Дону, Батайске и Азове от мастерской «Кухни Островский». Бесплатный замер и 3D-проект, собственное производство, монтаж под ключ. ☎ +7 (950) 846-53-97',
+  'og_title':'Кухни Островский — кухни и корпусная мебель на заказ',
+  'og_description':'Кухни, шкафы и гардеробные под ключ в Ростове-на-Дону, Батайске и Азове. Бесплатный замер и 3D-проект.',
+  'domain':'https://кухниостровский.рф','canonical':'https://кухниостровский.рф/',
+  'yandex_verification':'f7e96d07aee79bf3','google_verification':'dNSAELu64Y7aK5sjz_zpmhoz6YKn2PIZ03UKPwrgnCI',
+  'metrika_id':'','robots':'','extra_urls':[]},
+ 'code': {'head':'','body':''},
+ 'design': {'bg':'#0e0c09','gold':'#d4af6a','gold_soft':'#eccfa0','gold_deep':'#a37c3f','text':'#f5efe3','muted':'#b9ad9a',
+  'fonts_url':'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Manrope:wght@300;400;500;600;700;800&display=swap','custom_css':''},
+ 'brand': {'vk':'https://vk.com/mebel.ostrovsky','sub':'Ростов · Батайск · Азов','name':'Кухни Островский','phone':'+7 (950) 846-53-97',
+  'logo_url':'https://sun9-71.vkuserphoto.ru/s/v1/ig2/vrD0P7wnU0dU8cSoW8yBUOc-naoKs1vJN5OXMrUFeAdLJQi9qfWScCGH9JV3-r4btxsDfbPh--pJ1tSjOlkfiVRw2Celdw.jpg?quality=95&from=bu&u=-mZnLUrNq7bsSRyuT0gwpcYkWHU9MA-lwwC3ZYRE2Uw&cs=1254x0',
+  'telegram':'https://t.me/fanny161','phone_raw':'+79508465397'},
+ 'nav': {'items':[{'label':'Специалист','href':'#about'},{'label':'Работы','href':'#works'},{'label':'Отзывы','href':'#reviews'},{'label':'Услуги','href':'#services'},{'label':'Как работаем','href':'#process'},{'label':'Города','href':'#cities'},{'label':'Контакты','href':'#contacts'}],
+  'cta_label':'Позвонить','cta_href':'tel:+79508465397'},
+ 'hero': {'bg':'https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x241,480x321,540x361,640x428,720x481,1080x722,1280x855,1440x962,2560x1711&from=bu&u=udyioV6Vl_ghNhYbFZ9zjc-ZU_IjlhkVV114xfpUZJs&cs=1080x0',
+  'sub':'Проектируем и изготавливаем кухни, шкафы, гардеробные и другую корпусную мебель в Ростове, Батайске и Азове — по вашему проекту, от замера до монтажа.',
+  'btn1':'Получить консультацию','btn2':'Смотреть работы','eyebrow':'Мебель и кухни на заказ','title_em':'создаёт настроение','title_before':'Мебель, которая ','btn1_href':'#consult','btn2_href':'#works'},
+ 'stats': {'bg':'https://sun9-20.vkuserphoto.ru/s/v1/ig2/9W8TzKo3y8t8-s63NRmlys3yJtHJAKPBOp2QIyuqMSTinG9q-UFuD5sYkz4wbd7QZDv7wQxsZlldmCrAM-PzPlDJ.jpg?quality=95&from=bu&u=kySpH3qK1oaqlWr8kbrP_y7iDDbASMEGWuJ5dgxf5MU&cs=1080x0',
+  'items':[{'prefix':'','num':'10','suffix':'+','decimal':'','label':'лет опыта'},{'prefix':'','num':'5','suffix':'','decimal':'1','label':'средняя оценка клиентов'},{'prefix':'','num':'8','suffix':'/10','decimal':'','label':'клиентов по рекомендации'},{'prefix':'','num':'100','suffix':'%','decimal':'','label':'полный цикл под ключ'}]},
+ 'about': {'bg':'https://sun9-50.vkuserphoto.ru/s/v1/ig2/_uJbJ-Gw0zJ3jVPyc4QJRGUErYM5zju63UDQM6FFDezILgQ54i5ycLVvhgSHl5hHPVIKikt0AL9V6DrmqDH7G5C6.jpg?quality=95&from=bu&u=9_d3vo4cDIif_5OxDZbDgMLFC1xuAQSKRY1zAPscIwM&cs=1080x0',
+  'name':'Роман Островский','role':'Руководитель мебельной мастерской Островского','photo':'https://i.ibb.co/mVchNnp1/photo-2026-09-10-18-48-37.jpg',
+  'title':'Кухни и мебель под ключ — с заботой о деталях','kicker':'О руководителе',
+  'features':['Кухни, шкафы, гардеробные и прихожие','Честный расчёт — без навязывания лишнего','Аккуратность, пунктуальность, сопровождение','Гарантия качества'],
+  'card_text':'С командой изготавливаем кухни и корпусную мебель по индивидуальным проектам — с учётом ваших идей, размеров и задач.',
+  'text':'Мы помогаем с планировкой и подбором материалов, предлагаем решения даже для сложных задач — когда другие разводят руками. Ведём вас от консультации и замера до сборки и установки.'},
+ 'consult': {'bg':'https://sun9-41.vkuserphoto.ru/s/v1/ig2/qi7m_VnJPio2P4oKJhNr6X-9HJD2kCt6f98XGtveyiAxhJ4ru17yVoibjERFJ4-ZWDOm8Lr7xGMwRP6dSudvgPnG.jpg?quality=95&from=bu&u=myRGe7iEVeLqDstzbpBsld7P0jp7l04_xCLynpcz4So&cs=1080x0',
+  'text':'Позвоните или напишите нам в Telegram или MAX — расскажем про кухни и мебель, всё обсудим и договоримся о бесплатном замере.',
+  'title':'Консультация','kicker':'Бесплатно','phone':'+7 (950) 846-53-97','phone_raw':'+79508465397'},
+ 'works': {'bg':'https://sun9-32.vkuserphoto.ru/s/v1/ig2/ipQDYrxkEiu9wFqxHUIJNhf4YERP29pOrzOhJ2hTcO6Z-fqWBrPA9D1vCltHlp9RltkldMRefKPMMkB8aD8jhZfR.jpg?quality=95&from=bu&u=q3wKCscaGbBU8n3umOUNA0wOvLkQBDAVXIkzDrivHgk&cs=1080x0',
+  'items':[
+   {'alt':'Кухня на заказ в Ростове','url':'https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&from=bu&u=udyioV6Vl_ghNhYbFZ9zjc-ZU_IjlhkVV114xfpUZJs&cs=1080x0'},
+   {'alt':'Кухня на заказ в Батайске','url':'https://sun9-8.vkuserphoto.ru/s/v1/ig2/AoDEQQq8KCsEBOBqdk9RRlULuWjVVgCUagW7IM8b_22MwfOkqLPub-TPecVvAY3Ke9SQAv0kJ2TNClg7D6J-A8exIN_BuA.jpg?quality=95&from=bu&u=xBWfVkxER60DRx2RPw1WHR9rn8qTl1UR9ISeVZcgPwg&cs=1080x0'},
+   {'alt':'Кухня на заказ в Азове','url':'https://sun9-16.vkuserphoto.ru/s/v1/ig2/ixSL4F3j2Ap0i5_nVXsAKJNZZNAI7zoUPBfzKGHoj3gghnjX-hMD-JRLJaSlCoWevjw84ikJrGOfVeMqWyZ7ftzM.jpg?quality=95&from=bu&u=Hi5Fq7gERANWB1IvzcabCXeXmxxxNUnpsZZcwxzz4Uw&cs=1080x0'},
+   {'alt':'Мебель на заказ в Ростове','url':'https://sun9-6.vkuserphoto.ru/s/v1/ig2/JKHhwxCxe9S8QiEr0nEM-BhAyX2i0e3uIKGPBdi__ZkSecHlRyd93LMhVldSePb2ePDSA6kgE41mw1rNGCHoKdAnBE3sGg.jpg?quality=95&from=bu&u=x10vDKxOA2tCTtvYOJ9020Oa_0vK-gO85qQ9ePr3Sio&cs=1080x0'},
+   {'alt':'Кухня на заказ','url':'https://sun9-4.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&from=bu&u=Nvm4RvDsPWiWKPcNY4MqobV8Bzui8CgGtcwB8fhQDqA&cs=1080x0'},
+   {'alt':'Шкаф-купе на заказ','url':'https://sun9-71.vkuserphoto.ru/s/v1/ig2/4XeUobSuuxA-pHVDGYziNB5aAnUsbLzt1Bgi8TtDa5yKbWt2yRxo8Egt_2a_Sz_jAYg1f2sxfOOy-ngKWvlDbjuqyHjSaQ.jpg?quality=95&from=bu&u=FR7AP1mjCAEcKAjTUpmgUXVIbDqMTCaV2XHXrDjnsaM&cs=1080x0'},
+   {'alt':'Мебель на заказ в Батайске','url':'https://sun9-39.vkuserphoto.ru/s/v1/ig2/xiwu_WFFyjmJc4_VAOD1BHikAdMqBy9N-SuKyiWu7xC8OYE-pfhtW5GkOyO5No0KjOrNQUwcgOW3Gr2bCnjvFp2H.jpg?quality=95&from=bu&u=VpmAnVyzkXcBCcJLy2DSlVkJJG2zYnSPbLzk7-TXGGk&cs=1080x0'},
+   {'alt':'Кухня на заказ','url':'https://sun9-50.vkuserphoto.ru/s/v1/ig2/C_b5sF8D1xkYdXe0s1BPq0c52G5b_U0r8MpWIaYYJzh9CXIE4qk0Q3rnZh2FuNZhpnp78BBveTceOk2Js-tECU_z.jpg?quality=95&from=bu&u=YCey971XM2nuNjhkwSaIOfPMTMneMAyHLaPyHT4mLyY&cs=1080x0'},
+   {'alt':'Кухня на заказ','url':'https://sun9-16.vkuserphoto.ru/s/v1/ig2/_AK_Czw9ThnFAWSmhSfPYvg9RvHW0QYDGS9DhqW75-oe2hQSjQob1DbdypL9Hx3wBn09V3pUvlfCN6Efcbojr7T81tfxQQ.jpg?quality=95&from=bu&u=nJxYjuRlnA-5zI6wLLGQAWZA3D28y3FozWX9Lt_c7hQ&cs=1080x0'},
+   {'alt':'Мебель на заказ','url':'https://sun9-65.vkuserphoto.ru/s/v1/ig2/X4rCpkIxEZW50prB2rGftYiyGQpOQ3E_QQl-211zjBdRmXjKBx5Si91JffsT0LxA1oPbjqueZA0oI1diMrJIRBFMkYuglw.jpg?quality=95&from=bu&u=AkkVsl6OGh2zXPquIZAnWBgglzMZurNFJTsT_Gmceiw&cs=1080x0'},
+   {'alt':'Кухня на заказ в Батайске','url':'https://sun9-40.vkuserphoto.ru/s/v1/ig2/6mMk6psQJqaVgakjpP8A0DWbiwzLbWcoj3Gxz_Om-TUclffQ0Ic3VfIW1-fA1hDVhIHu6cqb3QifLlY7mNhIvynD.jpg?quality=95&from=bu&u=VjAzanpxFEJgraidqUpXWR5EqjEzuffXEUVvjgoVjrE&cs=1080x0'},
+   {'alt':'Мебель на заказ','url':'https://sun9-72.vkuserphoto.ru/s/v1/ig2/NEuGxEzenp7yiZvM8YDHtxZdKGuEE4RvCN46VZcwJR0oWlxofxoJAu0QLcnyALApDuTlQ_exYkbXwlk4iu00Z5UBO0cfeQ.jpg?quality=95&from=bu&u=lvIk2iwchHkWHCSIv-jhCB1idqUsfpO2CVjs3OxL-u0&cs=1080x0'},
+   {'alt':'Кухня на заказ','url':'https://sun9-40.vkuserphoto.ru/s/v1/ig2/rA9HFBKMnfFIVA28MtcyfJNKYeenK9q0xNcFimhjyZhCsOgl_QUYo8FRlHhpkZroHhqfIdCWMKV476q_reTRf3a341bQyA.jpg?quality=95&from=bu&u=qEc7bVmCiRSShSpucxSXh4goIyyXAVULZ-iPIInq_x8&cs=1080x0'},
+   {'alt':'Кухня на заказ','url':'https://sun9-56.vkuserphoto.ru/s/v1/ig2/_T-Vhn73AJldw70Jxj_hZ9GbeGonrHRdbUUgTMk3T0A3wmwmLdlqPLry0AHGdd1gi0t46exXUpHT-KcFycxQVkfuyGb5SA.jpg?quality=95&from=bu&u=12zCsrGnvSg4ptA7clGDI6gvnN-L7bDoOSbcHm04HXo&cs=1080x0'},
+   {'alt':'Шкаф-купе на заказ','url':'https://sun9-87.vkuserphoto.ru/s/v1/ig2/WHkPw7TZze6TV4t2q6Yr2pw61S1zWDeDyp8Dbe2IFm31aAuhXVSQ2DUTnM6AIt5u3cLTp9mh-YN2b_Lb0q5iHCFu.jpg?quality=95&from=bu&u=bQW477ZK7yLopHDa2oCbH-uA483cvDm58BTlNs29AoE&cs=1080x0'}
+  ],'title':'Кухни и мебель, которые мы сделали','kicker':'Наши работы','subtitle':'Нажмите на фото, чтобы рассмотреть в большом размере.','hint':'Листайте'},
+ 'reviews': {'bg':'https://sun9-4.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&from=bu&u=Nvm4RvDsPWiWKPcNY4MqobV8Bzui8CgGtcwB8fhQDqA&cs=1080x0',
+  'items':[
+   {'sub':'Кухня на заказ','name':'Виктория Брандикова','text':'Заказывали у Романа кухню, всё прошло на высшем уровне, начиная от замеров, до установки! Мы очень рады, что обратились именно к нему (нашли в объявлении и нам крупно повезло), Роман супер профессионал своего дела!!! Кухня у нас маленькая, не стандартная, сверху выступы, вся на трубах, расположение мойки и кухонной плиты не удобное и вытяжку мы хотели, но нам некуда было её устанавливать (как мы думали), но Роман всё разрешил, практично разместил технику (в том числе и вытяжку), переставил мойку, установил подсветку сделал кухню функциональной светлой, практичной и современной. Кухня была готова в короткие сроки, установкой очень довольны, всё под ключ с установкой техники и подключением, всё быстро, качественно, и чисто! Мы не ожидали такого результата, просто не верится, что у нас теперь удобная, вместительная, современная кухня, о такой даже и не мечтали, даже несмотря на то, что кухня бюджетная. За мебелью теперь только к Роману!!! Однозначно всем буду рекомендовать!!!','stars':5,'video':'','avatar':'https://sun9-3.vkuserphoto.ru/s/v1/ig2/-cVZEipS5I4ROZUZ2fxoIaGJBZXpUs76_WKoUZpPw_r2-gnqqUvgTqjLjYoTZ0R21nsCSvjUPyw_vSn1jxAYJC8K.jpg?quality=95&from=bu&cs=256x0'},
+   {'sub':'Кухня и гардеробная','name':'Виктория Маренко','text':'И вновь мы обратились к Роману! Понадобилась кухня. Кухня на самом деле очень удобная! Как и хотелось она светлая, но не маркая. Как всегда учтены все пожелания и воплощены в жизнь! Очень трудно нам дался выбор цветов, но Роман спокойно вынес все наши метания, выполнил работу достойно, внимательно и аккуратно! Однозначно советую обращаться к нему. Гардеробную так же заказывали у Романа, и она идеальна! Ответственный подход, качество, внимательность и чистота исполнения - его качества, которые для нас важны.','stars':5,'video':'','avatar':'https://sun9-41.vkuserphoto.ru/s/v1/ig2/qi7m_VnJPio2P4oKJhNr6X-9HJD2kCt6f98XGtveyiAxhJ4ru17yVoibjERFJ4-ZWDOm8Lr7xGMwRP6dSudvgPnG.jpg?quality=95&from=bu&u=myRGe7iEVeLqDstzbpBsld7P0jp7l04_xCLynpcz4So&cs=256x0'},
+   {'sub':'Шкаф, тумбы, прихожая','name':'Любовь Петелько','text':'Всем здравствуйте. Я заказала у Романа шкаф купе в спальню. Когда Роман приехал, я не совсем понимала что я хочу, пообщавшись с ним, получила много советов и рекомендаций по составу и цвету шкафа. В итоге решила в комплект заказать сразу тумбы, гарнитур под телевизор, и прихожую. Установили все раньше обещанного срока. Я очень довольна и всем рекомендую. Роман специалист своего дела. Скоро буду заказывать зону хранения балкона и самое главное кухню мечты. Спасибо!','stars':5,'video':'','avatar':'https://sun9-53.vkuserphoto.ru/s/v1/ig2/gZheSpaWhz7StIdwlzSoCIfA01e-x8jVUMESDK2u9ONRR1s3txB-b6F7lqLLj-Y6QFqFU5x463yoWmnTxf5T88g2.jpg?quality=95&from=bu&cs=256x0'},
+   {'sub':'Шкаф и стенка','name':'Дмитрий Юшенко','text':'Заказывали у Романа шкаф и стенку в спальню. Работа вышла отличной, подсказал несколько удачных решений наших хотелок. Все супер! Спасибо!','stars':5,'video':'','avatar':'https://sun9-83.vkuserphoto.ru/s/v1/ig2/zYO0FQ_fFsgxDWhaTE85lNpixn2ikScuD58qVoXtqda8vFxoS-LGsT54k9pk9tDVEpzGpJfCw5eg5TNtYgE2Q8_y.jpg?quality=95&from=bu&cs=256x0'},
+   {'sub':'Кухня на заказ','name':'Екатерина Умнягина','text':'Заказывали у Романа кухню, всё очень понравилось! Подбирали всё до мелочей, и Рома всё исполнил, как мы хотели, за это мы ему очень благодарны. Всё сделано идеально, спрятали то, что не должно быть видно, и получилось очень красиво. Спасибо, Рома, за эту крутую современную кухню!!!','stars':5,'video':'','avatar':'https://sun9-46.vkuserphoto.ru/s/v1/ig2/bVm2vnJWOD92dzHJ3_21NbqhcwF7DW7a05XzjaTWteG9Dviu9nt8LlA5bgzdbsBhGtYbrs7rvOMTylQQIV43cl4T.jpg?quality=95&from=bu&cs=256x0'},
+   {'sub':'Два шкафа, гардеробная','name':'Анастасия Зайцева','text':'Заказывали у Романа два шкафа. Во время замеров у нас не было определённой идеи, как сделать вместительный шкаф в нашу небольшую спальню, ещё и с несущей колонной. Роман подкинул прекрасную идею, в итоге получился не просто шкаф, а целая угловая гардеробная, я была в восторге! Большой выбор цветов и текстур. Работа выполнена в оговорённый срок и качественно. Большое спасибо за эстетичное воплощение нашей мечты!','stars':5,'video':'','avatar':'https://sun9-48.vkuserphoto.ru/s/v1/ig2/OdS0JaUmpkj7vzQLNz1oyY6PBksnYylZuY54LZ2vnibrqxNc0IimIjE6d6NWySeMm6N2MLIUHG6WLKtAFJ82ICwE.jpg?quality=95&from=bu&cs=256x0'},
+   {'sub':'Видеоотзыв · Кухня на заказ','name':'Александр Карташев','text':'«Прям гордость квартиры! За приемлемую цену получили отличную кухню: выступ стояка закрыли пеналом, а в ножку барного стола встроили розетки».','stars':5,'video':'https://vk.ru/video_ext.php?oid=-212015374&id=456239019&hash=6abf300a7c2518d4','avatar':''}
+  ],'title':'Что говорят наши клиенты','kicker':'Отзывы','subtitle':'Реальные отзывы о нашей работе. Листайте влево-вправо.','hint':'Листайте',
+  'video_poster':'https://sun9-4.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&from=bu&u=Nvm4RvDsPWiWKPcNY4MqobV8Bzui8CgGtcwB8fhQDqA&cs=1080x0'},
+ 'services': {'bg':'https://sun9-88.vkuserphoto.ru/s/v1/ig2/vCipZmkZdy5Ix0cFh98i0yhNAYynqzh2gm00rWx5Qr019O4RHjwcs7pN6iKT4L_d1vanDAbUJ9JRrHj_uw13YVhg.jpg?quality=95&from=bu&u=lrbIDUwRUQKMEvaw12w2pRXFBLE0sHCmc6AYF8H7CIA&cs=1080x0',
+  'items':[
    {'icon':'M3 9h18M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9M3 9l2-4h14l2 4M8 9v2M12 9v2M16 9v2','text':'Проектируем кухню точно под ваш размер, стиль и привычки — от классики до минимализма.','title':'Кухни на заказ'},
    {'icon':'M3 3h18v18H3zM3 8h18M8 8v13M16 8v13','text':'Шкафы-купе, гардеробные, тумбы и комоды — встроенные и отдельно стоящие.','title':'Шкафы и гардеробные'},
    {'icon':'M12 3v18M3 12h18M5 5l14 14M19 5L5 19','text':'Прихожие, стенки, гарнитуры под ТВ — аккуратно впишем в ваш интерьер.','title':'Прихожие и стенки'},
    {'icon':'M14 6l4 4M5 19l7-7M17 3l4 4-4 4-1-1-1 1-4-4 1-1-1-1 4-4z','text':'Профессиональная установка, аккуратная сборка и подключение техники.','title':'Сборка и монтаж'},
    {'icon':'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 3v18M3 12h18','text':'Выезжаем на замер, делаем планировку и 3D-проект — бесплатно.','title':'Замер и проект'},
    {'icon':'M3 12a9 9 0 1 0 9-9M3 12h6M3 12l4-4M3 12l4 4','text':'Освежим фасады и фурнитуру существующей кухни — дешевле, чем новая.','title':'Обновление мебели'}
-  ],
-  'title': 'Услуги', 'kicker': 'Что мы делаем', 'subtitle': 'Индивидуальный подход к каждому проекту и полный цикл производства.'
- },
- 'process': {
-  'bg': 'https://sun9-39.vkuserphoto.ru/s/v1/ig2/xiwu_WFFyjmJc4_VAOD1BHikAdMqBy9N-SuKyiWu7xC8OYE-pfhtW5GkOyO5No0KjOrNQUwcgOW3Gr2bCnjvFp2H.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=VpmAnVyzkXcBCcJLy2DSlVkJJG2zYnSPbLzk7-TXGGk&cs=1280x0',
-  'items': [
-   {'n':'01','text':'Вы звоните или пишете — обговариваем задачу и пожелания.','title':'Обращение'},
-   {'n':'02','text':'Выезжаем, снимаем размеры и обсуждаем планировку. Бесплатно.','title':'Замер'},
-   {'n':'03','text':'Готовим 3D-проект и подбираем материалы с фурнитурой.','title':'Проект'},
-   {'n':'04','text':'Фиксируем стоимость и условия, подписываем договор.','title':'Договор'},
-   {'n':'05','text':'Изготавливаем мебель на собственном производстве.','title':'Производство'},
-   {'n':'06','text':'Привозим, собираем и устанавливаем. Сдаём с гарантией.','title':'Доставка и монтаж'}
-  ],
-  'title': 'Путь от идеи до готовой мебели', 'kicker': 'Как мы работаем'
- },
- 'guarantees': {
-  'bg': 'https://sun9-50.vkuserphoto.ru/s/v1/ig2/C_b5sF8D1xkYdXe0s1BPq0c52G5b_U0r8MpWIaYYJzh9CXIE4qk0Q3rnZh2FuNZhpnp78BBveTceOk2Js-tECU_z.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=YCey971XM2nuNjhkwSaIOfPMTMneMAyHLaPyHT4mLyY&cs=1280x0',
-  'items': [
-   {'icon':'M12 3l7 3v6c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V6l7-3zM9 12l2 2 4-4','text':'Отвечаем за свою работу и сопровождаем после установки.','title':'Гарантия качества'},
-   {'icon':'M4 20h16M6 20V8l6-4 6 4v12M9 11h6M9 15h6M10 11v8M14 11v8','text':'Без навязывания лишнего и скрытых доплат.','title':'Честный расчёт'},
-   {'icon':'M3 21V9l9-5 9 5v12M3 21h18M9 21v-6h6v6M12 9v2','text':'Без посредников — контролируем качество на каждом этапе.','title':'Собственное производство'},
-   {'icon':'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM4 21c0-4 3.6-6 8-6s8 2 8 6','text':'Вы всегда на связи со специалистом — от замера до монтажа.','title':'Личное сопровождение'}
-  ],
-  'title': 'Гарантии и преимущества', 'kicker': 'Почему мы'
- },
- 'cities': {
-  'bg': 'https://sun9-87.vkuserphoto.ru/s/v1/ig2/WHkPw7TZze6TV4t2q6Yr2pw61S1zWDeDyp8Dbe2IFm31aAuhXVSQ2DUTnM6AIt5u3cLTp9mh-YN2b_Lb0q5iHCFu.jpg?quality=95&as=32x40,48x60,72x90,108x134,160x199,240x298,360x448,480x597,540x671,640x796,720x895,1080x1343,1280x1591,1440x1790,2059x2560&from=bu&u=bQW477ZK7yLopHDa2oCbH-uA483cvDm58BTlNs29AoE&cs=1280x0',
-  'items': [
-   {'name':'Ростов-на-Дону','text':'Выезд на замер, проектирование, производство и монтаж мебели под ключ.'},
-   {'name':'Батайск','text':'Кухни и корпусная мебель с бесплатным замером и 3D-проектом.'},
-   {'name':'Азов','text':'Индивидуальные проекты, доставка, сборка и установка с гарантией.'}
-  ],
-  'title': 'Три города — один стандарт качества', 'kicker': 'Где работаем',
-  'subtitle': 'Бесплатный замер и проект в каждом из городов.'
- },
- 'cta': {
-  'bg': 'https://sun9-4.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,2560x1707&from=bu&u=Nvm4RvDsPWiWKPcNY4MqobV8Bzui8CgGtcwB8fhQDqA&cs=640x0',
-  'text': 'Позвоните нам — бесплатно проконсультируем, посчитаем и запишем на замер.',
-  'title': 'Готовы обсудить вашу мебель?', 'button': '📞 Позвонить специалисту'
- },
- 'contacts': {
-  'bg': 'https://sun9-52.vkuserphoto.ru/s/v1/ig2/iD_ZIKN3aW1Ml52LPM3C65Qa7raIjG1CUC-fRrbHZEdxtU9hrsvTAh80W9sM3wI2hBUlsHc86fnHiG43aAOPlRuP.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=mdGpdzTBkRhwLQzuIJS1nz6l-_CWqdnxhW1cwsXNCx8&cs=1080x0',
-  'title': 'Создадим мебель, о которой вы мечтали', 'kicker': 'Контакты',
-  'regions': 'Ростов-на-Дону, Батайск, Азов',
-  'subtitle': 'Позвоните или напишите — ответим быстро и подскажем по всем вопросам.',
-  'call_label': 'Свяжитесь с нами удобным способом', 'call_number': '+7 (950) 846-53-97',
-  'call_hint': 'Бесплатная консультация и запись на замер.\nЗвоните или пишите в любой мессенджер.',
-  'lines': [
+  ],'title':'Услуги','kicker':'Что мы делаем','subtitle':'Индивидуальный подход к каждому проекту и полный цикл производства.'},
+ 'process': {'bg':'https://sun9-39.vkuserphoto.ru/s/v1/ig2/xiwu_WFFyjmJc4_VAOD1BHikAdMqBy9N-SuKyiWu7xC8OYE-pfhtW5GkOyO5No0KjOrNQUwcgOW3Gr2bCnjvFp2H.jpg?quality=95&from=bu&u=VpmAnVyzkXcBCcJLy2DSlVkJJG2zYnSPbLzk7-TXGGk&cs=1080x0',
+  'items':[{'n':'01','text':'Вы звоните или пишете — обговариваем задачу и пожелания.','title':'Обращение'},{'n':'02','text':'Выезжаем, снимаем размеры и обсуждаем планировку. Бесплатно.','title':'Замер'},{'n':'03','text':'Готовим 3D-проект и подбираем материалы с фурнитурой.','title':'Проект'},{'n':'04','text':'Фиксируем стоимость и условия, подписываем договор.','title':'Договор'},{'n':'05','text':'Изготавливаем мебель на собственном производстве.','title':'Производство'},{'n':'06','text':'Привозим, собираем и устанавливаем. Сдаём с гарантией.','title':'Доставка и монтаж'}],
+  'title':'Путь от идеи до готовой мебели','kicker':'Как мы работаем'},
+ 'guarantees': {'bg':'https://sun9-50.vkuserphoto.ru/s/v1/ig2/C_b5sF8D1xkYdXe0s1BPq0c52G5b_U0r8MpWIaYYJzh9CXIE4qk0Q3rnZh2FuNZhpnp78BBveTceOk2Js-tECU_z.jpg?quality=95&from=bu&u=YCey971XM2nuNjhkwSaIOfPMTMneMAyHLaPyHT4mLyY&cs=1080x0',
+  'items':[{'icon':'M12 3l7 3v6c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V6l7-3zM9 12l2 2 4-4','text':'Отвечаем за свою работу и сопровождаем после установки.','title':'Гарантия качества'},{'icon':'M4 20h16M6 20V8l6-4 6 4v12M9 11h6M9 15h6M10 11v8M14 11v8','text':'Без навязывания лишнего и скрытых доплат.','title':'Честный расчёт'},{'icon':'M3 21V9l9-5 9 5v12M3 21h18M9 21v-6h6v6M12 9v2','text':'Без посредников — контролируем качество на каждом этапе.','title':'Собственное производство'},{'icon':'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM4 21c0-4 3.6-6 8-6s8 2 8 6','text':'Вы всегда на связи со специалистом — от замера до монтажа.','title':'Личное сопровождение'}],
+  'title':'Гарантии и преимущества','kicker':'Почему мы'},
+ 'cities': {'bg':'https://sun9-87.vkuserphoto.ru/s/v1/ig2/WHkPw7TZze6TV4t2q6Yr2pw61S1zWDeDyp8Dbe2IFm31aAuhXVSQ2DUTnM6AIt5u3cLTp9mh-YN2b_Lb0q5iHCFu.jpg?quality=95&from=bu&u=bQW477ZK7yLopHDa2oCbH-uA483cvDm58BTlNs29AoE&cs=1080x0',
+  'items':[{'name':'Ростов-на-Дону','text':'Выезд на замер, проектирование, производство и монтаж мебели под ключ.'},{'name':'Батайск','text':'Кухни и корпусная мебель с бесплатным замером и 3D-проектом.'},{'name':'Азов','text':'Индивидуальные проекты, доставка, сборка и установка с гарантией.'}],
+  'title':'Три города — один стандарт качества','kicker':'Где работаем','subtitle':'Бесплатный замер и проект в каждом из городов.'},
+ 'cta': {'bg':'https://sun9-4.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&from=bu&u=Nvm4RvDsPWiWKPcNY4MqobV8Bzui8CgGtcwB8fhQDqA&cs=1080x0',
+  'text':'Позвоните нам — бесплатно проконсультируем, посчитаем и запишем на замер.','title':'Готовы обсудить вашу мебель?','button':'📞 Позвонить специалисту'},
+ 'contacts': {'bg':'https://sun9-52.vkuserphoto.ru/s/v1/ig2/iD_ZIKN3aW1Ml52LPM3C65Qa7raIjG1CUC-fRrbHZEdxtU9hrsvTAh80W9sM3wI2hBUlsHc86fnHiG43aAOPlRuP.jpg?quality=95&from=bu&u=mdGpdzTBkRhwLQzuIJS1nz6l-_CWqdnxhW1cwsXNCx8&cs=1080x0',
+  'title':'Создадим мебель, о которой вы мечтали','kicker':'Контакты','regions':'Ростов-на-Дону, Батайск, Азов',
+  'subtitle':'Позвоните или напишите — ответим быстро и подскажем по всем вопросам.',
+  'call_label':'Свяжитесь с нами удобным способом','call_number':'+7 (950) 846-53-97',
+  'call_hint':'Бесплатная консультация и запись на замер.\nЗвоните или пишите в любой мессенджер.',
+  'lines':[
    {'label':'Регион работы','value':'Ростов-на-Дону, Батайск, Азов','href':'','icon':'M12 21.5S5.5 15.9 5.5 10.5a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11zM12 13a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z'},
    {'label':'Сайт в VK','value':'mebel.ostrovsky','href':'https://vk.com/mebel.ostrovsky','icon':'M14 19c-6 0-9.5-4.5-9.7-12h3c.1 5 2.5 8 4.3 8.8V7h3v5c1.8-.2 3.6-2.6 4.2-5h3c-.6 3.4-2.8 5.8-4.6 6.6 1.8.9 4.6 3.6 5.4 8.4h-3.4c-.6-2.5-2.4-4.4-4.3-4.9V19H14z'},
    {'label':'Telegram / MAX','value':'по номеру +7 (950) 846-53-97','href':'https://t.me/fanny161','icon':'M21.9 4.6L18.8 19c-.2 1-.8 1.3-1.7.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.4-4.8L18 6.4c.4-.3-.1-.5-.6-.2L6.7 13.4l-4.6-1.4c-1-.3-1-1 .2-1.5l18-6.9c.8-.3 1.6.2 1.6 1z'}
   ],
-  'buttons': [
+  'buttons':[
    {'label':'Позвонить','href':'tel:+79508465397','cls':'c-call','external':False,'icon':'M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.4 2.1L8.1 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.6 2z'},
    {'label':'Написать в Telegram','href':'https://t.me/fanny161','cls':'c-tg','external':True,'icon':'M21.9 4.6L18.8 19c-.2 1-.8 1.3-1.7.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.4-4.8L18 6.4c.4-.3-.1-.5-.6-.2L6.7 13.4l-4.6-1.4c-1-.3-1-1 .2-1.5l18-6.9c.8-.3 1.6.2 1.6 1z'},
    {'label':'Написать в MAX','href':'tel:+79508465397','cls':'c-max','external':False,'icon':'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'}
-  ]
- },
- 'footer': {
-  'line': 'Кухни и корпусная мебель на заказ — Ростов, Батайск, Азов',
-  'copyright': 'Кухни Островский. Все права защищены.',
-  'socials': [
-   {'label':'Позвонить','href':'tel:+79508465397','icon':'M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.4 2.1L8.1 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.6 2z'},
-   {'label':'Telegram','href':'https://t.me/fanny161','icon':'M21.9 4.6L18.8 19c-.2 1-.8 1.3-1.7.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.4-4.8L18 6.4c.4-.3-.1-.5-.6-.2L6.7 13.4l-4.6-1.4c-1-.3-1-1 .2-1.5l18-6.9c.8-.3 1.6.2 1.6 1z'},
-   {'label':'ВКонтакте','href':'https://vk.com/mebel.ostrovsky','icon':'M14 19c-6 0-9.5-4.5-9.7-12h3c.1 5 2.5 8 4.3 8.8V7h3v5c1.8-.2 3.6-2.6 4.2-5h3c-.6 3.4-2.8 5.8-4.6 6.6 1.8.9 4.6 3.6 5.4 8.4h-3.4c-.6-2.5-2.4-4.4-4.3-4.9V19H14z'},
-   {'label':'MAX','href':'tel:+79508465397','icon':'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'}
-  ]
- },
- 'cookie': {'text': 'Мы используем файлы cookie для корректной работы сайта.', 'button': 'Принять'},
- 'page404': {'title': 'Страница не найдена','text': 'Возможно, страница переехала или удалена. Посмотрите наши работы или позвоните нам.','button': 'На главную'}
+  ]},
+ 'footer': {'line':'Кухни и корпусная мебель на заказ — Ростов, Батайск, Азов','copyright':'Кухни Островский. Все права защищены.',
+  'socials':[{'label':'Позвонить','href':'tel:+79508465397','icon':'M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.4 2.1L8.1 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.6 2z'},{'label':'Telegram','href':'https://t.me/fanny161','icon':'M21.9 4.6L18.8 19c-.2 1-.8 1.3-1.7.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.4-4.8L18 6.4c.4-.3-.1-.5-.6-.2L6.7 13.4l-4.6-1.4c-1-.3-1-1 .2-1.5l18-6.9c.8-.3 1.6.2 1.6 1z'},{'label':'ВКонтакте','href':'https://vk.com/mebel.ostrovsky','icon':'M14 19c-6 0-9.5-4.5-9.7-12h3c.1 5 2.5 8 4.3 8.8V7h3v5c1.8-.2 3.6-2.6 4.2-5h3c-.6 3.4-2.8 5.8-4.6 6.6 1.8.9 4.6 3.6 5.4 8.4h-3.4c-.6-2.5-2.4-4.4-4.3-4.9V19H14z'},{'label':'MAX','href':'tel:+79508465397','icon':'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'}]},
+ 'cookie':{'text':'Мы используем файлы cookie для корректной работы сайта.','button':'Принять'},
+ 'page404':{'title':'Страница не найдена','text':'Возможно, страница переехала или удалена. Посмотрите наши работы или позвоните нам.','button':'На главную'}
 }
 
-# ============ ШАБЛОНИЗАТОР ============
 _TAG_RE = re.compile(r"\{\{\{?(.*?)\}\}\}?", re.S)
 def _escape(s): return _html.escape(s, quote=True)
 def _stringify(v):
@@ -404,7 +315,6 @@ def render(tpl, ctx):
             else: out.append(_apply_filter(filt, val))
     return "".join(out)
 
-# ============ PAGE TEMPLATE ============
 PAGE_TEMPLATE = r'''<!DOCTYPE html>
 <html lang="ru" class="js">
 <head>
@@ -464,11 +374,10 @@ header.solid{background:rgba(14,12,9,.92);box-shadow:0 12px 44px rgba(0,0,0,.45)
 .nav{display:flex;align-items:center;justify-content:space-between;height:78px;gap:12px}
 .logo{display:flex;align-items:center;gap:13px;min-width:0;max-width:100%;cursor:pointer}
 .brand-ava-w{position:relative;flex-shrink:0;display:inline-flex}
-.brand-ava-w::before{content:"";position:absolute;inset:-5px;border-radius:50%;border:1px solid rgba(236,207,160,.5);opacity:.7;animation:ringPulse 3.6s ease-in-out infinite}
-@keyframes ringPulse{0%,100%{transform:scale(.94);opacity:.35}50%{transform:scale(1.08);opacity:.75}}
+.brand-ava-w::before{content:"";position:absolute;inset:-5px;border-radius:50%;border:1px solid rgba(236,207,160,.5);opacity:.7}
 .brand-ava{width:46px;height:46px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(236,207,160,.65);box-shadow:0 0 0 5px rgba(212,175,106,.1),0 0 24px rgba(212,175,106,.4);position:relative;z-index:1}
 .logo .brand-txt{display:flex;flex-direction:column;min-width:0;line-height:1.15}
-.logo .brand-txt .name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--serif);font-size:26px;font-weight:600;color:#fff;line-height:1.05;background:linear-gradient(120deg,#fff,var(--gold-soft));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.logo .brand-txt .name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--serif);font-size:26px;font-weight:600;color:#fff;background:linear-gradient(120deg,#fff,var(--gold-soft));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .logo .brand-txt .sub{color:var(--gold-soft);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:62vw;margin-top:3px;opacity:.85}
 .menu{position:fixed;top:0;height:78px;right:max(20px,calc((100vw - 1220px)/2));display:flex;gap:24px;align-items:center;z-index:201}
 .menu a{position:relative;color:rgba(255,255,255,.8);font-size:13px;font-weight:600;letter-spacing:.5px;transition:.3s;padding:6px 0;white-space:nowrap}
@@ -489,11 +398,9 @@ header.solid{background:rgba(14,12,9,.92);box-shadow:0 12px 44px rgba(0,0,0,.45)
 [data-watermark] .wrap{position:relative;z-index:1}
 .panel{position:relative;min-height:100vh;display:flex;align-items:center;padding:150px 0;overflow:hidden}
 .panel .bg{position:absolute;inset:-14% 0;z-index:0;overflow:hidden;background:linear-gradient(135deg,#16120c,#0b0906)}
-.panel .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(to right,rgba(10,8,6,.94) 22%,rgba(10,8,6,.6) 58%,rgba(10,8,6,.75));z-index:2}
-.panel--center .bg::after{background:linear-gradient(180deg,rgba(10,8,6,.86),rgba(10,8,6,.62))}
-.panel--dark .bg::after{background:linear-gradient(180deg,rgba(10,8,6,.9),rgba(10,8,6,.7))}
-.panel--hero .bg::before{content:"";position:absolute;inset:-8%;background-image:inherit;background-size:cover;background-position:center;animation:kenburns 22s ease-in-out infinite alternate;z-index:1}
-@keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.1)}}
+.panel .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(to right,rgba(10,8,6,.88) 22%,rgba(10,8,6,.5) 58%,rgba(10,8,6,.7));z-index:2}
+.panel--center .bg::after{background:linear-gradient(180deg,rgba(10,8,6,.82),rgba(10,8,6,.55))}
+.panel--dark .bg::after{background:linear-gradient(180deg,rgba(10,8,6,.85),rgba(10,8,6,.6))}
 .panel .content{position:relative;z-index:2;width:100%}
 .panel--center .content{text-align:center}
 .panel + .panel{margin-top:16px}
@@ -521,8 +428,7 @@ h1 em{font-style:italic}
 h1 em.shimmer{-webkit-text-fill-color:transparent}
 .cta h2.shimmer{-webkit-text-fill-color:transparent}
 .scroll-cue{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:5;color:rgba(255,255,255,.75);font-size:11px;letter-spacing:4px;text-transform:uppercase;text-align:center;animation:fadeInUp 1s ease .8s both}
-.scroll-cue .line{width:1px;height:46px;background:linear-gradient(180deg,var(--gold-soft),transparent);margin:10px auto 0;animation:drip 2.4s infinite}
-@keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+.scroll-cue .line{width:1px;height:46px;background:linear-gradient(180deg,var(--gold-soft),transparent);margin:10px auto 0}
 @keyframes fadeInUp{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
 .sec-head{max-width:740px;margin:0 auto 52px;text-align:center}
 .sec-head .kicker{color:var(--gold-soft);letter-spacing:5px;text-transform:uppercase;font-size:11px;font-weight:600}
@@ -567,9 +473,7 @@ h2.k{position:relative;font-size:clamp(32px,4.6vw,48px);color:#faf3e6;font-weigh
 .car-dot:hover{background:rgba(236,207,160,.55)}
 .car-dot.active{width:26px;background:linear-gradient(135deg,var(--gold-soft),var(--gold));box-shadow:0 0 12px rgba(236,207,160,.6)}
 .swipe-hint{display:flex;align-items:center;justify-content:center;gap:8px;color:var(--muted);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;margin-top:10px;animation:hintPulse 1.8s ease-in-out infinite}
-.swipe-hint::after{content:"→";animation:hintArrow 1.4s ease-in-out infinite}
-@keyframes hintArrow{0%,100%{transform:translateX(0);opacity:.5}50%{transform:translateX(7px);opacity:1}}
-@keyframes hintPulse{0%,100%{opacity:.55}50%{opacity:1}}
+.swipe-hint::after{content:"→";display:inline-block}
 .car-slide{flex:0 0 auto;width:min(78vw,440px);scroll-snap-align:center;border-radius:var(--r-lg);overflow:hidden;border:1px solid rgba(255,255,255,.08);background:linear-gradient(135deg,#16120c,#0b0906);cursor:zoom-in;transition:transform .5s cubic-bezier(.22,.61,.36,1),box-shadow .5s,border-color .5s;box-shadow:var(--shadow-md);position:relative}
 .car-slide:hover{transform:translateY(-8px);border-color:rgba(236,207,160,.3);box-shadow:var(--shadow-lg)}
 .car-slide img{width:100%;height:300px;object-fit:cover;display:block}
@@ -584,8 +488,7 @@ h2.k{position:relative;font-size:clamp(32px,4.6vw,48px);color:#faf3e6;font-weigh
 .rev-text{color:#ece2cd;font-size:13.5px;line-height:1.66;font-weight:300;text-align:left;word-break:break-word}
 .rev-video{margin-top:14px;border-radius:var(--r-md);overflow:hidden;border:1px solid rgba(255,255,255,.08)}
 .video-box{position:relative;width:100%;height:260px;background-size:cover;background-position:center;cursor:pointer;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#16120c,#0b0906)}
-.vb-play{position:relative;z-index:2;width:64px;height:64px;border-radius:50%;border:1px solid rgba(236,207,160,.7);background:rgba(14,12,9,.55);color:var(--gold-soft);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 0 8px rgba(212,175,106,.14),0 0 30px rgba(212,175,106,.4);animation:playPulse 2.4s ease-in-out infinite}
-@keyframes playPulse{0%,100%{box-shadow:0 0 0 8px rgba(212,175,106,.14),0 0 30px rgba(212,175,106,.4)}50%{box-shadow:0 0 0 14px rgba(212,175,106,.08),0 0 44px rgba(212,175,106,.6)}}
+.vb-play{position:relative;z-index:2;width:64px;height:64px;border-radius:50%;border:1px solid rgba(236,207,160,.7);background:rgba(14,12,9,.55);color:var(--gold-soft);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 0 8px rgba(212,175,106,.14),0 0 30px rgba(212,175,106,.4)}
 .vb-play svg{width:22px;height:22px;fill:currentColor;margin-left:3px}
 .video-box iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
@@ -604,7 +507,6 @@ h2.k{position:relative;font-size:clamp(32px,4.6vw,48px);color:#faf3e6;font-weigh
 .guar{position:relative;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);padding:38px 26px;text-align:center;transition:transform .45s,box-shadow .45s,border-color .45s;border-radius:var(--r-lg);overflow:hidden}
 .guar:hover{transform:translateY(-8px);box-shadow:var(--shadow-lg);border-color:rgba(236,207,160,.26)}
 .guar .ico{width:54px;height:54px;margin:0 auto 18px;border:1px solid rgba(236,207,160,.35);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold-soft);background:radial-gradient(circle at 30% 30%,rgba(236,207,160,.16),rgba(212,175,106,.03));transition:transform .45s}
-.guar:hover .ico{transform:scale(1.12) rotate(6deg)}
 .guar .ico svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.5}
 .guar h3{font-size:18px;color:#fff;margin-bottom:8px}
 .guar p{color:var(--muted);font-size:13px;line-height:1.7}
@@ -621,7 +523,6 @@ h2.k{position:relative;font-size:clamp(32px,4.6vw,48px);color:#faf3e6;font-weigh
 .c-line{display:flex;align-items:flex-start;gap:20px;margin-bottom:24px;transition:transform .4s}
 .c-line:hover{transform:translateX(6px)}
 .c-ico{width:44px;height:44px;border:1px solid rgba(236,207,160,.35);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold-soft);background:radial-gradient(circle at 30% 30%,rgba(236,207,160,.15),rgba(212,175,106,.02));flex-shrink:0;transition:transform .45s}
-.c-line:hover .c-ico{transform:scale(1.1)}
 .c-ico svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5}
 .c-line .lab{font-size:10.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
 .c-line .val{font-size:18px;font-weight:600;color:var(--text);word-break:break-word}
@@ -672,7 +573,6 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-weight:500;letter-
 @media(max-width:1024px){.stats{grid-template-columns:repeat(2,1fr);gap:30px}.svc-grid{grid-template-columns:repeat(2,1fr)}.guar-grid{grid-template-columns:repeat(2,1fr)}.panel{padding:132px 0}}
 @media(max-width:860px){.menu{position:fixed;top:auto;left:0;right:0;bottom:0;width:100%;max-height:82vh;background:linear-gradient(180deg,#16130e,#0b0907);flex-direction:column;gap:4px;padding:12px 24px 22px;transform:translateY(105%);transition:transform .45s;z-index:205;border-radius:26px 26px 0 0;overflow-y:auto;height:auto}.menu.open{transform:none}.sheet-handle{display:flex;justify-content:center;padding:4px 0 8px}.sheet-handle span{width:42px;height:4px;border-radius:99px;background:rgba(236,207,160,.35)}.menu a{font-size:19px;font-family:var(--serif);color:#fff;border-bottom:1px solid rgba(236,207,160,.12);padding:13px 6px;display:flex;align-items:center;min-height:48px}.menu a::after{display:none}.menu-call{display:block;margin-top:10px;padding-top:10px;border-top:1px solid rgba(236,207,160,.14)}.menu-call a{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:52px;background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120b;font-size:14.5px;font-weight:700;border:none;border-radius:var(--r-sm);padding:15px 18px}.burger{display:block}.scrim{display:block}.about{grid-template-columns:1fr;gap:36px}.features{grid-template-columns:1fr}.steps{grid-template-columns:1fr;gap:20px}.contact-grid{grid-template-columns:1fr;gap:36px}.city-grid{grid-template-columns:1fr}.panel{padding:116px 0}.car-nav{display:none}.rev-card{width:86vw}.video-box{height:230px}}
 @media(max-width:520px){.logo .brand-ava{width:40px;height:40px}.logo .brand-txt .name{font-size:20px}.nav{height:64px}.panel{min-height:auto;padding:96px 0 56px}h1{font-size:31px}.sub{font-size:15px;margin:18px 0 26px}.btn-row{width:100%}.btn{width:100%;text-align:center}.car-slide{width:84vw}.car-slide img{height:205px}.rev-card{width:92vw;padding:17px}.rev-text{font-size:12.5px}.video-box{height:190px}.consult .phone{font-size:25px}.call-block .cb-num{font-size:22px}}
-@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important;scroll-behavior:auto !important}}
 {{#if design.custom_css}}{{{design.custom_css|raw}}}{{/if}}
 </style>
 </head>
@@ -921,7 +821,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-weight:500;letter-
 </div>
 <script>
 (function(){
-var reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+var reduced=false;
 var fine=matchMedia('(hover:hover) and (pointer:fine)').matches;
 var progress=document.getElementById('progress');
 var header=document.getElementById('header');
@@ -985,10 +885,6 @@ document.getElementById('lbPrev').addEventListener('click',function(e){e.stopPro
 document.getElementById('lbNext').addEventListener('click',function(e){e.stopPropagation();lbStep(1);});
 lightbox.addEventListener('click',function(e){if(e.target===lightbox)closeLb();});
 document.addEventListener('keydown',function(e){if(lightbox.classList.contains('open')){if(e.key==='Escape')closeLb();if(e.key==='ArrowLeft')lbStep(-1);if(e.key==='ArrowRight')lbStep(1);}});
-var lastTap=0;
-lbStage.addEventListener('touchstart',function(e){if(e.touches.length===2){startDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);startScale=scale;moved=true;}else if(e.touches.length===1){startX=e.touches[0].clientX;startY=e.touches[0].clientY;moved=false;}var now=Date.now();if(now-lastTap<280){if(scale>1){lbReset();}else{scale=2;tx=0;ty=0;lbApply();}lastTap=0;}else{lastTap=now;}},{passive:true});
-lbStage.addEventListener('touchmove',function(e){if(e.touches.length===2){e.preventDefault();var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);scale=Math.min(4,Math.max(1,startScale*d/startDist));tx=0;ty=0;lbApply();}else if(e.touches.length===1&&scale>1){var dx=e.touches[0].clientX-startX,dy=e.touches[0].clientY-startY;tx+=dx;ty+=dy;startX=e.touches[0].clientX;startY=e.touches[0].clientY;lbApply();}},{passive:false});
-lbStage.addEventListener('touchend',function(e){if(e.touches.length===0&&scale===1&&!moved){var dx=e.changedTouches[0].clientX-startX;if(Math.abs(dx)>60){lbStep(dx<0?1:-1);}}},{passive:true});
 document.querySelectorAll('.video-box').forEach(function(box){box.addEventListener('click',function(){if(box.querySelector('iframe'))return;var iframe=document.createElement('iframe');iframe.src=box.dataset.src;iframe.setAttribute('allow','autoplay; encrypted-media; fullscreen; picture-in-picture');iframe.setAttribute('allowfullscreen','1');iframe.title='Видеоотзыв';box.innerHTML='';box.appendChild(iframe);});});
 var cookieBar=document.getElementById('cookieBar'),cookieOk=document.getElementById('cookieOk');
 if(!localStorage.getItem('cookiesAccepted')){setTimeout(function(){cookieBar.classList.add('show');},900);}
@@ -1000,7 +896,6 @@ document.getElementById('year').textContent=new Date().getFullYear();
 </body>
 </html>'''
 
-# ============ ДАННЫЕ ============
 def _json_clone(o): return json.loads(json.dumps(o, ensure_ascii=False))
 def _merge_deep(b, o):
     if not isinstance(b, dict) or not isinstance(o, dict): return _json_clone(o)
@@ -1017,27 +912,14 @@ def _migrate(raw):
         if "body" in a and "card_text" not in a:
             a["card_text"] = a.pop("text", ""); a["text"] = a.pop("body", "")
         a.pop("body", None)
-    h = d.get("hero")
-    if isinstance(h, dict):
-        h.setdefault("btn1_href", "#consult"); h.setdefault("btn2_href", "#works")
     c = d.get("contacts")
     if isinstance(c, dict) and "lines" not in c:
         lines = _json_clone(DEFAULT_DATA.get("contacts", {}).get("lines") or [])
         if lines and c.get("regions"): lines[0]["value"] = c["regions"]
         if lines: c["lines"] = lines
-    if "stats" in d and isinstance(d["stats"], dict):
-        d["stats"].setdefault("items", _json_clone(DEFAULT_DATA.get("stats", {}).get("items") or []))
     return d
-_ICON_KEYS = (("services", "items"), ("guarantees", "items"))
 def _normalize_context(data):
     ctx = _json_clone(data)
-    for section, key in _ICON_KEYS:
-        items = (ctx.get(section) or {}).get(key)
-        if isinstance(items, list):
-            for it in items:
-                if not isinstance(it, dict): continue
-                icon = str(it.get("icon") or "")
-                if "<" in icon: it["icon_svg"] = icon; it["icon"] = ""
     ctx["year"] = str(date.today().year); ctx["domain"] = _domain(ctx)
     return ctx
 def _domain(data=None):
@@ -1054,7 +936,6 @@ def _punycode(h):
     try: return h.encode("idna").decode("ascii")
     except Exception: return h
 
-# ============ SUPABASE ============
 def _http(method, url, payload=None, headers=None, timeout=HTTP_TIMEOUT, raw_body=None):
     data = raw_body
     if payload is not None: data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
@@ -1085,7 +966,6 @@ def _fetch_from_supabase(timeout=8):
         if st == 200 and isinstance(js, list):
             if js and isinstance(js[0].get("data"), dict) and js[0]["data"]: return js[0]["data"], True
             return None, True
-        print("[sb] read({}) HTTP {} {}".format("service" if i==0 else "anon", st, (body or b"")[:200]), flush=True)
     return None, False
 
 def _save_to_supabase(data):
@@ -1095,9 +975,7 @@ def _save_to_supabase(data):
     url = "{}/rest/v1/{}".format(SUPABASE_URL, DATA_TABLE)
     headers = {"apikey": key, "Authorization": "Bearer " + key, "Prefer": "resolution=merge-duplicates,return=minimal"}
     st, js, body = _http("POST", url, payload=[{"id": DATA_ROW_ID, "data": data}], headers=headers, timeout=25)
-    if 200 <= st < 300:
-        print("[save] OK ({} КБ)".format(len(json.dumps(data, ensure_ascii=False))//1024), flush=True); return True
-    print("[save] FAIL HTTP {} {}".format(st, (body or b"")[:300]), flush=True); return False
+    return 200 <= st < 300
 
 _bucket_state = {"checked": False, "ok": False}; _bucket_lock = threading.Lock()
 def _bucket_ensure():
@@ -1110,10 +988,7 @@ def _bucket_ensure():
         st, js, body = _http("GET", base + "/" + BUCKET, headers=_sb_headers())
         if st == 200: _bucket_state["ok"] = True; return True
         st, js, body = _http("POST", base, payload={"id": BUCKET, "name": BUCKET, "public": True}, headers=_sb_headers())
-        _bucket_state["ok"] = st in (200, 201)
-        print("[storage] bucket {} HTTP {}".format(BUCKET, st), flush=True)
-        return _bucket_state["ok"]
-
+        _bucket_state["ok"] = st in (200, 201); return _bucket_state["ok"]
 def _storage_public_url(name): return "{}/storage/v1/object/public/{}/{}".format(SUPABASE_URL, BUCKET, name)
 def _storage_upload(filename, blob, mime):
     if not _bucket_ensure(): return None
@@ -1125,8 +1000,7 @@ def _storage_upload(filename, blob, mime):
     headers = _sb_headers(); headers.update({"Content-Type": mime, "x-upsert": "true", "Cache-Control": "max-age=31536000"})
     st, js, body = _http("POST", url, headers=headers, raw_body=blob, timeout=45)
     if 200 <= st < 300: return _storage_public_url(name)
-    print("[storage] upload HTTP {} {}".format(st, (body or b"")[:200]), flush=True); return None
-
+    return None
 def _storage_list(limit=120):
     if not _bucket_ensure(): return []
     url = "{}/storage/v1/object/list/{}".format(SUPABASE_URL, BUCKET)
@@ -1136,9 +1010,8 @@ def _storage_list(limit=120):
         return [{"name": it["name"], "url": _storage_public_url(it["name"])} for it in js if isinstance(it, dict) and it.get("name")]
     return []
 
-# ============ AI ============
 def _ai_yandex(system, user, max_tokens=700):
-    if not (YANDEX_API_KEY and FOLDER_ID): return None, "нет YANDEX_API_KEY / FOLDER_ID"
+    if not (YANDEX_API_KEY and FOLDER_ID): return None, "нет ключей"
     url = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion"
     payload = {"modelUri": "gpt://{}/yandexgpt-lite/latest".format(FOLDER_ID),
                "completionOptions": {"stream": False, "temperature": 0.55, "maxTokens": str(int(max_tokens))},
@@ -1146,30 +1019,26 @@ def _ai_yandex(system, user, max_tokens=700):
     st, js, body = _http("POST", url, payload=payload, headers={"Authorization": "Api-Key " + YANDEX_API_KEY}, timeout=60)
     if st == 200 and isinstance(js, dict):
         try: return js["result"]["alternatives"][0]["message"]["text"], None
-        except Exception: return None, "неожиданный ответ YandexGPT"
-    return None, "YandexGPT HTTP {}: {}".format(st, (body or b"")[:200])
+        except Exception: return None, "err"
+    return None, "Yandex HTTP {}".format(st)
 
 _gc = {"token": "", "exp": 0.0}; _gc_lock = threading.Lock()
 def _gigachat_token():
     with _gc_lock:
         if _gc["token"] and _gc["exp"] > time.time() + 60: return _gc["token"], None
-        if not GIGACHAT_AUTH_KEY: return None, "нет GIGACHAT_AUTH_KEY"
+        if not GIGACHAT_AUTH_KEY: return None, "нет ключа"
         req = urllib.request.Request("https://ngw.devices.sberbank.ru:9443/api/v2/oauth", data=b"scope=GIGACHAT_API_PERS", method="POST")
-        req.add_header("Content-Type", "application/x-www-form-urlencoded")
-        req.add_header("Accept", "application/json")
-        req.add_header("RqUID", str(uuid.uuid4()))
-        req.add_header("Authorization", "Basic " + GIGACHAT_AUTH_KEY)
+        req.add_header("Content-Type", "application/x-www-form-urlencoded"); req.add_header("Accept", "application/json")
+        req.add_header("RqUID", str(uuid.uuid4())); req.add_header("Authorization", "Basic " + GIGACHAT_AUTH_KEY)
         ctx = ssl._create_unverified_context()
         try:
             with urllib.request.urlopen(req, timeout=25, context=ctx) as r: js = json.loads(r.read().decode("utf-8"))
             tok = js.get("access_token")
-            if not tok: return None, "GigaChat: нет access_token"
+            if not tok: return None, "нет токена"
             _gc["token"] = tok
             _gc["exp"] = (time.time() + float(js.get("expires_at",0))/1000.0) if js.get("expires_at") else time.time()+1500
             return tok, None
-        except urllib.error.HTTPError as e: return None, "GigaChat oauth HTTP {}: {}".format(e.code, e.read()[:200])
-        except Exception as e: return None, "GigaChat oauth: {}".format(e)
-
+        except Exception as e: return None, str(e)
 def _ai_gigachat(system, user, max_tokens=700):
     tok, err = _gigachat_token()
     if not tok: return None, err
@@ -1179,15 +1048,12 @@ def _ai_gigachat(system, user, max_tokens=700):
     ctx = ssl._create_unverified_context()
     data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
     req = urllib.request.Request(url, data=data, method="POST")
-    req.add_header("Content-Type", "application/json")
-    req.add_header("Accept", "application/json")
+    req.add_header("Content-Type", "application/json"); req.add_header("Accept", "application/json")
     req.add_header("Authorization", "Bearer " + tok)
     try:
         with urllib.request.urlopen(req, timeout=60, context=ctx) as r: js = json.loads(r.read().decode("utf-8"))
         return js["choices"][0]["message"]["content"], None
-    except urllib.error.HTTPError as e: return None, "GigaChat HTTP {}: {}".format(e.code, e.read()[:200])
-    except Exception as e: return None, "GigaChat: {}".format(e)
-
+    except Exception as e: return None, str(e)
 def _ai_generate(system, user, max_tokens=700):
     order = ["yandex", "gigachat"] if AI_PROVIDER == "auto" else [AI_PROVIDER]
     errors = []
@@ -1198,7 +1064,6 @@ def _ai_generate(system, user, max_tokens=700):
         if text: return _clean_ai(text), p, None
         if err: errors.append(err)
     return None, None, "; ".join(errors) or "AI не настроен"
-
 def _clean_ai(t):
     t = (t or "").strip()
     t = re.sub(r"^(?:вариант\s*\d+\s*[:.\-]\s*)", "", t, flags=re.I)
@@ -1206,7 +1071,6 @@ def _clean_ai(t):
     t = t.strip().strip('"').strip("«»").strip()
     t = re.sub(r"^(?:Title|Заголовок|Description|Описание|Keywords|Ключевые слова|Текст)\s*[:：]\s*", "", t, flags=re.I)
     return t.replace("**", "").strip()
-
 def _ai_ask(data, task, path, value):
     brand = data.get("brand") or {}
     cities = ", ".join([c.get("name","") for c in ((data.get("cities") or {}).get("items") or []) if isinstance(c, dict)])
@@ -1215,27 +1079,25 @@ def _ai_ask(data, task, path, value):
     base = "Компания: {}. Города: {}. Услуги: {}. Телефон: {}. Сайт: {}.".format(
         brand.get("name","Кухни Островский"), cities or "Ростов-на-Дону, Батайск, Азов",
         services or "кухни и корпусная мебель на заказ", brand.get("phone",""), seo.get("domain") or DOMAIN)
-    system = "Ты опытный русскоязычный копирайтер и SEO-специалист для локального бизнеса (мебель на заказ). Пиши живым, конкретным языком, без воды, без markdown, без кавычек вокруг ответа, без слова «Вариант». Отвечай ТОЛЬКО готовым текстом."
-    rules = "Без emoji. Без англицизмов. Не выдумывай цены, сроки и проценты."
+    system = "Ты опытный русскоязычный копирайтер и SEO-специалист. Пиши живым языком, без воды, без markdown, без кавычек. Отвечай ТОЛЬКО готовым текстом."
+    rules = "Без emoji. Без англицизмов. Не выдумывай цены и сроки."
     user = base + "\n" + rules + "\n\n"
-    if task == "seo_title": user += "Составь SEO Title до 65 символов: название + услуга + 2 города + выгода. Верни одну строку."
-    elif task == "seo_description": user += "Составь meta description до 160 символов: что делаем, где, выгода, телефон в конце. Верни одну строку."
+    if task == "seo_title": user += "Составь SEO Title до 65 символов."
+    elif task == "seo_description": user += "Составь meta description до 160 символов."
     elif task == "seo_keywords": user += "Составь 12-15 ключевых фраз через запятую."
-    elif task == "hero_sub": user += "Напиши подзаголовок на главном экране: 1-2 предложения, до 220 символов."
-    elif task == "about_text": user += "Напиши блок «о нас» (3-4 предложения, до 400 символов) от лица руководителя."
+    elif task == "hero_sub": user += "Напиши подзаголовок на главном экране до 220 символов."
+    elif task == "about_text": user += "Напиши блок «о нас» до 400 символов."
     elif task == "service_text": user += "Опиши услугу одним предложением до 130 символов: " + (value or "")
-    elif task == "city_text": user += "Напиши одно предложение до 120 символов про работу в городе: " + (value or "")
-    elif task == "cta_text": user += "Напиши короткий призыв к действию (1-2 предложения, до 180 символов)."
-    elif task == "shorten": user += "Сократи текст до 1-2 предложений, сохранив смысл:\n" + (value or "")
-    elif task == "expand": user += "Дополни и улучши текст (до 3 предложений):\n" + (value or "")
-    else: user += "Улучши текст: убери ошибки и воду, сделай живее, сохрани смысл:\n" + (value or "")
+    elif task == "city_text": user += "Напиши одно предложение до 120 символов про город: " + (value or "")
+    elif task == "cta_text": user += "Напиши короткий призыв к действию до 180 символов."
+    elif task == "shorten": user += "Сократи текст до 1-2 предложений:\n" + (value or "")
+    elif task == "expand": user += "Улучши текст до 3 предложений:\n" + (value or "")
+    else: user += "Улучши текст, сохрани смысл:\n" + (value or "")
     return system, user
 
-# ============ КЭШ / СЕССИИ ============
 _data_lock = threading.Lock(); _data_cache = None; _cache_ts = 0.0
-_db_state = {"read": None, "write": None, "last_error": ""}
+_db_state = {"read": None, "write": None}
 _auth_lock = threading.Lock(); _sessions = {}; _login_fails = {}
-
 def _new_session():
     t = secrets.token_urlsafe(32)
     with _auth_lock:
@@ -1266,21 +1128,16 @@ def _login_note(ip, ok):
         if ok: _login_fails.pop(ip, None); return
         cnt, _ = _login_fails.get(ip, (0,0))
         _login_fails[ip] = (cnt+1, time.time()+600)
-
 def load_fresh():
     global _data_cache, _cache_ts
     raw, ok = _fetch_from_supabase(); _db_state["read"] = ok
     if not ok:
         with _data_lock:
-            if _data_cache is not None:
-                _cache_ts = time.time(); print("[load] кэш", flush=True); return _data_cache
-        with _data_lock:
-            _data_cache = _json_clone(DEFAULT_DATA); _cache_ts = time.time()
-        print("[load] БД недоступна — дефолты", flush=True); return _data_cache
-    if raw is None:
-        data = _json_clone(DEFAULT_DATA); print("[load] БД пустая — дефолты", flush=True)
-    else:
-        data = _merge_deep(DEFAULT_DATA, _migrate(raw)); print("[load] из БД: {} разделов".format(len(raw)), flush=True)
+            if _data_cache is not None: _cache_ts = time.time(); return _data_cache
+        with _data_lock: _data_cache = _json_clone(DEFAULT_DATA); _cache_ts = time.time()
+        return _data_cache
+    if raw is None: data = _json_clone(DEFAULT_DATA)
+    else: data = _merge_deep(DEFAULT_DATA, _migrate(raw))
     with _data_lock: _data_cache = data; _cache_ts = time.time()
     return data
 def load_data():
@@ -1293,16 +1150,11 @@ def save_data(data):
     global _data_cache, _cache_ts
     ok = _save_to_supabase(data); _db_state["write"] = ok
     if ok:
-        with _data_lock:
-            _data_cache = _merge_deep(DEFAULT_DATA, _migrate(data)); _cache_ts = time.time()
+        with _data_lock: _data_cache = _merge_deep(DEFAULT_DATA, _migrate(data)); _cache_ts = time.time()
     return ok
 
-# ============ ПРОКСИ (отключён — браузер сам грузит VK) ============
-def _proxify_urls(html):
-    """VK грузится напрямую браузером через referrerpolicy=no-referrer. Прокси не нужен."""
-    return html
+def _proxify_urls(html): return html
 
-# ============ РЕНДЕР ============
 _page_lock = threading.Lock(); _page_cache = {"tpl": ""}
 def _page_template():
     with _page_lock:
@@ -1310,23 +1162,18 @@ def _page_template():
         tpl = PAGE_TEMPLATE
         if "</head>" in tpl and "goldAnimations" not in tpl: tpl = tpl.replace("</head>", ANIM_STYLE + "\n</head>", 1)
         if "</body>" in tpl and "goldAnimationScript" not in tpl: tpl = tpl.replace("</body>", ANIM_SCRIPT + "\n</body>", 1)
-        _page_cache["tpl"] = tpl
-        print("[page] шаблон готов: {} байт".format(len(tpl)), flush=True)
-        return tpl
+        _page_cache["tpl"] = tpl; return tpl
 def render_site():
     data = load_data(); ctx = _normalize_context(data)
     try: html = render(_page_template(), ctx)
-    except Exception as e:
-        print("[render] ОШИБКА: {}".format(e), flush=True); html = _page_template()
+    except Exception as e: print("[render] {}".format(e), flush=True); html = _page_template()
     return html
-
 def build_robots(data):
     dom, host = _domain(data), _host(data)
     s = data.get("seo") or {}
     custom = (s.get("robots") or "").strip()
     if custom: return custom.replace("{{domain}}", dom).replace("{{host}}", host) + "\n"
-    return "User-agent: *\nAllow: /\nDisallow: /admin\nClean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&yclid&gclid\n\nHost: {}\nSitemap: {}/sitemap.xml\n".format(host, dom)
-
+    return "User-agent: *\nAllow: /\nDisallow: /admin\n\nHost: {}\nSitemap: {}/sitemap.xml\n".format(host, dom)
 def build_sitemap(data):
     dom = _domain(data); today = date.today().isoformat()
     s = data.get("seo") or {}
@@ -1338,26 +1185,25 @@ def build_sitemap(data):
         if loc.startswith("/"): loc = dom + loc
         urls.append({"loc": loc, "changefreq": (it.get("changefreq") or "monthly").strip(), "priority": (it.get("priority") or "0.6").strip()})
     parts = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-    for u in urls: parts.append("  <url>\n    <loc>{}</loc>\n    <lastmod>{}</lastmod>\n    <changefreq>{}</changefreq>\n    <priority>{}</priority>\n  </url>".format(_escape(u["loc"]), today, _escape(u["changefreq"]), _escape(u["priority"])))
+    for u in urls: parts.append("  <url><loc>{}</loc><lastmod>{}</lastmod><changefreq>{}</changefreq><priority>{}</priority></url>".format(_escape(u["loc"]), today, _escape(u["changefreq"]), _escape(u["priority"])))
     parts.append("</urlset>"); return "\n".join(parts) + "\n"
-
 def build_manifest(data):
     b = data.get("brand") or {}; d = data.get("design") or {}
     return json.dumps({"name": b.get("name","Кухни Островский"), "short_name": b.get("name","Кухни Островский"),
         "start_url": "/", "display": "standalone", "background_color": d.get("bg","#0e0c09"), "theme_color": d.get("bg","#0e0c09"),
         "lang": "ru-RU", "icons": [{"src": "/favicon-192x192.png", "sizes": "192x192", "type": "image/png"},
         {"src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png"}]}, ensure_ascii=False)
-
 def build_404(data):
     p = data.get("page404") or {}
     t = p.get("title") or "Страница не найдена"
     x = p.get("text") or "Возможно, страница переехала или удалена."
     b = p.get("button") or "На главную"
-    return ("<!DOCTYPE html><html lang=\"ru\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"robots\" content=\"noindex\"><title>{t}</title>"
-        "<style>body{{margin:0;background:#0e0c09;color:#f5efe3;font-family:system-ui;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center}}h1{{font-family:Georgia,serif;font-size:72px;margin:0 0 10px;color:#eccfa0}}a{{display:inline-block;margin-top:22px;padding:14px 26px;border-radius:12px;background:linear-gradient(135deg,#eccfa0,#d4af6a 55%,#a37c3f);color:#17120b;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:1px}}</style></head>"
-        "<body><div><h1>404</h1><p>{t}</p><p>{x}</p><a href=\"/\">{b}</a></div></body></html>").format(t=_escape(t), x=_escape(x), b=_escape(b))
+    return ("<!DOCTYPE html><html lang=\"ru\"><head><meta charset=\"UTF-8\"><title>{t}</title></head>"
+        "<body style=\"margin:0;background:#0e0c09;color:#f5efe3;font-family:system-ui;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center\">"
+        "<div><h1 style=\"font-size:72px;color:#eccfa0\">404</h1><p>{t}</p><p>{x}</p>"
+        "<a href=\"/\" style=\"display:inline-block;margin-top:22px;padding:14px 26px;border-radius:12px;background:linear-gradient(135deg,#eccfa0,#d4af6a 55%,#a37c3f);color:#17120b;font-weight:700;text-decoration:none;text-transform:uppercase\">{b}</a></div>"
+        "</body></html>").format(t=_escape(t), x=_escape(x), b=_escape(b))
 
-# ============ FAVICON ============
 _fc = {"data": None, "ts": 0.0}; _ic = {"ico": None, "png16": None, "png32": None, "png180": None, "png192": None}; _fc_lock = threading.Lock()
 def _make_icons(data):
     try: from PIL import Image
@@ -1368,125 +1214,113 @@ def _make_icons(data):
         def png(s):
             c = img.copy(); c.thumbnail((s,s)); b = io.BytesIO(); c.save(b, format="PNG"); return b.getvalue()
         _ic["png16"] = png(16); _ic["png32"] = png(32); _ic["png180"] = png(180); _ic["png192"] = png(192)
-    except Exception as e: print("[favicon] {}".format(e), flush=True)
-
-def _fetch_favicon():
-    try:
-        req = urllib.request.Request(FAVICON_URL, headers={"User-Agent": "Mozilla/5.0", "Referer": "https://vk.com/"})
-        with urllib.request.urlopen(req, timeout=15) as r: return r.read()
-    except Exception as e:
-        print("[favicon] {}".format(e), flush=True); return None
-
+    except Exception: pass
 def get_favicon():
     now = time.time()
     with _fc_lock:
         if _fc["data"] is not None and now - _fc["ts"] < 3600: return _fc["data"]
-    data = _fetch_favicon()
-    if data:
+    try:
+        req = urllib.request.Request(FAVICON_URL, headers={"User-Agent": "Mozilla/5.0", "Referer": "https://vk.com/"})
+        with urllib.request.urlopen(req, timeout=15) as r: data = r.read()
         with _fc_lock: _fc["data"] = data; _fc["ts"] = now
-        _make_icons(data)
-    return data
+        _make_icons(data); return data
+    except Exception: return None
 
-# ============ ADMIN SCHEMA ============
-def _svg_icon(_=None): return {"path": "icon", "label": "Иконка", "type": "textarea", "rows": 2, "mono": True,
-    "hint": "Содержимое d у <path viewBox=\"0 0 24 24\">."}
+def _svg_icon(_=None): return {"path": "icon", "label": "Иконка", "type": "textarea", "rows": 2, "mono": True, "hint": "Содержимое d у path"}
 
 ADMIN_SCHEMA = [
- {"id":"seo","group":"SEO и код","title":"SEO и мета","fields":[
+ {"id":"seo","group":"SEO","title":"SEO и мета","fields":[
    {"path":"seo.title","label":"Title","type":"textarea","rows":2,"ai":"seo_title"},
    {"path":"seo.description","label":"Description","type":"textarea","rows":3,"ai":"seo_description"},
    {"path":"seo.keywords","label":"Keywords","type":"textarea","rows":2,"ai":"seo_keywords"},
-   {"path":"seo.domain","label":"Домен сайта","type":"text"},
-   {"path":"seo.canonical","label":"Canonical URL","type":"text"},
+   {"path":"seo.domain","label":"Домен","type":"text"},
+   {"path":"seo.canonical","label":"Canonical","type":"text"},
    {"path":"seo.og_title","label":"OG title","type":"text"},
    {"path":"seo.og_description","label":"OG description","type":"textarea","rows":2},
    {"path":"seo.og_image","label":"OG картинка","type":"image"},
    {"path":"seo.yandex_verification","label":"Яндекс верификация","type":"text"},
    {"path":"seo.google_verification","label":"Google верификация","type":"text"},
-   {"path":"seo.metrika_id","label":"Номер счётчика Яндекс.Метрики","type":"text"},
-   {"path":"seo.robots","label":"robots.txt","type":"textarea","rows":6,"mono":True}],
-  "lists":[{"path":"seo.extra_urls","label":"Доп. страницы в sitemap","titleField":"loc","tpl":{"loc":"/","changefreq":"monthly","priority":"0.6"},
-    "item":[{"path":"loc","label":"URL","type":"text"},{"path":"changefreq","label":"changefreq","type":"select","options":["daily","weekly","monthly","yearly"]},{"path":"priority","label":"priority","type":"text"}]}]},
- {"id":"code","group":"SEO и код","title":"Коды и скрипты","fields":[
+   {"path":"seo.robots","label":"robots.txt","type":"textarea","rows":6,"mono":True}]},
+ {"id":"code","group":"SEO","title":"Коды","fields":[
    {"path":"code.head","label":"Код в <head>","type":"textarea","rows":8,"mono":True},
    {"path":"code.body","label":"Код перед </body>","type":"textarea","rows":8,"mono":True}]},
- {"id":"design","group":"SEO и код","title":"Дизайн и цвета","fields":[
+ {"id":"design","group":"SEO","title":"Дизайн","fields":[
    {"path":"design.bg","label":"Фон сайта","type":"color"},
    {"path":"design.gold","label":"Золотой","type":"color"},
    {"path":"design.gold_soft","label":"Светлое золото","type":"color"},
    {"path":"design.gold_deep","label":"Тёмное золото","type":"color"},
    {"path":"design.text","label":"Основной текст","type":"color"},
    {"path":"design.muted","label":"Второстепенный текст","type":"color"},
-   {"path":"design.fonts_url","label":"Ссылка на шрифты Google","type":"text","mono":True},
+   {"path":"design.fonts_url","label":"Шрифты Google","type":"text","mono":True},
    {"path":"design.custom_css","label":"Свой CSS","type":"textarea","rows":8,"mono":True}]},
- {"id":"brand","group":"Контент","title":"Бренд и меню","fields":[
+ {"id":"brand","group":"Контент","title":"Бренд","fields":[
    {"path":"brand.name","label":"Название","type":"text"},
-   {"path":"brand.sub","label":"Подпись под названием","type":"text"},
-   {"path":"brand.logo_url","label":"Логотип / аватар","type":"image"},
-   {"path":"brand.phone","label":"Телефон (как показывать)","type":"text"},
+   {"path":"brand.sub","label":"Подпись","type":"text"},
+   {"path":"brand.logo_url","label":"Логотип","type":"image"},
+   {"path":"brand.phone","label":"Телефон","type":"text"},
    {"path":"brand.phone_raw","label":"Телефон для tel:","type":"text"},
-   {"path":"brand.telegram","label":"Telegram (ссылка)","type":"text"},
-   {"path":"brand.vk","label":"VK (ссылка)","type":"text"},
+   {"path":"brand.telegram","label":"Telegram","type":"text"},
+   {"path":"brand.vk","label":"VK","type":"text"},
    {"path":"nav.cta_label","label":"Кнопка в меню","type":"text"},
-   {"path":"nav.cta_href","label":"Кнопка в меню (ссылка)","type":"text"}],
-  "lists":[{"path":"nav.items","label":"Пункты меню","titleField":"label","tpl":{"label":"Новый пункт","href":"#top"},
+   {"path":"nav.cta_href","label":"Кнопка (ссылка)","type":"text"}],
+  "lists":[{"path":"nav.items","label":"Пункты меню","titleField":"label","tpl":{"label":"Пункт","href":"#top"},
     "item":[{"path":"label","label":"Текст","type":"text"},{"path":"href","label":"Ссылка","type":"text"}]}]},
- {"id":"hero","group":"Контент","title":"Главный экран","fields":[
+ {"id":"hero","group":"Контент","title":"Главный","fields":[
    {"path":"hero.eyebrow","label":"Надзаголовок","type":"text"},
    {"path":"hero.title_before","label":"Заголовок (начало)","type":"text"},
-   {"path":"hero.title_em","label":"Заголовок (золотые слова)","type":"text"},
+   {"path":"hero.title_em","label":"Заголовок (золото)","type":"text"},
    {"path":"hero.sub","label":"Подзаголовок","type":"textarea","rows":3,"ai":"hero_sub"},
-   {"path":"hero.btn1","label":"Кнопка 1 — текст","type":"text"},
-   {"path":"hero.btn1_href","label":"Кнопка 1 — ссылка","type":"text"},
-   {"path":"hero.btn2","label":"Кнопка 2 — текст","type":"text"},
-   {"path":"hero.btn2_href","label":"Кнопка 2 — ссылка","type":"text"},
+   {"path":"hero.btn1","label":"Кнопка 1","type":"text"},
+   {"path":"hero.btn1_href","label":"Кнопка 1 (ссылка)","type":"text"},
+   {"path":"hero.btn2","label":"Кнопка 2","type":"text"},
+   {"path":"hero.btn2_href","label":"Кнопка 2 (ссылка)","type":"text"},
    {"path":"hero.bg","label":"Фон","type":"image"}]},
  {"id":"stats","group":"Контент","title":"Цифры","fields":[{"path":"stats.bg","label":"Фон","type":"image"}],
-  "lists":[{"path":"stats.items","label":"Цифры","titleField":"label","tpl":{"prefix":"","num":"10","suffix":"+","decimal":"","label":"лет опыта"},
-    "item":[{"path":"num","label":"Число","type":"text"},{"path":"decimal","label":"Знаков после запятой","type":"text"},{"path":"prefix","label":"Префикс","type":"text"},{"path":"suffix","label":"Суффикс","type":"text"},{"path":"label","label":"Подпись","type":"text"}]}]},
+  "lists":[{"path":"stats.items","label":"Цифры","titleField":"label","tpl":{"prefix":"","num":"10","suffix":"+","decimal":"","label":""},
+    "item":[{"path":"num","label":"Число","type":"text"},{"path":"decimal","label":"Знаков после","type":"text"},{"path":"prefix","label":"Префикс","type":"text"},{"path":"suffix","label":"Суффикс","type":"text"},{"path":"label","label":"Подпись","type":"text"}]}]},
  {"id":"about","group":"Контент","title":"О специалисте","fields":[
    {"path":"about.kicker","label":"Надзаголовок","type":"text"},
    {"path":"about.title","label":"Заголовок","type":"text"},
-   {"path":"about.text","label":"Текст справа","type":"textarea","rows":4,"ai":"about_text"},
+   {"path":"about.text","label":"Текст","type":"textarea","rows":4,"ai":"about_text"},
    {"path":"about.photo","label":"Фото","type":"image"},
    {"path":"about.name","label":"Имя","type":"text"},
    {"path":"about.role","label":"Должность","type":"text"},
-   {"path":"about.card_text","label":"Текст в карточке","type":"textarea","rows":3,"ai":"improve"},
+   {"path":"about.card_text","label":"Карточка","type":"textarea","rows":3},
    {"path":"about.bg","label":"Фон","type":"image"}],
-  "lists":[{"path":"about.features","label":"Плюсы (галочки)","titleField":"","tpl":"Новое преимущество",
-    "item":[{"path":"","label":"","type":"text","placeholder":"Например: Гарантия качества"}]}]},
- {"id":"consult","group":"Контент","title":"Блок консультации","fields":[
+  "lists":[{"path":"about.features","label":"Плюсы","titleField":"","tpl":"Новое",
+    "item":[{"path":"","label":"","type":"text","placeholder":"Например: Гарантия"}]}]},
+ {"id":"consult","group":"Контент","title":"Консультация","fields":[
    {"path":"consult.kicker","label":"Надзаголовок","type":"text"},
    {"path":"consult.title","label":"Заголовок","type":"text"},
    {"path":"consult.phone","label":"Телефон","type":"text"},
-   {"path":"consult.phone_raw","label":"Телефон для tel:","type":"text"},
-   {"path":"consult.text","label":"Текст","type":"textarea","rows":3,"ai":"improve"},
+   {"path":"consult.phone_raw","label":"tel:","type":"text"},
+   {"path":"consult.text","label":"Текст","type":"textarea","rows":3},
    {"path":"consult.bg","label":"Фон","type":"image"}]},
- {"id":"works","group":"Контент","title":"Работы (фото)","fields":[
+ {"id":"works","group":"Контент","title":"Работы","fields":[
    {"path":"works.kicker","label":"Надзаголовок","type":"text"},
    {"path":"works.title","label":"Заголовок","type":"text"},
    {"path":"works.subtitle","label":"Подзаголовок","type":"textarea","rows":2},
-   {"path":"works.hint","label":"Подпись «Листайте»","type":"text"},
+   {"path":"works.hint","label":"Листайте","type":"text"},
    {"path":"works.bg","label":"Фон","type":"image"}],
-  "lists":[{"path":"works.items","label":"Фотографии работ","titleField":"alt","tpl":{"url":"","alt":"Кухня на заказ"},
-    "item":[{"path":"url","label":"Картинка","type":"image"},{"path":"alt","label":"Alt (для SEO)","type":"text"}]}]},
+  "lists":[{"path":"works.items","label":"Фото работ","titleField":"alt","tpl":{"url":"","alt":"Кухня"},
+    "item":[{"path":"url","label":"Картинка","type":"image"},{"path":"alt","label":"Alt","type":"text"}]}]},
  {"id":"reviews","group":"Контент","title":"Отзывы","fields":[
    {"path":"reviews.kicker","label":"Надзаголовок","type":"text"},
    {"path":"reviews.title","label":"Заголовок","type":"text"},
    {"path":"reviews.subtitle","label":"Подзаголовок","type":"textarea","rows":2},
-   {"path":"reviews.hint","label":"Подпись «Листайте»","type":"text"},
+   {"path":"reviews.hint","label":"Листайте","type":"text"},
    {"path":"reviews.bg","label":"Фон","type":"image"},
-   {"path":"reviews.video_poster","label":"Превью для видеоотзывов","type":"image"}],
-  "lists":[{"path":"reviews.items","label":"Отзывы","titleField":"name","tpl":{"name":"","sub":"","stars":5,"avatar":"","text":"","video":"","poster":""},
-    "item":[{"path":"name","label":"Имя","type":"text"},{"path":"sub","label":"Что заказывали","type":"text"},{"path":"stars","label":"Звёзд (1-5)","type":"text"},{"path":"avatar","label":"Аватар","type":"image"},{"path":"text","label":"Текст отзыва","type":"textarea","rows":4},{"path":"video","label":"Видео: ссылка для iframe","type":"text"},{"path":"poster","label":"Превью видео","type":"image"}]}]},
+   {"path":"reviews.video_poster","label":"Превью видео","type":"image"}],
+  "lists":[{"path":"reviews.items","label":"Отзывы","titleField":"name","tpl":{"name":"","sub":"","stars":5,"avatar":"","text":"","video":""},
+    "item":[{"path":"name","label":"Имя","type":"text"},{"path":"sub","label":"Тема","type":"text"},{"path":"stars","label":"Звёзд","type":"text"},{"path":"avatar","label":"Аватар","type":"image"},{"path":"text","label":"Текст","type":"textarea","rows":4},{"path":"video","label":"Видео URL","type":"text"}]}]},
  {"id":"services","group":"Контент","title":"Услуги","fields":[
    {"path":"services.kicker","label":"Надзаголовок","type":"text"},
    {"path":"services.title","label":"Заголовок","type":"text"},
    {"path":"services.subtitle","label":"Подзаголовок","type":"textarea","rows":2},
    {"path":"services.bg","label":"Фон","type":"image"}],
   "lists":[{"path":"services.items","label":"Услуги","titleField":"title","tpl":{"title":"","text":"","icon":""},
-    "item":[{"path":"title","label":"Название","type":"text"},{"path":"text","label":"Описание","type":"textarea","rows":2,"ai":"improve"},_svg_icon()]}]},
- {"id":"process","group":"Контент","title":"Этапы работы","fields":[
+    "item":[{"path":"title","label":"Название","type":"text"},{"path":"text","label":"Описание","type":"textarea","rows":2},_svg_icon()]}]},
+ {"id":"process","group":"Контент","title":"Этапы","fields":[
    {"path":"process.kicker","label":"Надзаголовок","type":"text"},
    {"path":"process.title","label":"Заголовок","type":"text"},
    {"path":"process.bg","label":"Фон","type":"image"}],
@@ -1505,7 +1339,7 @@ ADMIN_SCHEMA = [
    {"path":"cities.bg","label":"Фон","type":"image"}],
   "lists":[{"path":"cities.items","label":"Города","titleField":"name","tpl":{"name":"","text":""},
     "item":[{"path":"name","label":"Город","type":"text"},{"path":"text","label":"Текст","type":"textarea","rows":2,"ai":"city_text"}]}]},
- {"id":"cta","group":"Контент","title":"Призыв к действию","fields":[
+ {"id":"cta","group":"Контент","title":"CTA","fields":[
    {"path":"cta.title","label":"Заголовок","type":"text"},
    {"path":"cta.text","label":"Текст","type":"textarea","rows":3,"ai":"cta_text"},
    {"path":"cta.button","label":"Кнопка","type":"text"},
@@ -1514,40 +1348,39 @@ ADMIN_SCHEMA = [
    {"path":"contacts.kicker","label":"Надзаголовок","type":"text"},
    {"path":"contacts.title","label":"Заголовок","type":"text"},
    {"path":"contacts.subtitle","label":"Подзаголовок","type":"textarea","rows":2},
-   {"path":"contacts.call_label","label":"Подпись в карточке звонка","type":"text"},
-   {"path":"contacts.call_number","label":"Телефон в карточке","type":"text"},
+   {"path":"contacts.call_label","label":"Подпись звонка","type":"text"},
+   {"path":"contacts.call_number","label":"Телефон","type":"text"},
    {"path":"contacts.call_hint","label":"Текст под телефоном","type":"textarea","rows":2},
    {"path":"contacts.bg","label":"Фон","type":"image"}],
   "lists":[
-    {"path":"contacts.lines","label":"Строки контактов","titleField":"label","tpl":{"label":"","value":"","href":"","icon":""},
+    {"path":"contacts.lines","label":"Строки","titleField":"label","tpl":{"label":"","value":"","href":"","icon":""},
      "item":[{"path":"label","label":"Подпись","type":"text"},{"path":"value","label":"Значение","type":"text"},{"path":"href","label":"Ссылка","type":"text"},_svg_icon()]},
-    {"path":"contacts.buttons","label":"Кнопки связи","titleField":"label","tpl":{"label":"","href":"","cls":"c-call","external":False,"icon":""},
+    {"path":"contacts.buttons","label":"Кнопки","titleField":"label","tpl":{"label":"","href":"","cls":"c-call","external":False,"icon":""},
      "item":[{"path":"label","label":"Текст","type":"text"},{"path":"href","label":"Ссылка","type":"text"},{"path":"cls","label":"Вид","type":"select","options":["c-call","c-tg","c-max"]},{"path":"external","label":"Новая вкладка","type":"check"},_svg_icon()]}]},
  {"id":"footer","group":"Контент","title":"Подвал","fields":[
-   {"path":"footer.line","label":"Строка описания","type":"text"},
+   {"path":"footer.line","label":"Строка","type":"text"},
    {"path":"footer.copyright","label":"Копирайт","type":"text"}],
-  "lists":[{"path":"footer.socials","label":"Кнопки соцсетей","titleField":"label","tpl":{"label":"","href":"","icon":""},
+  "lists":[{"path":"footer.socials","label":"Соцсети","titleField":"label","tpl":{"label":"","href":"","icon":""},
     "item":[{"path":"label","label":"Подпись","type":"text"},{"path":"href","label":"Ссылка","type":"text"},_svg_icon()]}]},
- {"id":"cookie","group":"Контент","title":"Cookie-баннер","fields":[
+ {"id":"cookie","group":"Контент","title":"Cookie","fields":[
    {"path":"cookie.text","label":"Текст","type":"textarea","rows":2},
    {"path":"cookie.button","label":"Кнопка","type":"text"}]},
  {"id":"page404","group":"Контент","title":"Страница 404","fields":[
    {"path":"page404.title","label":"Заголовок","type":"text"},
    {"path":"page404.text","label":"Текст","type":"textarea","rows":2},
    {"path":"page404.button","label":"Кнопка","type":"text"}]},
- {"id":"tools","group":"Инструменты","title":"Инструменты","hint":"Проверка связей, бэкап, AI.",
-  "fields":[{"type":"buttons","buttons":[
+ {"id":"tools","group":"Инструменты","title":"Инструменты","fields":[{"type":"buttons","buttons":[
      {"act":"status","label":"Проверить связи","cls":"btn-gold"},
-     {"act":"ai-seo","label":"Сгенерировать SEO через AI","cls":""},
-     {"act":"export","label":"Скачать бэкап (JSON)","cls":""},
+     {"act":"ai-seo","label":"AI SEO","cls":""},
+     {"act":"export","label":"Бэкап (JSON)","cls":""},
      {"act":"import","label":"Загрузить бэкап","cls":""},
      {"act":"open","label":"Открыть сайт","cls":""},
-     {"act":"reload","label":"Отменить изменения","cls":"btn-red"}]},
+     {"act":"reload","label":"Отменить","cls":"btn-red"}]},
    {"type":"info","text":"<div id=\"toolsOut\" class=\"info\">Нажмите «Проверить связи».</div>"}]}
 ]
 _SCHEMA_JSON = json.dumps(ADMIN_SCHEMA, ensure_ascii=False)
 
-ADMIN_LOGIN_HTML = """<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Вход — Кухни Островский</title><style>
+ADMIN_LOGIN_HTML = """<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Вход</title><style>
 *{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui;background:linear-gradient(135deg,#0e0c09,#1a1611);color:#f5efe3;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .card{background:rgba(255,255,255,.04);border:1px solid rgba(236,207,160,.2);border-radius:20px;padding:42px 38px;width:100%;max-width:420px}
 h1{font-family:Georgia,serif;font-size:28px;color:#fff;margin-bottom:8px;text-align:center}
@@ -1559,13 +1392,12 @@ button{width:100%;padding:15px;background:linear-gradient(135deg,#eccfa0,#d4af6a
 .err{background:rgba(220,60,60,.14);border:1px solid rgba(220,60,60,.4);color:#ff9a9a;padding:12px;border-radius:10px;font-size:13px;margin-bottom:18px;text-align:center}
 </style></head><body>
 <form class="card" method="POST" action="/admin/login">
-<h1>Кухни Островский</h1><p class="sub">Панель управления сайтом</p>__ERROR__
+<h1>Кухни Островский</h1><p class="sub">Панель управления</p>__ERROR__
 <label>Логин</label><input type="text" name="login" required autofocus>
 <label>Пароль</label><input type="password" name="password" required>
-<button>Войти</button>
-</form></body></html>"""
+<button>Войти</button></form></body></html>"""
 
-ADMIN_HTML = r"""<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Админка — Кухни Островский</title><style>
+ADMIN_HTML = r"""<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Админка</title><style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui;background:#0e0c09;color:#f5efe3;line-height:1.5}
 header{background:rgba(14,12,9,.96);border-bottom:1px solid rgba(236,207,160,.16);padding:12px 18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:20}
@@ -1626,14 +1458,14 @@ p.hint{color:#b9ad9a;font-size:13px;margin-bottom:18px}
 <div class="brand">Кухни Островский<span>CMS</span><span class="status" id="status">Загрузка…</span></div>
 <div class="actions">
 <a class="btn" href="/" target="_blank">Сайт</a>
-<button class="btn" id="reloadBtn" title="Отменить изменения">↻</button>
-<button class="btn btn-gold" id="saveBtn" title="Ctrl+S">💾 Сохранить</button>
+<button class="btn" id="reloadBtn">↻</button>
+<button class="btn btn-gold" id="saveBtn">💾 Сохранить</button>
 <a class="btn btn-red" href="/admin/logout">Выйти</a>
 </div>
 </header>
 <div class="layout"><nav class="side" id="side"></nav><main id="main"><p class="hint">Загрузка…</p></main></div>
 <div class="toast" id="toast"></div>
-<div class="modal" id="modal"><div class="modal-card"><div class="modal-head"><strong>Медиатека (Supabase Storage)</strong><button class="btn mini" id="mClose">✕ Закрыть</button></div><div class="media-grid" id="mediaGrid"></div></div></div>
+<div class="modal" id="modal"><div class="modal-card"><div class="modal-head"><strong>Медиатека</strong><button class="btn mini" id="mClose">✕</button></div><div class="media-grid" id="mediaGrid"></div></div></div>
 <input type="file" id="importFile" accept="application/json,.json" hidden>
 <script>
 var SCHEMA=__SCHEMA__, DATA=null, TAB=(__SCHEMA__[0]||{}).id, dirty=false, mediaTarget=null;
@@ -1644,7 +1476,7 @@ function getPath(o,p){if(!p)return o;return p.split('.').reduce(function(a,k){if
 function setPath(o,p,v){var a=p.split('.'),c=o;for(var i=0;i<a.length-1;i++){var k=a[i],n=a[i+1];if(c[k]==null)c[k]=/^\d+$/.test(n)?[]:{};c=c[k]}c[a[a.length-1]]=v}
 function toast(m,bad){var t=q('#toast');t.textContent=m;t.classList.toggle('err',!!bad);t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show')},3000)}
 function setStatus(txt,cls){var el=q('#status');el.className='status '+(cls||'ok');el.textContent=txt}
-function setDirty(v){dirty=v;document.title=(v?'● ':'')+'Админка — Кухни Островский';q('#saveBtn').classList.toggle('pulse',v)}
+function setDirty(v){dirty=v;document.title=(v?'● ':'')+'Админка';q('#saveBtn').classList.toggle('pulse',v)}
 function api(url,opts){return fetch(url,Object.assign({credentials:'same-origin'},opts||{})).then(function(r){if(r.status===401){location.href='/admin/login';throw new Error('Нужно войти')}return r.json()})}
 function normColor(v){v=String(v||'').trim();return /^#[0-9a-f]{6}$/i.test(v)?v:'#000000'}
 function render(){
@@ -1676,22 +1508,21 @@ function fieldHTML(f,base){
   var v=getPath(DATA,p),inp;
   if(f.type==='image'){
     return '<div class="field"><label>'+esc(f.label)+'</label><div class="img-row">'
-      +'<input type="text" data-path="'+p+'" value="'+esc(v)+'" placeholder="https://… или загрузите файл">'
-      +'<label class="btn mini" title="Загрузить файл">📁<input type="file" accept="image/*" data-upload="'+p+'" hidden></label>'
-      +'<button class="btn mini" data-media="'+p+'" title="Медиатека">🗂</button></div>'
-      +'<div class="prev" data-prev="'+p+'">'+(v?'<img src="'+esc(v)+'" loading="lazy" referrerpolicy="no-referrer">':'')+'</div>'
-      +(f.hint?'<div class="fhint">'+f.hint+'</div>':'')+'</div>';
+      +'<input type="text" data-path="'+p+'" value="'+esc(v)+'">'
+      +'<label class="btn mini">📁<input type="file" accept="image/*" data-upload="'+p+'" hidden></label>'
+      +'<button class="btn mini" data-media="'+p+'">🗂</button></div>'
+      +'<div class="prev" data-prev="'+p+'">'+(v?'<img src="'+esc(v)+'" loading="lazy" referrerpolicy="no-referrer">':'')+'</div></div>';
   }
   if(f.type==='textarea')inp='<textarea data-path="'+p+'" rows="'+(f.rows||3)+'"'+(f.mono?' class="mono"':'')+' placeholder="'+esc(f.placeholder||'')+'">'+esc(v)+'</textarea>';
   else if(f.type==='check')inp='<label class="chk"><input type="checkbox" data-path="'+p+'"'+(v?' checked':'')+'> '+(f.chkLabel||'включено')+'</label>';
   else if(f.type==='select')inp='<select data-path="'+p+'">'+(f.options||[]).map(function(o){return '<option value="'+esc(o)+'"'+(String(v)===o?' selected':'')+'>'+esc(o)+'</option>'}).join('')+'</select>';
   else if(f.type==='color')inp='<div class="color-row"><input type="color" data-path="'+p+'" value="'+esc(normColor(v))+'"><input type="text" data-path="'+p+'" value="'+esc(v)+'"></div>';
-  else inp='<input type="text" data-path="'+p+'" value="'+esc(v)+'" placeholder="'+esc(f.placeholder||'')+'">';
-  return '<div class="field">'+(f.label?'<label>'+esc(f.label)+(f.ai?aiBtn(p,f.ai):'')+'</label>':'')+inp+(f.hint?'<div class="fhint">'+f.hint+'</div>':'')+'</div>';
+  else inp='<input type="text" data-path="'+p+'" value="'+esc(v)+'">';
+  return '<div class="field">'+(f.label?'<label>'+esc(f.label)+(f.ai?aiBtn(p,f.ai):'')+'</label>':'')+inp+'</div>';
 }
 function listHTML(l){
   var arr=getPath(DATA,l.path); if(!Array.isArray(arr))arr=[];
-  var h='<div class="list-head"><strong>'+esc(l.label)+' ('+arr.length+')</strong><span class="muted">↑↓ — порядок</span></div>';
+  var h='<div class="list-head"><strong>'+esc(l.label)+' ('+arr.length+')</strong></div>';
   arr.forEach(function(item,i){
     var t=l.titleField?String(getPath(item,l.titleField)||''):'';
     h+='<div class="item"><div class="item-head"><strong>#'+(i+1)+(t?' · '+esc(t):'')+'</strong><div class="item-tools">'
@@ -1707,14 +1538,13 @@ function listHTML(l){
 }
 function bind(){
   qa('[data-path]').forEach(function(el){
-    var handler=function(){
+    el.addEventListener(el.tagName==='SELECT'||el.type==='checkbox'?'change':'input',function(){
       var p=el.dataset.path;
       var val=(el.type==='checkbox')?!!el.checked:el.value;
       setPath(DATA,p,val); setDirty(true);
       qa('[data-path="'+p+'"]').forEach(function(o){if(o!==el){if(o.type==='checkbox')o.checked=!!val;else o.value=val}});
       var pv=q('[data-prev="'+p+'"]'); if(pv)pv.innerHTML=val?'<img src="'+esc(val)+'" loading="lazy" referrerpolicy="no-referrer">':'';
-    };
-    el.addEventListener(el.tagName==='SELECT'||el.type==='checkbox'?'change':'input',handler);
+    });
   });
   qa('[data-upload]').forEach(function(inp){inp.addEventListener('change',function(){upload(inp)})});
   qa('[data-media]').forEach(function(b){b.addEventListener('click',function(){openMedia(b.dataset.media)})});
@@ -1725,7 +1555,7 @@ function bind(){
   qa('[data-act]').forEach(function(b){b.addEventListener('click',function(){doAction(b.dataset.act)})});
 }
 function addItem(path,tpl){var arr=getPath(DATA,path); if(!Array.isArray(arr)){arr=[];setPath(DATA,path,arr)} var item; try{item=JSON.parse(tpl)}catch(e){item=tpl} arr.push(item); setDirty(true); render();}
-function delItem(path,i){if(!confirm('Удалить этот элемент?'))return;var arr=getPath(DATA,path);arr.splice(i,1);setDirty(true);render();}
+function delItem(path,i){if(!confirm('Удалить?'))return;var arr=getPath(DATA,path);arr.splice(i,1);setDirty(true);render();}
 function moveItem(path,i,d){var arr=getPath(DATA,path),j=i+d;if(j<0||j>=arr.length)return;var x=arr[i];arr[i]=arr[j];arr[j]=x;setDirty(true);render();}
 function refreshField(p,val){qa('[data-path="'+p+'"]').forEach(function(o){o.value=val});var pv=q('[data-prev="'+p+'"]');if(pv)pv.innerHTML=val?'<img src="'+esc(val)+'" loading="lazy" referrerpolicy="no-referrer">':'';}
 function upload(inp){
@@ -1733,8 +1563,8 @@ function upload(inp){
   if(f.size>8*1024*1024){toast('Файл больше 8 МБ',true);return}
   var fd=new FormData(); fd.append('file',f); toast('Загружаю…');
   fetch('/admin/api/upload',{method:'POST',body:fd,credentials:'same-origin'}).then(function(r){return r.json()}).then(function(j){
-    if(j&&j.url){setPath(DATA,p,j.url);setDirty(true);refreshField(p,j.url);toast(j.storage?'Загружено в Storage':'Загружено (data-URL)')}
-    else toast('Не загрузилось: '+((j&&j.error)||'ошибка'),true);
+    if(j&&j.url){setPath(DATA,p,j.url);setDirty(true);refreshField(p,j.url);toast('Загружено')}
+    else toast('Ошибка',true);
   }).catch(function(e){toast('Ошибка: '+e.message,true)});
   inp.value='';
 }
@@ -1742,9 +1572,9 @@ function runAI(b){
   var p=b.dataset.aiPath,task=b.dataset.ai,cur=String(getPath(DATA,p)||'');
   b.disabled=true; var old=b.textContent; b.textContent='⏳';
   api('/admin/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({task:task,path:p,value:cur})}).then(function(j){
-    if(j&&j.text){setPath(DATA,p,j.text);setDirty(true);refreshField(p,j.text);toast('AI ('+j.provider+'): готово')}
-    else toast('AI: '+((j&&j.error)||'пустой ответ'),true);
-  }).catch(function(e){toast('AI ошибка: '+e.message,true)}).then(function(){b.disabled=false;b.textContent=old});
+    if(j&&j.text){setPath(DATA,p,j.text);setDirty(true);refreshField(p,j.text);toast('AI: готово')}
+    else toast('AI: '+((j&&j.error)||'err'),true);
+  }).catch(function(e){toast('Ошибка: '+e.message,true)}).then(function(){b.disabled=false;b.textContent=old});
 }
 function openMedia(p){
   mediaTarget=p;
@@ -1755,33 +1585,24 @@ function openMedia(p){
     q('#mediaGrid').innerHTML=j.items.map(function(it){return '<button data-pick="'+esc(it.url)+'"><img src="'+esc(it.url)+'" loading="lazy" referrerpolicy="no-referrer"><div class="nm">'+esc(it.name)+'</div></button>';}).join('');
     qa('[data-pick]').forEach(function(b){b.addEventListener('click',function(){
       setPath(DATA,mediaTarget,b.dataset.pick);setDirty(true);refreshField(mediaTarget,b.dataset.pick);
-      q('#modal').classList.remove('open');toast('Картинка выбрана');
+      q('#modal').classList.remove('open');
     })});
-  }).catch(function(e){q('#mediaGrid').innerHTML='<p class="hint" style="padding:16px">Ошибка: '+esc(e.message)+'</p>'});
+  });
 }
 function doAction(act){
   if(act==='open'){window.open('/','_blank');return}
-  if(act==='reload'){if(!confirm('Отменить несохранённые изменения?'))return;load();return}
+  if(act==='reload'){if(!confirm('Отменить?'))return;load();return}
   if(act==='export'){location.href='/admin/api/export';return}
   if(act==='import'){q('#importFile').click();return}
   if(act==='status'){showStatus();return}
   if(act==='ai-seo'){aiSeo();return}
 }
-function out(html){var el=q('#toolsOut'); if(el)el.innerHTML=html; else toast('Откройте вкладку «Инструменты»')}
+function out(html){var el=q('#toolsOut'); if(el)el.innerHTML=html; else toast('Откройте Инструменты')}
 function showStatus(){
   out('Проверяю…');
   api('/admin/api/status').then(function(j){
     function row(ok,txt){return '<div>'+(ok?'✅':'❌')+' '+txt+'</div>'}
-    var size=Math.round((j.size||0)/1024);
-    var html='<b>Состояние</b>\n'
-      +row(j.db_read,'Чтение Supabase: '+(j.db_read?'OK':'ошибка'))
-      +row(j.db_write!==false,'Запись Supabase: '+(j.db_write===false?'была ошибка':'OK'))
-      +row(j.storage,'Хранилище: '+(j.storage?('бакет '+j.bucket):'недоступно'))
-      +row(j.ai.yandex||j.ai.gigachat,'AI: Yandex='+(j.ai.yandex?'✓':'✗')+', GigaChat='+(j.ai.gigachat?'✓':'✗'))
-      +'\n<b>Контент</b>\n'
-      +'<div>Размер: '+size+' КБ · работ: '+(j.counts.works||0)+' · отзывов: '+(j.counts.reviews||0)+' · услуг: '+(j.counts.services||0)+'</div>'
-      +'<div>Домен: '+esc(j.domain)+' · страниц в sitemap: '+j.sitemap_urls+'</div>';
-    out(html);
+    out('<b>Состояние</b>\n'+row(j.db_read,'Чтение Supabase')+row(j.db_write!==false,'Запись Supabase')+row(j.storage,'Storage')+row(j.ai.yandex||j.ai.gigachat,'AI')+'\n<b>Контент</b>\nРазмер: '+Math.round(j.size/1024)+' КБ · работ: '+(j.counts.works||0)+' · отзывов: '+(j.counts.reviews||0));
   }).catch(function(e){out('Ошибка: '+esc(e.message))});
 }
 function aiSeo(){
@@ -1789,21 +1610,21 @@ function aiSeo(){
   out('Генерирую SEO…');
   var i=0,done=[];
   (function next(){
-    if(i>=tasks.length){out('<b>SEO обновлён</b>\n'+done.join('\n')+'\n\nНе забудьте «Сохранить».');return}
+    if(i>=tasks.length){out('<b>SEO обновлён</b>\n'+done.join('\n')+'\n\nСохраните.');return}
     var p=tasks[i][0],t=tasks[i][1];
     api('/admin/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({task:t,path:p,value:String(getPath(DATA,p)||'')})})
-      .then(function(j){if(j&&j.text){setPath(DATA,p,j.text);setDirty(true);done.push('• '+p+': '+esc(j.text.slice(0,90)))}else done.push('• '+p+': ошибка '+esc((j&&j.error)||''))})
+      .then(function(j){if(j&&j.text){setPath(DATA,p,j.text);setDirty(true);done.push('• '+p+': ok')}else done.push('• '+p+': '+((j&&j.error)||'err'))})
       .catch(function(e){done.push('• '+p+': '+esc(e.message))})
       .then(function(){i++;next()});
   })();
 }
 function save(){
-  if(!DATA){toast('Данные ещё не загрузились',true);return}
+  if(!DATA){toast('Нет данных',true);return}
   setStatus('Сохранение…','saving');
   fetch('/admin/api/save',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(DATA)})
     .then(function(r){return r.json()}).then(function(j){
-      if(j&&j.ok){setStatus('✅ Сохранено','ok');setDirty(false);toast('Сохранено в Supabase')}
-      else{setStatus('❌ Не сохранилось','bad');toast('Ошибка записи! Проверьте SUPABASE_SERVICE_KEY',true)}
+      if(j&&j.ok){setStatus('✅ Сохранено','ok');setDirty(false);toast('Сохранено')}
+      else{setStatus('❌ Ошибка','bad');toast('Ошибка записи!',true)}
     }).catch(function(e){setStatus('Ошибка','bad');toast('Ошибка: '+e.message,true)});
 }
 function load(){
@@ -1812,7 +1633,7 @@ function load(){
     DATA=j;setDirty(false);render();setStatus('Готово','ok');
   }).catch(function(e){
     setStatus('Ошибка загрузки','bad');
-    q('#main').innerHTML='<h2>Не удалось загрузить данные</h2><p class="hint">'+esc(e.message)+'</p>';
+    q('#main').innerHTML='<h2>Не удалось загрузить</h2><p class="hint">'+esc(e.message)+'</p>';
   });
 }
 document.addEventListener('click',function(e){
@@ -1826,7 +1647,7 @@ q('#importFile').addEventListener('change',function(){
   var f=this.files[0]; if(!f)return;
   var r=new FileReader();
   r.onload=function(){
-    try{var obj=JSON.parse(r.result);if(!obj||typeof obj!=='object')throw new Error('не объект');DATA=obj;setDirty(true);render();toast('Бэкап загружен — «Сохранить»');}
+    try{var obj=JSON.parse(r.result);DATA=obj;setDirty(true);render();toast('Бэкап загружен — Сохранить');}
     catch(err){toast('Не разобрал JSON: '+err.message,true)}
   };
   r.readAsText(f,'utf-8'); this.value='';
@@ -1844,7 +1665,6 @@ STATIC_EXT = {".html",".htm",".txt",".xml",".svg",".png",".jpg",".jpeg",".webp",
 STATIC_BLOCK = {"mebel.py","requirements.txt","Dockerfile","robots.txt","sitemap.xml","page.html"}
 MIME = {".html":"text/html; charset=utf-8",".txt":"text/plain; charset=utf-8",".xml":"application/xml; charset=utf-8",".svg":"image/svg+xml",".png":"image/png",".jpg":"image/jpeg",".jpeg":"image/jpeg",".webp":"image/webp",".gif":"image/gif",".ico":"image/x-icon",".css":"text/css; charset=utf-8",".js":"application/javascript; charset=utf-8",".json":"application/json; charset=utf-8",".webmanifest":"application/manifest+json; charset=utf-8",".woff":"font/woff",".woff2":"font/woff2",".pdf":"application/pdf",".mp4":"video/mp4"}
 
-# ============ HTTP ============
 def _parse_multipart(body, boundary):
     if not body or not boundary: return None, None
     parts = body.split(b"--" + boundary)
@@ -1862,7 +1682,7 @@ def _parse_multipart(body, boundary):
 
 class Handler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
-    server_version = "OstrovskyCMS/5.0"
+    server_version = "OstrovskyCMS/6.0"
     _head_only = False
     def _tok(self):
         raw = self.headers.get("Cookie", "")
@@ -1929,7 +1749,15 @@ class Handler(BaseHTTPRequestHandler):
             self._json({"items": _storage_list(), "bucket": BUCKET}); return
         if path == "/admin/api/status":
             if not self._admin(): self._json({"error": "no auth"}, 401); return
-            self._json(self._status_payload()); return
+            data = load_data(); counts = {}
+            for key in ("works","reviews","services","process","guarantees","cities"):
+                items = (data.get(key) or {}).get("items")
+                counts[key] = len(items) if isinstance(items, list) else 0
+            self._json({"db_read": bool(_db_state.get("read")), "db_write": _db_state.get("write"),
+                "storage": _bucket_ensure(), "bucket": BUCKET,
+                "ai": {"yandex": bool(YANDEX_API_KEY and FOLDER_ID), "gigachat": bool(GIGACHAT_AUTH_KEY)},
+                "counts": counts, "size": len(json.dumps(data, ensure_ascii=False).encode("utf-8")),
+                "domain": _domain(data), "sitemap_urls": build_sitemap(data).count("<url>")}); return
         if path == "/admin":
             if not self._admin(): self._redir("/admin/login"); return
             self._send(200, ADMIN_HTML, "text/html; charset=utf-8"); return
@@ -1938,7 +1766,17 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/sitemap.xml": self._send(200, build_sitemap(load_data()), "application/xml; charset=utf-8", "public, max-age=3600"); return
         if path == "/manifest.webmanifest": self._send(200, build_manifest(load_data()), "application/manifest+json; charset=utf-8", "public, max-age=86400"); return
         if path in ("/favicon.ico","/favicon-16x16.png","/favicon-32x32.png","/apple-touch-icon.png","/favicon-192x192.png"):
-            self._route_favicon(path); return
+            if path == "/favicon.ico":
+                d = get_favicon()
+                if _ic["ico"]: self._send(200, _ic["ico"], "image/x-icon", "public, max-age=86400", gzip_ok=False)
+                elif d: self._send(200, d, "image/x-icon", "public, max-age=86400", gzip_ok=False)
+                else: self._redir(FAVICON_URL)
+            else:
+                key = {"/favicon-16x16.png":"png16","/favicon-32x32.png":"png32","/apple-touch-icon.png":"png180","/favicon-192x192.png":"png192"}[path]
+                if _ic.get(key) is None: get_favicon()
+                if _ic.get(key): self._send(200, _ic[key], "image/png", "public, max-age=86400", gzip_ok=False)
+                else: self._redir(FAVICON_URL)
+            return
         if self._serve_static(path): return
         self._send(404, build_404(load_data()), "text/html; charset=utf-8")
     def do_POST(self):
@@ -1946,7 +1784,7 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/admin/login":
             ip = self._ip()
             if _login_blocked(ip):
-                self._send(200, ADMIN_LOGIN_HTML.replace("__ERROR__", '<div class="err">Слишком много попыток. Подождите 10 минут.</div>'), "text/html; charset=utf-8"); return
+                self._send(200, ADMIN_LOGIN_HTML.replace("__ERROR__", '<div class="err">Слишком много попыток.</div>'), "text/html; charset=utf-8"); return
             raw = self._body().decode("utf-8", "ignore"); p = parse_qs(raw)
             login = (p.get("login") or [""])[0].strip(); pw = (p.get("password") or [""])[0]
             if (hmac.compare_digest(login.encode("utf-8"), ADMIN_LOGIN_ENV.encode("utf-8"))
@@ -1979,7 +1817,7 @@ class Handler(BaseHTTPRequestHandler):
             elif blob[:4] == b"RIFF" and blob[8:12] == b"WEBP": mime = "image/webp"
             elif blob[:5] == b"<?xml" or blob[:4] == b"<svg": mime = "image/svg+xml"
             url = _storage_upload(fname, blob, mime)
-            if url: self._json({"url": url, "storage": True, "bucket": BUCKET})
+            if url: self._json({"url": url, "storage": True})
             else: self._json({"url": "data:{};base64,{}".format(mime, base64.b64encode(blob).decode("ascii")), "storage": False})
             return
         if path == "/admin/api/ai":
@@ -1994,17 +1832,6 @@ class Handler(BaseHTTPRequestHandler):
             else: self._json({"error": err or "AI недоступен"}, 200)
             return
         self._json({"error": "not found"}, 404)
-    def _route_favicon(self, path):
-        if path == "/favicon.ico":
-            d = get_favicon()
-            if _ic["ico"]: self._send(200, _ic["ico"], "image/x-icon", "public, max-age=86400", gzip_ok=False)
-            elif d: self._send(200, d, "image/x-icon", "public, max-age=86400", gzip_ok=False)
-            else: self._redir(FAVICON_URL)
-            return
-        key = {"/favicon-16x16.png":"png16","/favicon-32x32.png":"png32","/apple-touch-icon.png":"png180","/favicon-192x192.png":"png192"}[path]
-        if _ic.get(key) is None: get_favicon()
-        if _ic.get(key): self._send(200, _ic[key], "image/png", "public, max-age=86400", gzip_ok=False)
-        else: self._redir(FAVICON_URL)
     def _serve_static(self, path):
         rel = urllib.parse.unquote(path).lstrip("/")
         if not rel or rel.startswith(".") or ".." in rel.split("/"): return False
@@ -2018,27 +1845,17 @@ class Handler(BaseHTTPRequestHandler):
         except Exception: return False
         self._send(200, blob, MIME.get(ext, "application/octet-stream"), "public, max-age=86400", gzip_ok=False)
         return True
-    def _status_payload(self):
-        data = load_data(); counts = {}
-        for key in ("works","reviews","services","process","guarantees","cities"):
-            items = (data.get(key) or {}).get("items")
-            counts[key] = len(items) if isinstance(items, list) else 0
-        return {"db_read": bool(_db_state.get("read")), "db_write": _db_state.get("write"),
-                "storage": _bucket_ensure(), "bucket": BUCKET,
-                "ai": {"yandex": bool(YANDEX_API_KEY and FOLDER_ID), "gigachat": bool(GIGACHAT_AUTH_KEY)},
-                "counts": counts, "size": len(json.dumps(data, ensure_ascii=False).encode("utf-8")),
-                "domain": _domain(data), "sitemap_urls": build_sitemap(data).count("<url>")}
     def log_message(self, fmt, *args):
         if os.environ.get("VERBOSE"): print("[http] " + (fmt % args), flush=True)
 
 def main():
-    print("BOOT: Кухни Островский CMS (single-file v5)", flush=True)
+    print("BOOT: Кухни Островский CMS (v6)", flush=True)
     print("BOOT: PORT = {}".format(PORT), flush=True)
     print("BOOT: DOMAIN = {} ({})".format(_domain(), _host()), flush=True)
-    print("BOOT: Supabase = {} / таблица {}".format(SUPABASE_URL or "НЕ ЗАДАН", DATA_TABLE), flush=True)
+    print("BOOT: Supabase = {}".format(SUPABASE_URL), flush=True)
     print("BOOT: AI = yandex:{} gigachat:{}".format(bool(YANDEX_API_KEY and FOLDER_ID), bool(GIGACHAT_AUTH_KEY)), flush=True)
     try: load_fresh()
-    except Exception as e: print("BOOT: первичная загрузка не удалась: {}".format(e), flush=True)
+    except Exception as e: print("BOOT: {}".format(e), flush=True)
     ThreadingHTTPServer(("0.0.0.0", PORT), Handler).serve_forever()
 
 if __name__ == "__main__":
