@@ -1,7 +1,22 @@
 # -*- coding: utf-8 -*-
-"""mebel.py — Кухни Островский. VK-картинки идут через wsrv.nl proxy."""
-import base64, gzip, hashlib, hmac, html as _html, io, json, os, re, secrets, ssl, threading, time
-import urllib.error, urllib.parse, urllib.request, uuid
+"""mebel.py — Кухни Островский. Сайт + админка + Supabase + AI."""
+import base64
+import gzip
+import hashlib
+import hmac
+import html as _html
+import io
+import json
+import os
+import re
+import secrets
+import ssl
+import threading
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
+import uuid
 from datetime import date
 from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -10,33 +25,29 @@ from urllib.parse import parse_qs
 PORT = int(os.environ.get("PORT", "8080"))
 DOMAIN = os.environ.get("DOMAIN", "https://кухниостровский.рф").rstrip("/")
 ROOT = os.path.dirname(os.path.abspath(__file__))
+
 SUPABASE_URL = os.environ.get("SUPABASE_URL") or "https://hliafkrpvmntpctmqwfu.supabase.co"
 SUPABASE_ANON = os.environ.get("SUPABASE_ANON_KEY") or "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhsaWFma3Jwdm1udHBjdG1xd2Z1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyMDQ1NzYsImV4cCI6MjEwNjc4MDU3Nn0.yi57-Ty1iIfhnEh80_zvifhX1W_JX2qCl7QrARuJ2ns"
 SUPABASE_SERVICE = os.environ.get("SUPABASE_SERVICE_KEY") or "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhsaWFma3Jwdm1udHBjdG1xd2Z1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MTIwNDU3NiwiZXhwIjoyMTA2NzgwNTc2fQ.Yr4z9vx6kF9ZINNNUjUn43GYi-A2BmBfg8uyrOtmDWo"
 BUCKET = os.environ.get("SUPABASE_BUCKET", "site-images")
+
 ADMIN_LOGIN_ENV = os.environ.get("ADMIN_LOGIN", "кухниост")
 ADMIN_PASSWORD_ENV = os.environ.get("ADMIN_PASSWORD", "романкух")
+
 YANDEX_API_KEY = os.environ.get("YANDEX_API_KEY") or "AQVNyfn82epL9dy8C_kftzeypq6eF9lFd6SZnFzV"
 FOLDER_ID = os.environ.get("FOLDER_ID") or "b1g4aq87c7j61c6g3i5l"
 GIGACHAT_AUTH_KEY = os.environ.get("GIGACHAT_AUTH_KEY") or "MDFhMDBkNmEtMmExNC03M2JkLWFlZmMtOTQ0OWVlOTc5M2U1OmE1ZWJhM2NlLTQwYjAtNDZlYi1iMmY2LTE3OTFmYzhhYTQ2MA=="
 AI_PROVIDER = (os.environ.get("AI_PROVIDER", "auto") or "auto").lower()
+
 DATA_TABLE = os.environ.get("SUPABASE_TABLE", "site_content")
 SESSION_TTL = 604800
 MAX_UPLOAD = 8 * 1024 * 1024
 DATA_ROW_ID = 1
 CACHE_TTL = 15
+IMG_TTL = 604800
 HTTP_TIMEOUT = 12
 
-# ============ VK через wsrv.nl ============
-_VK_ORIG_FAVICON = "https://sun9-71.vkuserphoto.ru/s/v1/ig2/vrD0P7wnU0dU8cSoW8yBUOc-naoKs1vJN5OXMrUFeAdLJQi9qfWScCGH9JV3-r4btxsDfbPh--pJ1tSjOlkfiVRw2Celdw.jpg?quality=95&from=bu&u=-mZnLUrNq7bsSRyuT0gwpcYkWHU9MA-lwwC3ZYRE2Uw&cs=512x0"
-
-def _vk_wrap(url, w=1920, q=85, fmt="webp"):
-    return url
-
-def _deep_wrap(obj, w=1920, q=85, fmt="webp"):
-    return obj
-
-FAVICON_URL = _vk_wrap(_VK_ORIG_FAVICON, w=256, q=90, fmt="png")
+FAVICON_URL = "https://sun9-71.vkuserphoto.ru/s/v1/ig2/vrD0P7wnU0dU8cSoW8yBUOc-naoKs1vJN5OXMrUFeAdLJQi9qfWScCGH9JV3-r4btxsDfbPh--pJ1tSjOlkfiVRw2Celdw.jpg?quality=95&from=bu&u=-mZnLUrNq7bsSRyuT0gwpcYkWHU9MA-lwwC3ZYRE2Uw&cs=512x0"
 
 ANIM_STYLE = """<style id="goldAnimations">
 @keyframes shimmerX{0%{background-position:-200% 0}100%{background-position:200% 0}}
@@ -222,106 +233,164 @@ DEFAULT_DATA = {
  'cookie':{'text':'Мы используем файлы cookie для корректной работы сайта.','button':'Принять'},
  'page404':{'title':'Страница не найдена','text':'Возможно, страница переехала или удалена. Посмотрите наши работы или позвоните нам.','button':'На главную'}
 }
-
 _TAG_RE = re.compile(r"\{\{\{?(.*?)\}\}\}?", re.S)
-def _escape(s): return _html.escape(s, quote=True)
+
+def _escape(s):
+    return _html.escape(s, quote=True)
+
 def _stringify(v):
-    if v is None: return ""
-    if isinstance(v, bool): return "true" if v else "false"
-    if isinstance(v, float): return ("%f" % v).rstrip("0").rstrip(".")
-    if isinstance(v, int): return str(v)
-    if isinstance(v, (dict, list, tuple)): return ""
+    if v is None:
+        return ""
+    if isinstance(v, bool):
+        return "true" if v else "false"
+    if isinstance(v, float):
+        return ("%f" % v).rstrip("0").rstrip(".")
+    if isinstance(v, int):
+        return str(v)
+    if isinstance(v, (dict, list, tuple)):
+        return ""
     return str(v)
+
 def _truthy(v):
-    if v is None: return False
-    if isinstance(v, bool): return v
-    if isinstance(v, (int, float)): return v != 0
-    if isinstance(v, (list, tuple, dict)): return len(v) > 0
+    if v is None:
+        return False
+    if isinstance(v, bool):
+        return v
+    if isinstance(v, (int, float)):
+        return v != 0
+    if isinstance(v, (list, tuple, dict)):
+        return len(v) > 0
     s = str(v).strip()
-    return s != "" and s.lower() not in ("0","false","none","null","нет")
+    return s != "" and s.lower() not in ("0", "false", "none", "null", "нет")
+
 def _lookup(ctx, path):
     path = (path or "").strip()
-    if not path: return ""
-    if path == "this": return ctx.get("this", "")
-    if path.startswith("this."): cur = ctx.get("this"); rest = path[5:]
-    elif path.startswith("@"): return ctx.get(path, "")
-    else: cur = ctx; rest = path
+    if not path:
+        return ""
+    if path == "this":
+        return ctx.get("this", "")
+    if path.startswith("this."):
+        cur = ctx.get("this")
+        rest = path[5:]
+    elif path.startswith("@"):
+        return ctx.get(path, "")
+    else:
+        cur = ctx
+        rest = path
     for part in rest.split("."):
-        if part == "": continue
-        if isinstance(cur, dict): cur = cur.get(part)
+        if part == "":
+            continue
+        if isinstance(cur, dict):
+            cur = cur.get(part)
         elif isinstance(cur, (list, tuple)):
             if part.lstrip("-").isdigit():
-                i = int(part); cur = cur[i] if -len(cur) <= i < len(cur) else None
-            else: return ""
-        else: return ""
-        if cur is None: return ""
+                i = int(part)
+                cur = cur[i] if -len(cur) <= i < len(cur) else None
+            else:
+                return ""
+        else:
+            return ""
+        if cur is None:
+            return ""
     return cur
+
 def _apply_filter(name, value):
     name = (name or "").strip()
-    if name == "nl2br": return _escape(_stringify(value)).replace("\r\n","\n").replace("\n","<br>")
+    if name == "nl2br":
+        return _escape(_stringify(value)).replace("\r\n", "\n").replace("\n", "<br>")
     if name == "stars":
-        try: n = int(float(str(value).strip()))
-        except Exception: return _escape(_stringify(value))
+        try:
+            n = int(float(str(value).strip()))
+        except Exception:
+            return _escape(_stringify(value))
         n = max(0, min(5, n))
-        return "\u2605"*n + "\u2606"*(5-n)
-    if name == "json": return json.dumps(_stringify(value), ensure_ascii=False)[1:-1]
-    if name == "up": return _escape(_stringify(value).upper())
+        return "\u2605" * n + "\u2606" * (5 - n)
+    if name == "json":
+        return json.dumps(_stringify(value), ensure_ascii=False)[1:-1]
+    if name == "up":
+        return _escape(_stringify(value).upper())
     return _escape(_stringify(value))
+
 def _extract_block(tpl, pos):
-    depth = 0; main_parts, alt_parts = [], []; cur = main_parts; seen_else = False; p = pos
+    depth = 0
+    main_parts, alt_parts = [], []
+    cur = main_parts
+    seen_else = False
+    p = pos
     while True:
         m = _TAG_RE.search(tpl, p)
         if not m:
-            cur.append(tpl[p:]); return "".join(main_parts), ("".join(alt_parts) if seen_else else ""), len(tpl)
-        expr = m.group(1).strip(); cur.append(tpl[p:m.start()]); p = m.end()
+            cur.append(tpl[p:])
+            return "".join(main_parts), ("".join(alt_parts) if seen_else else ""), len(tpl)
+        expr = m.group(1).strip()
+        cur.append(tpl[p:m.start()])
+        p = m.end()
         if expr.startswith("#each ") or expr.startswith("#if ") or expr.startswith("#unless "):
-            depth += 1; cur.append(m.group(0))
-        elif expr in ("/each","/if","/unless"):
-            if depth == 0: return "".join(main_parts), ("".join(alt_parts) if seen_else else ""), p
-            depth -= 1; cur.append(m.group(0))
+            depth += 1
+            cur.append(m.group(0))
+        elif expr in ("/each", "/if", "/unless"):
+            if depth == 0:
+                return "".join(main_parts), ("".join(alt_parts) if seen_else else ""), p
+            depth -= 1
+            cur.append(m.group(0))
         elif expr == "else" and depth == 0 and not seen_else:
-            seen_else = True; cur = alt_parts
-        else: cur.append(m.group(0))
+            seen_else = True
+            cur = alt_parts
+        else:
+            cur.append(m.group(0))
+
 def render(tpl, ctx):
-    out, pos = [], 0
+    out = []
+    pos = 0
     while True:
         m = _TAG_RE.search(tpl, pos)
-        if not m: out.append(tpl[pos:]); break
+        if not m:
+            out.append(tpl[pos:])
+            break
         out.append(tpl[pos:m.start()])
-        token, expr = m.group(0), m.group(1).strip(); is_raw = token.startswith("{{{")
+        token, expr = m.group(0), m.group(1).strip()
+        is_raw = token.startswith("{{{")
         pos = m.end()
         if expr.startswith("#each "):
             body, _alt, pos = _extract_block(tpl, pos)
             val = _lookup(ctx, expr[6:])
-            if isinstance(val, dict): val = [val]
+            if isinstance(val, dict):
+                val = [val]
             if isinstance(val, (list, tuple)):
                 total = len(val)
                 for i, item in enumerate(val):
-                    sub = dict(ctx); sub["this"] = item
-                    sub["@index"] = i+1; sub["@first"] = (i==0); sub["@last"] = (i==total-1)
+                    sub = dict(ctx)
+                    sub["this"] = item
+                    sub["@index"] = i + 1
+                    sub["@first"] = (i == 0)
+                    sub["@last"] = (i == total - 1)
                     out.append(render(body, sub))
         elif expr.startswith("#if ") or expr.startswith("#unless "):
             neg = expr.startswith("#unless ")
             body, alt, pos = _extract_block(tpl, pos)
-            cond = _truthy(_lookup(ctx, expr.split(" ",1)[1]))
-            if neg: cond = not cond
+            cond = _truthy(_lookup(ctx, expr.split(" ", 1)[1]))
+            if neg:
+                cond = not cond
             out.append(render(body if cond else alt, ctx))
         elif expr.startswith("#"):
             _b, _a, pos = _extract_block(tpl, pos)
-        elif expr.startswith(("/","else","!")): continue
+        elif expr.startswith(("/", "else", "!")):
+            continue
         else:
             name, _, filt = expr.partition("|")
             val = _lookup(ctx, name)
-            if is_raw or filt.strip() == "raw": out.append(_stringify(val))
-            else: out.append(_apply_filter(filt, val))
+            if is_raw or filt.strip() == "raw":
+                out.append(_stringify(val))
+            else:
+                out.append(_apply_filter(filt, val))
     return "".join(out)
 
-# ============ PAGE TEMPLATE ============
 PAGE_TEMPLATE = r'''<!DOCTYPE html>
 <html lang="ru" class="js">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
 <title>{{seo.title}}</title>
 <meta name="description" content="{{seo.description}}">
 <meta name="keywords" content="{{seo.keywords}}">
@@ -895,110 +964,166 @@ document.getElementById('year').textContent=new Date().getFullYear();
 </body>
 </html>'''
 
-def _json_clone(o): return json.loads(json.dumps(o, ensure_ascii=False))
+def _json_clone(o):
+    return json.loads(json.dumps(o, ensure_ascii=False))
+
 def _merge_deep(b, o):
-    if not isinstance(b, dict) or not isinstance(o, dict): return _json_clone(o)
+    if not isinstance(b, dict) or not isinstance(o, dict):
+        return _json_clone(o)
     r = dict(b)
     for k, v in o.items():
-        if k in r and isinstance(r[k], dict) and isinstance(v, dict): r[k] = _merge_deep(r[k], v)
-        else: r[k] = _json_clone(v)
+        if k in r and isinstance(r[k], dict) and isinstance(v, dict):
+            r[k] = _merge_deep(r[k], v)
+        else:
+            r[k] = _json_clone(v)
     return r
+
 def _migrate(raw):
-    if not isinstance(raw, dict): return {}
+    if not isinstance(raw, dict):
+        return {}
     d = _json_clone(raw)
+    a = d.get("about")
+    if isinstance(a, dict):
+        if "body" in a and "card_text" not in a:
+            a["card_text"] = a.pop("text", "")
+            a["text"] = a.pop("body", "")
+        a.pop("body", None)
+    h = d.get("hero")
+    if isinstance(h, dict):
+        h.setdefault("btn1_href", "#consult")
+        h.setdefault("btn2_href", "#works")
     c = d.get("contacts")
     if isinstance(c, dict) and "lines" not in c:
         lines = _json_clone(DEFAULT_DATA.get("contacts", {}).get("lines") or [])
-        if lines and c.get("regions"): lines[0]["value"] = c["regions"]
-        if lines: c["lines"] = lines
+        if lines and c.get("regions"):
+            lines[0]["value"] = c["regions"]
+        if lines:
+            c["lines"] = lines
+    if "stats" in d and isinstance(d["stats"], dict):
+        d["stats"].setdefault("items", _json_clone(DEFAULT_DATA.get("stats", {}).get("items") or []))
     return d
+
 def _normalize_context(data):
     ctx = _json_clone(data)
-    # Обернуть все VK-ссылки в wsrv.nl
-    ctx = _deep_wrap(ctx, w=1920, q=85, fmt="webp")
-    ctx["year"] = str(date.today().year); ctx["domain"] = _domain(ctx)
+    ctx["year"] = str(date.today().year)
+    ctx["domain"] = _domain(ctx)
     return ctx
+
 def _domain(data=None):
     dom = DOMAIN
     if isinstance(data, dict):
         s = data.get("seo") or {}
         dom = (s.get("domain") or "").strip() or DOMAIN
     dom = dom.rstrip("/")
-    if "//" not in dom: dom = "https://" + dom
+    if "//" not in dom:
+        dom = "https://" + dom
     sch, _, host = dom.partition("://")
     return sch + "://" + _punycode(host)
-def _host(data=None): return _domain(data).split("://", 1)[-1]
+
+def _host(data=None):
+    return _domain(data).split("://", 1)[-1]
+
 def _punycode(h):
-    try: return h.encode("idna").decode("ascii")
-    except Exception: return h
+    try:
+        return h.encode("idna").decode("ascii")
+    except Exception:
+        return h
 
 def _http(method, url, payload=None, headers=None, timeout=HTTP_TIMEOUT, raw_body=None):
     data = raw_body
-    if payload is not None: data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+    if payload is not None:
+        data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
     req = urllib.request.Request(url, data=data, method=method)
-    if payload is not None: req.add_header("Content-Type", "application/json")
-    for k, v in (headers or {}).items(): req.add_header(k, v)
+    if payload is not None:
+        req.add_header("Content-Type", "application/json")
+    for k, v in (headers or {}).items():
+        req.add_header(k, v)
     try:
         with urllib.request.urlopen(req, timeout=timeout) as r:
             b = r.read()
-            try: return r.status, (json.loads(b.decode("utf-8")) if b else None), b
-            except Exception: return r.status, None, b
+            try:
+                return r.status, (json.loads(b.decode("utf-8")) if b else None), b
+            except Exception:
+                return r.status, None, b
     except urllib.error.HTTPError as e:
         b = e.read()
-        try: return e.code, json.loads(b.decode("utf-8")), b
-        except Exception: return e.code, None, b
-    except Exception as e: return 0, None, str(e).encode("utf-8")
+        try:
+            return e.code, json.loads(b.decode("utf-8")), b
+        except Exception:
+            return e.code, None, b
+    except Exception as e:
+        return 0, None, str(e).encode("utf-8")
 
 def _sb_headers():
     key = SUPABASE_SERVICE or SUPABASE_ANON
     return {"apikey": key, "Authorization": "Bearer " + key}
 
 def _fetch_from_supabase(timeout=8):
-    if not SUPABASE_URL: return None, False
+    if not SUPABASE_URL:
+        return None, False
     url = "{}/rest/v1/{}?id=eq.{}&select=data".format(SUPABASE_URL, DATA_TABLE, DATA_ROW_ID)
     keys = [k for k in (SUPABASE_SERVICE, SUPABASE_ANON) if k]
     for i, key in enumerate(keys):
         st, js, body = _http("GET", url, headers={"apikey": key, "Authorization": "Bearer " + key}, timeout=timeout)
         if st == 200 and isinstance(js, list):
-            if js and isinstance(js[0].get("data"), dict) and js[0]["data"]: return js[0]["data"], True
+            if js and isinstance(js[0].get("data"), dict) and js[0]["data"]:
+                return js[0]["data"], True
             return None, True
     return None, False
 
 def _save_to_supabase(data):
-    if not SUPABASE_URL: return False
+    if not SUPABASE_URL:
+        return False
     key = SUPABASE_SERVICE or SUPABASE_ANON
-    if not key: return False
+    if not key:
+        return False
     url = "{}/rest/v1/{}".format(SUPABASE_URL, DATA_TABLE)
-    headers = {"apikey": key, "Authorization": "Bearer " + key, "Prefer": "resolution=merge-duplicates,return=minimal"}
+    headers = {"apikey": key, "Authorization": "Bearer " + key,
+               "Prefer": "resolution=merge-duplicates,return=minimal"}
     st, js, body = _http("POST", url, payload=[{"id": DATA_ROW_ID, "data": data}], headers=headers, timeout=25)
     return 200 <= st < 300
 
-_bucket_state = {"checked": False, "ok": False}; _bucket_lock = threading.Lock()
+_bucket_state = {"checked": False, "ok": False}
+_bucket_lock = threading.Lock()
+
 def _bucket_ensure():
     global _bucket_state
     with _bucket_lock:
-        if _bucket_state["checked"]: return _bucket_state["ok"]
+        if _bucket_state["checked"]:
+            return _bucket_state["ok"]
         _bucket_state["checked"] = True
-        if not (SUPABASE_URL and SUPABASE_SERVICE): return False
+        if not (SUPABASE_URL and SUPABASE_SERVICE):
+            return False
         base = SUPABASE_URL + "/storage/v1/bucket"
         st, js, body = _http("GET", base + "/" + BUCKET, headers=_sb_headers())
-        if st == 200: _bucket_state["ok"] = True; return True
+        if st == 200:
+            _bucket_state["ok"] = True
+            return True
         st, js, body = _http("POST", base, payload={"id": BUCKET, "name": BUCKET, "public": True}, headers=_sb_headers())
-        _bucket_state["ok"] = st in (200, 201); return _bucket_state["ok"]
-def _storage_public_url(name): return "{}/storage/v1/object/public/{}/{}".format(SUPABASE_URL, BUCKET, name)
+        _bucket_state["ok"] = st in (200, 201)
+        return _bucket_state["ok"]
+
+def _storage_public_url(name):
+    return "{}/storage/v1/object/public/{}/{}".format(SUPABASE_URL, BUCKET, name)
+
 def _storage_upload(filename, blob, mime):
-    if not _bucket_ensure(): return None
+    if not _bucket_ensure():
+        return None
     ext = os.path.splitext(filename or "")[1].lower()
-    if ext not in (".jpg",".jpeg",".png",".webp",".gif",".svg",".avif",".ico"):
-        ext = {"image/png":".png","image/webp":".webp","image/gif":".gif","image/svg+xml":".svg"}.get(mime, ".jpg")
+    if ext not in (".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg", ".avif", ".ico"):
+        ext = {"image/png": ".png", "image/webp": ".webp", "image/gif": ".gif", "image/svg+xml": ".svg"}.get(mime, ".jpg")
     name = "{}/{}{}".format(date.today().isoformat(), secrets.token_hex(6), ext)
     url = "{}/storage/v1/object/{}/{}".format(SUPABASE_URL, BUCKET, name)
-    headers = _sb_headers(); headers.update({"Content-Type": mime, "x-upsert": "true", "Cache-Control": "max-age=31536000"})
+    headers = _sb_headers()
+    headers.update({"Content-Type": mime, "x-upsert": "true", "Cache-Control": "max-age=31536000"})
     st, js, body = _http("POST", url, headers=headers, raw_body=blob, timeout=45)
-    if 200 <= st < 300: return _storage_public_url(name)
+    if 200 <= st < 300:
+        return _storage_public_url(name)
     return None
+
 def _storage_list(limit=120):
-    if not _bucket_ensure(): return []
+    if not _bucket_ensure():
+        return []
     url = "{}/storage/v1/object/list/{}".format(SUPABASE_URL, BUCKET)
     payload = {"prefix": "", "limit": limit, "offset": 0, "sortBy": {"column": "created_at", "order": "desc"}}
     st, js, body = _http("POST", url, payload=payload, headers=_sb_headers(), timeout=20)
@@ -1007,58 +1132,84 @@ def _storage_list(limit=120):
     return []
 
 def _ai_yandex(system, user, max_tokens=700):
-    if not (YANDEX_API_KEY and FOLDER_ID): return None, "нет ключей"
+    if not (YANDEX_API_KEY and FOLDER_ID):
+        return None, "нет ключей"
     url = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion"
     payload = {"modelUri": "gpt://{}/yandexgpt-lite/latest".format(FOLDER_ID),
                "completionOptions": {"stream": False, "temperature": 0.55, "maxTokens": str(int(max_tokens))},
-               "messages": [{"role":"system","text":system},{"role":"user","text":user}]}
+               "messages": [{"role": "system", "text": system}, {"role": "user", "text": user}]}
     st, js, body = _http("POST", url, payload=payload, headers={"Authorization": "Api-Key " + YANDEX_API_KEY}, timeout=60)
     if st == 200 and isinstance(js, dict):
-        try: return js["result"]["alternatives"][0]["message"]["text"], None
-        except Exception: return None, "err"
+        try:
+            return js["result"]["alternatives"][0]["message"]["text"], None
+        except Exception:
+            return None, "err"
     return None, "Yandex HTTP {}".format(st)
-_gc = {"token": "", "exp": 0.0}; _gc_lock = threading.Lock()
+
+_gc = {"token": "", "exp": 0.0}
+_gc_lock = threading.Lock()
+
 def _gigachat_token():
     with _gc_lock:
-        if _gc["token"] and _gc["exp"] > time.time() + 60: return _gc["token"], None
-        if not GIGACHAT_AUTH_KEY: return None, "нет ключа"
-        req = urllib.request.Request("https://ngw.devices.sberbank.ru:9443/api/v2/oauth", data=b"scope=GIGACHAT_API_PERS", method="POST")
-        req.add_header("Content-Type", "application/x-www-form-urlencoded"); req.add_header("Accept", "application/json")
-        req.add_header("RqUID", str(uuid.uuid4())); req.add_header("Authorization", "Basic " + GIGACHAT_AUTH_KEY)
+        if _gc["token"] and _gc["exp"] > time.time() + 60:
+            return _gc["token"], None
+        if not GIGACHAT_AUTH_KEY:
+            return None, "нет ключа"
+        req = urllib.request.Request("https://ngw.devices.sberbank.ru:9443/api/v2/oauth",
+                                     data=b"scope=GIGACHAT_API_PERS", method="POST")
+        req.add_header("Content-Type", "application/x-www-form-urlencoded")
+        req.add_header("Accept", "application/json")
+        req.add_header("RqUID", str(uuid.uuid4()))
+        req.add_header("Authorization", "Basic " + GIGACHAT_AUTH_KEY)
         ctx = ssl._create_unverified_context()
         try:
-            with urllib.request.urlopen(req, timeout=25, context=ctx) as r: js = json.loads(r.read().decode("utf-8"))
+            with urllib.request.urlopen(req, timeout=25, context=ctx) as r:
+                js = json.loads(r.read().decode("utf-8"))
             tok = js.get("access_token")
-            if not tok: return None, "нет токена"
+            if not tok:
+                return None, "нет токена"
             _gc["token"] = tok
-            _gc["exp"] = (time.time() + float(js.get("expires_at",0))/1000.0) if js.get("expires_at") else time.time()+1500
+            _gc["exp"] = (time.time() + float(js.get("expires_at", 0)) / 1000.0) if js.get("expires_at") else time.time() + 1500
             return tok, None
-        except Exception as e: return None, str(e)
+        except Exception as e:
+            return None, str(e)
+
 def _ai_gigachat(system, user, max_tokens=700):
     tok, err = _gigachat_token()
-    if not tok: return None, err
+    if not tok:
+        return None, err
     url = "https://gigachat.devices.sberbank.ru/api/v1/chat/completions"
     payload = {"model": "GigaChat", "temperature": 0.6, "max_tokens": int(max_tokens),
-               "messages": [{"role":"system","content":system},{"role":"user","content":user}]}
+               "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}]}
     ctx = ssl._create_unverified_context()
     data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
     req = urllib.request.Request(url, data=data, method="POST")
-    req.add_header("Content-Type", "application/json"); req.add_header("Accept", "application/json")
+    req.add_header("Content-Type", "application/json")
+    req.add_header("Accept", "application/json")
     req.add_header("Authorization", "Bearer " + tok)
     try:
-        with urllib.request.urlopen(req, timeout=60, context=ctx) as r: js = json.loads(r.read().decode("utf-8"))
+        with urllib.request.urlopen(req, timeout=60, context=ctx) as r:
+            js = json.loads(r.read().decode("utf-8"))
         return js["choices"][0]["message"]["content"], None
-    except Exception as e: return None, str(e)
+    except Exception as e:
+        return None, str(e)
+
 def _ai_generate(system, user, max_tokens=700):
     order = ["yandex", "gigachat"] if AI_PROVIDER == "auto" else [AI_PROVIDER]
     errors = []
     for p in order:
-        if p == "yandex": text, err = _ai_yandex(system, user, max_tokens)
-        elif p == "gigachat": text, err = _ai_gigachat(system, user, max_tokens)
-        else: continue
-        if text: return _clean_ai(text), p, None
-        if err: errors.append(err)
+        if p == "yandex":
+            text, err = _ai_yandex(system, user, max_tokens)
+        elif p == "gigachat":
+            text, err = _ai_gigachat(system, user, max_tokens)
+        else:
+            continue
+        if text:
+            return _clean_ai(text), p, None
+        if err:
+            errors.append(err)
     return None, None, "; ".join(errors) or "AI не настроен"
+
 def _clean_ai(t):
     t = (t or "").strip()
     t = re.sub(r"^(?:вариант\s*\d+\s*[:.\-]\s*)", "", t, flags=re.I)
@@ -1066,124 +1217,195 @@ def _clean_ai(t):
     t = t.strip().strip('"').strip("«»").strip()
     t = re.sub(r"^(?:Title|Заголовок|Description|Описание|Keywords|Ключевые слова|Текст)\s*[:：]\s*", "", t, flags=re.I)
     return t.replace("**", "").strip()
+
 def _ai_ask(data, task, path, value):
     brand = data.get("brand") or {}
-    cities = ", ".join([c.get("name","") for c in ((data.get("cities") or {}).get("items") or []) if isinstance(c, dict)])
-    services = ", ".join([s.get("title","") for s in ((data.get("services") or {}).get("items") or []) if isinstance(s, dict)])
+    cities = ", ".join([c.get("name", "") for c in ((data.get("cities") or {}).get("items") or []) if isinstance(c, dict)])
+    services = ", ".join([s.get("title", "") for s in ((data.get("services") or {}).get("items") or []) if isinstance(s, dict)])
     seo = data.get("seo") or {}
     base = "Компания: {}. Города: {}. Услуги: {}. Телефон: {}. Сайт: {}.".format(
-        brand.get("name","Кухни Островский"), cities or "Ростов-на-Дону, Батайск, Азов",
-        services or "кухни и корпусная мебель на заказ", brand.get("phone",""), seo.get("domain") or DOMAIN)
+        brand.get("name", "Кухни Островский"), cities or "Ростов-на-Дону, Батайск, Азов",
+        services or "кухни и корпусная мебель на заказ", brand.get("phone", ""), seo.get("domain") or DOMAIN)
     system = "Ты опытный русскоязычный копирайтер и SEO-специалист. Пиши живым языком."
     user = base + "\n\n"
-    if task == "seo_title": user += "Составь SEO Title до 65 символов."
-    elif task == "seo_description": user += "Составь meta description до 160 символов."
-    elif task == "seo_keywords": user += "Составь 12-15 ключевых фраз через запятую."
-    elif task == "hero_sub": user += "Напиши подзаголовок на главном экране до 220 символов."
-    elif task == "about_text": user += "Напиши блок «о нас» до 400 символов."
-    elif task == "service_text": user += "Опиши услугу одним предложением до 130 символов: " + (value or "")
-    elif task == "city_text": user += "Напиши одно предложение до 120 символов про город: " + (value or "")
-    elif task == "cta_text": user += "Напиши короткий призыв к действию до 180 символов."
-    elif task == "shorten": user += "Сократи текст до 1-2 предложений:\n" + (value or "")
-    elif task == "expand": user += "Улучши текст до 3 предложений:\n" + (value or "")
-    else: user += "Улучши текст:\n" + (value or "")
+    if task == "seo_title":
+        user += "Составь SEO Title до 65 символов."
+    elif task == "seo_description":
+        user += "Составь meta description до 160 символов."
+    elif task == "seo_keywords":
+        user += "Составь 12-15 ключевых фраз через запятую."
+    elif task == "hero_sub":
+        user += "Напиши подзаголовок на главном экране до 220 символов."
+    elif task == "about_text":
+        user += "Напиши блок «о нас» до 400 символов."
+    elif task == "service_text":
+        user += "Опиши услугу одним предложением до 130 символов: " + (value or "")
+    elif task == "city_text":
+        user += "Напиши одно предложение до 120 символов про город: " + (value or "")
+    elif task == "cta_text":
+        user += "Напиши короткий призыв к действию до 180 символов."
+    elif task == "shorten":
+        user += "Сократи текст до 1-2 предложений:\n" + (value or "")
+    elif task == "expand":
+        user += "Улучши текст до 3 предложений:\n" + (value or "")
+    else:
+        user += "Улучши текст:\n" + (value or "")
     return system, user
 
-_data_lock = threading.Lock(); _data_cache = None; _cache_ts = 0.0
+_data_lock = threading.Lock()
+_data_cache = None
+_cache_ts = 0.0
 _db_state = {"read": None, "write": None}
-_auth_lock = threading.Lock(); _sessions = {}; _login_fails = {}
+_auth_lock = threading.Lock()
+_sessions = {}
+_login_fails = {}
+
 def _new_session():
     t = secrets.token_urlsafe(32)
     with _auth_lock:
         _sessions[t] = time.time() + SESSION_TTL
         if len(_sessions) > 200:
             now = time.time()
-            for k in [k for k,v in _sessions.items() if v < now]: _sessions.pop(k, None)
+            for k in [k for k, v in _sessions.items() if v < now]:
+                _sessions.pop(k, None)
     return t
+
 def _check_session(token):
-    if not token: return False
+    if not token:
+        return False
     with _auth_lock:
         exp = _sessions.get(token)
-        if not exp: return False
-        if exp < time.time(): _sessions.pop(token, None); return False
+        if not exp:
+            return False
+        if exp < time.time():
+            _sessions.pop(token, None)
+            return False
     return True
+
 def _drop_session(token):
     if token:
-        with _auth_lock: _sessions.pop(token, None)
+        with _auth_lock:
+            _sessions.pop(token, None)
+
 def _login_blocked(ip):
     with _auth_lock:
         rec = _login_fails.get(ip)
-        if not rec: return False
+        if not rec:
+            return False
         cnt, until = rec
-        if until and until < time.time(): _login_fails.pop(ip, None); return False
+        if until and until < time.time():
+            _login_fails.pop(ip, None)
+            return False
         return cnt >= 8
+
 def _login_note(ip, ok):
     with _auth_lock:
-        if ok: _login_fails.pop(ip, None); return
-        cnt, _ = _login_fails.get(ip, (0,0))
-        _login_fails[ip] = (cnt+1, time.time()+600)
+        if ok:
+            _login_fails.pop(ip, None)
+            return
+        cnt, _ = _login_fails.get(ip, (0, 0))
+        _login_fails[ip] = (cnt + 1, time.time() + 600)
+
 def load_fresh():
     global _data_cache, _cache_ts
-    raw, ok = _fetch_from_supabase(); _db_state["read"] = ok
+    raw, ok = _fetch_from_supabase()
+    _db_state["read"] = ok
     if not ok:
         with _data_lock:
-            if _data_cache is not None: _cache_ts = time.time(); return _data_cache
-        with _data_lock: _data_cache = _json_clone(DEFAULT_DATA); _cache_ts = time.time()
+            if _data_cache is not None:
+                _cache_ts = time.time()
+                return _data_cache
+        with _data_lock:
+            _data_cache = _json_clone(DEFAULT_DATA)
+            _cache_ts = time.time()
         return _data_cache
-    if raw is None: data = _json_clone(DEFAULT_DATA)
-    else: data = _merge_deep(DEFAULT_DATA, _migrate(raw))
-    with _data_lock: _data_cache = data; _cache_ts = time.time()
+    if raw is None:
+        data = _json_clone(DEFAULT_DATA)
+    else:
+        data = _merge_deep(DEFAULT_DATA, _migrate(raw))
+    with _data_lock:
+        _data_cache = data
+        _cache_ts = time.time()
     return data
+
 def load_data():
     global _cache_ts
     now = time.time()
     with _data_lock:
-        if _data_cache is not None and now - _cache_ts < CACHE_TTL: return _data_cache
+        if _data_cache is not None and now - _cache_ts < CACHE_TTL:
+            return _data_cache
     return load_fresh()
+
 def save_data(data):
     global _data_cache, _cache_ts
-    ok = _save_to_supabase(data); _db_state["write"] = ok
+    ok = _save_to_supabase(data)
+    _db_state["write"] = ok
     if ok:
-        with _data_lock: _data_cache = _merge_deep(DEFAULT_DATA, _migrate(data)); _cache_ts = time.time()
+        with _data_lock:
+            _data_cache = _merge_deep(DEFAULT_DATA, _migrate(data))
+            _cache_ts = time.time()
     return ok
 
-_page_lock = threading.Lock(); _page_cache = {"tpl": ""}
+_page_lock = threading.Lock()
+_page_cache = {"tpl": ""}
+
 def _page_template():
     with _page_lock:
-        if _page_cache["tpl"]: return _page_cache["tpl"]
+        if _page_cache["tpl"]:
+            return _page_cache["tpl"]
         tpl = PAGE_TEMPLATE
-        if "</head>" in tpl and "goldAnimations" not in tpl: tpl = tpl.replace("</head>", ANIM_STYLE + "\n</head>", 1)
-        if "</body>" in tpl and "goldAnimationScript" not in tpl: tpl = tpl.replace("</body>", ANIM_SCRIPT + "\n</body>", 1)
-        _page_cache["tpl"] = tpl; return tpl
+        if "</head>" in tpl and "goldAnimations" not in tpl:
+            tpl = tpl.replace("</head>", ANIM_STYLE + "\n</head>", 1)
+        if "</body>" in tpl and "goldAnimationScript" not in tpl:
+            tpl = tpl.replace("</body>", ANIM_SCRIPT + "\n</body>", 1)
+        _page_cache["tpl"] = tpl
+        return tpl
+
 def render_site():
-    data = load_data(); ctx = _normalize_context(data)
-    try: html = render(_page_template(), ctx)
-    except Exception as e: print("[render] {}".format(e), flush=True); html = _page_template()
+    data = load_data()
+    ctx = _normalize_context(data)
+    try:
+        html = render(_page_template(), ctx)
+    except Exception as e:
+        print("[render] {}".format(e), flush=True)
+        html = _page_template()
     return html
+
 def build_robots(data):
     dom, host = _domain(data), _host(data)
     s = data.get("seo") or {}
     custom = (s.get("robots") or "").strip()
-    if custom: return custom.replace("{{domain}}", dom).replace("{{host}}", host) + "\n"
+    if custom:
+        return custom.replace("{{domain}}", dom).replace("{{host}}", host) + "\n"
     return "User-agent: *\nAllow: /\nDisallow: /admin\n\nHost: {}\nSitemap: {}/sitemap.xml\n".format(host, dom)
+
 def build_sitemap(data):
-    dom = _domain(data); today = date.today().isoformat()
+    dom = _domain(data)
+    today = date.today().isoformat()
     s = data.get("seo") or {}
     urls = [{"loc": dom + "/", "changefreq": "weekly", "priority": "1.0"}]
     for it in (s.get("extra_urls") or []):
-        if not isinstance(it, dict): continue
+        if not isinstance(it, dict):
+            continue
         loc = (it.get("loc") or "").strip()
-        if not loc: continue
-        if loc.startswith("/"): loc = dom + loc
+        if not loc:
+            continue
+        if loc.startswith("/"):
+            loc = dom + loc
         urls.append({"loc": loc, "changefreq": (it.get("changefreq") or "monthly").strip(), "priority": (it.get("priority") or "0.6").strip()})
     parts = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-    for u in urls: parts.append("  <url><loc>{}</loc><lastmod>{}</lastmod><changefreq>{}</changefreq><priority>{}</priority></url>".format(_escape(u["loc"]), today, _escape(u["changefreq"]), _escape(u["priority"])))
-    parts.append("</urlset>"); return "\n".join(parts) + "\n"
+    for u in urls:
+        parts.append("  <url><loc>{}</loc><lastmod>{}</lastmod><changefreq>{}</changefreq><priority>{}</priority></url>".format(_escape(u["loc"]), today, _escape(u["changefreq"]), _escape(u["priority"])))
+    parts.append("</urlset>")
+    return "\n".join(parts) + "\n"
+
 def build_manifest(data):
-    b = data.get("brand") or {}; d = data.get("design") or {}
-    return json.dumps({"name": b.get("name","Кухни Островский"), "short_name": b.get("name","Кухни Островский"),
-        "start_url": "/", "display": "standalone", "background_color": d.get("bg","#0e0c09"), "theme_color": d.get("bg","#0e0c09"),
-        "lang": "ru-RU", "icons": [{"src": b.get("logo_url",""), "sizes": "512x512", "type": "image/jpeg"}]}, ensure_ascii=False)
+    b = data.get("brand") or {}
+    d = data.get("design") or {}
+    return json.dumps({"name": b.get("name", "Кухни Островский"), "short_name": b.get("name", "Кухни Островский"),
+        "start_url": "/", "display": "standalone", "background_color": d.get("bg", "#0e0c09"), "theme_color": d.get("bg", "#0e0c09"),
+        "lang": "ru-RU", "icons": [{"src": b.get("logo_url", ""), "sizes": "512x512", "type": "image/jpeg"}]}, ensure_ascii=False)
+
 def build_404(data):
     p = data.get("page404") or {}
     t = p.get("title") or "Страница не найдена"
@@ -1195,26 +1417,34 @@ def build_404(data):
         "<a href=\"/\" style=\"display:inline-block;margin-top:22px;padding:14px 26px;border-radius:12px;background:linear-gradient(135deg,#eccfa0,#d4af6a 55%,#a37c3f);color:#17120b;font-weight:700;text-decoration:none\">{b}</a></div>"
         "</body></html>").format(t=_escape(t), x=_escape(x), b=_escape(b))
 
-_fc = {"data": None, "ts": 0.0, "ct": "image/webp"}; _fc_lock = threading.Lock()
+_fc = {"data": None, "ts": 0.0, "ct": "image/jpeg"}
+_fc_lock = threading.Lock()
+
 def get_favicon():
     now = time.time()
     with _fc_lock:
-        if _fc["data"] is not None and now - _fc["ts"] < 3600: return _fc["data"], _fc["ct"]
+        if _fc["data"] is not None and now - _fc["ts"] < 3600:
+            return _fc["data"], _fc["ct"]
     try:
-        req = urllib.request.Request(_VK_ORIG_FAVICON, headers={
+        req = urllib.request.Request(FAVICON_URL, headers={
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0 Safari/537.36",
             "Referer": "https://vk.com/",
         })
         with urllib.request.urlopen(req, timeout=15) as r:
-            data = r.read(); ct = r.headers.get("Content-Type", "image/jpeg")
+            data = r.read()
+            ct = r.headers.get("Content-Type", "image/jpeg")
         if data and len(data) > 100:
-            with _fc_lock: _fc["data"] = data; _fc["ts"] = now; _fc["ct"] = ct
+            with _fc_lock:
+                _fc["data"] = data
+                _fc["ts"] = now
+                _fc["ct"] = ct
             return data, ct
     except Exception as e:
         print("[favicon] {}".format(e), flush=True)
     return None, None
 
-def _svg_icon(_=None): return {"path": "icon", "label": "Иконка", "type": "textarea", "rows": 2, "mono": True, "hint": "Содержимое d у path"}
+def _svg_icon(_=None):
+    return {"path": "icon", "label": "Иконка", "type": "textarea", "rows": 2, "mono": True, "hint": "Содержимое d у path"}
 
 ADMIN_SCHEMA = [
  {"id":"seo","group":"SEO","title":"SEO и мета","fields":[
@@ -1654,190 +1884,319 @@ STATIC_BLOCK = {"mebel.py","requirements.txt","Dockerfile","robots.txt","sitemap
 MIME = {".html":"text/html; charset=utf-8",".txt":"text/plain; charset=utf-8",".xml":"application/xml; charset=utf-8",".svg":"image/svg+xml",".png":"image/png",".jpg":"image/jpeg",".jpeg":"image/jpeg",".webp":"image/webp",".gif":"image/gif",".ico":"image/x-icon",".css":"text/css; charset=utf-8",".js":"application/javascript; charset=utf-8",".json":"application/json; charset=utf-8",".webmanifest":"application/manifest+json; charset=utf-8",".woff":"font/woff",".woff2":"font/woff2",".pdf":"application/pdf",".mp4":"video/mp4"}
 
 def _parse_multipart(body, boundary):
-    if not body or not boundary: return None, None
+    if not body or not boundary:
+        return None, None
     parts = body.split(b"--" + boundary)
     for p in parts:
-        if b"Content-Disposition" not in p: continue
+        if b"Content-Disposition" not in p:
+            continue
         head, _, data = p.partition(b"\r\n\r\n")
-        if not data: continue
+        if not data:
+            continue
         data = data.rstrip(b"\r\n")
-        if data.endswith(b"--"): data = data[:-2].rstrip(b"\r\n")
+        if data.endswith(b"--"):
+            data = data[:-2].rstrip(b"\r\n")
         name = ""
         m = re.search(rb'filename="([^"]*)"', head)
-        if m: name = m.group(1).decode("utf-8", "ignore")
+        if m:
+            name = m.group(1).decode("utf-8", "ignore")
         return name, data
     return None, None
 
 class Handler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
-    server_version = "OstrovskyCMS/8.0"
+    server_version = "OstrovskyCMS/9.0"
     _head_only = False
+
     def _tok(self):
         raw = self.headers.get("Cookie", "")
-        if not raw: return None
+        if not raw:
+            return None
         try:
-            c = SimpleCookie(); c.load(raw); m = c.get("admin_session"); return m.value if m else None
-        except Exception: return None
-    def _admin(self): return _check_session(self._tok())
+            c = SimpleCookie()
+            c.load(raw)
+            m = c.get("admin_session")
+            return m.value if m else None
+        except Exception:
+            return None
+
+    def _admin(self):
+        return _check_session(self._tok())
+
     def _ip(self):
         fwd = self.headers.get("X-Forwarded-For", "")
         return (fwd.split(",")[0].strip() if fwd else self.client_address[0])
-    def _is_https(self): return self.headers.get("X-Forwarded-Proto", "").lower() == "https"
+
+    def _is_https(self):
+        return self.headers.get("X-Forwarded-Proto", "").lower() == "https"
+
     def _send(self, code, body, ctype="text/plain; charset=utf-8", cache="no-cache", gzip_ok=True):
         data = body.encode("utf-8") if isinstance(body, str) else body
         etag = '"' + hashlib.sha256(data).hexdigest()[:20] + '"'
         if code == 200 and self.headers.get("If-None-Match") == etag:
-            self.send_response(304); self.send_header("ETag", etag); self.send_header("Cache-Control", cache); self.end_headers(); return
-        ae = self.headers.get("Accept-Encoding", "") or ""; gzipped = False
+            self.send_response(304)
+            self.send_header("ETag", etag)
+            self.send_header("Cache-Control", cache)
+            self.end_headers()
+            return
+        ae = self.headers.get("Accept-Encoding", "") or ""
+        gzipped = False
         if gzip_ok and isinstance(body, str) and "gzip" in ae and len(data) > 700:
             buf = io.BytesIO()
-            with gzip.GzipFile(fileobj=buf, mode="wb", compresslevel=6) as gz: gz.write(data)
-            data = buf.getvalue(); gzipped = True
-        self.send_response(code); self.send_header("Content-Type", ctype)
-        if gzipped: self.send_header("Content-Encoding", "gzip"); self.send_header("Vary", "Accept-Encoding")
-        self.send_header("Content-Length", str(len(data))); self.send_header("Cache-Control", cache); self.send_header("ETag", etag)
+            with gzip.GzipFile(fileobj=buf, mode="wb", compresslevel=6) as gz:
+                gz.write(data)
+            data = buf.getvalue()
+            gzipped = True
+        self.send_response(code)
+        self.send_header("Content-Type", ctype)
+        if gzipped:
+            self.send_header("Content-Encoding", "gzip")
+            self.send_header("Vary", "Accept-Encoding")
+        self.send_header("Content-Length", str(len(data)))
+        self.send_header("Cache-Control", cache)
+        self.send_header("ETag", etag)
         self.send_header("X-Robots-Tag", "noindex" if self.path.startswith("/admin") else "all")
         self.end_headers()
         if not self._head_only:
-            try: self.wfile.write(data)
-            except Exception: pass
+            try:
+                self.wfile.write(data)
+            except Exception:
+                pass
+
     def _redir(self, loc, cookie=None):
-        self.send_response(302); self.send_header("Location", loc); self.send_header("Cache-Control", "no-cache")
-        if cookie: self.send_header("Set-Cookie", cookie)
-        self.send_header("Content-Length", "0"); self.end_headers()
-    def _json(self, obj, code=200): self._send(code, json.dumps(obj, ensure_ascii=False), "application/json; charset=utf-8")
+        self.send_response(302)
+        self.send_header("Location", loc)
+        self.send_header("Cache-Control", "no-cache")
+        if cookie:
+            self.send_header("Set-Cookie", cookie)
+        self.send_header("Content-Length", "0")
+        self.end_headers()
+
+    def _json(self, obj, code=200):
+        self._send(code, json.dumps(obj, ensure_ascii=False), "application/json; charset=utf-8")
+
     def _body(self):
-        try: n = int(self.headers.get("Content-Length", "0") or 0)
-        except Exception: n = 0
-        if n <= 0 or n > MAX_UPLOAD * 4: return b""
+        try:
+            n = int(self.headers.get("Content-Length", "0") or 0)
+        except Exception:
+            n = 0
+        if n <= 0 or n > MAX_UPLOAD * 4:
+            return b""
         return self.rfile.read(n)
+
     def _cookie(self, token):
         c = "admin_session={}; Path=/; Max-Age={}; HttpOnly; SameSite=Lax".format(token, SESSION_TTL)
-        if self._is_https(): c += "; Secure"
+        if self._is_https():
+            c += "; Secure"
         return c
-    def do_HEAD(self): self._head_only = True; self.do_GET()
+
+    def do_HEAD(self):
+        self._head_only = True
+        self.do_GET()
+
     def do_GET(self):
         path = self.path.split("?", 1)[0]
-        if path == "/healthz": self._send(200, "ok", "text/plain; charset=utf-8"); return
-        if path == "/admin/login": self._send(200, ADMIN_LOGIN_HTML.replace("__ERROR__", ""), "text/html; charset=utf-8"); return
-        if path == "/admin/logout": _drop_session(self._tok()); self._redir("/admin/login", "admin_session=; Path=/; Max-Age=0; HttpOnly"); return
+        if path == "/healthz":
+            self._send(200, "ok", "text/plain; charset=utf-8")
+            return
+        if path == "/admin/login":
+            self._send(200, ADMIN_LOGIN_HTML.replace("__ERROR__", ""), "text/html; charset=utf-8")
+            return
+        if path == "/admin/logout":
+            _drop_session(self._tok())
+            self._redir("/admin/login", "admin_session=; Path=/; Max-Age=0; HttpOnly")
+            return
         if path == "/admin/api/data":
-            if not self._admin(): self._json({"error": "no auth"}, 401); return
-            self._json(load_fresh()); return
+            if not self._admin():
+                self._json({"error": "no auth"}, 401)
+                return
+            self._json(load_fresh())
+            return
         if path == "/admin/api/export":
-            if not self._admin(): self._json({"error": "no auth"}, 401); return
+            if not self._admin():
+                self._json({"error": "no auth"}, 401)
+                return
             blob = json.dumps(load_fresh(), ensure_ascii=False, indent=1).encode("utf-8")
-            self.send_response(200); self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_header("Content-Disposition", 'attachment; filename="mebel-backup-{}.json"'.format(date.today().isoformat()))
-            self.send_header("Content-Length", str(len(blob))); self.send_header("Cache-Control", "no-cache"); self.end_headers()
-            if not self._head_only: self.wfile.write(blob)
+            self.send_header("Content-Length", str(len(blob)))
+            self.send_header("Cache-Control", "no-cache")
+            self.end_headers()
+            if not self._head_only:
+                self.wfile.write(blob)
             return
         if path == "/admin/api/media":
-            if not self._admin(): self._json({"error": "no auth"}, 401); return
-            self._json({"items": _storage_list(), "bucket": BUCKET}); return
+            if not self._admin():
+                self._json({"error": "no auth"}, 401)
+                return
+            self._json({"items": _storage_list(), "bucket": BUCKET})
+            return
         if path == "/admin/api/status":
-            if not self._admin(): self._json({"error": "no auth"}, 401); return
-            data = load_data(); counts = {}
-            for key in ("works","reviews","services","process","guarantees","cities"):
+            if not self._admin():
+                self._json({"error": "no auth"}, 401)
+                return
+            data = load_data()
+            counts = {}
+            for key in ("works", "reviews", "services", "process", "guarantees", "cities"):
                 items = (data.get(key) or {}).get("items")
                 counts[key] = len(items) if isinstance(items, list) else 0
             self._json({"db_read": bool(_db_state.get("read")), "db_write": _db_state.get("write"),
                 "storage": _bucket_ensure(), "bucket": BUCKET,
                 "ai": {"yandex": bool(YANDEX_API_KEY and FOLDER_ID), "gigachat": bool(GIGACHAT_AUTH_KEY)},
                 "counts": counts, "size": len(json.dumps(data, ensure_ascii=False).encode("utf-8")),
-                "domain": _domain(data), "sitemap_urls": build_sitemap(data).count("<url>")}); return
-        if path == "/admin":
-            if not self._admin(): self._redir("/admin/login"); return
-            self._send(200, ADMIN_HTML, "text/html; charset=utf-8"); return
-        if path in ("/", "/index.html"): self._send(200, render_site(), "text/html; charset=utf-8", "no-cache"); return
-        if path == "/robots.txt": self._send(200, build_robots(load_data()), "text/plain; charset=utf-8", "public, max-age=3600"); return
-        if path == "/sitemap.xml": self._send(200, build_sitemap(load_data()), "application/xml; charset=utf-8", "public, max-age=3600"); return
-        if path == "/manifest.webmanifest": self._send(200, build_manifest(load_data()), "application/manifest+json; charset=utf-8", "public, max-age=86400"); return
-        if path == "/favicon.ico" or path == "/favicon.png" or path == "/favicon-32x32.png" or path == "/favicon-192x192.png" or path == "/apple-touch-icon.png":
-            data, ct = get_favicon()
-            if data: self._send(200, data, ct or "image/webp", "public, max-age=86400", gzip_ok=False)
-            else: self._redir(FAVICON_URL)
+                "domain": _domain(data), "sitemap_urls": build_sitemap(data).count("<url>")})
             return
-        if self._serve_static(path): return
+        if path == "/admin":
+            if not self._admin():
+                self._redir("/admin/login")
+                return
+            self._send(200, ADMIN_HTML, "text/html; charset=utf-8")
+            return
+        if path in ("/", "/index.html"):
+            self._send(200, render_site(), "text/html; charset=utf-8", "no-cache")
+            return
+        if path == "/robots.txt":
+            self._send(200, build_robots(load_data()), "text/plain; charset=utf-8", "public, max-age=3600")
+            return
+        if path == "/sitemap.xml":
+            self._send(200, build_sitemap(load_data()), "application/xml; charset=utf-8", "public, max-age=3600")
+            return
+        if path == "/manifest.webmanifest":
+            self._send(200, build_manifest(load_data()), "application/manifest+json; charset=utf-8", "public, max-age=86400")
+            return
+        if path in ("/favicon.ico", "/favicon.png", "/favicon-32x32.png", "/favicon-192x192.png", "/apple-touch-icon.png"):
+            data, ct = get_favicon()
+            if data:
+                self._send(200, data, ct or "image/jpeg", "public, max-age=86400", gzip_ok=False)
+            else:
+                self._redir(FAVICON_URL)
+            return
+        if self._serve_static(path):
+            return
         self._send(404, build_404(load_data()), "text/html; charset=utf-8")
+
     def do_POST(self):
         path = self.path.split("?", 1)[0]
         if path == "/admin/login":
             ip = self._ip()
             if _login_blocked(ip):
-                self._send(200, ADMIN_LOGIN_HTML.replace("__ERROR__", '<div class="err">Слишком много попыток.</div>'), "text/html; charset=utf-8"); return
-            raw = self._body().decode("utf-8", "ignore"); p = parse_qs(raw)
-            login = (p.get("login") or [""])[0].strip(); pw = (p.get("password") or [""])[0]
+                self._send(200, ADMIN_LOGIN_HTML.replace("__ERROR__", '<div class="err">Слишком много попыток.</div>'), "text/html; charset=utf-8")
+                return
+            raw = self._body().decode("utf-8", "ignore")
+            p = parse_qs(raw)
+            login = (p.get("login") or [""])[0].strip()
+            pw = (p.get("password") or [""])[0]
             if (hmac.compare_digest(login.encode("utf-8"), ADMIN_LOGIN_ENV.encode("utf-8"))
                     and hmac.compare_digest(pw.encode("utf-8"), ADMIN_PASSWORD_ENV.encode("utf-8"))):
-                _login_note(ip, True); self._redir("/admin", self._cookie(_new_session()))
+                _login_note(ip, True)
+                self._redir("/admin", self._cookie(_new_session()))
             else:
                 _login_note(ip, False)
                 self._send(200, ADMIN_LOGIN_HTML.replace("__ERROR__", '<div class="err">Неверный логин или пароль</div>'), "text/html; charset=utf-8")
             return
         if path == "/admin/api/save":
-            if not self._admin(): self._json({"error": "no auth"}, 401); return
-            try: obj = json.loads(self._body().decode("utf-8"))
-            except Exception: self._json({"error": "bad json"}, 400); return
-            if not isinstance(obj, dict): self._json({"error": "not an object"}, 400); return
-            self._json({"ok": bool(save_data(obj))}); return
+            if not self._admin():
+                self._json({"error": "no auth"}, 401)
+                return
+            try:
+                obj = json.loads(self._body().decode("utf-8"))
+            except Exception:
+                self._json({"error": "bad json"}, 400)
+                return
+            if not isinstance(obj, dict):
+                self._json({"error": "not an object"}, 400)
+                return
+            self._json({"ok": bool(save_data(obj))})
+            return
         if path == "/admin/api/upload":
-            if not self._admin(): self._json({"error": "no auth"}, 401); return
+            if not self._admin():
+                self._json({"error": "no auth"}, 401)
+                return
             body = self._body()
-            if not body: self._json({"error": "пустой файл"}, 400); return
-            if len(body) > MAX_UPLOAD: self._json({"error": "файл больше 8 МБ"}, 413); return
+            if not body:
+                self._json({"error": "пустой файл"}, 400)
+                return
+            if len(body) > MAX_UPLOAD:
+                self._json({"error": "файл больше 8 МБ"}, 413)
+                return
             ctype = self.headers.get("Content-Type", "")
             blob, fname = None, "upload"
             if "multipart/form-data" in ctype:
                 m = re.search(r"boundary=([^;]+)", ctype)
-                if m: fname, blob = _parse_multipart(body, m.group(1).strip().strip('"').encode())
-            if not blob: blob, fname = body, "upload.jpg"
+                if m:
+                    fname, blob = _parse_multipart(body, m.group(1).strip().strip('"').encode())
+            if not blob:
+                blob, fname = body, "upload.jpg"
             mime = "image/jpeg"
-            if blob[:8] == b"\x89PNG\r\n\x1a\n": mime = "image/png"
-            elif blob[:6] in (b"GIF87a", b"GIF89a"): mime = "image/gif"
-            elif blob[:4] == b"RIFF" and blob[8:12] == b"WEBP": mime = "image/webp"
-            elif blob[:5] == b"<?xml" or blob[:4] == b"<svg": mime = "image/svg+xml"
+            if blob[:8] == b"\x89PNG\r\n\x1a\n":
+                mime = "image/png"
+            elif blob[:6] in (b"GIF87a", b"GIF89a"):
+                mime = "image/gif"
+            elif blob[:4] == b"RIFF" and blob[8:12] == b"WEBP":
+                mime = "image/webp"
+            elif blob[:5] == b"<?xml" or blob[:4] == b"<svg":
+                mime = "image/svg+xml"
             url = _storage_upload(fname, blob, mime)
-            if url: self._json({"url": url, "storage": True})
-            else: self._json({"url": "data:{};base64,{}".format(mime, base64.b64encode(blob).decode("ascii")), "storage": False})
+            if url:
+                self._json({"url": url, "storage": True})
+            else:
+                self._json({"url": "data:{};base64,{}".format(mime, base64.b64encode(blob).decode("ascii")), "storage": False})
             return
         if path == "/admin/api/ai":
-            if not self._admin(): self._json({"error": "no auth"}, 401); return
-            try: req = json.loads(self._body().decode("utf-8") or "{}")
-            except Exception: req = {}
-            task = str(req.get("task") or "improve"); value = str(req.get("value") or "")
+            if not self._admin():
+                self._json({"error": "no auth"}, 401)
+                return
+            try:
+                req = json.loads(self._body().decode("utf-8") or "{}")
+            except Exception:
+                req = {}
+            task = str(req.get("task") or "improve")
+            value = str(req.get("value") or "")
             data = load_data()
             system, user = _ai_ask(data, task, req.get("path"), value)
             text, provider, err = _ai_generate(system, user, 700)
-            if text: self._json({"text": text, "provider": provider})
-            else: self._json({"error": err or "AI недоступен"}, 200)
+            if text:
+                self._json({"text": text, "provider": provider})
+            else:
+                self._json({"error": err or "AI недоступен"}, 200)
             return
         self._json({"error": "not found"}, 404)
+
     def _serve_static(self, path):
         rel = urllib.parse.unquote(path).lstrip("/")
-        if not rel or rel.startswith(".") or ".." in rel.split("/"): return False
-        if rel in STATIC_BLOCK: return False
+        if not rel or rel.startswith(".") or ".." in rel.split("/"):
+            return False
+        if rel in STATIC_BLOCK:
+            return False
         ext = os.path.splitext(rel)[1].lower()
-        if ext not in STATIC_EXT: return False
+        if ext not in STATIC_EXT:
+            return False
         fp = os.path.join(ROOT, *rel.split("/"))
-        if not os.path.isfile(fp): return False
+        if not os.path.isfile(fp):
+            return False
         try:
-            with open(fp, "rb") as f: blob = f.read()
-        except Exception: return False
+            with open(fp, "rb") as f:
+                blob = f.read()
+        except Exception:
+            return False
         self._send(200, blob, MIME.get(ext, "application/octet-stream"), "public, max-age=86400", gzip_ok=False)
         return True
+
     def log_message(self, fmt, *args):
-        if os.environ.get("VERBOSE"): print("[http] " + (fmt % args), flush=True)
+        if os.environ.get("VERBOSE"):
+            print("[http] " + (fmt % args), flush=True)
 
 def main():
-    print("BOOT: Кухни Островский CMS (v8, wsrv.nl proxy)", flush=True)
+    print("BOOT: Кухни Островский CMS (v9)", flush=True)
     print("BOOT: PORT = {}".format(PORT), flush=True)
     print("BOOT: DOMAIN = {} ({})".format(_domain(), _host()), flush=True)
     print("BOOT: Supabase = {}".format(SUPABASE_URL), flush=True)
-    print("BOOT: VK -> wsrv.nl proxy active", flush=True)
     print("BOOT: AI = yandex:{} gigachat:{}".format(bool(YANDEX_API_KEY and FOLDER_ID), bool(GIGACHAT_AUTH_KEY)), flush=True)
-    try: load_fresh()
-    except Exception as e: print("BOOT: {}".format(e), flush=True)
+    try:
+        load_fresh()
+    except Exception as e:
+        print("BOOT: {}".format(e), flush=True)
     ThreadingHTTPServer(("0.0.0.0", PORT), Handler).serve_forever()
 
 if __name__ == "__main__":
