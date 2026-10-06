@@ -434,13 +434,13 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
 # <<<DEFAULT_DATA_END>>>
 
 PAGE = r"""<!DOCTYPE html>
-<html lang="ru" class="js" data-build="2026-10-06-v7">
+<html lang="ru" class="js" data-build="2026-10-06-v8">
 <head>
 <meta charset="UTF-8">
 <script>/* шим: если браузер не умеет IntersectionObserver, показываем блоки сразу (без «мёртвых» скрытых секций) */
 window.IntersectionObserver=window.IntersectionObserver||function(cb){return{observe:function(el){try{cb([{isIntersecting:true,target:el}],this);}catch(e){}},unobserve:function(){},disconnect:function(){}};};
 </script>
-<!-- Кухни Островский · сборка 2026-10-06-v7: анимации, аватарка и favicon из Supabase, защита сохранения (rev), история версий -->
+<!-- Кухни Островский · сборка 2026-10-06-v8: анимации, аватарка и favicon из Supabase, защита сохранения (rev), история версий -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{seo.title}}</title>
 <meta name="description" content="{{seo.description}}">
@@ -834,7 +834,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
 @media(max-width:768px){.stats{grid-template-columns:1fr 1fr}.guar-grid{grid-template-columns:1fr 1fr}.svc-grid{grid-template-columns:1fr}.steps{grid-template-columns:1fr}.panel{padding:104px 0 60px}}
 @media(max-width:520px){.logo .brand-ava{width:40px;height:40px}.logo .brand-txt .name{font-size:20px}.logo .brand-txt .sub{font-size:9.5px;max-width:54vw;letter-spacing:1.2px}.nav{height:64px}.panel{min-height:auto;padding:96px 0 56px}h1{font-size:31px}.sub{font-size:15px;margin:18px 0 26px}.btn-row{width:100%}.btn{width:100%;text-align:center;padding:14px 20px;font-size:12px}.stat .num{font-size:44px}.sec-head{margin-bottom:38px}.sec-head h2::before,.sec-head h2::after{display:none}.scroll-cue{display:none}.car-slide{width:84vw}.car-slide img{height:205px}.rev-card{width:92vw;padding:17px}.rev-head{gap:10px}.rev-ava{width:44px;height:44px}.rev-name{font-size:13.5px}.rev-sub{font-size:10px}.rev-stars{font-size:12.5px;display:block;margin:6px 0 0}.rev-text{font-size:12.5px;line-height:1.56}.video-box{height:190px}.consult .phone{font-size:25px}.call-block .cb-num{font-size:22px}.menu{padding:10px 20px calc(18px + env(safe-area-inset-bottom))}.lb-nav{width:44px;height:44px;min-width:44px;min-height:44px;font-size:22px}.lb-close{width:44px;height:44px;min-width:44px;min-height:44px}.cookie-bar{bottom:10px;padding:14px 16px}.city{padding:28px 22px}.contact-info>p{margin-bottom:24px}}
 @media(max-width:380px){.car-slide{width:88vw}.car-slide img{height:190px}.rev-card{width:94vw;padding:14px}.rev-text{font-size:12px}.video-box{height:170px}.btn{font-size:11px}}
-@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}.js .reveal{opacity:1;transform:none;filter:none}}
+
 </style>
 <style id="designVars">
 :root{--bg:{{design.bg}};--gold:{{design.gold}};--gold-soft:{{design.gold_soft}};--gold-deep:{{design.gold_deep}};--text:{{design.text}};--muted:{{design.muted}}}
@@ -861,7 +861,6 @@ header.solid{background:{{design.bg}}eb}
 @keyframes driftGlow{0%,100%{opacity:.35}50%{opacity:.9}}
 @keyframes wordUp{from{opacity:0;transform:translateY(30px) rotate(1.6deg)}to{opacity:1;transform:none}}
 @keyframes lineGrow{from{transform:scaleX(0);opacity:0}to{transform:scaleX(1);opacity:.75}}
-@keyframes particleFloat{0%{transform:translateY(102vh) scale(.6);opacity:0}12%{opacity:.9}88%{opacity:.72}100%{transform:translateY(-8vh) scale(1.15);opacity:0}}
 
 /* появление по скроллу */
 .js .rv{opacity:0;transform:translateY(36px);filter:blur(12px);transition:opacity .95s cubic-bezier(.22,.61,.36,1),transform .95s cubic-bezier(.22,.61,.36,1),filter .95s cubic-bezier(.22,.61,.36,1)}
@@ -931,8 +930,6 @@ header.solid{background:{{design.bg}}eb}
 .menu.open li:nth-child(1){animation-delay:.02s}.menu.open li:nth-child(2){animation-delay:.06s}.menu.open li:nth-child(3){animation-delay:.1s}
 .menu.open li:nth-child(4){animation-delay:.14s}.menu.open li:nth-child(5){animation-delay:.18s}.menu.open li:nth-child(6){animation-delay:.22s}
 .menu.open li:nth-child(7){animation-delay:.26s}.menu.open li:nth-child(8){animation-delay:.3s}.menu.open li:nth-child(9){animation-delay:.34s}
-#goldParticles{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
-#goldParticles span{position:absolute;width:5px;height:5px;border-radius:50%;background:radial-gradient(circle,rgba(236,207,160,.95),rgba(212,175,106,.35) 45%,transparent 72%);box-shadow:0 0 12px rgba(236,207,160,.6);animation:particleFloat linear infinite}
 /* ====== усиленные анимации ====== */
 @keyframes h2sweep{0%{background-position:180% 0}100%{background-position:-180% 0}}
 @keyframes starShine{0%{background-position:190% 0}100%{background-position:-190% 0}}
@@ -1177,18 +1174,25 @@ img,svg,video,iframe{max-width:100%}
  transform:translateY(-8px);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 22px 44px -24px rgba(0,0,0,.85)}
 .car-slide{box-shadow:0 14px 30px -20px rgba(0,0,0,.85)}
 .car-slide:hover{box-shadow:0 22px 44px -22px rgba(0,0,0,.9)}
-@media(max-width:640px){#goldParticles{opacity:.55}}
-@media (prefers-reduced-motion: reduce){.gold-divider i::after,.gold-divider b{animation:none!important;opacity:.6}}
-@media (prefers-reduced-motion: reduce){
- #goldParticles{display:none}.spark{display:none}
- *,*::before,*::after{animation:none!important;transition-duration:.4s!important}
- body,.brand-ava-w,.rev-ava-w::after,footer .flogo,.sec-head h2,.about-body h2,.contact-info h2,h2.k,.eyebrow,.kicker,
- .rev-stars,[data-watermark]::before,.car-slide.pop,.rev-card.pop,.gold-divider b,.gold-divider i,.svc svg,.guar .ico,
- .c-ico,.step .n,.stat .num,.city .city-name,.call-block .cb-num,.about-card .avatar,.empty,.swipe-hint,.scroll-cue{animation:none!important;opacity:1!important;transform:none!important}
- .js .rv,.js .reveal{opacity:0;transform:none!important;filter:none!important;transition:opacity .7s ease!important}
- .js .rv.in,.js .reveal.in{opacity:1}
- .js .car-slide img,.js .rev-photo img,.js .avatar img{opacity:1!important}
-}
+
+
+/* ====== анимации всегда включены; выключить можно только ?anim=0 ====== */
+html.no-anim *,html.no-anim *::before,html.no-anim *::after{animation:none!important;transition-duration:.2s!important}
+html.no-anim .js .rv,html.no-anim .js .reveal{opacity:1!important;transform:none!important}
+html.no-anim .spark{display:none}
+
+/* ====== компактный разделитель и мягкие стыки секций ====== */
+.panel + .panel{margin-top:0}
+.gold-divider{position:relative;z-index:3;display:flex;align-items:center;justify-content:center;gap:9px;
+ height:1px;padding:0;margin:0;overflow:visible;pointer-events:none}
+.gold-divider i{width:clamp(34px,5.6vw,78px);height:1px;opacity:.85}
+.gold-divider b{width:5px;height:5px;box-shadow:0 0 10px rgba(236,207,160,.5)}
+@media(max-width:640px){.gold-divider i{width:clamp(26px,9vw,54px)}}
+.panel::before,.panel::after{content:"";position:absolute;left:0;right:0;pointer-events:none;z-index:1;height:clamp(46px,7vw,96px)}
+.panel::before{top:0;background:linear-gradient(180deg,rgba(12,10,7,.92),rgba(12,10,7,0))}
+.panel::after{bottom:0;background:linear-gradient(0deg,rgba(12,10,7,.92),rgba(12,10,7,0))}
+.panel--hero::before{height:clamp(70px,11vw,150px);background:linear-gradient(180deg,rgba(10,8,6,.88),rgba(10,8,6,0))}
+.panel .bg::after{background:linear-gradient(to right,rgba(10,8,6,.9) 18%,rgba(10,8,6,.56) 58%,rgba(10,8,6,.74))}
 </style>
 <style id="customCss">{{{design.custom_css}}}</style>
 {{#if seo.metrika_id}}<script>(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js','ym');ym({{seo.metrika_id}},'init',{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});</script><noscript><div><img src="https://mc.yandex.ru/watch/{{seo.metrika_id}}" style="position:absolute;left:-9999px" alt=""></div></noscript>{{/if}}
@@ -1488,8 +1492,8 @@ img,svg,video,iframe{max-width:100%}
 
 <script>
 (function(){
-const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const fine=matchMedia('(hover:hover) and (pointer:fine)').matches;
+const reduced=false;
+const fine=true;
 const progress=document.getElementById('progress');
 const header=document.getElementById('header');
 const burger=document.getElementById('burger'),menu=document.getElementById('menu'),scrim=document.getElementById('scrim');
@@ -1677,9 +1681,10 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
 </script>
 <script id="beautyScript">
 (function(){
-  var FORCE=/[?&]anim=1/.test(location.search);
-  var reduced=!FORCE&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var fine=matchMedia('(hover:hover) and (pointer:fine)').matches||FORCE;
+  var OFF=/[?&]anim=0/.test(location.search);
+  if(OFF)d.documentElement.classList.add('no-anim');
+  var reduced=false;                     /* анимации включены всегда */
+  var fine=true;
   var d=document;
   function all(sel,root){return Array.prototype.slice.call((root||d).querySelectorAll(sel));}
 
@@ -1745,20 +1750,6 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
     setTimeout(function(){if(sp.parentNode)sp.parentNode.removeChild(sp);},840);
   },{passive:true});
 
-  /* 4. Золотые частицы */
-  if(!reduced){
-    var box=d.createElement('div');box.id='goldParticles';box.setAttribute('aria-hidden','true');d.body.appendChild(box);
-    var n=innerWidth<700?12:26;
-    for(var i=0;i<n;i++){
-      var sp2=d.createElement('span'),sz=(3+Math.random()*5);
-      sp2.style.width=sp2.style.height=sz.toFixed(1)+'px';
-      sp2.style.left=(Math.random()*100).toFixed(2)+'%';
-      sp2.style.animationDuration=(15+Math.random()*20).toFixed(1)+'s';
-      sp2.style.animationDelay=(-Math.random()*22).toFixed(1)+'s';
-      sp2.style.opacity=(0.35+Math.random()*0.55).toFixed(2);
-      box.appendChild(sp2);
-    }
-  }
 
   /* 6. Лёгкий наклон карточек под курсором + магнитные кнопки */
   if(fine&&!reduced){
@@ -1868,7 +1859,7 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
       io2.observe(track);
     });
   }
-  console.log('%cКухни Островский · сборка 2026-10-06-v7 · анимации включены'+(reduced?' (у вас в системе отключена анимация — принудительно: добавьте ?anim=1 к адресу)':''),'color:#d4af6a');
+  console.log('%cКухни Островский · сборка 2026-10-06-v8 · анимации включены'+(reduced?' (у вас в системе отключена анимация — принудительно: добавьте ?anim=1 к адресу)':''),'color:#d4af6a');
 })();
 </script>
 {{{code.body}}}
