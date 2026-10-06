@@ -1,49 +1,85 @@
 # -*- coding: utf-8 -*-
 """
-mebel.py — Кухни Островский: сайт + /admin
-Читает page.html, вставляет анимации, проксирует VK-картинки, синхронит с Supabase.
+mebel.py — «Кухни Островский»: сайт + админка (CMS) на Supabase + AI-помощник.
+
+Как это работает
+----------------
+1. page.html  — это ШАБЛОН (разметка + CSS + JS). В нём стоят подстановки
+   вида {{hero.title_em}} и циклы {{#each works.items}} ... {{/each}}.
+2. Контент лежит в Supabase (таблица site_content, строка id=1, колонка data jsonb).
+3. При запросе "/" сервер читает page.html, подставляет данные из Supabase
+   и отдаёт готовый HTML. Поэтому правки в админке видны сразу на сайте.
+4. Картинки с VK проксируются через /img?u=... (иначе VK отдаёт 403).
+5. Загрузка файлов из админки идёт в Supabase Storage (публичный бакет),
+   если Storage недоступен — файл сохраняется как data-URL.
+
+Переменные окружения (RelaxDev → Environment)
+---------------------------------------------
+PORT, DOMAIN, ADMIN_LOGIN, ADMIN_PASSWORD,
+SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_KEY, SUPABASE_BUCKET,
+YANDEX_API_KEY, FOLDER_ID, GIGACHAT_AUTH_KEY, AI_PROVIDER (yandex|gigachat|auto)
 """
-import base64, concurrent.futures, gzip, hashlib, io, json, os, re, secrets, threading, time, urllib.request
+
+import base64
+import gzip
+import hashlib
+import hmac
+import html as _html
+import io
+import json
+import os
+import re
+import secrets
+import ssl
+import threading
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
+import uuid
 from datetime import date
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from http.cookies import SimpleCookie
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs
 
-try:
-    from supabase import create_client
-    _SUPABASE_LIB = True
-except Exception:
-    _SUPABASE_LIB = False
-
+# ============================================================
+#  КОНФИГ
+# ============================================================
 PORT = int(os.environ.get("PORT", "8080"))
-DOMAIN = "https://кухниостровский.рф"
+DOMAIN = os.environ.get("DOMAIN", "https://кухниостровский.рф").rstrip("/")
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
-SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://hliafkrpvmntpctmqwfu.supabase.co")
-SUPABASE_ANON = os.environ.get("SUPABASE_ANON_KEY",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhsaWFma3Jwdm1udHBjdG1xd2Z1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyMDQ1NzYsImV4cCI6MjEwNjc4MDU3Nn0.yi57-Ty1iIfhnEh80_zvifhX1W_JX2qCl7QrARuJ2ns")
-SUPABASE_SERVICE = os.environ.get("SUPABASE_SERVICE_KEY",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhsaWFma3Jwdm1udHBjdG1xd2Z1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MTIwNDU3NiwiZXhwIjoyMTA2NzgwNTc2fQ.Yr4z9vx6kF9ZINNNUjUn43GYi-A2BmBfg8uyrOtmDWo")
+SUPABASE_URL = (os.environ.get("SUPABASE_URL") or "https://hliafkrpvmntpctmqwfu.supabase.co").rstrip("/")
+SUPABASE_ANON = os.environ.get("SUPABASE_ANON_KEY") or (
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhsaWFma3Jwdm1udHBjdG1xd2Z1Iiwicm9sZSI6ImFub24i"
+    "LCJpYXQiOjE3OTEyMDQ1NzYsImV4cCI6MjEwNjc4MDU3Nn0.yi57-Ty1iIfhnEh80_zvifhX1W_JX2qCl7QrARuJ2ns")
+SUPABASE_SERVICE = os.environ.get("SUPABASE_SERVICE_KEY") or (
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhsaWFma3Jwdm1udHBjdG1xd2Z1Iiwicm9sZSI6InNlcnZpY2Vfcm9s"
+    "ZSIsImlhdCI6MTc5MTIwNDU3NiwiZXhwIjoyMTA2NzgwNTc2fQ.Yr4z9vx6kF9ZINNNUjUn43GYi-A2BmBfg8uyrOtmDWo")
+BUCKET = os.environ.get("SUPABASE_BUCKET", "site-images")
+
 ADMIN_LOGIN_ENV = os.environ.get("ADMIN_LOGIN", "кухниост")
 ADMIN_PASSWORD_ENV = os.environ.get("ADMIN_PASSWORD", "романкух")
 
+YANDEX_API_KEY = os.environ.get("YANDEX_API_KEY", "")
+FOLDER_ID = os.environ.get("FOLDER_ID", "")
+GIGACHAT_AUTH_KEY = os.environ.get("GIGACHAT_AUTH_KEY", "")
+AI_PROVIDER = (os.environ.get("AI_PROVIDER", "auto") or "auto").lower()
+
+DATA_TABLE = os.environ.get("SUPABASE_TABLE", "site_content")
 SESSION_TTL = 604800
 MAX_UPLOAD = 8 * 1024 * 1024
 DATA_ROW_ID = 1
 CACHE_TTL = 15
+IMG_TTL = 604800
+HTTP_TIMEOUT = 12
 
-FAVICON_URL = "https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c.jpg?quality=95&cs=1254x0"
+FAVICON_URL = ("https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c.jpg"
+               "?quality=95&cs=1254x0")
 
-ROBOTS = "User-agent: *\nAllow: /\n\nHost: кухниостровский.рф\n\nSitemap: {}/sitemap.xml\n".format(DOMAIN)
-SITEMAP = ('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-           '  <url>\n    <loc>' + DOMAIN + '/</loc>\n    <lastmod>' + date.today().isoformat() +
-           '</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>\n</urlset>\n')
-MANIFEST = '{"name":"Кухни Островский","short_name":"Кухни Островский","start_url":"/","display":"standalone","background_color":"#0e0c09","theme_color":"#0e0c09","lang":"ru-RU"}'
-PAGE_404 = '<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><title>404</title></head><body style="background:#0e0c09;color:#f5efe3;font-family:system-ui;text-align:center;padding:80px"><h1>404</h1><p><a style="color:#eccfa0" href="/">На главную</a></p></body></html>'
-
-DEFAULT_DATA = {}  # заполняется ниже
-
-# ============ АНИМАЦИИ (вставляются в page.html) ============
+# ============================================================
+#  АНИМАЦИИ (вставляются в page.html, если их там ещё нет)
+# ============================================================
 ANIM_STYLE = """<style id="goldAnimations">
 @keyframes shimmerX{0%{background-position:-200% 0}100%{background-position:200% 0}}
 @keyframes goldGradient{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
@@ -79,15 +115,17 @@ h1 em,.shimmer,h1 em.shimmer{background-image:linear-gradient(90deg,#eccfa0,#fff
 
 ANIM_SCRIPT = """<script id="goldAnimationScript">
 (function(){
-  if(!('IntersectionObserver' in window))return;
-  if(matchMedia('(prefers-reduced-motion: reduce)').matches){
-    document.querySelectorAll('.stat,.svc,.step,.guar,.city,.car-slide,.rev-card,.about-card,.about-body,.call-block,.contact-info,.sec-head').forEach(function(el){el.classList.add('anim-in')});
-    document.documentElement.classList.remove('js');return;
-  }
-  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('anim-in');io.unobserve(e.target)}})},{threshold:0.12});
-  document.querySelectorAll('.stat,.svc,.step,.guar,.city,.car-slide,.rev-card,.about-card,.about-body,.call-block,.contact-info,.sec-head').forEach(function(el){io.observe(el)});
-  var headIo=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('anim-visible');headIo.unobserve(e.target)}})},{threshold:0.5});
-  document.querySelectorAll('h1,h2.k,.sec-head h2,.about-body h2,.contact-info h2,.cta h2').forEach(function(el){headIo.observe(el)});
+  var SEL='.stat,.svc,.step,.guar,.city,.car-slide,.rev-card,.about-card,.about-body,.call-block,.contact-info,.sec-head';
+  function showAll(){var n=document.querySelectorAll(SEL);for(var i=0;i<n.length;i++)n[i].classList.add('anim-in')}
+  if(!('IntersectionObserver' in window)){showAll();document.documentElement.classList.remove('js');return;}
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){showAll();document.documentElement.classList.remove('js');return;}
+  try{
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('anim-in');io.unobserve(e.target)}})},{threshold:0.12});
+    document.querySelectorAll(SEL).forEach(function(el){io.observe(el)});
+    var headIo=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('anim-visible');headIo.unobserve(e.target)}})},{threshold:0.5});
+    document.querySelectorAll('h1,h2.k,.sec-head h2,.about-body h2,.contact-info h2,.cta h2').forEach(function(el){headIo.observe(el)});
+  }catch(err){showAll()}
+  setTimeout(showAll,3000);
   (function(){var c=document.createElement('div');c.id='goldParticles';document.body.appendChild(c);var n=window.innerWidth<700?14:28;for(var i=0;i<n;i++){var s=document.createElement('span');var sz=3+Math.random()*5;s.style.width=sz+'px';s.style.height=sz+'px';s.style.left=(Math.random()*100)+'%';s.style.animationDuration=(14+Math.random()*18)+'s';s.style.animationDelay=(-Math.random()*20)+'s';s.style.opacity=(0.35+Math.random()*0.55);c.appendChild(s)}})();
   document.addEventListener('click',function(e){var btn=e.target.closest('.btn, .c-action, .car-dot, .soc');if(!btn)return;var r=btn.getBoundingClientRect();var rp=document.createElement('span');rp.className='ripple-el';var s=Math.max(r.width,r.height);rp.style.width=s+'px';rp.style.height=s+'px';rp.style.left=(e.clientX-r.left-s/2)+'px';rp.style.top=(e.clientY-r.top-s/2)+'px';btn.appendChild(rp);setTimeout(function(){rp.remove()},850)},{passive:true});
   var fine=matchMedia('(hover:hover) and (pointer:fine)').matches;
@@ -102,178 +140,938 @@ ANIM_SCRIPT = """<script id="goldAnimationScript">
 })();
 </script>"""
 
+# ============================================================
+#  ДЕФОЛТНЫЙ КОНТЕНТ (актуальная версия сайта; БД перекрывает эти значения)
+# ============================================================
+DEFAULT_DATA = {'seo': {'title': 'Кухни Островский — кухни на заказ в Ростове, Батайске и Азове | Мебель под ключ',
+         'keywords': 'кухни остров, кухни островский, кухни на заказ ростов, кухни батайск, кухни азов, мебель на заказ',
+         'og_image': 'https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1254x1254&from=bu&u=8vUcv8YxPcmfEmzVcjy5cNrPtcWeOIJmbKMc6vln3Q8&cs=1254x0',
+         'description': 'Кухни на заказ в Ростове-на-Дону, Батайске и Азове от мастерской «Кухни Островский». Бесплатный замер и '
+                        '3D-проект, собственное производство, монтаж под ключ. ☎ +7 (950) 846-53-97',
+         'og_title': 'Кухни Островский — кухни и корпусная мебель на заказ',
+         'og_description': 'Кухни, шкафы и гардеробные под ключ в Ростове-на-Дону, Батайске и Азове. Бесплатный замер и 3D-проект.',
+         'domain': 'https://кухниостровский.рф',
+         'canonical': 'https://кухниостровский.рф/',
+         'yandex_verification': '',
+         'google_verification': '',
+         'metrika_id': '',
+         'robots': '',
+         'extra_urls': []},
+ 'code': {'head': '', 'body': ''},
+ 'design': {'bg': '#0e0c09',
+            'gold': '#d4af6a',
+            'gold_soft': '#eccfa0',
+            'gold_deep': '#a37c3f',
+            'text': '#f5efe3',
+            'muted': '#b9ad9a',
+            'fonts_url': 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Manrope:wght@300;400;500;600;700;800&display=swap',
+            'custom_css': ''},
+ 'brand': {'vk': 'https://vk.com/mebel.ostrovsky',
+           'sub': 'Ростов · Батайск · Азов',
+           'name': 'Кухни Островский',
+           'phone': '+7 (950) 846-53-97',
+           'logo_url': 'https://sun9-20.vkuserphoto.ru/s/v1/ig2/2sp8pX_XIyDNZzghUeFMvYeHfkg4Kp7SVOVYhov8iLwAn3vAprbtUJPdXPi5IYkhMH-BR1LanCX8B0gH5rM8NC6c.jpg?quality=95&as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640,720x720,1080x1080,1254x1254&from=bu&u=8vUcv8YxPcmfEmzVcjy5cNrPtcWeOIJmbKMc6vln3Q8&cs=1254x0',
+           'telegram': 'https://t.me/fanny161',
+           'phone_raw': '+79508465397'},
+ 'nav': {'items': [{'label': 'Специалист', 'href': '#about'},
+                   {'label': 'Работы', 'href': '#works'},
+                   {'label': 'Отзывы', 'href': '#reviews'},
+                   {'label': 'Услуги', 'href': '#services'},
+                   {'label': 'Как работаем', 'href': '#process'},
+                   {'label': 'Города', 'href': '#cities'},
+                   {'label': 'Контакты', 'href': '#contacts'}],
+         'cta_label': 'Позвонить',
+         'cta_href': 'tel:+79508465397'},
+ 'hero': {'bg': 'https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x241,480x321,540x361,640x428,720x481,1080x722,1280x855,1440x962,2560x1711&from=bu&u=udyioV6Vl_ghNhYbFZ9zjc-ZU_IjlhkVV114xfpUZJs&cs=1080x0',
+          'sub': 'Проектируем и изготавливаем кухни, шкафы, гардеробные и другую корпусную мебель в Ростове, Батайске и Азове — по '
+                 'вашему проекту, от замера до монтажа.',
+          'btn1': 'Получить консультацию',
+          'btn2': 'Смотреть работы',
+          'eyebrow': 'Мебель и кухни на заказ',
+          'title_em': 'создаёт настроение',
+          'title_before': 'Мебель, которая ',
+          'btn1_href': '#consult',
+          'btn2_href': '#works'},
+ 'stats': {'bg': 'https://sun9-20.vkuserphoto.ru/s/v1/ig2/9W8TzKo3y8t8-s63NRmlys3yJtHJAKPBOp2QIyuqMSTinG9q-UFuD5sYkz4wbd7QZDv7wQxsZlldmCrAM-PzPlDJ.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,1800x1200&from=bu&u=kySpH3qK1oaqlWr8kbrP_y7iDDbASMEGWuJ5dgxf5MU&cs=1080x0',
+           'items': [{'prefix': '', 'num': '10', 'suffix': '+', 'decimal': '', 'label': 'лет опыта'},
+                     {'prefix': '', 'num': '5', 'suffix': '', 'decimal': '1', 'label': 'средняя оценка клиентов'},
+                     {'prefix': '', 'num': '8', 'suffix': '/10', 'decimal': '', 'label': 'клиентов по рекомендации'},
+                     {'prefix': '', 'num': '100', 'suffix': '%', 'decimal': '', 'label': 'полный цикл под ключ'}]},
+ 'about': {'bg': 'https://sun9-50.vkuserphoto.ru/s/v1/ig2/_uJbJ-Gw0zJ3jVPyc4QJRGUErYM5zju63UDQM6FFDezILgQ54i5ycLVvhgSHl5hHPVIKikt0AL9V6DrmqDH7G5C6.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2208x1656&from=bu&u=9_d3vo4cDIif_5OxDZbDgMLFC1xuAQSKRY1zAPscIwM&cs=1280x0',
+           'name': 'Роман Островский',
+           'role': 'Руководитель мебельной мастерской Островского',
+           'photo': 'https://i.ibb.co/mVchNnp1/photo-2026-09-10-18-48-37.jpg',
+           'title': 'Кухни и мебель под ключ — с заботой о деталях',
+           'kicker': 'О руководителе',
+           'features': ['Кухни, шкафы, гардеробные и прихожие',
+                        'Честный расчёт — без навязывания лишнего',
+                        'Аккуратность, пунктуальность, сопровождение',
+                        'Гарантия качества'],
+           'card_text': 'С командой изготавливаем кухни и корпусную мебель по индивидуальным проектам — с учётом ваших идей, размеров '
+                        'и задач.',
+           'text': 'Мы помогаем с планировкой и подбором материалов, предлагаем решения даже для сложных задач — когда другие разводят '
+                   'руками. Ведём вас от консультации и замера до сборки и установки.'},
+ 'consult': {'bg': 'https://sun9-41.vkuserphoto.ru/s/v1/ig2/qi7m_VnJPio2P4oKJhNr6X-9HJD2kCt6f98XGtveyiAxhJ4ru17yVoibjERFJ4-ZWDOm8Lr7xGMwRP6dSudvgPnG.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&u=myRGe7iEVeLqDstzbpBsld7P0jp7l04_xCLynpcz4So&cs=1280x0',
+             'text': 'Позвоните или напишите нам в Telegram или MAX — расскажем про кухни и мебель, всё обсудим и договоримся о '
+                     'бесплатном замере.',
+             'title': 'Консультация',
+             'kicker': 'Бесплатно',
+             'phone': '+7 (950) 846-53-97',
+             'phone_raw': '+79508465397'},
+ 'works': {'bg': 'https://sun9-32.vkuserphoto.ru/s/v1/ig2/ipQDYrxkEiu9wFqxHUIJNhf4YERP29pOrzOhJ2hTcO6Z-fqWBrPA9D1vCltHlp9RltkldMRefKPMMkB8aD8jhZfR.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,2560x1707&from=bu&u=q3wKCscaGbBU8n3umOUNA0wOvLkQBDAVXIkzDrivHgk&cs=1280x0',
+           'items': [{'alt': 'Кухня на заказ в Ростове',
+                      'url': 'https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x241,480x321,540x361,640x428,720x481,1080x722,1280x855,1440x962,2560x1711&from=bu&u=udyioV6Vl_ghNhYbFZ9zjc-ZU_IjlhkVV114xfpUZJs&cs=1080x0'},
+                     {'alt': 'Кухня на заказ в Батайске',
+                      'url': 'https://sun9-20.vkuserphoto.ru/s/v1/ig2/9W8TzKo3y8t8-s63NRmlys3yJtHJAKPBOp2QIyuqMSTinG9q-UFuD5sYkz4wbd7QZDv7wQxsZlldmCrAM-PzPlDJ.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,1800x1200&from=bu&u=kySpH3qK1oaqlWr8kbrP_y7iDDbASMEGWuJ5dgxf5MU&cs=1080x0'},
+                     {'alt': 'Кухня на заказ в Азове',
+                      'url': 'https://sun9-11.vkuserphoto.ru/s/v1/ig2/Xh5Xw9Yb1reqhfFznlGk8NjvSQAxCbysuiL5IWRt_f3ELVb8fvoYPg00eFIHV-xiS9I4nhYBj4ttU_FHVkPpX8Z3.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,1600x1200&from=bu&u=pY-bjOidU1jjNjiF66Dn4Ycgmb6utH_d0Ti7oSJr0qA&cs=1080x0'},
+                     {'alt': 'Мебель на заказ в Ростове',
+                      'url': 'https://sun9-88.vkuserphoto.ru/s/v1/ig2/vCipZmkZdy5Ix0cFh98i0yhNAYynqzh2gm00rWx5Qr019O4RHjwcs7pN6iKT4L_d1vanDAbUJ9JRrHj_uw13YVhg.jpg?quality=95&as=32x44,48x66,72x99,108x149,160x220,240x331,360x496,480x661,540x744,640x882,720x992,1080x1488,1280x1764,1440x1984,1858x2560&from=bu&u=lrbIDUwRUQKMEvaw12w2pRXFBLE0sHCmc6AYF8H7CIA&cs=1080x0'},
+                     {'alt': 'Шкаф-купе на заказ',
+                      'url': 'https://sun9-87.vkuserphoto.ru/s/v1/ig2/WHkPw7TZze6TV4t2q6Yr2pw61S1zWDeDyp8Dbe2IFm31aAuhXVSQ2DUTnM6AIt5u3cLTp9mh-YN2b_Lb0q5iHCFu.jpg?quality=95&as=32x40,48x60,72x90,108x134,160x199,240x298,360x448,480x597,540x671,640x796,720x895,1080x1343,1280x1591,1440x1790,2059x2560&from=bu&u=bQW477ZK7yLopHDa2oCbH-uA483cvDm58BTlNs29AoE&cs=1080x0'},
+                     {'alt': 'Мебель на заказ в Батайске',
+                      'url': 'https://sun9-24.vkuserphoto.ru/s/v1/ig2/lS8MpZ4V9XUKPJ7l9GmjnkCnHW2MGfnq86jH-Gzx6bAgr4m3azL5Xd_fkdPHY_NOsJjST3Zw2iQkuGKGBwYODdgM.jpg?quality=95&as=32x42,48x63,72x95,108x142,160x211,240x316,360x474,480x632,540x711,640x843,720x949,1080x1423,1280x1686,1440x1897,1943x2560&from=bu&u=dLnirpryCPR3qvUPphwt7JaP5ljnoIl1yyGyUNiUjZI&cs=1080x0'},
+                     {'alt': 'Кухня на заказ',
+                      'url': 'https://sun9-64.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,2560x1707&from=bu&u=T5NJHPubDiY9E_IwXkmzI6uExoeA0QSNz39xjf4UD5M&cs=1080x0'},
+                     {'alt': 'Мебель на заказ',
+                      'url': 'https://sun9-39.vkuserphoto.ru/s/v1/ig2/5cyrhjIBSWB5GGZATB29IrmjydaNdVOx-iP_dMNKsMbePp5Ccs2rnkEpLnfft3yAZGeMEE3IfInjMQ7aU6Z6jnHc.jpg?quality=95&as=32x24,48x36,72x54,108x82,160x121,240x181,360x272,480x363,540x408,640x484,720x544,1080x817,1280x968&from=bu&u=l1uWXrXXeEAKk1VMgGM5wyIo7DtKdQGhKlCwMjoS0t8&cs=1080x0'},
+                     {'alt': 'Кухня на заказ в Батайске',
+                      'url': 'https://sun9-68.vkuserphoto.ru/s/v1/ig2/6KwHlOiN9pxXNIwTImKO6QGkrSCTVqreybJu-63m8wbhdFFMIl06es9cPeurIdwuwXGtsFTkdJ6IOjMaS1qRtfxJ.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=VgDjFEJKqpW6dWVO-E4y4Q6xcuyoqiL7LxhG36oLPjw&cs=1080x0'},
+                     {'alt': 'Мебель на заказ',
+                      'url': 'https://sun9-23.vkuserphoto.ru/s/v1/ig2/wfBQoeOzjZbCRCvxmIkx_V3xC0fgMd3TTxRDSRG2CHDMok6B2ZKrG7vCAJ_G1DmrZ6JS1_RC2tr87Q64wJJ4aW9w.jpg?quality=95&as=32x25,48x37,72x56,108x84,160x124,240x186,360x279,480x372,540x419,640x496,720x558,1080x837,1280x992,1440x1117,2560x1985&from=bu&u=kZXvrlzwGUvzrHmYa8tHXbvyhU_JlNlefLxxcCYqM1A&cs=1080x0'},
+                     {'alt': 'Кухня на заказ',
+                      'url': 'https://sun9-33.vkuserphoto.ru/s/v1/ig2/TQbwf8FdMs_jwKfC_ONoxEHBIpc2L5yf_T0McNeUKRn0tK7fVbC5YbHfsB0TGLlNC_D55htM_2nREACuIw7ykLIx.jpg?quality=95&as=32x43,48x65,72x97,108x145,160x215,240x323,360x484,480x645,540x726,640x860,720x968,1080x1452,1280x1721,1440x1936,1904x2560&from=bu&u=rbH0OM9Bv0PnevamgtW5nYBm9jxFI28R6D1wxzq6fJA&cs=1080x0'},
+                     {'alt': 'Кухня на заказ',
+                      'url': 'https://sun9-52.vkuserphoto.ru/s/v1/ig2/iD_ZIKN3aW1Ml52LPM3C65Qa7raIjG1CUC-fRrbHZEdxtU9hrsvTAh80W9sM3wI2hBUlsHc86fnHiG43aAOPlRuP.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=mdGpdzTBkRhwLQzuIJS1nz6l-_CWqdnxhW1cwsXNCx8&cs=1080x0'},
+                     {'alt': 'Кухня на заказ',
+                      'url': 'https://sun9-65.vkuserphoto.ru/s/v1/ig2/z_wfZeGA9H6LHDsevjkijUHpbVyLGWFM38frX4hKrjgOnscfAloGdrVpPUwl4XoXCG_YgcKXTgeeTsDDcWEBvdi1.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=YbZ1WmiK3ZCk0bKWZhf_YKp6dTUU2vbsQo7Ya4Hoi6s&cs=1080x0'}],
+           'title': 'Кухни и мебель, которые мы сделали',
+           'kicker': 'Наши работы',
+           'subtitle': 'Нажмите на фото, чтобы рассмотреть в большом размере.',
+           'hint': 'Листайте'},
+ 'reviews': {'bg': 'https://sun9-64.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,2560x1707&from=bu&u=T5NJHPubDiY9E_IwXkmzI6uExoeA0QSNz39xjf4UD5M&cs=1280x0',
+             'items': [{'sub': 'Кухня на заказ',
+                        'name': 'Виктория Брандикова',
+                        'text': 'Заказывали у Романа кухню, всё прошло на высшем уровне, начиная от замеров, до установки! Мы очень '
+                                'рады, что обратились именно к нему (нашли в объявлении и нам крупно повезло), Роман супер '
+                                'профессионал своего дела!!! Кухня у нас маленькая, не стандартная, сверху выступы, вся на трубах, '
+                                'расположение мойки и кухонной плиты не удобное и вытяжку мы хотели, но нам некуда было её '
+                                'устанавливать (как мы думали), но Роман всё разрешил, практично разместил технику (в том числе и '
+                                'вытяжку), переставил мойку, установил подсветку сделал кухню функциональной светлой, практичной и '
+                                'современной. Кухня была готова в короткие сроки, установкой очень довольны, всё под ключ с установкой '
+                                'техники и подключением, всё быстро, качественно, и чисто! Мы не ожидали такого результата, просто не '
+                                'верится, что у нас теперь удобная, вместительная, современная кухня, о такой даже и не мечтали, даже '
+                                'несмотря на то, что кухня бюджетная. За мебелью теперь только к Роману!!! Однозначно всем буду '
+                                'рекомендовать!!!',
+                        'stars': 5,
+                        'video': '',
+                        'avatar': 'https://sun9-3.vkuserphoto.ru/s/v1/ig2/-cVZEipS5I4ROZUZ2fxoIaGJBZXpUs76_WKoUZpPw_r2-gnqqUvgTqjLjYoTZ0R21nsCSvjUPyw_vSn1jxAYJC8K.jpg?quality=95&as=32x30,48x45,72x68,108x101,160x150,240x225,360x338,480x450,540x507,640x601,720x676,1080x1014,1280x1201,1440x1351,2505x2351&from=bu&cs=128x0'},
+                       {'sub': 'Кухня и гардеробная',
+                        'name': 'Виктория Маренко',
+                        'text': 'И вновь мы обратились к Роману! Понадобилась кухня. Кухня на самом деле очень удобная! Как и хотелось '
+                                'она светлая, но не маркая. Как всегда учтены все пожелания и воплощены в жизнь! Очень трудно нам '
+                                'дался выбор цветов, но Роман спокойно вынес все наши метания, выполнил работу достойно, внимательно и '
+                                'аккуратно! Однозначно советую обращаться к нему. Гардеробную так же заказывали у Романа, и она '
+                                'идеальна! Ответственный подход, качество, внимательность и чистота исполнения - его качества, которые '
+                                'для нас важны.',
+                        'stars': 5,
+                        'video': '',
+                        'avatar': 'https://sun9-41.vkuserphoto.ru/s/v1/ig2/qi7m_VnJPio2P4oKJhNr6X-9HJD2kCt6f98XGtveyiAxhJ4ru17yVoibjERFJ4-ZWDOm8Lr7xGMwRP6dSudvgPnG.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&u=myRGe7iEVeLqDstzbpBsld7P0jp7l04_xCLynpcz4So&cs=1280x0'},
+                       {'sub': 'Шкаф, тумбы, прихожая',
+                        'name': 'Любовь Петелько',
+                        'text': 'Всем здравствуйте. Я заказала у Романа шкаф купе в спальню. Когда Роман приехал, я не совсем понимала '
+                                'что я хочу, пообщавшись с ним, получила много советов и рекомендаций по составу и цвету шкафа. В '
+                                'итоге решила в комплект заказать сразу тумбы, гарнитур под телевизор, и прихожую. Установили все '
+                                'раньше обещанного срока. Я очень довольна и всем рекомендую. Роман специалист своего дела. Скоро буду '
+                                'заказывать зону хранения балкона и самое главное кухню мечты. Спасибо!',
+                        'stars': 5,
+                        'video': '',
+                        'avatar': 'https://sun9-53.vkuserphoto.ru/s/v1/ig2/gZheSpaWhz7StIdwlzSoCIfA01e-x8jVUMESDK2u9ONRR1s3txB-b6F7lqLLj-Y6QFqFU5x463yoWmnTxf5T88g2.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&cs=128x0'},
+                       {'sub': 'Шкаф и стенка',
+                        'name': 'Дмитрий Юшенко',
+                        'text': 'Заказывали у Романа шкаф и стенку в спальню. Работа вышла отличной, подсказал несколько удачных '
+                                'решений наших хотелок. Все супер! Спасибо!',
+                        'stars': 5,
+                        'video': '',
+                        'avatar': 'https://sun9-83.vkuserphoto.ru/s/v1/ig2/zYO0FQ_fFsgxDWhaTE85lNpixn2ikScuD58qVoXtqda8vFxoS-LGsT54k9pk9tDVEpzGpJfCw5eg5TNtYgE2Q8_y.jpg?quality=95&as=32x47,48x71,72x106,108x159,160x236,240x353,360x530,480x707,540x795,640x943,720x1061,869x1280&from=bu&cs=1280x0'},
+                       {'sub': 'Кухня на заказ',
+                        'name': 'Екатерина Умнягина',
+                        'text': 'Заказывали у Романа кухню, всё очень понравилось! Подбирали всё до мелочей, и Рома всё исполнил, как '
+                                'мы хотели, за это мы ему очень благодарны. Всё сделано идеально, спрятали то, что не должно быть '
+                                'видно, и получилось очень красиво. Спасибо, Рома, за эту крутую современную кухню!!!',
+                        'stars': 5,
+                        'video': '',
+                        'avatar': 'https://sun9-46.vkuserphoto.ru/s/v1/ig2/bVm2vnJWOD92dzHJ3_21NbqhcwF7DW7a05XzjaTWteG9Dviu9nt8LlA5bgzdbsBhGtYbrs7rvOMTylQQIV43cl4T.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&cs=128x0'},
+                       {'sub': 'Два шкафа, гардеробная',
+                        'name': 'Анастасия Зайцева',
+                        'text': 'Заказывали у Романа два шкафа. Во время замеров у нас не было определённой идеи, как сделать '
+                                'вместительный шкаф в нашу небольшую спальню, ещё и с несущей колонной. Роман подкинул прекрасную '
+                                'идею, в итоге получился не просто шкаф, а целая угловая гардеробная, я была в восторге! Большой выбор '
+                                'цветов и текстур. Работа выполнена в оговорённый срок и качественно. Большое спасибо за эстетичное '
+                                'воплощение нашей мечты!',
+                        'stars': 5,
+                        'video': '',
+                        'avatar': 'https://sun9-48.vkuserphoto.ru/s/v1/ig2/OdS0JaUmpkj7vzQLNz1oyY6PBksnYylZuY54LZ2vnibrqxNc0IimIjE6d6NWySeMm6N2MLIUHG6WLKtAFJ82ICwE.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,960x1280&from=bu&cs=128x0'},
+                       {'sub': 'Видеоотзыв · Кухня на заказ',
+                        'name': 'Александр Карташев',
+                        'text': '«Прям гордость квартиры! За приемлемую цену получили отличную кухню: выступ стояка закрыли пеналом, а '
+                                'в ножку барного стола встроили розетки».',
+                        'stars': 5,
+                        'video': 'https://vk.ru/video_ext.php?oid=-212015374&id=456239019&hash=6abf300a7c2518d4',
+                        'avatar': ''}],
+             'title': 'Что говорят наши клиенты',
+             'kicker': 'Отзывы',
+             'subtitle': 'Реальные отзывы о нашей работе. Листайте влево-вправо.',
+             'hint': 'Листайте',
+             'video_poster': 'https://sun9-64.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,2560x1707&from=bu&u=T5NJHPubDiY9E_IwXkmzI6uExoeA0QSNz39xjf4UD5M&cs=1280x0'},
+ 'services': {'bg': 'https://sun9-88.vkuserphoto.ru/s/v1/ig2/vCipZmkZdy5Ix0cFh98i0yhNAYynqzh2gm00rWx5Qr019O4RHjwcs7pN6iKT4L_d1vanDAbUJ9JRrHj_uw13YVhg.jpg?quality=95&as=32x44,48x66,72x99,108x149,160x220,240x331,360x496,480x661,540x744,640x882,720x992,1080x1488,1280x1764,1440x1984,1858x2560&from=bu&u=lrbIDUwRUQKMEvaw12w2pRXFBLE0sHCmc6AYF8H7CIA&cs=1280x0',
+              'items': [{'icon': 'M3 9h18M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9M3 9l2-4h14l2 4M8 9v2M12 9v2M16 9v2',
+                         'text': 'Проектируем кухню точно под ваш размер, стиль и привычки — от классики до минимализма.',
+                         'title': 'Кухни на заказ'},
+                        {'icon': 'M3 3h18v18H3zM3 8h18M8 8v13M16 8v13',
+                         'text': 'Шкафы-купе, гардеробные, тумбы и комоды — встроенные и отдельно стоящие.',
+                         'title': 'Шкафы и гардеробные'},
+                        {'icon': 'M12 3v18M3 12h18M5 5l14 14M19 5L5 19',
+                         'text': 'Прихожие, стенки, гарнитуры под ТВ — аккуратно впишем в ваш интерьер.',
+                         'title': 'Прихожие и стенки'},
+                        {'icon': 'M14 6l4 4M5 19l7-7M17 3l4 4-4 4-1-1-1 1-4-4 1-1-1-1 4-4z',
+                         'text': 'Профессиональная установка, аккуратная сборка и подключение техники.',
+                         'title': 'Сборка и монтаж'},
+                        {'icon': 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 3v18M3 12h18',
+                         'text': 'Выезжаем на замер, делаем планировку и 3D-проект — бесплатно.',
+                         'title': 'Замер и проект'},
+                        {'icon': 'M3 12a9 9 0 1 0 9-9M3 12h6M3 12l4-4M3 12l4 4',
+                         'text': 'Освежим фасады и фурнитуру существующей кухни — дешевле, чем новая.',
+                         'title': 'Обновление мебели'}],
+              'title': 'Услуги',
+              'kicker': 'Что мы делаем',
+              'subtitle': 'Индивидуальный подход к каждому проекту и полный цикл производства.'},
+ 'process': {'bg': 'https://sun9-39.vkuserphoto.ru/s/v1/ig2/xiwu_WFFyjmJc4_VAOD1BHikAdMqBy9N-SuKyiWu7xC8OYE-pfhtW5GkOyO5No0KjOrNQUwcgOW3Gr2bCnjvFp2H.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=VpmAnVyzkXcBCcJLy2DSlVkJJG2zYnSPbLzk7-TXGGk&cs=1280x0',
+             'items': [{'n': '01', 'text': 'Вы звоните или пишете — обговариваем задачу и пожелания.', 'title': 'Обращение'},
+                       {'n': '02', 'text': 'Выезжаем, снимаем размеры и обсуждаем планировку. Бесплатно.', 'title': 'Замер'},
+                       {'n': '03', 'text': 'Готовим 3D-проект и подбираем материалы с фурнитурой.', 'title': 'Проект'},
+                       {'n': '04', 'text': 'Фиксируем стоимость и условия, подписываем договор.', 'title': 'Договор'},
+                       {'n': '05', 'text': 'Изготавливаем мебель на собственном производстве.', 'title': 'Производство'},
+                       {'n': '06', 'text': 'Привозим, собираем и устанавливаем. Сдаём с гарантией.', 'title': 'Доставка и монтаж'}],
+             'title': 'Путь от идеи до готовой мебели',
+             'kicker': 'Как мы работаем'},
+ 'guarantees': {'bg': 'https://sun9-50.vkuserphoto.ru/s/v1/ig2/C_b5sF8D1xkYdXe0s1BPq0c52G5b_U0r8MpWIaYYJzh9CXIE4qk0Q3rnZh2FuNZhpnp78BBveTceOk2Js-tECU_z.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=YCey971XM2nuNjhkwSaIOfPMTMneMAyHLaPyHT4mLyY&cs=1280x0',
+                'items': [{'icon': 'M12 3l7 3v6c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V6l7-3zM9 12l2 2 4-4',
+                           'text': 'Отвечаем за свою работу и сопровождаем после установки.',
+                           'title': 'Гарантия качества'},
+                          {'icon': 'M4 20h16M6 20V8l6-4 6 4v12M9 11h6M9 15h6M10 11v8M14 11v8',
+                           'text': 'Без навязывания лишнего и скрытых доплат.',
+                           'title': 'Честный расчёт'},
+                          {'icon': 'M3 21V9l9-5 9 5v12M3 21h18M9 21v-6h6v6M12 9v2',
+                           'text': 'Без посредников — контролируем качество на каждом этапе.',
+                           'title': 'Собственное производство'},
+                          {'icon': 'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM4 21c0-4 3.6-6 8-6s8 2 8 6',
+                           'text': 'Вы всегда на связи со специалистом — от замера до монтажа.',
+                           'title': 'Личное сопровождение'}],
+                'title': 'Гарантии и преимущества',
+                'kicker': 'Почему мы'},
+ 'cities': {'bg': 'https://sun9-87.vkuserphoto.ru/s/v1/ig2/WHkPw7TZze6TV4t2q6Yr2pw61S1zWDeDyp8Dbe2IFm31aAuhXVSQ2DUTnM6AIt5u3cLTp9mh-YN2b_Lb0q5iHCFu.jpg?quality=95&as=32x40,48x60,72x90,108x134,160x199,240x298,360x448,480x597,540x671,640x796,720x895,1080x1343,1280x1591,1440x1790,2059x2560&from=bu&u=bQW477ZK7yLopHDa2oCbH-uA483cvDm58BTlNs29AoE&cs=1280x0',
+            'items': [{'name': 'Ростов-на-Дону', 'text': 'Выезд на замер, проектирование, производство и монтаж мебели под ключ.'},
+                      {'name': 'Батайск', 'text': 'Кухни и корпусная мебель с бесплатным замером и 3D-проектом.'},
+                      {'name': 'Азов', 'text': 'Индивидуальные проекты, доставка, сборка и установка с гарантией.'}],
+            'title': 'Три города — один стандарт качества',
+            'kicker': 'Где работаем',
+            'subtitle': 'Бесплатный замер и проект в каждом из городов.'},
+ 'cta': {'bg': 'https://sun9-64.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x240,480x320,540x360,640x427,720x480,1080x720,1280x853,1440x960,2560x1707&from=bu&u=T5NJHPubDiY9E_IwXkmzI6uExoeA0QSNz39xjf4UD5M&cs=1280x0',
+         'text': 'Позвоните нам — бесплатно проконсультируем, посчитаем и запишем на замер.',
+         'title': 'Готовы обсудить вашу мебель?',
+         'button': '📞 Позвонить специалисту'},
+ 'contacts': {'bg': 'https://sun9-52.vkuserphoto.ru/s/v1/ig2/iD_ZIKN3aW1Ml52LPM3C65Qa7raIjG1CUC-fRrbHZEdxtU9hrsvTAh80W9sM3wI2hBUlsHc86fnHiG43aAOPlRuP.jpg?quality=95&as=32x24,48x36,72x54,108x81,160x120,240x180,360x270,480x360,540x405,640x480,720x540,1080x810,1280x960,1440x1080,2560x1920&from=bu&u=mdGpdzTBkRhwLQzuIJS1nz6l-_CWqdnxhW1cwsXNCx8&cs=1080x0',
+              'title': 'Создадим мебель, о которой вы мечтали',
+              'kicker': 'Контакты',
+              'regions': 'Ростов-на-Дону, Батайск, Азов',
+              'subtitle': 'Позвоните или напишите — ответим быстро и подскажем по всем вопросам.',
+              'call_label': 'Свяжитесь с нами удобным способом',
+              'call_number': '+7 (950) 846-53-97',
+              'call_hint': 'Бесплатная консультация и запись на замер.\nЗвоните или пишите в любой мессенджер.',
+              'lines': [{'label': 'Регион работы',
+                         'value': 'Ростов-на-Дону, Батайск, Азов',
+                         'href': '',
+                         'icon': 'M12 21.5S5.5 15.9 5.5 10.5a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11zM12 13a2.5 2.5 0 1 0 0-5 2.5 2.5 0 '
+                                 '0 0 0 5z'},
+                        {'label': 'Сайт в VK',
+                         'value': 'mebel.ostrovsky',
+                         'href': 'https://vk.com/mebel.ostrovsky',
+                         'icon': 'M14 19c-6 0-9.5-4.5-9.7-12h3c.1 5 2.5 8 4.3 8.8V7h3v5c1.8-.2 3.6-2.6 4.2-5h3c-.6 3.4-2.8 5.8-4.6 6.6 '
+                                 '1.8.9 4.6 3.6 5.4 8.4h-3.4c-.6-2.5-2.4-4.4-4.3-4.9V19H14z'},
+                        {'label': 'Telegram / MAX',
+                         'value': 'по номеру +7 (950) 846-53-97',
+                         'href': 'https://t.me/fanny161',
+                         'icon': 'M21.9 4.6L18.8 19c-.2 1-.8 1.3-1.7.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.4-4.8L18 '
+                                 '6.4c.4-.3-.1-.5-.6-.2L6.7 13.4l-4.6-1.4c-1-.3-1-1 .2-1.5l18-6.9c.8-.3 1.6.2 1.6 1z'}],
+              'buttons': [{'label': 'Позвонить',
+                           'href': 'tel:+79508465397',
+                           'cls': 'c-call',
+                           'external': False,
+                           'icon': 'M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 '
+                                   '0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.4 2.1L8.1 10a16 16 0 0 0 6 6l1.3-1.3a2 2 '
+                                   '0 0 1 2.1-.4c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.6 2z'},
+                          {'label': 'Написать в Telegram',
+                           'href': 'https://t.me/fanny161',
+                           'cls': 'c-tg',
+                           'external': True,
+                           'icon': 'M21.9 4.6L18.8 19c-.2 1-.8 1.3-1.7.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.4-4.8L18 '
+                                   '6.4c.4-.3-.1-.5-.6-.2L6.7 13.4l-4.6-1.4c-1-.3-1-1 .2-1.5l18-6.9c.8-.3 1.6.2 1.6 1z'},
+                          {'label': 'Написать в MAX',
+                           'href': 'tel:+79508465397',
+                           'cls': 'c-max',
+                           'external': False,
+                           'icon': 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'}]},
+ 'footer': {'line': 'Кухни и корпусная мебель на заказ — Ростов, Батайск, Азов',
+            'copyright': 'Кухни Островский. Все права защищены.',
+            'socials': [{'label': 'Позвонить',
+                         'href': 'tel:+79508465397',
+                         'icon': 'M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 '
+                                 '0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.4 2.1L8.1 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 '
+                                 '1 2.1-.4c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.6 2z'},
+                        {'label': 'Telegram',
+                         'href': 'https://t.me/fanny161',
+                         'icon': 'M21.9 4.6L18.8 19c-.2 1-.8 1.3-1.7.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.4-4.8L18 '
+                                 '6.4c.4-.3-.1-.5-.6-.2L6.7 13.4l-4.6-1.4c-1-.3-1-1 .2-1.5l18-6.9c.8-.3 1.6.2 1.6 1z'},
+                        {'label': 'ВКонтакте',
+                         'href': 'https://vk.com/mebel.ostrovsky',
+                         'icon': 'M14 19c-6 0-9.5-4.5-9.7-12h3c.1 5 2.5 8 4.3 8.8V7h3v5c1.8-.2 3.6-2.6 4.2-5h3c-.6 3.4-2.8 5.8-4.6 6.6 '
+                                 '1.8.9 4.6 3.6 5.4 8.4h-3.4c-.6-2.5-2.4-4.4-4.3-4.9V19H14z'},
+                        {'label': 'MAX', 'href': 'tel:+79508465397', 'icon': 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'}]},
+ 'cookie': {'text': 'Мы используем файлы cookie для корректной работы сайта.', 'button': 'Принять'},
+ 'page404': {'title': 'Страница не найдена',
+             'text': 'Возможно, страница переехала или удалена. Посмотрите наши работы или позвоните нам.',
+             'button': 'На главную'}}
 
-def _read_page():
-    """Читает page.html и вставляет анимации."""
+# ============================================================
+#  ШАБЛОНИЗАТОР  {{path}}  {{{path|raw}}}  {{#each list}}  {{#if x}} {{else}}
+# ============================================================
+_TAG_RE = re.compile(r"\{\{\{?(.*?)\}\}\}?", re.S)
+
+
+def _escape(s):
+    return _html.escape(s, quote=True)
+
+
+def _stringify(v):
+    if v is None:
+        return ""
+    if isinstance(v, bool):
+        return "true" if v else "false"
+    if isinstance(v, float):
+        return ("%f" % v).rstrip("0").rstrip(".")
+    if isinstance(v, (int,)):
+        return str(v)
+    if isinstance(v, (dict, list, tuple)):
+        return ""
+    return str(v)
+
+
+def _truthy(v):
+    if v is None:
+        return False
+    if isinstance(v, bool):
+        return v
+    if isinstance(v, (int, float)):
+        return v != 0
+    if isinstance(v, (list, tuple, dict)):
+        return len(v) > 0
+    s = str(v).strip()
+    return s != "" and s.lower() not in ("0", "false", "none", "null", "нет")
+
+
+def _lookup(ctx, path):
+    path = (path or "").strip()
+    if not path:
+        return ""
+    if path == "this":
+        return ctx.get("this", "")
+    if path.startswith("this."):
+        cur = ctx.get("this")
+        rest = path[5:]
+    elif path.startswith("@"):
+        return ctx.get(path, "")
+    else:
+        cur = ctx
+        rest = path
+    for part in rest.split("."):
+        if part == "":
+            continue
+        if isinstance(cur, dict):
+            cur = cur.get(part)
+        elif isinstance(cur, (list, tuple)):
+            if part.lstrip("-").isdigit():
+                i = int(part)
+                cur = cur[i] if -len(cur) <= i < len(cur) else None
+            else:
+                return ""
+        else:
+            return ""
+        if cur is None:
+            return ""
+    return cur
+
+
+def _apply_filter(name, value):
+    name = (name or "").strip()
+    if name == "nl2br":
+        return _escape(_stringify(value)).replace("\r\n", "\n").replace("\n", "<br>")
+    if name == "stars":
+        try:
+            n = int(float(str(value).strip()))
+        except Exception:
+            return _escape(_stringify(value))
+        n = max(0, min(5, n))
+        return "\u2605" * n + "\u2606" * (5 - n)
+    if name == "json":
+        return json.dumps(_stringify(value), ensure_ascii=False)[1:-1]
+    if name == "up":
+        return _escape(_stringify(value).upper())
+    return _escape(_stringify(value))
+
+
+def _extract_block(tpl, pos):
+    """Возвращает (тело, else-ветка, новая_позиция) для блока #each/#if/#unless."""
+    depth = 0
+    main, alt, cur = [], [], main
+    seen_else = False
+    p = pos
+    while True:
+        m = _TAG_RE.search(tpl, p)
+        if not m:
+            cur.append(tpl[p:])
+            return "".join(main), ("".join(alt) if seen_else else ""), len(tpl)
+        expr = m.group(1).strip()
+        cur.append(tpl[p:m.start()])
+        p = m.end()
+        if expr.startswith("#each ") or expr.startswith("#if ") or expr.startswith("#unless "):
+            depth += 1
+            cur.append(m.group(0))
+        elif expr in ("/each", "/if", "/unless"):
+            if depth == 0:
+                return "".join(main), ("".join(alt) if seen_else else ""), p
+            depth -= 1
+            cur.append(m.group(0))
+        elif expr == "else" and depth == 0 and not seen_else:
+            seen_else = True
+            cur = alt
+        else:
+            cur.append(m.group(0))
+
+
+def render(tpl, ctx):
+    out = []
+    pos = 0
+    while True:
+        m = _TAG_RE.search(tpl, pos)
+        if not m:
+            out.append(tpl[pos:])
+            break
+        out.append(tpl[pos:m.start()])
+        token, expr = m.group(0), m.group(1).strip()
+        is_raw = token.startswith("{{{")
+        pos = m.end()
+
+        if expr.startswith("#each "):
+            body, _alt, pos = _extract_block(tpl, pos)
+            val = _lookup(ctx, expr[6:])
+            if isinstance(val, dict):
+                val = [val]
+            if isinstance(val, (list, tuple)):
+                total = len(val)
+                for i, item in enumerate(val):
+                    sub = dict(ctx)
+                    sub["this"] = item
+                    sub["@index"] = i + 1
+                    sub["@first"] = (i == 0)
+                    sub["@last"] = (i == total - 1)
+                    out.append(render(body, sub))
+        elif expr.startswith("#if ") or expr.startswith("#unless "):
+            neg = expr.startswith("#unless ")
+            body, alt, pos = _extract_block(tpl, pos)
+            cond = _truthy(_lookup(ctx, expr.split(" ", 1)[1]))
+            if neg:
+                cond = not cond
+            out.append(render(body if cond else alt, ctx))
+        elif expr.startswith("#"):
+            _b, _a, pos = _extract_block(tpl, pos)
+        elif expr.startswith(("/", "else", "!")):
+            continue
+        else:
+            name, _, filt = expr.partition("|")
+            val = _lookup(ctx, name)
+            if is_raw or filt.strip() == "raw":
+                out.append(_stringify(val))
+            else:
+                out.append(_apply_filter(filt, val))
+    return "".join(out)
+
+
+# ============================================================
+#  РАБОТА С ДАННЫМИ
+# ============================================================
+def _json_clone(obj):
+    return json.loads(json.dumps(obj, ensure_ascii=False))
+
+
+def _merge_deep(base, over):
+    if not isinstance(base, dict) or not isinstance(over, dict):
+        return _json_clone(over)
+    res = dict(base)
+    for k, v in over.items():
+        if k in res and isinstance(res[k], dict) and isinstance(v, dict):
+            res[k] = _merge_deep(res[k], v)
+        else:
+            res[k] = _json_clone(v)
+    return res
+
+
+def _migrate(raw):
+    """Приводит старые ключи из БД к новой схеме (не теряя контент)."""
+    if not isinstance(raw, dict):
+        return {}
+    d = _json_clone(raw)
+
+    about = d.get("about")
+    if isinstance(about, dict):
+        if "body" in about and "card_text" not in about:
+            about["card_text"] = about.pop("text", "")
+            about["text"] = about.pop("body", "")
+        about.pop("body", None)
+
+    hero = d.get("hero")
+    if isinstance(hero, dict):
+        if hero.get("eyebrow", "").strip() == "Мебель и кухни на заказ1":
+            hero["eyebrow"] = "Мебель и кухни на заказ"
+        hero.setdefault("btn1_href", "#consult")
+        hero.setdefault("btn2_href", "#works")
+
+    contacts = d.get("contacts")
+    if isinstance(contacts, dict) and "lines" not in contacts:
+        lines = _json_clone(DEFAULT_DATA.get("contacts", {}).get("lines") or [])
+        if lines and contacts.get("regions"):
+            lines[0]["value"] = contacts["regions"]
+        if lines:
+            contacts["lines"] = lines
+
+    if "stats" in d and isinstance(d["stats"], dict):
+        d["stats"].setdefault("items", _json_clone(DEFAULT_DATA.get("stats", {}).get("items") or []))
+
+    return d
+
+
+_ICON_KEYS = (("services", "items"), ("guarantees", "items"))
+
+
+def _normalize_context(data):
+    """Готовит данные к рендеру: иконки, год, домен."""
+    ctx = _json_clone(data)
+    for section, key in _ICON_KEYS:
+        items = (ctx.get(section) or {}).get(key)
+        if isinstance(items, list):
+            for it in items:
+                if not isinstance(it, dict):
+                    continue
+                icon = str(it.get("icon") or "")
+                if "<" in icon:
+                    it["icon_svg"] = icon
+                    it["icon"] = ""
+    ctx["year"] = str(date.today().year)
+    ctx["domain"] = _domain(ctx)
+    return ctx
+
+
+def _domain(data=None):
+    dom = DOMAIN
+    if isinstance(data, dict):
+        seo = data.get("seo") or {}
+        dom = (seo.get("domain") or "").strip() or DOMAIN
+    dom = dom.rstrip("/")
+    if "//" not in dom:
+        dom = "https://" + dom
+    scheme, _, host = dom.partition("://")
+    return scheme + "://" + _punycode(host)
+
+
+def _host(data=None):
+    return _domain(data).split("://", 1)[-1]
+
+
+def _punycode(host):
     try:
-        p = os.path.join(ROOT, "page.html")
-        with open(p, "r", encoding="utf-8") as f:
-            html = f.read()
-        print("[page] OK: прочитано " + str(len(html)) + " байт из " + p, flush=True)
-    except Exception as e:
-        print("[page] ОШИБКА: " + str(e), flush=True)
-        return "<!DOCTYPE html><html><body><h1>page.html не найден: " + str(e) + "</h1></body></html>"
-    # Вставляем анимации
-    if "</head>" in html and "goldAnimations" not in html:
-        html = html.replace("</head>", ANIM_STYLE + "\n</head>", 1)
-    if "</body>" in html and "goldAnimationScript" not in html:
-        html = html.replace("</body>", ANIM_SCRIPT + "\n</body>", 1)
-    return html
+        return host.encode("idna").decode("ascii")
+    except Exception:
+        return host
 
 
-# ============ ПРОКСИ VK-КАРТИНОК ============
-_img_cache = {}
-_img_lock = threading.Lock()
-_IMG_TTL = 604800
-
-
-def _fetch_image(url):
-    now = time.time()
-    with _img_lock:
-        c = _img_cache.get(url)
-        if c and now - c[1] < _IMG_TTL:
-            return c[0], c[2]
+# ============================================================
+#  SUPABASE (REST + Storage, без внешних библиотек)
+# ============================================================
+def _http(method, url, payload=None, headers=None, timeout=HTTP_TIMEOUT, raw_body=None):
+    data = raw_body
+    if payload is not None:
+        data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+    req = urllib.request.Request(url, data=data, method=method)
+    if payload is not None:
+        req.add_header("Content-Type", "application/json")
+    for k, v in (headers or {}).items():
+        req.add_header(k, v)
     try:
-        req = urllib.request.Request(url, headers={
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0 Safari/537.36",
-            "Referer": "https://vk.com/",
-            "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
-        })
-        with urllib.request.urlopen(req, timeout=15) as resp:
-            data = resp.read()
-            ct = resp.headers.get("Content-Type", "image/jpeg")
-            with _img_lock:
-                _img_cache[url] = (data, now, ct)
-            return data, ct
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            body = r.read()
+            try:
+                return r.status, json.loads(body.decode("utf-8")) if body else None, body
+            except Exception:
+                return r.status, None, body
+    except urllib.error.HTTPError as e:
+        body = e.read()
+        try:
+            return e.code, json.loads(body.decode("utf-8")), body
+        except Exception:
+            return e.code, None, body
     except Exception as e:
-        print("[img] " + str(e), flush=True)
-        return None, None
+        return 0, None, str(e).encode("utf-8")
 
 
-def _proxify_urls(html):
-    pat = re.compile(r'https://sun9-\d+\.vkuserphoto\.ru/[^\s"\')<>]+')
-
-    def repl(m):
-        u = m.group(0)
-        return "/img?u=" + base64.urlsafe_b64encode(u.encode()).decode().rstrip("=")
-    return pat.sub(repl, html)
+def _sb_headers():
+    key = SUPABASE_SERVICE or SUPABASE_ANON
+    h = {"apikey": key, "Authorization": "Bearer " + key}
+    return h
 
 
-# ============ SUPABASE ============
-_sb_read = None
-_sb_write = None
-_sb_lock = threading.Lock()
-
-
-def _sb_read_client():
-    global _sb_read
-    with _sb_lock:
-        if _sb_read is None and _SUPABASE_LIB and SUPABASE_URL and SUPABASE_ANON:
-            try: _sb_read = create_client(SUPABASE_URL, SUPABASE_ANON)
-            except Exception as e: print("[sb read] " + str(e), flush=True)
-        return _sb_read
-
-
-def _sb_write_client():
-    global _sb_write
-    with _sb_lock:
-        if _sb_write is None and _SUPABASE_LIB and SUPABASE_URL and SUPABASE_SERVICE:
-            try: _sb_write = create_client(SUPABASE_URL, SUPABASE_SERVICE)
-            except Exception as e: print("[sb write] " + str(e), flush=True)
-        return _sb_write
-
-
-def _sb_exec(fn, timeout=5):
-    try:
-        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as ex:
-            return ex.submit(fn).result(timeout=timeout)
-    except concurrent.futures.TimeoutError:
-        print("[sb] TIMEOUT " + str(timeout) + "s", flush=True); return None
-    except Exception as e:
-        print("[sb] " + str(e), flush=True); return None
-
-
-def _fetch_from_supabase(timeout=5):
-    sb = _sb_read_client()
-    if sb is None: return None
-    res = _sb_exec(lambda: sb.table("site_content").select("data").eq("id", DATA_ROW_ID).execute(), timeout=timeout)
-    if res is not None and getattr(res, "data", None):
-        raw = res.data[0].get("data") or {}
-        if raw and isinstance(raw, dict) and len(raw) >= 3:
-            return raw
-    return None
+def _fetch_from_supabase(timeout=8):
+    """Возвращает (data|None, ok). ok=False — сеть/ошибка, не трогаем кэш."""
+    if not SUPABASE_URL:
+        return None, False
+    url = "{}/rest/v1/{}?id=eq.{}&select=data".format(SUPABASE_URL, DATA_TABLE, DATA_ROW_ID)
+    keys = [k for k in (SUPABASE_SERVICE, SUPABASE_ANON) if k]
+    last = None
+    for i, key in enumerate(keys):
+        st, js, body = _http("GET", url, headers={"apikey": key, "Authorization": "Bearer " + key}, timeout=timeout)
+        if st == 200 and isinstance(js, list):
+            if js and isinstance(js[0].get("data"), dict) and js[0]["data"]:
+                return js[0]["data"], True
+            return None, True
+        last = "HTTP {} {}".format(st, (body or b"")[:200])
+        print("[sb] read({}) {}".format("service" if i == 0 else "anon", last), flush=True)
+    return None, False
 
 
 def _save_to_supabase(data):
-    sb = _sb_write_client()
-    if sb is None:
-        print("[save] НЕТ КЛИЕНТА (проверь SUPABASE_SERVICE_KEY)", flush=True); return False
-    res = _sb_exec(lambda: sb.table("site_content").upsert({"id": DATA_ROW_ID, "data": data}).execute(), timeout=10)
-    if res is not None:
-        print("[save] OK: записано в Supabase", flush=True); return True
-    print("[save] FAIL: запись не прошла", flush=True); return False
+    if not SUPABASE_URL:
+        return False
+    key = SUPABASE_SERVICE or SUPABASE_ANON
+    if not key:
+        return False
+    url = "{}/rest/v1/{}".format(SUPABASE_URL, DATA_TABLE)
+    headers = {"apikey": key, "Authorization": "Bearer " + key,
+               "Prefer": "resolution=merge-duplicates,return=minimal"}
+    st, js, body = _http("POST", url, payload=[{"id": DATA_ROW_ID, "data": data}], headers=headers, timeout=25)
+    if 200 <= st < 300:
+        print("[save] OK: записано в Supabase ({} КБ)".format(len(json.dumps(data, ensure_ascii=False)) // 1024), flush=True)
+        return True
+    print("[save] FAIL: HTTP {} {}".format(st, (body or b"")[:300]), flush=True)
+    return False
 
 
-# ============ КЭШ ============
-_auth_lock = threading.Lock()
-_sessions = {}
+_bucket_state = {"checked": False, "ok": False}
+_bucket_lock = threading.Lock()
+
+
+def _bucket_ensure():
+    global _bucket_state
+    with _bucket_lock:
+        if _bucket_state["checked"]:
+            return _bucket_state["ok"]
+        _bucket_state["checked"] = True
+        if not (SUPABASE_URL and SUPABASE_SERVICE):
+            return False
+        base = SUPABASE_URL + "/storage/v1/bucket"
+        st, js, body = _http("GET", base + "/" + BUCKET, headers=_sb_headers())
+        if st == 200:
+            _bucket_state["ok"] = True
+            return True
+        st, js, body = _http("POST", base, payload={"id": BUCKET, "name": BUCKET, "public": True}, headers=_sb_headers())
+        _bucket_state["ok"] = st in (200, 201)
+        print("[storage] создать бакет {}: HTTP {}".format(BUCKET, st), (body or b"")[:200], flush=True)
+        return _bucket_state["ok"]
+
+
+def _storage_public_url(name):
+    return "{}/storage/v1/object/public/{}/{}".format(SUPABASE_URL, BUCKET, name)
+
+
+def _storage_upload(filename, blob, mime):
+    if not _bucket_ensure():
+        return None
+    ext = os.path.splitext(filename or "")[1].lower()
+    if ext not in (".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg", ".avif", ".ico"):
+        ext = {"image/png": ".png", "image/webp": ".webp", "image/gif": ".gif", "image/svg+xml": ".svg"}.get(mime, ".jpg")
+    name = "{}/{}{}".format(date.today().isoformat(), secrets.token_hex(6), ext)
+    url = "{}/storage/v1/object/{}/{}".format(SUPABASE_URL, BUCKET, name)
+    headers = _sb_headers()
+    headers.update({"Content-Type": mime, "x-upsert": "true", "Cache-Control": "max-age=31536000"})
+    st, js, body = _http("POST", url, headers=headers, raw_body=blob, timeout=45)
+    if 200 <= st < 300:
+        return _storage_public_url(name)
+    print("[storage] upload HTTP {} {}".format(st, (body or b"")[:200]), flush=True)
+    return None
+
+
+def _storage_list(limit=120):
+    if not _bucket_ensure():
+        return []
+    url = "{}/storage/v1/object/list/{}".format(SUPABASE_URL, BUCKET)
+    payload = {"prefix": "", "limit": limit, "offset": 0, "sortBy": {"column": "created_at", "order": "desc"}}
+    st, js, body = _http("POST", url, payload=payload, headers=_sb_headers(), timeout=20)
+    if st == 200 and isinstance(js, list):
+        out = []
+        for it in js:
+            nm = it.get("name") if isinstance(it, dict) else None
+            if nm:
+                out.append({"name": nm, "url": _storage_public_url(nm)})
+        return out
+    return []
+
+
+# ============================================================
+#  AI (YandexGPT / GigaChat)
+# ============================================================
+def _ai_yandex(system, user, max_tokens=700):
+    if not (YANDEX_API_KEY and FOLDER_ID):
+        return None, "нет YANDEX_API_KEY / FOLDER_ID"
+    url = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion"
+    payload = {
+        "modelUri": "gpt://{}/yandexgpt-lite/latest".format(FOLDER_ID),
+        "completionOptions": {"stream": False, "temperature": 0.55, "maxTokens": str(int(max_tokens))},
+        "messages": [{"role": "system", "text": system}, {"role": "user", "text": user}],
+    }
+    st, js, body = _http("POST", url, payload=payload,
+                         headers={"Authorization": "Api-Key " + YANDEX_API_KEY}, timeout=60)
+    if st == 200 and isinstance(js, dict):
+        try:
+            return js["result"]["alternatives"][0]["message"]["text"], None
+        except Exception:
+            return None, "неожиданный ответ YandexGPT"
+    return None, "YandexGPT HTTP {}: {}".format(st, (body or b"")[:200])
+
+
+_gc = {"token": "", "exp": 0.0}
+_gc_lock = threading.Lock()
+
+
+def _gigachat_token():
+    with _gc_lock:
+        if _gc["token"] and _gc["exp"] > time.time() + 60:
+            return _gc["token"], None
+        if not GIGACHAT_AUTH_KEY:
+            return None, "нет GIGACHAT_AUTH_KEY"
+        req = urllib.request.Request("https://ngw.devices.sberbank.ru:9443/api/v2/oauth",
+                                     data=b"scope=GIGACHAT_API_PERS", method="POST")
+        req.add_header("Content-Type", "application/x-www-form-urlencoded")
+        req.add_header("Accept", "application/json")
+        req.add_header("RqUID", str(uuid.uuid4()))
+        req.add_header("Authorization", "Basic " + GIGACHAT_AUTH_KEY)
+        ctx = ssl._create_unverified_context()  # у Сбера свой корневой сертификат
+        try:
+            with urllib.request.urlopen(req, timeout=25, context=ctx) as r:
+                js = json.loads(r.read().decode("utf-8"))
+            tok = js.get("access_token")
+            if not tok:
+                return None, "GigaChat: нет access_token"
+            _gc["token"] = tok
+            _gc["exp"] = time.time() + float(js.get("expires_at", 0)) / 1000.0 if js.get("expires_at") else time.time() + 1500
+            return tok, None
+        except urllib.error.HTTPError as e:
+            return None, "GigaChat oauth HTTP {}: {}".format(e.code, e.read()[:200])
+        except Exception as e:
+            return None, "GigaChat oauth: {}".format(e)
+
+
+def _ai_gigachat(system, user, max_tokens=700):
+    tok, err = _gigachat_token()
+    if not tok:
+        return None, err
+    url = "https://gigachat.devices.sberbank.ru/api/v1/chat/completions"
+    payload = {"model": "GigaChat", "temperature": 0.6, "max_tokens": int(max_tokens),
+               "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}]}
+    ctx = ssl._create_unverified_context()
+    data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+    req = urllib.request.Request(url, data=data, method="POST")
+    req.add_header("Content-Type", "application/json")
+    req.add_header("Accept", "application/json")
+    req.add_header("Authorization", "Bearer " + tok)
+    try:
+        with urllib.request.urlopen(req, timeout=60, context=ctx) as r:
+            js = json.loads(r.read().decode("utf-8"))
+        return js["choices"][0]["message"]["content"], None
+    except urllib.error.HTTPError as e:
+        return None, "GigaChat HTTP {}: {}".format(e.code, e.read()[:200])
+    except Exception as e:
+        return None, "GigaChat: {}".format(e)
+
+
+def _ai_generate(system, user, max_tokens=700):
+    order = ["yandex", "gigachat"] if AI_PROVIDER == "auto" else [AI_PROVIDER]
+    errors = []
+    for p in order:
+        if p == "yandex":
+            text, err = _ai_yandex(system, user, max_tokens)
+        elif p == "gigachat":
+            text, err = _ai_gigachat(system, user, max_tokens)
+        else:
+            continue
+        if text:
+            return _clean_ai(text), p, None
+        if err:
+            errors.append(err)
+    return None, None, "; ".join(errors) or "AI не настроен (нет ключей)"
+
+
+def _clean_ai(text):
+    t = (text or "").strip()
+    t = re.sub(r"^(?:вариант\s*\d+\s*[:.\-]\s*)", "", t, flags=re.I)
+    t = re.sub(r"^\*\*(.+?)\*\*$", r"\1", t)
+    t = t.strip().strip('"').strip("«»").strip()
+    t = re.sub(r"^(?:Title|Заголовок|Description|Описание|Keywords|Ключевые слова|Текст)\s*[:：]\s*", "", t, flags=re.I)
+    t = t.replace("**", "").strip()
+    return t
+
+
+def _ai_ask(data, task, path, value):
+    brand = (data.get("brand") or {})
+    cities = ", ".join([c.get("name", "") for c in ((data.get("cities") or {}).get("items") or []) if isinstance(c, dict)])
+    services = ", ".join([s.get("title", "") for s in ((data.get("services") or {}).get("items") or []) if isinstance(s, dict)])
+    seo = data.get("seo") or {}
+    base = ("Компания: {}. Города: {}. Услуги: {}. Телефон: {}. Сайт: {}."
+            .format(brand.get("name", "Кухни Островский"), cities or "Ростов-на-Дону, Батайск, Азов",
+                    services or "кухни и корпусная мебель на заказ",
+                    brand.get("phone", ""), seo.get("domain") or DOMAIN))
+    system = ("Ты опытный русскоязычный копирайтер и SEO-специалист для локального бизнеса "
+              "(мебель на заказ). Пиши живым, конкретным языком, без воды, без markdown, "
+              "без кавычек вокруг ответа, без слова «Вариант». Отвечай ТОЛЬКО готовым текстом.")
+    rules = "Без emoji. Без англицизмов. Не выдумывай цены, сроки и проценты."
+    user = base + "\n" + rules + "\n\n"
+    if task == "seo_title":
+        user += "Составь SEO Title (title страницы) до 65 символов: название компании + услуга + 2 города + выгода. Верни одну строку."
+    elif task == "seo_description":
+        user += ("Составь meta description до 160 символов: что делаем, где, выгода (бесплатный замер и проект), "
+                 "телефон в конце. Верни одну строку.")
+    elif task == "seo_keywords":
+        user += "Составь 12-15 ключевых фраз через запятую (поисковые запросы по кухням и мебели на заказ в этих городах)."
+    elif task == "hero_sub":
+        user += "Напиши подзаголовок на главном экране: 1-2 предложения, до 220 символов, про кухни и корпусную мебель под ключ."
+    elif task == "about_text":
+        user += "Напиши блок «о нас» (3-4 предложения, до 400 символов) от лица руководителя мастерской."
+    elif task == "service_text":
+        user += "Опиши услугу одним предложением до 130 символов. Название услуги: " + (value or "")
+    elif task == "city_text":
+        user += "Напиши одно предложение до 120 символов про работу в городе: " + (value or "")
+    elif task == "cta_text":
+        user += "Напиши короткий призыв к действию (1-2 предложения, до 180 символов) с приглашением позвонить."
+    elif task == "shorten":
+        user += "Сократи текст до 1-2 предложений, сохранив смысл и ключевые слова:\n" + (value or "")
+    elif task == "expand":
+        user += "Дополни и улучши текст (до 3 предложений), сохранив смысл:\n" + (value or "")
+    else:  # improve
+        user += "Улучши текст: убери ошибки и воду, сделай живее, сохрани смысл и длину:\n" + (value or "")
+    return system, user
+
+
+# ============================================================
+#  КЭШ ДАННЫХ
+# ============================================================
+_data_lock = threading.Lock()
 _data_cache = None
 _cache_ts = 0.0
-_data_lock = threading.Lock()
+_db_state = {"read": None, "write": None, "last_error": ""}
+
+_auth_lock = threading.Lock()
+_sessions = {}
+_login_fails = {}
 
 
 def _new_session():
     t = secrets.token_urlsafe(32)
-    with _auth_lock: _sessions[t] = time.time() + SESSION_TTL
+    with _auth_lock:
+        _sessions[t] = time.time() + SESSION_TTL
+        if len(_sessions) > 200:
+            now = time.time()
+            for k in [k for k, v in _sessions.items() if v < now]:
+                _sessions.pop(k, None)
     return t
 
 
 def _check_session(token):
-    if not token: return False
+    if not token:
+        return False
     with _auth_lock:
         exp = _sessions.get(token)
-        if not exp: return False
-        if exp < time.time(): _sessions.pop(token, None); return False
+        if not exp:
+            return False
+        if exp < time.time():
+            _sessions.pop(token, None)
+            return False
     return True
 
 
 def _drop_session(token):
     if token:
-        with _auth_lock: _sessions.pop(token, None)
+        with _auth_lock:
+            _sessions.pop(token, None)
 
 
-def _merge_deep(base, over):
-    if not isinstance(base, dict) or not isinstance(over, dict): return over
-    r = dict(base)
-    for k, v in over.items():
-        if k in r and isinstance(r[k], dict) and isinstance(v, dict):
-            r[k] = _merge_deep(r[k], v)
-        else:
-            r[k] = json.loads(json.dumps(v))
-    return r
+def _login_blocked(ip):
+    with _auth_lock:
+        rec = _login_fails.get(ip)
+        if not rec:
+            return False
+        cnt, until = rec
+        if until and until < time.time():
+            _login_fails.pop(ip, None)
+            return False
+        return cnt >= 8
+
+
+def _login_note(ip, ok):
+    with _auth_lock:
+        if ok:
+            _login_fails.pop(ip, None)
+            return
+        cnt, _ = _login_fails.get(ip, (0, 0))
+        _login_fails[ip] = (cnt + 1, time.time() + 600)
 
 
 def load_fresh():
-    """СИНХРОННО читает из БД. Для сайта и админки."""
+    """Читает БД синхронно. Если БД недоступна — отдаёт последний кэш или дефолты."""
     global _data_cache, _cache_ts
-    raw = _fetch_from_supabase(timeout=6)
-    if raw is None:
+    raw, ok = _fetch_from_supabase()
+    _db_state["read"] = ok
+    if not ok:
         with _data_lock:
-            _data_cache = json.loads(json.dumps(DEFAULT_DATA))
+            if _data_cache is not None:
+                _cache_ts = time.time()
+                print("[load] БД недоступна — отдаю кэш", flush=True)
+                return _data_cache
+        with _data_lock:
+            _data_cache = _json_clone(DEFAULT_DATA)
             _cache_ts = time.time()
-        print("[load] БД пуста — дефолты", flush=True)
+        print("[load] БД недоступна — дефолтный контент", flush=True)
         return _data_cache
-    data = _merge_deep(json.loads(json.dumps(DEFAULT_DATA)), raw)
+    if raw is None:
+        data = _json_clone(DEFAULT_DATA)
+        print("[load] строка в БД пустая — дефолтный контент", flush=True)
+    else:
+        data = _merge_deep(DEFAULT_DATA, _migrate(raw))
+        print("[load] из БД: {} разделов".format(len(raw)), flush=True)
     with _data_lock:
         _data_cache = data
         _cache_ts = time.time()
-    print("[load] свежие данные: " + str(len(raw)) + " полей", flush=True)
     return data
 
 
 def load_data():
-    """Быстрая версия — отдаёт кэш, если свежий."""
-    global _data_cache, _cache_ts
+    global _cache_ts
     now = time.time()
     with _data_lock:
         if _data_cache is not None and now - _cache_ts < CACHE_TTL:
@@ -282,325 +1080,1309 @@ def load_data():
 
 
 def save_data(data):
-    """Синхронная запись. Возвращает True только при успехе."""
     global _data_cache, _cache_ts
     ok = _save_to_supabase(data)
+    _db_state["write"] = ok
     if ok:
         with _data_lock:
-            _data_cache = data
+            _data_cache = _merge_deep(DEFAULT_DATA, _migrate(data))
             _cache_ts = time.time()
     return ok
 
 
-# ============ FAVICON ============
+# ============================================================
+#  ПРОКСИ VK-КАРТИНОК
+# ============================================================
+_img_cache = {}
+_img_lock = threading.Lock()
+_VK_RE = re.compile(r'https://(?:sun\d+-\d+\.)?vkuserphoto\.ru/[^\s"\'\)<>]+')
+_PROT_RE = re.compile(r"\x00PROT(\d+)\x00")
+
+
+def _fetch_image(url):
+    now = time.time()
+    with _img_lock:
+        c = _img_cache.get(url)
+        if c and now - c[1] < IMG_TTL:
+            return c[0], c[2]
+    try:
+        req = urllib.request.Request(url, headers={
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0 Safari/537.36",
+            "Referer": "https://vk.com/",
+            "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+        })
+        with urllib.request.urlopen(req, timeout=20) as resp:
+            data = resp.read()
+            ct = resp.headers.get("Content-Type", "image/jpeg")
+        if data:
+            with _img_lock:
+                if len(_img_cache) > 400:
+                    _img_cache.clear()
+                _img_cache[url] = (data, now, ct)
+            return data, ct
+    except Exception as e:
+        print("[img] {} -> {}".format(url[:60], e), flush=True)
+    return None, None
+
+
+def _img_proxy_url(url):
+    return "/img?u=" + base64.urlsafe_b64encode(url.encode("utf-8")).decode("ascii").rstrip("=")
+
+
+def _proxify_urls(html):
+    """Меняем прямые ссылки VK на /img?u=... (кроме og:image и JSON-LD)."""
+    stash = []
+
+    def keep(m):
+        stash.append(m.group(0))
+        return "\x00PROT%d\x00" % (len(stash) - 1)
+
+    html = re.sub(r'<script type="application/ld\+json">.*?</script>', keep, html, flags=re.S)
+    html = re.sub(r'<meta property="og:image"[^>]*>', keep, html)
+    html = _VK_RE.sub(lambda m: _img_proxy_url(m.group(0)), html)
+    if stash:
+        html = _PROT_RE.sub(lambda m: stash[int(m.group(1))], html)
+    return html
+
+
+# ============================================================
+#  СТРАНИЦА
+# ============================================================
+_page_cache = {"mtime": -1.0, "html": ""}
+_page_lock = threading.Lock()
+
+
+def _page_template():
+    p = os.path.join(ROOT, "page.html")
+    try:
+        mtime = os.path.getmtime(p)
+    except Exception as e:
+        print("[page] ОШИБКА: {}".format(e), flush=True)
+        return ("<!DOCTYPE html><html lang=\"ru\"><head><meta charset=\"UTF-8\"><title>Ошибка</title></head>"
+                "<body style=\"background:#0e0c09;color:#f5efe3;font-family:system-ui;padding:60px\">"
+                "<h1>page.html не найден</h1><p>{}</p></body></html>".format(_escape(str(e))))
+    with _page_lock:
+        if _page_cache["mtime"] == mtime and _page_cache["html"]:
+            return _page_cache["html"]
+        with open(p, "r", encoding="utf-8") as f:
+            html = f.read()
+        if "</head>" in html and "goldAnimations" not in html:
+            html = html.replace("</head>", ANIM_STYLE + "\n</head>", 1)
+        if "</body>" in html and "goldAnimationScript" not in html:
+            html = html.replace("</body>", ANIM_SCRIPT + "\n</body>", 1)
+        _page_cache["mtime"] = mtime
+        _page_cache["html"] = html
+        print("[page] page.html прочитан: {} байт".format(len(html)), flush=True)
+        return html
+
+
+def render_site():
+    data = load_data()
+    ctx = _normalize_context(data)
+    try:
+        html = render(_page_template(), ctx)
+    except Exception as e:
+        print("[render] ОШИБКА: {}".format(e), flush=True)
+        html = _page_template()
+    return _proxify_urls(html)
+
+
+def build_robots(data):
+    dom, host = _domain(data), _host(data)
+    seo = data.get("seo") or {}
+    custom = (seo.get("robots") or "").strip()
+    if custom:
+        return custom.replace("{{domain}}", dom).replace("{{host}}", host) + "\n"
+    return ("User-agent: *\n"
+            "Allow: /\n"
+            "Disallow: /admin\n"
+            "Disallow: /img?\n"
+            "Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&yclid&gclid\n\n"
+            "Host: {}\n"
+            "Sitemap: {}/sitemap.xml\n").format(host, dom)
+
+
+def build_sitemap(data):
+    dom = _domain(data)
+    today = date.today().isoformat()
+    seo = data.get("seo") or {}
+    urls = [{"loc": dom + "/", "changefreq": "weekly", "priority": "1.0"}]
+    for it in (seo.get("extra_urls") or []):
+        if not isinstance(it, dict):
+            continue
+        loc = (it.get("loc") or "").strip()
+        if not loc:
+            continue
+        if loc.startswith("/"):
+            loc = dom + loc
+        urls.append({"loc": loc, "changefreq": (it.get("changefreq") or "monthly").strip(),
+                     "priority": (it.get("priority") or "0.6").strip()})
+    parts = ['<?xml version="1.0" encoding="UTF-8"?>',
+             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for u in urls:
+        parts.append("  <url>\n    <loc>{}</loc>\n    <lastmod>{}</lastmod>\n"
+                     "    <changefreq>{}</changefreq>\n    <priority>{}</priority>\n  </url>".format(
+                         _escape(u["loc"]), today, _escape(u["changefreq"]), _escape(u["priority"])))
+    parts.append("</urlset>")
+    return "\n".join(parts) + "\n"
+
+
+def build_manifest(data):
+    brand = data.get("brand") or {}
+    design = data.get("design") or {}
+    return json.dumps({
+        "name": brand.get("name", "Кухни Островский"),
+        "short_name": brand.get("name", "Кухни Островский"),
+        "start_url": "/", "display": "standalone",
+        "background_color": design.get("bg", "#0e0c09"),
+        "theme_color": design.get("bg", "#0e0c09"),
+        "lang": "ru-RU",
+        "icons": [{"src": "/favicon-192x192.png", "sizes": "192x192", "type": "image/png"},
+                  {"src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png"}],
+    }, ensure_ascii=False)
+
+
+def build_404(data):
+    p = data.get("page404") or {}
+    title = p.get("title") or "Страница не найдена"
+    text = p.get("text") or "Возможно, страница переехала или удалена."
+    btn = p.get("button") or "На главную"
+    return ("<!DOCTYPE html><html lang=\"ru\"><head><meta charset=\"UTF-8\">"
+            "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
+            "<meta name=\"robots\" content=\"noindex\"><title>{t}</title>"
+            "<style>body{{margin:0;background:#0e0c09;color:#f5efe3;font-family:system-ui;"
+            "display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center}}"
+            "h1{{font-family:Georgia,serif;font-size:72px;margin:0 0 10px;color:#eccfa0}}"
+            "a{{display:inline-block;margin-top:22px;padding:14px 26px;border-radius:12px;"
+            "background:linear-gradient(135deg,#eccfa0,#d4af6a 55%,#a37c3f);color:#17120b;"
+            "font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:1px}}</style></head>"
+            "<body><div><h1>404</h1><p>{t}</p><p>{x}</p><a href=\"/\">{b}</a></div></body></html>").format(
+        t=_escape(title), x=_escape(text), b=_escape(btn))
+
+
+# ============================================================
+#  FAVICON
+# ============================================================
 _fc = {"data": None, "ts": 0.0}
-_ic = {"ico": None, "png16": None, "png32": None, "png180": None}
+_ic = {"ico": None, "png16": None, "png32": None, "png180": None, "png192": None}
+_fc_lock = threading.Lock()
 
 
 def _make_icons(data):
     try:
         from PIL import Image
-    except Exception: return
+    except Exception:
+        return
     try:
         img = Image.open(io.BytesIO(data)).convert("RGBA")
         buf = io.BytesIO()
         img.save(buf, format="ICO", sizes=[(16, 16), (32, 32), (48, 48), (64, 64)])
         _ic["ico"] = buf.getvalue()
-        def png(s):
-            c = img.copy(); c.thumbnail((s, s))
-            b = io.BytesIO(); c.save(b, format="PNG"); return b.getvalue()
-        _ic["png16"] = png(16); _ic["png32"] = png(32); _ic["png180"] = png(180)
-    except Exception: pass
+
+        def png(size):
+            c = img.copy()
+            c.thumbnail((size, size))
+            b = io.BytesIO()
+            c.save(b, format="PNG")
+            return b.getvalue()
+
+        _ic["png16"] = png(16)
+        _ic["png32"] = png(32)
+        _ic["png180"] = png(180)
+        _ic["png192"] = png(192)
+    except Exception as e:
+        print("[favicon] {}".format(e), flush=True)
 
 
 def get_favicon():
     now = time.time()
-    if _fc["data"] is None or now - _fc["ts"] > 3600:
-        try:
-            req = urllib.request.Request(FAVICON_URL, headers={"User-Agent": "Mozilla/5.0", "Referer": "https://vk.com/"})
-            with urllib.request.urlopen(req, timeout=10) as resp:
-                data = resp.read()
-                _fc["data"] = data; _fc["ts"] = now; _make_icons(data)
-        except Exception: return None
-    return _fc["data"]
+    with _fc_lock:
+        if _fc["data"] is not None and now - _fc["ts"] < 3600:
+            return _fc["data"]
+    data, _ct = _fetch_image(FAVICON_URL)
+    if data:
+        with _fc_lock:
+            _fc["data"] = data
+            _fc["ts"] = now
+        _make_icons(data)
+    return data
 
 
-# ============ АДМИНКА (краткая версия) ============
-ADMIN_LOGIN_HTML = """<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Вход</title><style>
+# ============================================================
+#  СХЕМА АДМИНКИ
+# ============================================================
+def _svg_icon(_unused=None):
+    return {"path": "icon", "label": "Иконка", "type": "textarea", "rows": 2, "mono": True,
+            "hint": "Только содержимое атрибута d у <path viewBox=\"0 0 24 24\">. "
+                    "Например: M3 9h18M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"}
+
+
+ADMIN_SCHEMA = [
+    {"id": "seo", "group": "SEO и код", "title": "SEO и мета", "hint": "Заголовок и описание страницы, Open Graph, robots, sitemap.",
+     "fields": [
+         {"path": "seo.title", "label": "Title", "type": "textarea", "rows": 2, "ai": "seo_title"},
+         {"path": "seo.description", "label": "Description", "type": "textarea", "rows": 3, "ai": "seo_description"},
+         {"path": "seo.keywords", "label": "Keywords", "type": "textarea", "rows": 2, "ai": "seo_keywords"},
+         {"path": "seo.domain", "label": "Домен сайта", "type": "text", "hint": "Используется в canonical, robots и sitemap. Можно писать кириллицей."},
+         {"path": "seo.canonical", "label": "Canonical URL", "type": "text"},
+         {"path": "seo.og_title", "label": "OG title", "type": "text"},
+         {"path": "seo.og_description", "label": "OG description", "type": "textarea", "rows": 2},
+         {"path": "seo.og_image", "label": "OG картинка (превью в соцсетях)", "type": "image"},
+         {"path": "seo.yandex_verification", "label": "Яндекс: мета-код подтверждения", "type": "text"},
+         {"path": "seo.google_verification", "label": "Google: мета-код подтверждения", "type": "text"},
+         {"path": "seo.metrika_id", "label": "Номер счётчика Яндекс.Метрики", "type": "text", "hint": "Если заполнить — счётчик вставится автоматически."},
+         {"path": "seo.robots", "label": "robots.txt (весь файл)", "type": "textarea", "rows": 6, "mono": True,
+          "hint": "Пусто = сгенерировать автоматически ({{domain}} подставится сам)."},
+     ],
+     "lists": [
+         {"path": "seo.extra_urls", "label": "Доп. страницы в sitemap", "titleField": "loc", "tpl": {"loc": "/", "changefreq": "monthly", "priority": "0.6"},
+          "item": [
+              {"path": "loc", "label": "URL (можно /ceny/ или полный)", "type": "text"},
+              {"path": "changefreq", "label": "changefreq", "type": "select", "options": ["daily", "weekly", "monthly", "yearly"]},
+              {"path": "priority", "label": "priority", "type": "text"},
+          ]},
+     ]},
+
+    {"id": "code", "group": "SEO и код", "title": "Коды и скрипты",
+     "hint": "Сюда вставляются коды счётчиков, пикселей, чатов. HTML вставляется как есть.",
+     "fields": [
+         {"path": "code.head", "label": "Код в <head> (Метрика, Google, пиксели)", "type": "textarea", "rows": 8, "mono": True},
+         {"path": "code.body", "label": "Код перед </body> (чаты, виджеты)", "type": "textarea", "rows": 8, "mono": True},
+     ]},
+
+    {"id": "design", "group": "SEO и код", "title": "Дизайн и цвета", "hint": "Цвета и шрифты всего сайта.",
+     "fields": [
+         {"path": "design.bg", "label": "Фон сайта", "type": "color"},
+         {"path": "design.gold", "label": "Золотой (основной акцент)", "type": "color"},
+         {"path": "design.gold_soft", "label": "Светлое золото (текст-акцент)", "type": "color"},
+         {"path": "design.gold_deep", "label": "Тёмное золото (градиент)", "type": "color"},
+         {"path": "design.text", "label": "Основной текст", "type": "color"},
+         {"path": "design.muted", "label": "Второстепенный текст", "type": "color"},
+         {"path": "design.fonts_url", "label": "Ссылка на шрифты Google", "type": "text", "mono": True},
+         {"path": "design.custom_css", "label": "Свой CSS", "type": "textarea", "rows": 8, "mono": True},
+     ]},
+
+    {"id": "brand", "group": "Контент", "title": "Бренд и меню", "fields": [
+        {"path": "brand.name", "label": "Название", "type": "text"},
+        {"path": "brand.sub", "label": "Подпись под названием", "type": "text"},
+        {"path": "brand.logo_url", "label": "Логотип / аватар", "type": "image"},
+        {"path": "brand.phone", "label": "Телефон (как показывать)", "type": "text"},
+        {"path": "brand.phone_raw", "label": "Телефон для ссылок tel:", "type": "text"},
+        {"path": "brand.telegram", "label": "Telegram (ссылка)", "type": "text"},
+        {"path": "brand.vk", "label": "VK (ссылка)", "type": "text"},
+        {"path": "brand.max", "label": "MAX (ссылка или tel:)", "type": "text"},
+        {"path": "nav.cta_label", "label": "Кнопка в меню (текст)", "type": "text", "hint": "Пусто = кнопки нет."},
+        {"path": "nav.cta_href", "label": "Кнопка в меню (ссылка)", "type": "text"},
+     ],
+     "lists": [
+         {"path": "nav.items", "label": "Пункты меню", "titleField": "label", "tpl": {"label": "Новый пункт", "href": "#top"},
+          "item": [{"path": "label", "label": "Текст", "type": "text"}, {"path": "href", "label": "Ссылка (#якорь)", "type": "text"}]},
+     ]},
+
+    {"id": "hero", "group": "Контент", "title": "Главный экран", "fields": [
+        {"path": "hero.eyebrow", "label": "Надзаголовок", "type": "text"},
+        {"path": "hero.title_before", "label": "Заголовок (начало)", "type": "text"},
+        {"path": "hero.title_em", "label": "Заголовок (золотые слова)", "type": "text"},
+        {"path": "hero.sub", "label": "Подзаголовок", "type": "textarea", "rows": 3, "ai": "hero_sub"},
+        {"path": "hero.btn1", "label": "Кнопка 1 — текст", "type": "text"},
+        {"path": "hero.btn1_href", "label": "Кнопка 1 — ссылка", "type": "text"},
+        {"path": "hero.btn2", "label": "Кнопка 2 — текст", "type": "text"},
+        {"path": "hero.btn2_href", "label": "Кнопка 2 — ссылка", "type": "text"},
+        {"path": "hero.bg", "label": "Фон", "type": "image"},
+     ]},
+
+    {"id": "stats", "group": "Контент", "title": "Цифры (счётчики)", "fields": [
+        {"path": "stats.bg", "label": "Фон", "type": "image"},
+     ],
+     "lists": [
+         {"path": "stats.items", "label": "Цифры", "titleField": "label", "tpl": {"prefix": "", "num": "10", "suffix": "+", "decimal": "", "label": "лет опыта"},
+          "item": [
+              {"path": "num", "label": "Число", "type": "text"},
+              {"path": "decimal", "label": "Знаков после запятой (0 или пусто)", "type": "text"},
+              {"path": "prefix", "label": "Префикс", "type": "text"},
+              {"path": "suffix", "label": "Суффикс (%, +, /10)", "type": "text"},
+              {"path": "label", "label": "Подпись", "type": "text"},
+          ]},
+     ]},
+
+    {"id": "about", "group": "Контент", "title": "О специалисте", "fields": [
+        {"path": "about.kicker", "label": "Надзаголовок", "type": "text"},
+        {"path": "about.title", "label": "Заголовок", "type": "text"},
+        {"path": "about.text", "label": "Текст справа", "type": "textarea", "rows": 4, "ai": "about_text"},
+        {"path": "about.photo", "label": "Фото", "type": "image"},
+        {"path": "about.name", "label": "Имя", "type": "text"},
+        {"path": "about.role", "label": "Должность", "type": "text"},
+        {"path": "about.card_text", "label": "Текст в карточке", "type": "textarea", "rows": 3, "ai": "improve"},
+        {"path": "about.bg", "label": "Фон", "type": "image"},
+     ],
+     "lists": [
+         {"path": "about.features", "label": "Плюсы (галочки)", "titleField": "", "tpl": "Новое преимущество",
+          "item": [{"path": "", "label": "", "type": "text", "placeholder": "Например: Гарантия качества"}]},
+     ]},
+
+    {"id": "consult", "group": "Контент", "title": "Блок консультации", "fields": [
+        {"path": "consult.kicker", "label": "Надзаголовок", "type": "text"},
+        {"path": "consult.title", "label": "Заголовок", "type": "text"},
+        {"path": "consult.phone", "label": "Телефон (как показывать)", "type": "text"},
+        {"path": "consult.phone_raw", "label": "Телефон для tel:", "type": "text"},
+        {"path": "consult.text", "label": "Текст", "type": "textarea", "rows": 3, "ai": "improve"},
+        {"path": "consult.bg", "label": "Фон", "type": "image"},
+     ]},
+
+    {"id": "works", "group": "Контент", "title": "Работы (фото)", "fields": [
+        {"path": "works.kicker", "label": "Надзаголовок", "type": "text"},
+        {"path": "works.title", "label": "Заголовок", "type": "text"},
+        {"path": "works.subtitle", "label": "Подзаголовок", "type": "textarea", "rows": 2},
+        {"path": "works.hint", "label": "Подпись «Листайте»", "type": "text"},
+        {"path": "works.bg", "label": "Фон", "type": "image"},
+     ],
+     "lists": [
+         {"path": "works.items", "label": "Фотографии работ", "titleField": "alt", "tpl": {"url": "", "alt": "Кухня на заказ"},
+          "item": [
+              {"path": "url", "label": "Картинка", "type": "image"},
+              {"path": "alt", "label": "Alt (для SEO)", "type": "text"},
+          ]},
+     ]},
+
+    {"id": "reviews", "group": "Контент", "title": "Отзывы", "fields": [
+        {"path": "reviews.kicker", "label": "Надзаголовок", "type": "text"},
+        {"path": "reviews.title", "label": "Заголовок", "type": "text"},
+        {"path": "reviews.subtitle", "label": "Подзаголовок", "type": "textarea", "rows": 2},
+        {"path": "reviews.hint", "label": "Подпись «Листайте»", "type": "text"},
+        {"path": "reviews.bg", "label": "Фон", "type": "image"},
+        {"path": "reviews.video_poster", "label": "Превью для видеоотзывов", "type": "image"},
+     ],
+     "lists": [
+         {"path": "reviews.items", "label": "Отзывы", "titleField": "name",
+          "tpl": {"name": "", "sub": "", "stars": 5, "avatar": "", "text": "", "video": "", "poster": ""},
+          "item": [
+              {"path": "name", "label": "Имя", "type": "text"},
+              {"path": "sub", "label": "Что заказывали", "type": "text"},
+              {"path": "stars", "label": "Звёзд (1-5)", "type": "text"},
+              {"path": "avatar", "label": "Аватар", "type": "image"},
+              {"path": "text", "label": "Текст отзыва", "type": "textarea", "rows": 4},
+              {"path": "video", "label": "Видео: ссылка для iframe (vk video_ext.php)", "type": "text"},
+              {"path": "poster", "label": "Превью видео", "type": "image"},
+          ]},
+     ]},
+
+    {"id": "services", "group": "Контент", "title": "Услуги", "fields": [
+        {"path": "services.kicker", "label": "Надзаголовок", "type": "text"},
+        {"path": "services.title", "label": "Заголовок", "type": "text"},
+        {"path": "services.subtitle", "label": "Подзаголовок", "type": "textarea", "rows": 2},
+        {"path": "services.bg", "label": "Фон", "type": "image"},
+     ],
+     "lists": [
+         {"path": "services.items", "label": "Услуги", "titleField": "title",
+          "tpl": {"title": "", "text": "", "icon": ""},
+          "item": [
+              {"path": "title", "label": "Название", "type": "text"},
+              {"path": "text", "label": "Описание", "type": "textarea", "rows": 2, "ai": "improve"},
+              _svg_icon(None),
+          ]},
+     ]},
+
+    {"id": "process", "group": "Контент", "title": "Этапы работы", "fields": [
+        {"path": "process.kicker", "label": "Надзаголовок", "type": "text"},
+        {"path": "process.title", "label": "Заголовок", "type": "text"},
+        {"path": "process.bg", "label": "Фон", "type": "image"},
+     ],
+     "lists": [
+         {"path": "process.items", "label": "Этапы", "titleField": "title",
+          "tpl": {"n": "07", "title": "", "text": ""},
+          "item": [
+              {"path": "n", "label": "Номер", "type": "text"},
+              {"path": "title", "label": "Заголовок", "type": "text"},
+              {"path": "text", "label": "Текст", "type": "textarea", "rows": 2},
+          ]},
+     ]},
+
+    {"id": "guarantees", "group": "Контент", "title": "Гарантии", "fields": [
+        {"path": "guarantees.kicker", "label": "Надзаголовок", "type": "text"},
+        {"path": "guarantees.title", "label": "Заголовок", "type": "text"},
+        {"path": "guarantees.bg", "label": "Фон", "type": "image"},
+     ],
+     "lists": [
+         {"path": "guarantees.items", "label": "Пункты", "titleField": "title",
+          "tpl": {"title": "", "text": "", "icon": ""},
+          "item": [
+              {"path": "title", "label": "Заголовок", "type": "text"},
+              {"path": "text", "label": "Текст", "type": "textarea", "rows": 2},
+              _svg_icon(None),
+          ]},
+     ]},
+
+    {"id": "cities", "group": "Контент", "title": "Города", "fields": [
+        {"path": "cities.kicker", "label": "Надзаголовок", "type": "text"},
+        {"path": "cities.title", "label": "Заголовок", "type": "text"},
+        {"path": "cities.subtitle", "label": "Подзаголовок", "type": "textarea", "rows": 2},
+        {"path": "cities.bg", "label": "Фон", "type": "image"},
+     ],
+     "lists": [
+         {"path": "cities.items", "label": "Города", "titleField": "name",
+          "tpl": {"name": "", "text": ""},
+          "item": [
+              {"path": "name", "label": "Город", "type": "text"},
+              {"path": "text", "label": "Текст", "type": "textarea", "rows": 2, "ai": "city_text"},
+          ]},
+     ]},
+
+    {"id": "cta", "group": "Контент", "title": "Призыв к действию", "fields": [
+        {"path": "cta.title", "label": "Заголовок", "type": "text"},
+        {"path": "cta.text", "label": "Текст", "type": "textarea", "rows": 3, "ai": "cta_text"},
+        {"path": "cta.button", "label": "Кнопка", "type": "text"},
+        {"path": "cta.phone_raw", "label": "Телефон для tel:", "type": "text"},
+        {"path": "cta.bg", "label": "Фон", "type": "image"},
+     ]},
+
+    {"id": "contacts", "group": "Контент", "title": "Контакты", "fields": [
+        {"path": "contacts.kicker", "label": "Надзаголовок", "type": "text"},
+        {"path": "contacts.title", "label": "Заголовок", "type": "text"},
+        {"path": "contacts.subtitle", "label": "Подзаголовок", "type": "textarea", "rows": 2},
+        {"path": "contacts.call_label", "label": "Подпись в карточке звонка", "type": "text"},
+        {"path": "contacts.call_number", "label": "Телефон в карточке", "type": "text"},
+        {"path": "contacts.call_hint", "label": "Текст под телефоном", "type": "textarea", "rows": 2},
+        {"path": "contacts.bg", "label": "Фон", "type": "image"},
+     ],
+     "lists": [
+         {"path": "contacts.lines", "label": "Строки контактов", "titleField": "label",
+          "tpl": {"label": "", "value": "", "href": "", "icon": ""},
+          "item": [
+              {"path": "label", "label": "Подпись", "type": "text"},
+              {"path": "value", "label": "Значение", "type": "text"},
+              {"path": "href", "label": "Ссылка (если нужна)", "type": "text"},
+              _svg_icon(None),
+          ]},
+         {"path": "contacts.buttons", "label": "Кнопки связи", "titleField": "label",
+          "tpl": {"label": "", "href": "", "cls": "c-call", "external": False, "icon": ""},
+          "item": [
+              {"path": "label", "label": "Текст", "type": "text"},
+              {"path": "href", "label": "Ссылка", "type": "text"},
+              {"path": "cls", "label": "Вид", "type": "select", "options": ["c-call", "c-tg", "c-max"]},
+              {"path": "external", "label": "Открывать в новой вкладке", "type": "check"},
+              _svg_icon(None),
+          ]},
+     ]},
+
+    {"id": "footer", "group": "Контент", "title": "Подвал", "fields": [
+        {"path": "footer.line", "label": "Строка описания", "type": "text"},
+        {"path": "footer.copyright", "label": "Копирайт", "type": "text"},
+     ],
+     "lists": [
+         {"path": "footer.socials", "label": "Кнопки соцсетей", "titleField": "label",
+          "tpl": {"label": "", "href": "", "icon": ""},
+          "item": [
+              {"path": "label", "label": "Подпись (title)", "type": "text"},
+              {"path": "href", "label": "Ссылка", "type": "text"},
+              _svg_icon(None),
+          ]},
+     ]},
+
+    {"id": "cookie", "group": "Контент", "title": "Cookie-баннер", "fields": [
+        {"path": "cookie.text", "label": "Текст", "type": "textarea", "rows": 2},
+        {"path": "cookie.button", "label": "Кнопка", "type": "text"},
+     ]},
+
+    {"id": "page404", "group": "Контент", "title": "Страница 404", "fields": [
+        {"path": "page404.title", "label": "Заголовок", "type": "text"},
+        {"path": "page404.text", "label": "Текст", "type": "textarea", "rows": 2},
+        {"path": "page404.button", "label": "Кнопка", "type": "text"},
+     ]},
+
+    {"id": "tools", "group": "Инструменты", "title": "Инструменты и связь",
+     "hint": "Проверка связей, бэкап контента, генерация SEO через AI.",
+     "fields": [
+         {"type": "buttons", "buttons": [
+             {"act": "status", "label": "Проверить связи", "cls": "btn-gold"},
+             {"act": "ai-seo", "label": "Сгенерировать SEO через AI", "cls": ""},
+             {"act": "export", "label": "Скачать бэкап (JSON)", "cls": ""},
+             {"act": "import", "label": "Загрузить бэкап", "cls": ""},
+             {"act": "open", "label": "Открыть сайт", "cls": ""},
+             {"act": "reload", "label": "Отменить изменения", "cls": "btn-red"},
+         ]},
+         {"type": "info", "text": "<div id=\"toolsOut\" class=\"info\">Нажмите «Проверить связи», чтобы увидеть состояние базы, хранилища и AI.</div>"},
+     ]},
+]
+
+_SCHEMA_JSON = json.dumps(ADMIN_SCHEMA, ensure_ascii=False)
+
+
+# ============================================================
+#  АДМИНКА (HTML)
+# ============================================================
+ADMIN_LOGIN_HTML = """<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Вход — Кухни Островский</title><style>
 *{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui;background:linear-gradient(135deg,#0e0c09,#1a1611);color:#f5efe3;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .card{background:rgba(255,255,255,.04);border:1px solid rgba(236,207,160,.2);border-radius:20px;padding:42px 38px;width:100%;max-width:420px}
 h1{font-family:Georgia,serif;font-size:28px;color:#fff;margin-bottom:8px;text-align:center}
 p.sub{color:#b9ad9a;font-size:13.5px;text-align:center;margin-bottom:28px}
 label{display:block;color:#eccfa0;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;font-weight:600}
 input{width:100%;padding:14px 16px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#fff;font-size:15px;margin-bottom:18px}
-button{width:100%;padding:15px;background:linear-gradient(135deg,#eccfa0,#d4af6a 55%,#a37c3f);color:#17120b;font-weight:700;border:none;border-radius:12px;cursor:pointer;text-transform:uppercase;letter-spacing:1px}
+input:focus{outline:none;border-color:#d4af6a}
+button{width:100%;padding:15px;background:linear-gradient(135deg,#eccfa0,#d4af6a 55%,#a37c3f);color:#17120b;font-weight:700;border:none;border-radius:12px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;font-family:inherit}
 .err{background:rgba(220,60,60,.14);border:1px solid rgba(220,60,60,.4);color:#ff9a9a;padding:12px;border-radius:10px;font-size:13px;margin-bottom:18px;text-align:center}
+.hint{margin-top:18px;color:#6f6659;font-size:11.5px;text-align:center;line-height:1.5}
 </style></head><body>
 <form class="card" method="POST" action="/admin/login">
-<h1>Кухни Островский</h1><p class="sub">Вход в панель</p>__ERROR__
-<label>Логин</label><input type="text" name="login" required autofocus>
-<label>Пароль</label><input type="password" name="password" required>
-<button>Войти</button></form></body></html>"""
+<h1>Кухни Островский</h1><p class="sub">Панель управления сайтом</p>__ERROR__
+<label>Логин</label><input type="text" name="login" required autofocus autocomplete="username">
+<label>Пароль</label><input type="password" name="password" required autocomplete="current-password">
+<button>Войти</button>
+<div class="hint">Логин и пароль задаются переменными ADMIN_LOGIN и ADMIN_PASSWORD на хостинге.</div>
+</form></body></html>"""
 
 
-ADMIN_HTML = r"""<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Админка</title><style>
-*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui;background:#0e0c09;color:#f5efe3;line-height:1.5}
-header{background:rgba(14,12,9,.95);border-bottom:1px solid rgba(236,207,160,.16);padding:14px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:10}
-.brand{font-family:Georgia,serif;font-size:20px;color:#eccfa0}.brand span{font-size:12px;margin-left:6px;opacity:.7}
+ADMIN_HTML = r"""<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Админка — Кухни Островский</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0e0c09;color:#f5efe3;line-height:1.5}
+header{background:rgba(14,12,9,.96);border-bottom:1px solid rgba(236,207,160,.16);padding:12px 18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:20;backdrop-filter:blur(10px)}
+.brand{font-family:Georgia,serif;font-size:19px;color:#eccfa0;display:flex;align-items:center;gap:10px}.brand span{font-size:11px;opacity:.65;font-family:system-ui;letter-spacing:1px;text-transform:uppercase}
 .actions{display:flex;gap:8px;flex-wrap:wrap}
-.btn{padding:9px 16px;border-radius:9px;border:1px solid rgba(236,207,160,.16);background:rgba(255,255,255,.04);color:#f5efe3;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;font-family:inherit}
-.btn:hover{border-color:#d4af6a}
+.btn{padding:9px 15px;border-radius:9px;border:1px solid rgba(236,207,160,.16);background:rgba(255,255,255,.04);color:#f5efe3;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;font-family:inherit;display:inline-flex;align-items:center;gap:6px;transition:.2s}
+.btn:hover{border-color:#d4af6a;background:rgba(212,175,106,.1)}
+.btn:disabled{opacity:.5;cursor:default}
 .btn-gold{background:linear-gradient(135deg,#eccfa0,#d4af6a 55%,#a37c3f);color:#17120b;border:none}
 .btn-red{background:rgba(220,60,60,.14);border-color:rgba(220,60,60,.35);color:#ff9a9a}
-.layout{display:flex;min-height:calc(100vh - 60px)}
-nav.side{width:220px;background:rgba(0,0,0,.28);border-right:1px solid rgba(236,207,160,.16);padding:12px 0;flex-shrink:0}
-nav.side a{display:block;padding:11px 20px;color:#b9ad9a;font-size:14px;cursor:pointer;border-left:3px solid transparent}
+.btn.pulse{box-shadow:0 0 0 0 rgba(236,207,160,.7);animation:pulse 1.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(236,207,160,.55)}70%{box-shadow:0 0 0 14px rgba(236,207,160,0)}100%{box-shadow:0 0 0 0 rgba(236,207,160,0)}}
+.layout{display:flex;min-height:calc(100vh - 58px)}
+nav.side{width:232px;background:rgba(0,0,0,.3);border-right:1px solid rgba(236,207,160,.16);padding:10px 0 40px;flex-shrink:0;overflow-y:auto;max-height:calc(100vh - 58px);position:sticky;top:58px}
+nav.side a{display:block;padding:10px 18px;color:#b9ad9a;font-size:13.5px;cursor:pointer;border-left:3px solid transparent}
 nav.side a:hover{color:#fff;background:rgba(255,255,255,.04)}
 nav.side a.active{color:#eccfa0;border-left-color:#d4af6a;background:rgba(212,175,106,.08)}
-main{flex:1;padding:24px 30px;max-width:1100px;overflow-x:hidden}
-h2{font-family:Georgia,serif;font-size:24px;color:#fff;margin-bottom:6px}
-p.hint{color:#b9ad9a;font-size:13px;margin-bottom:20px}
-.field{margin-bottom:14px}.field label{display:block;color:#eccfa0;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:6px;font-weight:600}
-.field input,.field textarea{width:100%;padding:10px 13px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:9px;color:#fff;font-size:14px;font-family:inherit}
-.field textarea{resize:vertical;min-height:70px}
-.field input:focus,.field textarea:focus{outline:none;border-color:#d4af6a}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.item{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;margin-bottom:12px}
-.item-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px;flex-wrap:wrap}
-.item-head strong{color:#eccfa0;font-size:13px}
+.nav-group{padding:14px 18px 6px;font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:#6f6659;font-weight:700}
+main{flex:1;padding:22px 26px 120px;max-width:1080px;min-width:0}
+h2{font-family:Georgia,serif;font-size:23px;color:#fff;margin-bottom:6px}
+p.hint{color:#b9ad9a;font-size:13px;margin-bottom:18px}
+.field{margin-bottom:14px}
+.field>label{display:flex;align-items:center;gap:8px;color:#eccfa0;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:6px;font-weight:700}
+.field input,.field textarea,.field select{width:100%;padding:10px 13px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:9px;color:#fff;font-size:14px;font-family:inherit}
+.field textarea{resize:vertical;min-height:60px;line-height:1.5}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:#d4af6a}
+.field .mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
+.fhint{color:#6f6659;font-size:11.5px;margin-top:5px}
+.img-row{display:flex;gap:6px;align-items:stretch}
+.img-row input{flex:1}
+.prev{margin-top:8px}.prev img{max-width:190px;border-radius:8px;display:block;border:1px solid rgba(255,255,255,.1)}
+.color-row{display:flex;gap:8px;align-items:center}.color-row input[type=color]{width:52px;height:40px;padding:2px;cursor:pointer}
+.chk{display:flex;align-items:center;gap:8px;font-size:14px;color:#d8cfbe}.chk input{width:18px;height:18px;accent-color:#d4af6a}
+.ai{padding:2px 8px;font-size:12px;border-radius:7px;background:rgba(212,175,106,.14);border-color:rgba(212,175,106,.4);color:#eccfa0}
 .mini{padding:5px 10px;font-size:12px;border-radius:7px}
-.img-preview{max-width:200px;border-radius:8px;margin-top:6px;display:block}
-.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,140%);background:linear-gradient(135deg,#eccfa0,#d4af6a);color:#17120b;padding:12px 24px;border-radius:11px;font-weight:700;font-size:14px;z-index:9999;transition:transform .4s}
-.toast.show{transform:translate(-50%,0)}.toast.err{background:linear-gradient(135deg,#ff8a8a,#e04a4a);color:#fff}
-.drop{display:block;border:2px dashed rgba(236,207,160,.16);border-radius:11px;padding:18px;text-align:center;color:#b9ad9a;font-size:13px;cursor:pointer;margin-top:6px}
-.drop:hover{border-color:#d4af6a}
-.status{font-size:12px;padding:5px 10px;border-radius:7px;display:inline-block}
+.item{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:15px;margin-bottom:12px}
+.item-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px;flex-wrap:wrap}
+.item-head strong{color:#eccfa0;font-size:13px;word-break:break-word}
+.item-tools{display:flex;gap:6px}
+.list-head{display:flex;justify-content:space-between;align-items:baseline;margin:22px 0 10px;border-top:1px solid rgba(236,207,160,.16);padding-top:14px}
+.list-head strong{color:#fff;font-family:Georgia,serif;font-size:17px}
+.list-head .muted{color:#6f6659;font-size:12px}
+.info{background:rgba(212,175,106,.07);border:1px solid rgba(212,175,106,.22);border-radius:11px;padding:14px 16px;font-size:13px;color:#e0d6c4;margin-bottom:14px;white-space:pre-wrap}
+.info b{color:#eccfa0}
+.status{font-size:11.5px;padding:4px 10px;border-radius:7px;display:inline-block;font-weight:600}
 .status.ok{background:rgba(80,200,120,.15);color:#7ee0a0;border:1px solid rgba(80,200,120,.4)}
 .status.bad{background:rgba(220,60,60,.15);color:#ff9a9a;border:1px solid rgba(220,60,60,.4)}
 .status.saving{background:rgba(212,175,106,.2);color:#eccfa0;border:1px solid rgba(212,175,106,.5)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,150%);background:linear-gradient(135deg,#eccfa0,#d4af6a);color:#17120b;padding:12px 22px;border-radius:11px;font-weight:700;font-size:13.5px;z-index:9999;transition:transform .35s;max-width:92vw;text-align:center}
+.toast.show{transform:translate(-50%,0)}.toast.err{background:linear-gradient(135deg,#ff8a8a,#e04a4a);color:#fff}
+.modal{position:fixed;inset:0;background:rgba(6,5,3,.86);display:none;align-items:center;justify-content:center;z-index:9000;padding:18px}
+.modal.open{display:flex}
+.modal-card{background:#15120d;border:1px solid rgba(236,207,160,.22);border-radius:16px;width:min(920px,100%);max-height:86vh;display:flex;flex-direction:column}
+.modal-head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid rgba(236,207,160,.16)}
+.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;padding:16px;overflow-y:auto}
+.media-grid button{padding:0;border:1px solid rgba(255,255,255,.12);border-radius:10px;overflow:hidden;background:#0b0907;cursor:pointer}
+.media-grid img{width:100%;height:110px;object-fit:cover;display:block}
+.media-grid .nm{font-size:10.5px;color:#b9ad9a;padding:5px;word-break:break-all}
+.jsonbox{width:100%;height:220px;font-family:ui-monospace,Consolas,monospace;font-size:12px;background:rgba(0,0,0,.4);color:#e0d6c4;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px}
+@media(max-width:820px){.layout{flex-direction:column}nav.side{width:100%;max-height:none;position:static;display:flex;overflow-x:auto;padding:8px;border-right:none;border-bottom:1px solid rgba(236,207,160,.16)}nav.side a{white-space:nowrap;border-left:none;border-bottom:2px solid transparent;padding:8px 12px}nav.side a.active{border-left:none;border-bottom-color:#d4af6a}.nav-group{display:none}main{padding:16px 14px 100px}}
 </style></head><body>
 <header>
-<div style="display:flex;gap:12px;align-items:center"><div class="brand">Кухни Островский<span>CMS</span></div><span class="status" id="status">Загрузка...</span></div>
-<div class="actions"><a class="btn" href="/" target="_blank">Сайт</a><button class="btn btn-gold" id="saveBtn">💾 Сохранить</button><a class="btn btn-red" href="/admin/logout">Выйти</a></div>
-</header>
-<div class="layout">
-<nav class="side">
-<a data-tab="seo">SEO</a><a data-tab="brand">Бренд</a><a data-tab="hero" class="active">Главный</a>
-<a data-tab="about">О специалисте</a><a data-tab="consult">Консультация</a>
-<a data-tab="works">Работы</a><a data-tab="reviews">Отзывы</a><a data-tab="services">Услуги</a>
-<a data-tab="process">Этапы</a><a data-tab="guarantees">Гарантии</a><a data-tab="cities">Города</a>
-<a data-tab="cta">CTA</a><a data-tab="contacts">Контакты</a><a data-tab="footer">Подвал</a>
-</nav>
-<main id="main"><p class="hint">Загрузка...</p></main>
+<div class="brand">Кухни Островский<span>CMS</span><span class="status" id="status">Загрузка…</span></div>
+<div class="actions">
+<a class="btn" href="/" target="_blank">Сайт</a>
+<button class="btn" id="reloadBtn" title="Отменить изменения">↻</button>
+<button class="btn btn-gold" id="saveBtn" title="Ctrl+S">💾 Сохранить</button>
+<a class="btn btn-red" href="/admin/logout">Выйти</a>
 </div>
+</header>
+<div class="layout"><nav class="side" id="side"></nav><main id="main"><p class="hint">Загрузка…</p></main></div>
 <div class="toast" id="toast"></div>
+<div class="modal" id="modal"><div class="modal-card"><div class="modal-head"><strong>Медиатека (Supabase Storage)</strong><button class="btn mini" id="mClose">✕ Закрыть</button></div><div class="media-grid" id="mediaGrid"></div></div></div>
+<input type="file" id="importFile" accept="application/json,.json" hidden>
+<input type="file" id="aiSeoFile" hidden>
 <script>
-var DATA=null,currentTab='hero';
+var SCHEMA=__SCHEMA__, DATA=null, TAB=(__SCHEMA__[0]||{}).id, dirty=false, mediaTarget=null;
+
+function q(s){return document.querySelector(s)}
+function qa(s){return Array.prototype.slice.call(document.querySelectorAll(s))}
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-function toast(m,e){var t=document.getElementById('toast');t.textContent=m;t.classList.toggle('err',!!e);t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2500)}
-function setStatus(text,cls){var el=document.getElementById('status');el.className='status '+(cls||'ok');el.textContent=text}
-function getPath(o,p){return p.split('.').reduce(function(a,k){return a==null?undefined:a[k]},o)}
-function setPath(o,p,v){var a=p.split('.');var c=o;for(var i=0;i<a.length-1;i++){var k=a[i],n=a[i+1];if(c[k]==null)c[k]=/^\d+$/.test(n)?[]:{};c=c[k]}c[a[a.length-1]]=v}
-function loadData(){fetch('/admin/api/data',{credentials:'same-origin'}).then(function(r){if(r.status===401){location.href='/admin/login';return null}return r.json()}).then(function(j){if(!j)return;DATA=j;setStatus('Готово','ok');render()}).catch(function(e){setStatus('Ошибка загрузки','bad');document.getElementById('main').innerHTML='<h2>Ошибка</h2><p class="hint">'+esc(e.message)+'</p>'})}
-function saveAll(){if(!DATA){toast('Нет данных',true);return}setStatus('Сохранение...','saving');fetch('/admin/api/save',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(DATA)}).then(function(r){return r.json()}).then(function(j){if(j&&j.ok===true){setStatus('✅ Сохранено','ok');toast('Сохранено в Supabase')}else{setStatus('❌ НЕ сохранилось','bad');toast('Ошибка записи!',true)}}).catch(function(e){setStatus('Ошибка','bad');toast('Ошибка: '+e.message,true)})}
-function field(l,p,o){o=o||{};var v=getPath(DATA,p);var i=o.rows?'<textarea data-path="'+p+'" rows="'+o.rows+'">'+esc(v)+'</textarea>':'<input type="text" data-path="'+p+'" value="'+esc(v)+'">';return '<div class="field"><label>'+l+'</label>'+i+'</div>'}
-function imgField(l,p){var v=getPath(DATA,p);return '<div class="field"><label>'+l+'</label><input type="text" data-path="'+p+'" value="'+esc(v)+'"><label class="drop" data-upload-path="'+p+'">загрузить файл<input type="file" accept="image/*" style="display:none"></label>'+(v?'<img class="img-preview" src="'+esc(v)+'">':'')+'</div>'}
-function render(){if(!DATA)return;var map={seo:rSeo,brand:rBrand,hero:rHero,about:rAbout,consult:rConsult,works:rWorks,reviews:rReviews,services:rServices,process:rProcess,guarantees:rGuarantees,cities:rCities,cta:rCta,contacts:rContacts,footer:rFooter};var fn=map[currentTab];document.getElementById('main').innerHTML=fn?fn():'<h2>?</h2>';bindInputs()}
-function bindInputs(){document.querySelectorAll('[data-path]').forEach(function(el){el.addEventListener('input',function(){setPath(DATA,el.dataset.path,el.value)})});document.querySelectorAll('[data-upload-path]').forEach(function(lbl){var fi=lbl.querySelector('input[type="file"]');if(!fi)return;fi.addEventListener('change',function(){uploadImage(fi,lbl.dataset.uploadPath)})})}
-function uploadImage(input,path){var f=input.files[0];if(!f)return;if(f.size>8*1024*1024){toast('Файл > 8 МБ',true);return}var fd=new FormData();fd.append('file',f);toast('Загрузка...');fetch('/admin/api/upload',{method:'POST',body:fd,credentials:'same-origin'}).then(function(r){return r.json()}).then(function(j){if(j.url){setPath(DATA,path,j.url);render();toast('Загружено')}else{toast('Ошибка',true)}})}
-function rSeo(){return '<h2>SEO</h2>'+field('Title','seo.title',{rows:2})+field('Description','seo.description',{rows:3})+field('Keywords','seo.keywords',{rows:3})+field('OG-картинка','seo.og_image')}
-function rBrand(){return '<h2>Бренд</h2>'+field('Название','brand.name')+field('Подзаголовок','brand.sub')+imgField('Логотип','brand.logo_url')+field('Телефон (визуал)','brand.phone')+field('Телефон (tel:)','brand.phone_raw')+field('Telegram','brand.telegram')+field('VK','brand.vk')}
-function rHero(){return '<h2>Главный экран</h2>'+field('Надзаголовок','hero.eyebrow')+field('Заголовок до','hero.title_before')+field('Заголовок выделенный','hero.title_em')+field('Подзаголовок','hero.sub',{rows:3})+field('Кнопка 1','hero.btn1')+field('Кнопка 2','hero.btn2')+imgField('Фон','hero.bg')}
-function rAbout(){return '<h2>О специалисте</h2>'+imgField('Фото','about.photo')+field('Имя','about.name')+field('Должность','about.role')+field('Описание','about.text',{rows:3})+field('Заголовок','about.title')+field('Текст','about.body',{rows:4})+imgField('Фон','about.bg')}
-function rConsult(){return '<h2>Консультация</h2>'+field('Надзаголовок','consult.kicker')+field('Заголовок','consult.title')+field('Текст','consult.text',{rows:4})+imgField('Фон','consult.bg')}
-function rWorks(){var a=(DATA.works&&DATA.works.items)||[];var h='<h2>Работы</h2>'+field('Надзаголовок','works.kicker')+field('Заголовок','works.title')+field('Подзаголовок','works.subtitle')+imgField('Фон','works.bg')+'<div class="item-head"><strong>Фото ('+a.length+')</strong></div>';a.forEach(function(it,i){h+='<div class="item"><div class="item-head"><strong>#'+(i+1)+'</strong><div><button class="btn mini" data-action="mv" data-list="works.items" data-i="'+i+'" data-d="-1">↑</button> <button class="btn mini" data-action="mv" data-list="works.items" data-i="'+i+'" data-d="1">↓</button> <button class="btn btn-red mini" data-action="del" data-list="works.items" data-i="'+i+'">Удалить</button></div></div>'+imgField('Картинка','works.items.'+i+'.url')+field('Alt','works.items.'+i+'.alt')+'</div>'});h+='<button class="btn" data-action="add" data-list="works.items" data-tpl=\'{"url":"","alt":""}\'>+ Добавить</button>';return h}
-function rReviews(){var a=(DATA.reviews&&DATA.reviews.items)||[];var h='<h2>Отзывы</h2>'+field('Надзаголовок','reviews.kicker')+field('Заголовок','reviews.title')+field('Подзаголовок','reviews.subtitle')+imgField('Фон','reviews.bg')+'<div class="item-head"><strong>Отзывы ('+a.length+')</strong></div>';a.forEach(function(it,i){h+='<div class="item"><div class="item-head"><strong>'+esc(it.name||'#'+(i+1))+'</strong><div><button class="btn mini" data-action="mv" data-list="reviews.items" data-i="'+i+'" data-d="-1">↑</button> <button class="btn mini" data-action="mv" data-list="reviews.items" data-i="'+i+'" data-d="1">↓</button> <button class="btn btn-red mini" data-action="del" data-list="reviews.items" data-i="'+i+'">Удалить</button></div></div><div class="row">'+field('Имя','reviews.items.'+i+'.name')+field('Подпись','reviews.items.'+i+'.sub')+'</div>'+field('Звёзд','reviews.items.'+i+'.stars')+imgField('Аватар','reviews.items.'+i+'.avatar')+field('Текст','reviews.items.'+i+'.text',{rows:5})+field('Видео URL','reviews.items.'+i+'.video')+'</div>'});h+='<button class="btn" data-action="add" data-list="reviews.items" data-tpl=\'{"name":"","sub":"","stars":5,"avatar":"","text":"","video":""}\'>+ Добавить</button>';return h}
-function rServices(){var a=(DATA.services&&DATA.services.items)||[];var h='<h2>Услуги</h2>'+field('Надзаголовок','services.kicker')+field('Заголовок','services.title')+field('Подзаголовок','services.subtitle')+imgField('Фон','services.bg');a.forEach(function(it,i){h+='<div class="item"><div class="item-head"><strong>'+esc(it.title||'#'+(i+1))+'</strong><button class="btn btn-red mini" data-action="del" data-list="services.items" data-i="'+i+'">Удалить</button></div>'+field('Название','services.items.'+i+'.title')+field('Описание','services.items.'+i+'.text',{rows:2})+field('SVG','services.items.'+i+'.icon')+'</div>'});h+='<button class="btn" data-action="add" data-list="services.items" data-tpl=\'{"title":"","text":"","icon":""}\'>+ Добавить</button>';return h}
-function rProcess(){var a=(DATA.process&&DATA.process.items)||[];var h='<h2>Этапы</h2>'+field('Надзаголовок','process.kicker')+field('Заголовок','process.title')+imgField('Фон','process.bg');a.forEach(function(it,i){h+='<div class="item"><div class="item-head"><strong>'+esc((it.n||'')+' '+(it.title||''))+'</strong><button class="btn btn-red mini" data-action="del" data-list="process.items" data-i="'+i+'">Удалить</button></div><div class="row">'+field('Номер','process.items.'+i+'.n')+field('Заголовок','process.items.'+i+'.title')+'</div>'+field('Текст','process.items.'+i+'.text',{rows:2})+'</div>'});h+='<button class="btn" data-action="add" data-list="process.items" data-tpl=\'{"n":"","title":"","text":""}\'>+ Добавить</button>';return h}
-function rGuarantees(){var a=(DATA.guarantees&&DATA.guarantees.items)||[];var h='<h2>Гарантии</h2>'+field('Надзаголовок','guarantees.kicker')+field('Заголовок','guarantees.title')+imgField('Фон','guarantees.bg');a.forEach(function(it,i){h+='<div class="item"><div class="item-head"><strong>'+esc(it.title||'#'+(i+1))+'</strong><button class="btn btn-red mini" data-action="del" data-list="guarantees.items" data-i="'+i+'">Удалить</button></div>'+field('Заголовок','guarantees.items.'+i+'.title')+field('Текст','guarantees.items.'+i+'.text',{rows:2})+field('SVG','guarantees.items.'+i+'.icon')+'</div>'});h+='<button class="btn" data-action="add" data-list="guarantees.items" data-tpl=\'{"title":"","text":"","icon":""}\'>+ Добавить</button>';return h}
-function rCities(){var a=(DATA.cities&&DATA.cities.items)||[];var h='<h2>Города</h2>'+field('Надзаголовок','cities.kicker')+field('Заголовок','cities.title')+field('Подзаголовок','cities.subtitle')+imgField('Фон','cities.bg');a.forEach(function(it,i){h+='<div class="item"><div class="item-head"><strong>'+esc(it.name||'#'+(i+1))+'</strong><button class="btn btn-red mini" data-action="del" data-list="cities.items" data-i="'+i+'">Удалить</button></div>'+field('Название','cities.items.'+i+'.name')+field('Описание','cities.items.'+i+'.text',{rows:2})+'</div>'});h+='<button class="btn" data-action="add" data-list="cities.items" data-tpl=\'{"name":"","text":""}\'>+ Добавить</button>';return h}
-function rCta(){return '<h2>CTA</h2>'+field('Заголовок','cta.title')+field('Текст','cta.text',{rows:3})+field('Кнопка','cta.button')+imgField('Фон','cta.bg')}
-function rContacts(){return '<h2>Контакты</h2>'+field('Надзаголовок','contacts.kicker')+field('Заголовок','contacts.title')+field('Подзаголовок','contacts.subtitle',{rows:2})+field('Регионы','contacts.regions')+imgField('Фон','contacts.bg')}
-function rFooter(){return '<h2>Подвал</h2>'+field('Строка','footer.line')+field('Копирайт','footer.copyright')}
-document.addEventListener('click',function(e){
-  var t=e.target;
-  var tab=t.closest('nav.side a[data-tab]');
-  if(tab){document.querySelectorAll('nav.side a').forEach(function(y){y.classList.remove('active')});tab.classList.add('active');currentTab=tab.dataset.tab;render();return}
-  if(t.closest('#saveBtn')){e.preventDefault();saveAll();return}
-  var b=t.closest('[data-action]');
-  if(b){
-    var a=b.dataset.action,list=b.dataset.list,i=parseInt(b.dataset.i||'0',10),d=parseInt(b.dataset.d||'0',10),tpl=b.dataset.tpl;
-    if(a==='add'){var arr=getPath(DATA,list)||[];arr.push(JSON.parse(tpl));setPath(DATA,list,arr);render();toast('Добавлено')}
-    else if(a==='del'){if(!confirm('Удалить?'))return;var arr=getPath(DATA,list);arr.splice(i,1);setPath(DATA,list,arr);render()}
-    else if(a==='mv'){var arr=getPath(DATA,list);var j=i+d;if(j<0||j>=arr.length)return;var x=arr[i];arr[i]=arr[j];arr[j]=x;render()}
+function getPath(o,p){if(!p)return o;return p.split('.').reduce(function(a,k){if(a==null)return undefined;if(Array.isArray(a))return a[parseInt(k,10)];return a[k]},o)}
+function setPath(o,p,v){var a=p.split('.'),c=o;for(var i=0;i<a.length-1;i++){var k=a[i],n=a[i+1];if(c[k]==null)c[k]=/^\d+$/.test(n)?[]:{};c=c[k]}c[a[a.length-1]]=v}
+function toast(m,bad){var t=q('#toast');t.textContent=m;t.classList.toggle('err',!!bad);t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show')},3000)}
+function setStatus(txt,cls){var el=q('#status');el.className='status '+(cls||'ok');el.textContent=txt}
+function setDirty(v){dirty=v;document.title=(v?'● ':'')+'Админка — Кухни Островский';q('#saveBtn').classList.toggle('pulse',v)}
+function api(url,opts){return fetch(url,Object.assign({credentials:'same-origin'},opts||{})).then(function(r){if(r.status===401){location.href='/admin/login';throw new Error('Нужно войти')}return r.json()})}
+function normColor(v){v=String(v||'').trim();return /^#[0-9a-f]{6}$/i.test(v)?v:'#000000'}
+
+/* ---------- рендер ---------- */
+function render(){
+  var groups={},order=[];
+  SCHEMA.forEach(function(t){if(!groups[t.group]){groups[t.group]=[];order.push(t.group)}groups[t.group].push(t)});
+  var nav='';
+  order.forEach(function(g){
+    nav+='<div class="nav-group">'+esc(g)+'</div>';
+    groups[g].forEach(function(t){nav+='<a data-tab="'+t.id+'"'+(t.id===TAB?' class="active"':'')+'>'+esc(t.title)+'</a>'});
+  });
+  q('#side').innerHTML=nav;
+  var tab=SCHEMA.filter(function(t){return t.id===TAB})[0]||SCHEMA[0];
+  var h='<h2>'+esc(tab.title)+'</h2>'+(tab.hint?'<p class="hint">'+tab.hint+'</p>':'');
+  (tab.fields||[]).forEach(function(f){h+=fieldHTML(f,'')});
+  (tab.lists||[]).forEach(function(l){h+=listHTML(l)});
+  q('#main').innerHTML=h;
+  bind();
+  window.scrollTo(0,0);
+}
+
+function aiBtn(p,task){return '<button class="btn mini ai" data-ai="'+task+'" data-ai-path="'+p+'" title="Сгенерировать через AI">✨</button>'}
+
+function fieldHTML(f,base){
+  var p=f.path?(base?base+'.'+f.path:f.path):base;
+  if(f.type==='info')return '<div class="info">'+(f.text||'')+'</div>';
+  if(f.type==='buttons'){
+    var b='<div class="actions" style="margin-bottom:14px">';
+    (f.buttons||[]).forEach(function(x){b+='<button class="btn '+(x.cls||'')+'" data-act="'+x.act+'">'+esc(x.label)+'</button>'});
+    return b+'</div>';
   }
+  var v=getPath(DATA,p),inp;
+  if(f.type==='image'){
+    return '<div class="field"><label>'+esc(f.label)+'</label><div class="img-row">'
+      +'<input type="text" data-path="'+p+'" value="'+esc(v)+'" placeholder="https://… или загрузите файл">'
+      +'<label class="btn mini" title="Загрузить файл">📁<input type="file" accept="image/*" data-upload="'+p+'" hidden></label>'
+      +'<button class="btn mini" data-media="'+p+'" title="Выбрать из медиатеки">🗂</button></div>'
+      +'<div class="prev" data-prev="'+p+'">'+(v?'<img src="'+esc(v)+'" loading="lazy">':'')+'</div>'
+      +(f.hint?'<div class="fhint">'+f.hint+'</div>':'')+'</div>';
+  }
+  if(f.type==='textarea')inp='<textarea data-path="'+p+'" rows="'+(f.rows||3)+'"'+(f.mono?' class="mono"':'')+' placeholder="'+esc(f.placeholder||'')+'">'+esc(v)+'</textarea>';
+  else if(f.type==='check')inp='<label class="chk"><input type="checkbox" data-path="'+p+'"'+(v?' checked':'')+'> '+(f.chkLabel||'включено')+'</label>';
+  else if(f.type==='select')inp='<select data-path="'+p+'">'+(f.options||[]).map(function(o){return '<option value="'+esc(o)+'"'+(String(v)===o?' selected':'')+'>'+esc(o)+'</option>'}).join('')+'</select>';
+  else if(f.type==='color')inp='<div class="color-row"><input type="color" data-path="'+p+'" value="'+esc(normColor(v))+'"><input type="text" data-path="'+p+'" value="'+esc(v)+'"></div>';
+  else inp='<input type="text" data-path="'+p+'" value="'+esc(v)+'" placeholder="'+esc(f.placeholder||'')+'">';
+  return '<div class="field">'+(f.label?'<label>'+esc(f.label)+(f.ai?aiBtn(p,f.ai):'')+'</label>':'')+inp+(f.hint?'<div class="fhint">'+f.hint+'</div>':'')+'</div>';
+}
+
+function listHTML(l){
+  var arr=getPath(DATA,l.path); if(!Array.isArray(arr))arr=[];
+  var h='<div class="list-head"><strong>'+esc(l.label)+' ('+arr.length+')</strong><span class="muted">↑↓ — порядок</span></div>';
+  arr.forEach(function(item,i){
+    var t=l.titleField?String(getPath(item,l.titleField)||''):'';
+    h+='<div class="item"><div class="item-head"><strong>#'+(i+1)+(t?' · '+esc(t):'')+'</strong><div class="item-tools">'
+      +'<button class="btn mini" data-mv="'+l.path+'" data-i="'+i+'" data-d="-1">↑</button>'
+      +'<button class="btn mini" data-mv="'+l.path+'" data-i="'+i+'" data-d="1">↓</button>'
+      +'<button class="btn btn-red mini" data-del="'+l.path+'" data-i="'+i+'">Удалить</button></div></div>';
+    (l.item||[]).forEach(function(f){h+=fieldHTML(f,l.path+'.'+i)});
+    h+='</div>';
+  });
+  var tpl=typeof l.tpl==='string'?l.tpl:JSON.stringify(l.tpl||{});
+  h+='<button class="btn" data-add="'+l.path+'" data-tpl="'+esc(tpl)+'">+ Добавить</button>';
+  return h;
+}
+
+/* ---------- события ---------- */
+function bind(){
+  qa('[data-path]').forEach(function(el){
+    var handler=function(){
+      var p=el.dataset.path;
+      var val=(el.type==='checkbox')?!!el.checked:el.value;
+      setPath(DATA,p,val); setDirty(true);
+      qa('[data-path="'+p+'"]').forEach(function(o){if(o!==el){if(o.type==='checkbox')o.checked=!!val;else o.value=val}});
+      var pv=q('[data-prev="'+p+'"]'); if(pv)pv.innerHTML=val?'<img src="'+esc(val)+'" loading="lazy">':'';
+    };
+    el.addEventListener(el.tagName==='SELECT'||el.type==='checkbox'?'change':'input',handler);
+  });
+  qa('[data-upload]').forEach(function(inp){inp.addEventListener('change',function(){upload(inp)})});
+  qa('[data-media]').forEach(function(b){b.addEventListener('click',function(){openMedia(b.dataset.media)})});
+  qa('[data-ai]').forEach(function(b){b.addEventListener('click',function(){runAI(b)})});
+  qa('[data-del]').forEach(function(b){b.addEventListener('click',function(){delItem(b.dataset.del,+b.dataset.i)})});
+  qa('[data-mv]').forEach(function(b){b.addEventListener('click',function(){moveItem(b.dataset.mv,+b.dataset.i,+b.dataset.d)})});
+  qa('[data-add]').forEach(function(b){b.addEventListener('click',function(){addItem(b.dataset.add,b.dataset.tpl)})});
+  qa('[data-act]').forEach(function(b){b.addEventListener('click',function(){doAction(b.dataset.act)})});
+}
+
+function addItem(path,tpl){
+  var arr=getPath(DATA,path); if(!Array.isArray(arr)){arr=[];setPath(DATA,path,arr)}
+  var item; try{item=JSON.parse(tpl)}catch(e){item=tpl}
+  arr.push(item); setDirty(true); render();
+}
+function delItem(path,i){
+  if(!confirm('Удалить этот элемент?'))return;
+  var arr=getPath(DATA,path); arr.splice(i,1); setDirty(true); render();
+}
+function moveItem(path,i,d){
+  var arr=getPath(DATA,path),j=i+d;
+  if(j<0||j>=arr.length)return;
+  var x=arr[i];arr[i]=arr[j];arr[j]=x;
+  setDirty(true); render();
+}
+function refreshField(p,val){
+  qa('[data-path="'+p+'"]').forEach(function(o){o.value=val});
+  var pv=q('[data-prev="'+p+'"]'); if(pv)pv.innerHTML=val?'<img src="'+esc(val)+'" loading="lazy">':'';
+}
+
+function upload(inp){
+  var p=inp.dataset.upload,f=inp.files[0];
+  if(!f)return;
+  if(f.size>8*1024*1024){toast('Файл больше 8 МБ',true);return}
+  var fd=new FormData(); fd.append('file',f);
+  toast('Загружаю…');
+  fetch('/admin/api/upload',{method:'POST',body:fd,credentials:'same-origin'})
+    .then(function(r){return r.json()})
+    .then(function(j){
+      if(j&&j.url){setPath(DATA,p,j.url);setDirty(true);refreshField(p,j.url);toast(j.storage?'Загружено в Supabase Storage':'Загружено (data-URL)')}
+      else toast('Не загрузилось: '+((j&&j.error)||'ошибка'),true);
+    }).catch(function(e){toast('Ошибка: '+e.message,true)});
+  inp.value='';
+}
+
+function runAI(b){
+  var p=b.dataset.aiPath,task=b.dataset.ai,cur=String(getPath(DATA,p)||'');
+  b.disabled=true; var old=b.textContent; b.textContent='⏳';
+  api('/admin/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({task:task,path:p,value:cur})})
+    .then(function(j){
+      if(j&&j.text){setPath(DATA,p,j.text);setDirty(true);refreshField(p,j.text);toast('AI ('+j.provider+'): готово')}
+      else toast('AI: '+((j&&j.error)||'пустой ответ'),true);
+    })
+    .catch(function(e){toast('AI ошибка: '+e.message,true)})
+    .then(function(){b.disabled=false;b.textContent=old});
+}
+
+function openMedia(p){
+  mediaTarget=p;
+  q('#mediaGrid').innerHTML='<p class="hint" style="padding:16px">Загружаю список…</p>';
+  q('#modal').classList.add('open');
+  api('/admin/api/media').then(function(j){
+    if(!j||!j.items||!j.items.length){q('#mediaGrid').innerHTML='<p class="hint" style="padding:16px">В хранилище пока нет файлов. Загрузите первый через кнопку 📁.</p>';return}
+    q('#mediaGrid').innerHTML=j.items.map(function(it){
+      return '<button data-pick="'+esc(it.url)+'"><img src="'+esc(it.url)+'" loading="lazy"><div class="nm">'+esc(it.name)+'</div></button>';
+    }).join('');
+    qa('[data-pick]').forEach(function(b){b.addEventListener('click',function(){
+      setPath(DATA,mediaTarget,b.dataset.pick);setDirty(true);refreshField(mediaTarget,b.dataset.pick);
+      q('#modal').classList.remove('open');toast('Картинка выбрана');
+    })});
+  }).catch(function(e){q('#mediaGrid').innerHTML='<p class="hint" style="padding:16px">Ошибка: '+esc(e.message)+'</p>'});
+}
+
+/* ---------- инструменты ---------- */
+function doAction(act){
+  if(act==='open'){window.open('/','_blank');return}
+  if(act==='reload'){if(!confirm('Отменить несохранённые изменения?'))return;load();return}
+  if(act==='export'){location.href='/admin/api/export';return}
+  if(act==='import'){q('#importFile').click();return}
+  if(act==='status'){showStatus();return}
+  if(act==='ai-seo'){aiSeo();return}
+}
+
+function out(html){var el=q('#toolsOut'); if(el)el.innerHTML=html; else toast('Откройте вкладку «Инструменты»')}
+
+function showStatus(){
+  out('Проверяю…');
+  api('/admin/api/status').then(function(j){
+    function row(ok,txt){return '<div>'+(ok?'✅':'❌')+' '+txt+'</div>'}
+    var size=Math.round((j.size||0)/1024);
+    var html='<b>Состояние</b>\n'
+      +row(j.db_read,'Чтение Supabase: '+(j.db_read?'OK':'ошибка'))
+      +row(j.db_write!==false,'Запись Supabase: '+(j.db_write===false?'была ошибка':'OK'))
+      +row(j.storage,'Хранилище картинок: '+(j.storage?('бакет '+j.bucket):'недоступно (картинки будут data-URL)'))
+      +row(j.ai.yandex||j.ai.gigachat,'AI: '+(j.ai.yandex?'YandexGPT готов':'YandexGPT нет ключа')+', '+(j.ai.gigachat?'GigaChat готов':'GigaChat нет ключа'))
+      +'\n<b>Контент</b>\n'
+      +'<div>Размер данных: '+size+' КБ · работ: '+(j.counts.works||0)+' · отзывов: '+(j.counts.reviews||0)+' · услуг: '+(j.counts.services||0)+'</div>'
+      +'<div>Домен: '+esc(j.domain)+' · страниц в sitemap: '+j.sitemap_urls+'</div>';
+    if(j.ai_error)html+='\n<div>AI: '+esc(j.ai_error)+'</div>';
+    out(html);
+  }).catch(function(e){out('Ошибка проверки: '+esc(e.message))});
+}
+
+function aiSeo(){
+  var tasks=[['seo.title','seo_title'],['seo.description','seo_description'],['seo.keywords','seo_keywords']];
+  out('Генерирую SEO… (может занять 10-30 секунд)');
+  var i=0,done=[];
+  (function next(){
+    if(i>=tasks.length){out('<b>SEO обновлён</b>\n'+done.join('\n')+'\n\nНе забудьте нажать «Сохранить».');return}
+    var p=tasks[i][0],t=tasks[i][1];
+    api('/admin/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({task:t,path:p,value:String(getPath(DATA,p)||'')})})
+      .then(function(j){
+        if(j&&j.text){setPath(DATA,p,j.text);setDirty(true);done.push('• '+p+': '+esc(j.text.slice(0,90)))}
+        else done.push('• '+p+': ошибка '+esc((j&&j.error)||''));
+      }).catch(function(e){done.push('• '+p+': '+esc(e.message))})
+      .then(function(){i++;next()});
+  })();
+}
+
+/* ---------- сохранение ---------- */
+function save(){
+  if(!DATA){toast('Данные ещё не загрузились',true);return}
+  setStatus('Сохранение…','saving');
+  fetch('/admin/api/save',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(DATA)})
+    .then(function(r){return r.json()})
+    .then(function(j){
+      if(j&&j.ok){setStatus('✅ Сохранено','ok');setDirty(false);toast('Сохранено в Supabase')}
+      else{setStatus('❌ Не сохранилось','bad');toast('Ошибка записи! Проверьте SUPABASE_SERVICE_KEY',true)}
+    }).catch(function(e){setStatus('Ошибка','bad');toast('Ошибка: '+e.message,true)});
+}
+
+function load(){
+  api('/admin/api/data').then(function(j){
+    if(!j||typeof j!=='object'){throw new Error('пустой ответ')}
+    DATA=j;setDirty(false);render();setStatus('Готово','ok');
+  }).catch(function(e){
+    setStatus('Ошибка загрузки','bad');
+    q('#main').innerHTML='<h2>Не удалось загрузить данные</h2><p class="hint">'+esc(e.message)+'</p><p class="hint">Проверьте SUPABASE_URL и SUPABASE_SERVICE_KEY на хостинге, затем обновите страницу.</p>';
+  });
+}
+
+document.addEventListener('click',function(e){
+  var tab=e.target.closest('nav.side a[data-tab]');
+  if(tab){TAB=tab.dataset.tab;render();return}
+  if(e.target.closest('#saveBtn')){save();return}
+  if(e.target.closest('#reloadBtn')){doAction('reload');return}
+  if(e.target.closest('#mClose')||e.target.id==='modal'){q('#modal').classList.remove('open');return}
 });
-loadData();
+q('#importFile').addEventListener('change',function(){
+  var f=this.files[0]; if(!f)return;
+  var r=new FileReader();
+  r.onload=function(){
+    try{
+      var obj=JSON.parse(r.result);
+      if(!obj||typeof obj!=='object')throw new Error('это не объект');
+      DATA=obj;setDirty(true);render();toast('Бэкап загружен — нажмите «Сохранить»');
+    }catch(err){toast('Не разобрал JSON: '+err.message,true)}
+  };
+  r.readAsText(f,'utf-8');
+  this.value='';
+});
+document.addEventListener('keydown',function(e){
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();save()}
+  if(e.key==='Escape')q('#modal').classList.remove('open');
+});
+window.addEventListener('beforeunload',function(e){if(dirty){e.preventDefault();e.returnValue=''}});
+load();
 </script></body></html>"""
 
+ADMIN_HTML = ADMIN_HTML.replace("__SCHEMA__", _SCHEMA_JSON)
 
-# ============ HTTP ============
+STATIC_EXT = {".html", ".htm", ".txt", ".xml", ".svg", ".png", ".jpg", ".jpeg", ".webp", ".gif", ".ico",
+              ".css", ".js", ".json", ".webmanifest", ".woff", ".woff2", ".pdf", ".mp4"}
+STATIC_BLOCK = {"page.html", "mebel.py", "requirements.txt", "Dockerfile", "robots.txt", "sitemap.xml"}
+MIME = {".html": "text/html; charset=utf-8", ".htm": "text/html; charset=utf-8", ".txt": "text/plain; charset=utf-8",
+        ".xml": "application/xml; charset=utf-8", ".svg": "image/svg+xml", ".png": "image/png",
+        ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".webp": "image/webp", ".gif": "image/gif",
+        ".ico": "image/x-icon", ".css": "text/css; charset=utf-8", ".js": "application/javascript; charset=utf-8",
+        ".json": "application/json; charset=utf-8", ".webmanifest": "application/manifest+json; charset=utf-8",
+        ".woff": "font/woff", ".woff2": "font/woff2", ".pdf": "application/pdf", ".mp4": "video/mp4"}
+
+
+# ============================================================
+#  HTTP
+# ============================================================
 def _parse_multipart(body, boundary):
+    """Возвращает (имя_файла, данные) первого файла из multipart/form-data."""
+    if not body or not boundary:
+        return None, None
     parts = body.split(b"--" + boundary)
     for p in parts:
-        if b"Content-Disposition" not in p: continue
+        if b"Content-Disposition" not in p:
+            continue
         head, _, data = p.partition(b"\r\n\r\n")
-        if not data: continue
-        data = data.rstrip(b"\r\n--")
-        if b'name="file"' in head:
-            return data
-    return None
+        if not data:
+            continue
+        data = data.rstrip(b"\r\n")
+        if data.endswith(b"--"):
+            data = data[:-2].rstrip(b"\r\n")
+        name = ""
+        m = re.search(rb'filename="([^"]*)"', head)
+        if m:
+            name = m.group(1).decode("utf-8", "ignore")
+        return name, data
+    return None, None
 
 
 class Handler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
+    server_version = "OstrovskyCMS/2.0"
+    _head_only = False
 
+    # ---------- служебное ----------
     def _tok(self):
         raw = self.headers.get("Cookie", "")
-        if not raw: return None
+        if not raw:
+            return None
         try:
-            c = SimpleCookie(); c.load(raw)
+            c = SimpleCookie()
+            c.load(raw)
             m = c.get("admin_session")
             return m.value if m else None
-        except Exception: return None
+        except Exception:
+            return None
 
     def _admin(self):
         return _check_session(self._tok())
+
+    def _ip(self):
+        fwd = self.headers.get("X-Forwarded-For", "")
+        return (fwd.split(",")[0].strip() if fwd else self.client_address[0])
+
+    def _is_https(self):
+        return (self.headers.get("X-Forwarded-Proto", "").lower() == "https")
 
     def _send(self, code, body, ctype="text/plain; charset=utf-8", cache="no-cache", gzip_ok=True):
         data = body.encode("utf-8") if isinstance(body, str) else body
         etag = '"' + hashlib.sha256(data).hexdigest()[:20] + '"'
         if code == 200 and self.headers.get("If-None-Match") == etag:
-            self.send_response(304); self.send_header("ETag", etag); self.send_header("Cache-Control", cache); self.end_headers(); return
-        ae = self.headers.get("Accept-Encoding", "")
+            self.send_response(304)
+            self.send_header("ETag", etag)
+            self.send_header("Cache-Control", cache)
+            self.end_headers()
+            return
+        ae = self.headers.get("Accept-Encoding", "") or ""
+        gzipped = False
         if gzip_ok and isinstance(body, str) and "gzip" in ae and len(data) > 700:
             buf = io.BytesIO()
-            with gzip.GzipFile(fileobj=buf, mode="wb", compresslevel=6) as gz: gz.write(data)
+            with gzip.GzipFile(fileobj=buf, mode="wb", compresslevel=6) as gz:
+                gz.write(data)
             data = buf.getvalue()
-            self.send_response(code); self.send_header("Content-Type", ctype)
-            self.send_header("Content-Encoding", "gzip"); self.send_header("Vary", "Accept-Encoding")
-        else:
-            self.send_response(code); self.send_header("Content-Type", ctype)
-        self.send_header("Content-Length", str(len(data))); self.send_header("Cache-Control", cache)
-        self.send_header("ETag", etag); self.end_headers(); self.wfile.write(data)
+            gzipped = True
+        self.send_response(code)
+        self.send_header("Content-Type", ctype)
+        if gzipped:
+            self.send_header("Content-Encoding", "gzip")
+            self.send_header("Vary", "Accept-Encoding")
+        self.send_header("Content-Length", str(len(data)))
+        self.send_header("Cache-Control", cache)
+        self.send_header("ETag", etag)
+        self.send_header("X-Robots-Tag", "noindex" if self.path.startswith("/admin") else "all")
+        self.end_headers()
+        if not self._head_only:
+            try:
+                self.wfile.write(data)
+            except Exception:
+                pass
 
     def _redir(self, loc, cookie=None):
-        self.send_response(302); self.send_header("Location", loc); self.send_header("Cache-Control", "no-cache")
-        if cookie: self.send_header("Set-Cookie", cookie)
-        self.send_header("Content-Length", "0"); self.end_headers()
-
-    def _body(self):
-        n = int(self.headers.get("Content-Length", "0") or 0)
-        if n <= 0 or n > MAX_UPLOAD * 3: return b""
-        return self.rfile.read(n)
+        self.send_response(302)
+        self.send_header("Location", loc)
+        self.send_header("Cache-Control", "no-cache")
+        if cookie:
+            self.send_header("Set-Cookie", cookie)
+        self.send_header("Content-Length", "0")
+        self.end_headers()
 
     def _json(self, obj, code=200):
         self._send(code, json.dumps(obj, ensure_ascii=False), "application/json; charset=utf-8")
 
+    def _body(self):
+        try:
+            n = int(self.headers.get("Content-Length", "0") or 0)
+        except Exception:
+            n = 0
+        if n <= 0 or n > MAX_UPLOAD * 4:
+            return b""
+        return self.rfile.read(n)
+
+    def _cookie(self, token):
+        c = "admin_session={}; Path=/; Max-Age={}; HttpOnly; SameSite=Lax".format(token, SESSION_TTL)
+        if self._is_https():
+            c += "; Secure"
+        return c
+
+    # ---------- маршруты ----------
+    def do_HEAD(self):
+        self._head_only = True
+        self.do_GET()
+
     def do_GET(self):
-        path = self.path.split("?")[0]
+        path = self.path.split("?", 1)[0]
+        data = None
 
         if path == "/img":
-            qs = parse_qs(self.path.split("?", 1)[1] if "?" in self.path else "")
-            u = (qs.get("u") or [""])[0]
-            if not u: self._send(404, "no url"); return
-            try:
-                pad = "=" * (-len(u) % 4)
-                url = base64.urlsafe_b64decode(u + pad).decode()
-            except Exception: self._send(400, "bad"); return
-            if not url.startswith("https://") or "vkuserphoto.ru" not in url:
-                self._send(403, "forbidden"); return
-            data, ct = _fetch_image(url)
-            if data is None: self._redir(url); return
-            self._send(200, data, ct, "public, max-age=604800", gzip_ok=False)
+            self._route_img()
+            return
+
+        if path == "/healthz":
+            self._send(200, "ok", "text/plain; charset=utf-8")
             return
 
         if path == "/admin/login":
-            self._send(200, ADMIN_LOGIN_HTML.replace("__ERROR__", ""), "text/html; charset=utf-8"); return
+            self._send(200, ADMIN_LOGIN_HTML.replace("__ERROR__", ""), "text/html; charset=utf-8")
+            return
         if path == "/admin/logout":
             _drop_session(self._tok())
-            self._redir("/admin/login", "admin_session=; Path=/; Max-Age=0; HttpOnly"); return
+            self._redir("/admin/login", "admin_session=; Path=/; Max-Age=0; HttpOnly")
+            return
         if path == "/admin/api/data":
-            if not self._admin(): self._json({"error": "no"}, 401); return
-            self._json(load_fresh()); return
+            if not self._admin():
+                self._json({"error": "no auth"}, 401)
+                return
+            self._json(load_fresh())
+            return
+        if path == "/admin/api/export":
+            if not self._admin():
+                self._json({"error": "no auth"}, 401)
+                return
+            blob = json.dumps(load_fresh(), ensure_ascii=False, indent=1).encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Disposition",
+                             'attachment; filename="mebel-backup-{}.json"'.format(date.today().isoformat()))
+            self.send_header("Content-Length", str(len(blob)))
+            self.send_header("Cache-Control", "no-cache")
+            self.end_headers()
+            if not self._head_only:
+                self.wfile.write(blob)
+            return
+        if path == "/admin/api/media":
+            if not self._admin():
+                self._json({"error": "no auth"}, 401)
+                return
+            self._json({"items": _storage_list(), "bucket": BUCKET})
+            return
+        if path == "/admin/api/status":
+            if not self._admin():
+                self._json({"error": "no auth"}, 401)
+                return
+            self._json(self._status_payload())
+            return
         if path == "/admin":
-            if not self._admin(): self._redir("/admin/login"); return
-            self._send(200, ADMIN_HTML, "text/html; charset=utf-8"); return
+            if not self._admin():
+                self._redir("/admin/login")
+                return
+            self._send(200, ADMIN_HTML, "text/html; charset=utf-8")
+            return
+
         if path in ("/", "/index.html"):
-            html = _read_page()
-            html = _proxify_urls(html)
-            self._send(200, html, "text/html; charset=utf-8", "no-cache")
-        elif path == "/robots.txt":
-            self._send(200, ROBOTS, "text/plain; charset=utf-8", "public, max-age=86400")
-        elif path == "/sitemap.xml":
-            self._send(200, SITEMAP, "application/xml; charset=utf-8", "public, max-age=3600")
-        elif path == "/favicon.ico":
-            d = get_favicon()
-            if not d: self._redir(FAVICON_URL)
-            elif _ic["ico"]: self._send(200, _ic["ico"], "image/x-icon", "public, max-age=86400", gzip_ok=False)
-            else: self._send(200, d, "image/x-icon", "public, max-age=86400", gzip_ok=False)
-        elif path == "/favicon-16x16.png":
-            if _ic["png16"]: self._send(200, _ic["png16"], "image/png", "public, max-age=86400", gzip_ok=False)
-            else: self._redir(FAVICON_URL)
-        elif path == "/favicon-32x32.png":
-            if _ic["png32"]: self._send(200, _ic["png32"], "image/png", "public, max-age=86400", gzip_ok=False)
-            else: self._redir(FAVICON_URL)
-        elif path == "/apple-touch-icon.png":
-            if _ic["png180"]: self._send(200, _ic["png180"], "image/png", "public, max-age=86400", gzip_ok=False)
-            else: self._redir(FAVICON_URL)
-        elif path == "/manifest.webmanifest":
-            self._send(200, MANIFEST, "application/manifest+json; charset=utf-8")
-        else:
-            self._send(404, PAGE_404, "text/html; charset=utf-8")
+            self._send(200, render_site(), "text/html; charset=utf-8", "no-cache")
+            return
+
+        if path == "/robots.txt":
+            self._send(200, build_robots(load_data()), "text/plain; charset=utf-8", "public, max-age=3600")
+            return
+        if path == "/sitemap.xml":
+            self._send(200, build_sitemap(load_data()), "application/xml; charset=utf-8", "public, max-age=3600")
+            return
+        if path == "/manifest.webmanifest":
+            self._send(200, build_manifest(load_data()), "application/manifest+json; charset=utf-8", "public, max-age=86400")
+            return
+
+        if path in ("/favicon.ico", "/favicon-16x16.png", "/favicon-32x32.png", "/apple-touch-icon.png", "/favicon-192x192.png"):
+            self._route_favicon(path)
+            return
+
+        if self._serve_static(path):
+            return
+
+        self._send(404, build_404(load_data()), "text/html; charset=utf-8")
 
     def do_POST(self):
-        path = self.path.split("?")[0]
+        path = self.path.split("?", 1)[0]
+
         if path == "/admin/login":
-            b = self._body().decode("utf-8", "ignore")
-            p = parse_qs(b)
-            login = (p.get("login") or [""])[0]
+            ip = self._ip()
+            if _login_blocked(ip):
+                self._send(200, ADMIN_LOGIN_HTML.replace("__ERROR__", '<div class="err">Слишком много попыток. Подождите 10 минут.</div>'),
+                           "text/html; charset=utf-8")
+                return
+            raw = self._body().decode("utf-8", "ignore")
+            p = parse_qs(raw)
+            login = (p.get("login") or [""])[0].strip()
             pw = (p.get("password") or [""])[0]
-            if login == ADMIN_LOGIN_ENV and pw == ADMIN_PASSWORD_ENV:
-                t = _new_session()
-                self._redir("/admin", "admin_session=" + t + "; Path=/; Max-Age=" + str(SESSION_TTL) + "; HttpOnly; SameSite=Lax")
+            if (hmac.compare_digest(login.encode("utf-8"), ADMIN_LOGIN_ENV.encode("utf-8"))
+                    and hmac.compare_digest(pw.encode("utf-8"), ADMIN_PASSWORD_ENV.encode("utf-8"))):
+                _login_note(ip, True)
+                self._redir("/admin", self._cookie(_new_session()))
             else:
-                self._send(200, ADMIN_LOGIN_HTML.replace("__ERROR__", '<div class="err">Неверный логин или пароль</div>'), "text/html; charset=utf-8")
+                _login_note(ip, False)
+                self._send(200, ADMIN_LOGIN_HTML.replace("__ERROR__", '<div class="err">Неверный логин или пароль</div>'),
+                           "text/html; charset=utf-8")
             return
+
         if path == "/admin/api/save":
-            if not self._admin(): self._json({"error": "no"}, 401); return
-            try: obj = json.loads(self._body().decode("utf-8"))
-            except Exception: self._json({"error": "bad json"}, 400); return
-            ok = save_data(obj)
-            self._json({"ok": ok})
+            if not self._admin():
+                self._json({"error": "no auth"}, 401)
+                return
+            try:
+                obj = json.loads(self._body().decode("utf-8"))
+            except Exception:
+                self._json({"error": "bad json"}, 400)
+                return
+            if not isinstance(obj, dict):
+                self._json({"error": "not an object"}, 400)
+                return
+            self._json({"ok": bool(save_data(obj))})
             return
+
         if path == "/admin/api/upload":
-            if not self._admin(): self._json({"error": "no"}, 401); return
+            if not self._admin():
+                self._json({"error": "no auth"}, 401)
+                return
             body = self._body()
-            ct = self.headers.get("Content-Type", "")
-            fb = None
-            if "multipart/form-data" in ct:
-                m = re.search(r'boundary=([^;]+)', ct)
-                if m: fb = _parse_multipart(body, m.group(1).strip().strip('"').encode())
-            if not fb: self._json({"error": "no file"}, 400); return
-            if len(fb) > MAX_UPLOAD: self._json({"error": "too big"}, 413); return
+            if not body:
+                self._json({"error": "пустой файл"}, 400)
+                return
+            if len(body) > MAX_UPLOAD:
+                self._json({"error": "файл больше 8 МБ"}, 413)
+                return
+            ctype = self.headers.get("Content-Type", "")
+            blob, fname = None, "upload"
+            if "multipart/form-data" in ctype:
+                m = re.search(r"boundary=([^;]+)", ctype)
+                if m:
+                    fname, blob = _parse_multipart(body, m.group(1).strip().strip('"').encode())
+            if not blob:
+                blob, fname = body, "upload.jpg"
             mime = "image/jpeg"
-            if fb[:8] == b"\x89PNG\r\n\x1a\n": mime = "image/png"
-            elif fb[:6] in (b"GIF87a", b"GIF89a"): mime = "image/gif"
-            elif fb[:4] == b"RIFF" and fb[8:12] == b"WEBP": mime = "image/webp"
-            self._json({"url": "data:" + mime + ";base64," + base64.b64encode(fb).decode()})
+            if blob[:8] == b"\x89PNG\r\n\x1a\n":
+                mime = "image/png"
+            elif blob[:6] in (b"GIF87a", b"GIF89a"):
+                mime = "image/gif"
+            elif blob[:4] == b"RIFF" and blob[8:12] == b"WEBP":
+                mime = "image/webp"
+            elif blob[:5] == b"<?xml" or blob[:4] == b"<svg":
+                mime = "image/svg+xml"
+            url = _storage_upload(fname, blob, mime)
+            if url:
+                self._json({"url": url, "storage": True, "bucket": BUCKET})
+            else:
+                self._json({"url": "data:{};base64,{}".format(mime, base64.b64encode(blob).decode("ascii")),
+                            "storage": False, "warning": "Storage недоступен — картинка сохранена как data-URL"})
             return
+
+        if path == "/admin/api/ai":
+            if not self._admin():
+                self._json({"error": "no auth"}, 401)
+                return
+            try:
+                req = json.loads(self._body().decode("utf-8") or "{}")
+            except Exception:
+                req = {}
+            task = str(req.get("task") or "improve")
+            value = str(req.get("value") or "")
+            data = load_data()
+            system, user = _ai_ask(data, task, req.get("path"), value)
+            text, provider, err = _ai_generate(system, user, 700)
+            if text:
+                self._json({"text": text, "provider": provider})
+            else:
+                self._json({"error": err or "AI недоступен"}, 200)
+            return
+
         self._json({"error": "not found"}, 404)
 
-    def log_message(self, *args): pass
+    # ---------- помощники маршрутов ----------
+    def _route_img(self):
+        qs = parse_qs(self.path.split("?", 1)[1] if "?" in self.path else "")
+        u = (qs.get("u") or [""])[0]
+        if not u:
+            self._send(404, "no url")
+            return
+        try:
+            pad = "=" * (-len(u) % 4)
+            url = base64.urlsafe_b64decode(u + pad).decode("utf-8")
+        except Exception:
+            self._send(400, "bad")
+            return
+        host = urllib.parse.urlparse(url).hostname or ""
+        if not url.startswith("https://") or not host.endswith("vkuserphoto.ru"):
+            self._send(403, "forbidden")
+            return
+        blob, ct = _fetch_image(url)
+        if blob is None:
+            self._redir(url)
+            return
+        self._send(200, blob, ct, "public, max-age=604800", gzip_ok=False)
+
+    def _route_favicon(self, path):
+        if path == "/favicon.ico":
+            d = get_favicon()
+            if _ic["ico"]:
+                self._send(200, _ic["ico"], "image/x-icon", "public, max-age=86400", gzip_ok=False)
+            elif d:
+                self._send(200, d, "image/x-icon", "public, max-age=86400", gzip_ok=False)
+            else:
+                self._redir(FAVICON_URL)
+            return
+        key = {"/favicon-16x16.png": "png16", "/favicon-32x32.png": "png32",
+               "/apple-touch-icon.png": "png180", "/favicon-192x192.png": "png192"}[path]
+        if _ic.get(key) is None:
+            get_favicon()
+        if _ic.get(key):
+            self._send(200, _ic[key], "image/png", "public, max-age=86400", gzip_ok=False)
+        else:
+            self._redir(FAVICON_URL)
+
+    def _serve_static(self, path):
+        rel = urllib.parse.unquote(path).lstrip("/")
+        if not rel or rel.startswith(".") or ".." in rel.split("/"):
+            return False
+        if rel in STATIC_BLOCK:
+            return False
+        ext = os.path.splitext(rel)[1].lower()
+        if ext not in STATIC_EXT:
+            return False
+        fp = os.path.join(ROOT, *rel.split("/"))
+        if not os.path.isfile(fp):
+            return False
+        try:
+            with open(fp, "rb") as f:
+                blob = f.read()
+        except Exception:
+            return False
+        self._send(200, blob, MIME.get(ext, "application/octet-stream"), "public, max-age=86400", gzip_ok=False)
+        return True
+
+    def _status_payload(self):
+        data = load_data()
+        counts = {}
+        for key in ("works", "reviews", "services", "process", "guarantees", "cities"):
+            items = (data.get(key) or {}).get("items")
+            counts[key] = len(items) if isinstance(items, list) else 0
+        return {
+            "db_read": bool(_db_state.get("read")),
+            "db_write": _db_state.get("write"),
+            "storage": _bucket_ensure(),
+            "bucket": BUCKET,
+            "ai": {"yandex": bool(YANDEX_API_KEY and FOLDER_ID), "gigachat": bool(GIGACHAT_AUTH_KEY)},
+            "counts": counts,
+            "size": len(json.dumps(data, ensure_ascii=False).encode("utf-8")),
+            "domain": _domain(data),
+            "sitemap_urls": build_sitemap(data).count("<url>"),
+        }
+
+    def log_message(self, fmt, *args):
+        if os.environ.get("VERBOSE"):
+            print("[http] " + (fmt % args), flush=True)
+
+
+METRIKA_TPL = ""  # счётчик Метрики вставляется из page.html ({{#if seo.metrika_id}})
+
+
+# ============================================================
+#  ЗАПУСК
+# ============================================================
+def main():
+    print("BOOT: Кухни Островский CMS", flush=True)
+    print("BOOT: PORT = {}".format(PORT), flush=True)
+    print("BOOT: DOMAIN = {} ({})".format(_domain(), _host()), flush=True)
+    print("BOOT: Supabase = {} / таблица {}".format(SUPABASE_URL or "НЕ ЗАДАН", DATA_TABLE), flush=True)
+    print("BOOT: Storage bucket = {}".format(BUCKET), flush=True)
+    print("BOOT: AI = yandex:{} gigachat:{}".format(bool(YANDEX_API_KEY and FOLDER_ID), bool(GIGACHAT_AUTH_KEY)), flush=True)
+    if not os.environ.get("SUPABASE_SERVICE_KEY"):
+        print("BOOT: ВНИМАНИЕ! SUPABASE_SERVICE_KEY берётся из кода — задайте её в переменных хостинга", flush=True)
+    p = os.path.join(ROOT, "page.html")
+    if os.path.exists(p):
+        print("BOOT: page.html найден ({} байт)".format(os.path.getsize(p)), flush=True)
+    else:
+        print("BOOT: ВНИМАНИЕ! page.html НЕ НАЙДЕН в {}".format(ROOT), flush=True)
+    try:
+        load_fresh()
+    except Exception as e:
+        print("BOOT: первичная загрузка не удалась: {}".format(e), flush=True)
+    ThreadingHTTPServer(("0.0.0.0", PORT), Handler).serve_forever()
 
 
 if __name__ == "__main__":
-    print("BOOT: старт", flush=True)
-    print("BOOT: PORT = " + str(PORT), flush=True)
-    # Проверка page.html при старте
-    p = os.path.join(ROOT, "page.html")
-    if os.path.exists(p):
-        print("BOOT: page.html найден (" + str(os.path.getsize(p)) + " байт)", flush=True)
-    else:
-        print("BOOT: ⚠️  page.html НЕ НАЙДЕН в " + ROOT, flush=True)
-    ThreadingHTTPServer(("0.0.0.0", PORT), Handler).serve_forever()
+    main()
