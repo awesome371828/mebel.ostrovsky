@@ -69,7 +69,7 @@ FOLDER_ID = os.environ.get("FOLDER_ID", "")
 GIGACHAT_AUTH_KEY = os.environ.get("GIGACHAT_AUTH_KEY", "")
 AI_PROVIDER = (os.environ.get("AI_PROVIDER", "auto") or "auto").lower()
 
-SESSION_TTL = 604800
+SESSION_TTL = 31536000
 MAX_UPLOAD = 8 * 1024 * 1024
 DATA_ROW_ID = 1
 CACHE_TTL = 15
@@ -167,7 +167,7 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
  'stats': {'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w02.jpg',
            'items': [{'prefix': '', 'num': '10', 'suffix': '+', 'decimal': '', 'label': 'лет опыта'},
                      {'prefix': '', 'num': '5', 'suffix': '', 'decimal': '1', 'label': 'средняя оценка клиентов'},
-                     {'prefix': '', 'num': '8', 'suffix': '/10', 'decimal': '', 'label': 'клиентов по рекомендации'},
+                     {'prefix': '', 'num': '9', 'suffix': '/10', 'decimal': '', 'label': 'клиентов по рекомендации'},
                      {'prefix': '', 'num': '100', 'suffix': '%', 'decimal': '', 'label': 'полный цикл под ключ'}]},
  'about': {'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/bg/about.jpg',
            'name': 'Роман Островский',
@@ -434,13 +434,13 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
 # <<<DEFAULT_DATA_END>>>
 
 PAGE = r"""<!DOCTYPE html>
-<html lang="ru" class="js" data-build="2026-10-06-v6">
+<html lang="ru" class="js" data-build="2026-10-06-v7">
 <head>
 <meta charset="UTF-8">
 <script>/* шим: если браузер не умеет IntersectionObserver, показываем блоки сразу (без «мёртвых» скрытых секций) */
 window.IntersectionObserver=window.IntersectionObserver||function(cb){return{observe:function(el){try{cb([{isIntersecting:true,target:el}],this);}catch(e){}},unobserve:function(){},disconnect:function(){}};};
 </script>
-<!-- Кухни Островский · сборка 2026-10-06-v6: анимации, аватарка и favicon из Supabase, защита сохранения (rev), история версий -->
+<!-- Кухни Островский · сборка 2026-10-06-v7: анимации, аватарка и favicon из Supabase, защита сохранения (rev), история версий -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{seo.title}}</title>
 <meta name="description" content="{{seo.description}}">
@@ -637,10 +637,6 @@ header.solid{background:rgba(14,12,9,.92);box-shadow:0 12px 44px rgba(0,0,0,.45)
 .panel--center .bg::after{background:linear-gradient(180deg,rgba(10,8,6,.86),rgba(10,8,6,.62))}
 .panel--dark .bg::after{background:linear-gradient(180deg,rgba(10,8,6,.9),rgba(10,8,6,.7))}
 .panel + .panel{margin-top:16px}
-.gold-divider{display:flex;align-items:center;justify-content:center;gap:14px;padding:6px 0}
-.gold-divider i{display:inline-block;width:64px;height:1px;background:linear-gradient(90deg,transparent,var(--gold));opacity:.6}
-.gold-divider i:last-child{background:linear-gradient(90deg,var(--gold),transparent)}
-.gold-divider b{width:7px;height:7px;transform:rotate(45deg);background:var(--gold);box-shadow:0 0 12px rgba(212,175,106,.55)}
 .eyebrow{display:inline-flex;align-items:center;gap:12px;color:var(--gold-soft);letter-spacing:5px;text-transform:uppercase;font-size:12px;font-weight:600;margin-bottom:20px}
 .eyebrow::before{content:"";width:42px;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
 .eyebrow::after{content:"";width:42px;height:1px;background:linear-gradient(90deg,var(--gold),transparent)}
@@ -889,8 +885,6 @@ header.solid{background:{{design.bg}}eb}
 .sec-head h2::before,.sec-head h2::after{transform:translateY(-50%) scaleX(0);opacity:0;transition:transform .95s cubic-bezier(.22,.61,.36,1),opacity .7s}
 .sec-head.in h2::before,.sec-head.in h2::after{transform:translateY(-50%) scaleX(1);opacity:.75}
 .sec-head h2{text-shadow:0 6px 26px rgba(0,0,0,.5),0 0 46px rgba(212,175,106,.18)}
-.gold-divider b{animation:pulseGold 3s ease-in-out infinite}
-.gold-divider i{animation:lineGrow .9s cubic-bezier(.22,.61,.36,1) both}
 
 /* кнопки: блик, отклик, свечение */
 .btn{transition:transform .42s cubic-bezier(.22,.61,.36,1),box-shadow .42s,filter .42s,background .42s,color .42s}
@@ -1047,7 +1041,6 @@ img{transition:opacity 1s cubic-bezier(.16,1,.3,1),transform .95s cubic-bezier(.
 .soc:hover{background:var(--gold);color:#17120b;transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,0,0,.35)}
 .car-dot{background:rgba(255,255,255,.18)}
 .car-dot.active{background:var(--gold);box-shadow:none}
-.gold-divider i{animation:none;opacity:.5}
 
 /* ====== меньше «картона»: глубина вместо рамок ====== */
 .svc,.step,.guar,.city,.rev-card,.about-card,.call-block,.stat{border-color:rgba(255,255,255,.055);background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.018));box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 22px 48px -26px rgba(0,0,0,.75)}
@@ -1094,8 +1087,7 @@ img,svg,video,iframe{max-width:100%}
  .consult .phone{font-size:clamp(24px,7.4vw,32px)}
  .call-block .cb-num{font-size:clamp(20px,6.4vw,26px)}
  .city{padding:30px 22px}.stat .num{font-size:42px}
- .gold-divider i{width:42px}
- .cookie-bar{flex-direction:column;align-items:stretch;gap:12px;bottom:calc(10px + env(safe-area-inset-bottom))}
+  .cookie-bar{flex-direction:column;align-items:stretch;gap:12px;bottom:calc(10px + env(safe-area-inset-bottom))}
  .cookie-bar .btn{width:100%}
  .lb-stage{height:calc(100vh - 132px)}.lb-stage img{max-width:96%;border-radius:16px}
  .lb-bar{gap:14px}
@@ -1137,6 +1129,56 @@ img,svg,video,iframe{max-width:100%}
 }
 /* Мягкий режим при «уменьшенном движении» в системе: анимации не выключаются полностью,
    а становятся спокойными (только прозрачность + короткие переходы). */
+/* ====== изящные кнопки (без «кирпича») ====== */
+.btn{font-family:var(--sans);font-size:11.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ padding:13px 30px;min-height:46px;border-radius:9px;border:1px solid transparent;
+ transition:transform .5s cubic-bezier(.16,1,.3,1),background .45s,border-color .45s,color .45s,box-shadow .45s}
+.btn-solid{background:linear-gradient(180deg,#ecd9b2 0%,#d8b473 55%,#c69f5a 100%);color:#151006;
+ border-color:rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 6px 18px -8px rgba(0,0,0,.7)}
+.btn-solid:hover{background:linear-gradient(180deg,#f3e2c0 0%,#e0bd7f 55%,#cfa763 100%);transform:translateY(-1px);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 10px 24px -10px rgba(0,0,0,.75)}
+.btn-solid:active{transform:translateY(0);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 4px 12px -6px rgba(0,0,0,.7)}
+.btn-line{border-color:rgba(236,207,160,.28);background:transparent;color:#f3e9d8}
+.btn-line:hover{border-color:rgba(236,207,160,.6);background:rgba(236,207,160,.07);color:#fff;transform:translateY(-1px);box-shadow:none}
+.btn::after{display:none}
+.btn .ripple-el{opacity:.5}
+.c-action{border-radius:9px;font-size:13.5px;font-weight:600;letter-spacing:.02em;border:1px solid transparent}
+.c-action.c-call{background:linear-gradient(180deg,#ecd9b2,#d8b473 55%,#c69f5a);color:#151006;border-color:rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.42),0 6px 18px -10px rgba(0,0,0,.7)}
+.c-action.c-call:hover{transform:translateY(-1px);filter:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 10px 24px -10px rgba(0,0,0,.75)}
+.c-action.c-tg{background:rgba(64,169,242,.07);border-color:rgba(64,169,242,.26)}
+.c-action.c-tg:hover{background:rgba(64,169,242,.14);transform:translateY(-1px)}
+.c-action.c-max{background:rgba(177,88,252,.07);border-color:rgba(177,88,252,.26)}
+.c-action.c-max:hover{background:rgba(177,88,252,.14);transform:translateY(-1px)}
+.cookie-bar .btn{padding:12px 26px;min-height:42px}
+
+/* ====== золотые разделители (везде) ====== */
+.gold-divider{position:relative;display:flex;align-items:center;justify-content:center;gap:16px;padding:26px 0}
+.gold-divider i{position:relative;overflow:hidden;display:inline-block;width:clamp(70px,13vw,150px);height:1px;
+ background:linear-gradient(90deg,transparent,rgba(212,175,106,.7));opacity:1}
+.gold-divider i:last-child{background:linear-gradient(90deg,rgba(212,175,106,.7),transparent)}
+.gold-divider i::after{content:"";position:absolute;top:0;left:-35%;width:35%;height:100%;
+ background:linear-gradient(90deg,transparent,rgba(255,246,230,.95),transparent);animation:divShine 5.5s ease-in-out infinite}
+.gold-divider i:last-child::after{left:auto;right:-35%;animation-direction:reverse}
+.gold-divider b{width:8px;height:8px;transform:rotate(45deg);background:linear-gradient(135deg,#f2e0ba,#c69f5a);
+ box-shadow:0 0 14px rgba(236,207,160,.45);animation:divPulse 4s ease-in-out infinite}
+@keyframes divShine{0%{transform:translateX(0);opacity:0}18%{opacity:.9}82%{opacity:.9}100%{transform:translateX(420%);opacity:0}}
+@keyframes divPulse{0%,100%{opacity:.7;transform:rotate(45deg) scale(1)}50%{opacity:1;transform:rotate(45deg) scale(1.22)}}
+.js .gold-divider.rv{opacity:0;transform:translateY(10px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1)}
+.js .gold-divider.rv.in{opacity:1;transform:none}
+
+/* ====== производительность: только transform/opacity, без blur и тяжёлых теней ====== */
+.js .reveal,.js .rv{filter:none!important;will-change:transform,opacity}
+.js .reveal.in,.js .rv.in{will-change:auto}
+.svc,.step,.guar,.city,.rev-card,.about-card,.call-block,.stat,
+.car-slide,.rev-photo img,.svc svg,.guar .ico,.c-ico,.stat .num,.btn,.c-action,.soc,.car-dot,.car-nav,.lb-nav,.lb-close,
+.c-line,.features li,.gold-divider,.sec-head h2,.menu a,.soc svg,.car-slide img{transition-property:transform,opacity,border-color,background-color,color}
+.svc,.step,.guar,.city,.rev-card,.about-card,.call-block,.stat{box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 18px 40px -26px rgba(0,0,0,.8)}
+.svc:hover,.step:hover,.guar:hover,.city:hover,.rev-card:hover,.about-card:hover,.call-block:hover,.stat:hover{
+ transform:translateY(-8px);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 22px 44px -24px rgba(0,0,0,.85)}
+.car-slide{box-shadow:0 14px 30px -20px rgba(0,0,0,.85)}
+.car-slide:hover{box-shadow:0 22px 44px -22px rgba(0,0,0,.9)}
+@media(max-width:640px){#goldParticles{opacity:.55}}
+@media (prefers-reduced-motion: reduce){.gold-divider i::after,.gold-divider b{animation:none!important;opacity:.6}}
 @media (prefers-reduced-motion: reduce){
  #goldParticles{display:none}.spark{display:none}
  *,*::before,*::after{animation:none!important;transition-duration:.4s!important}
@@ -1156,7 +1198,6 @@ img,svg,video,iframe{max-width:100%}
 
 <div class="progress" id="progress"></div>
 <div class="grain" aria-hidden="true"></div>
-<div id="cursorGlow" aria-hidden="true"></div>
 <div class="orb orb-1" aria-hidden="true"></div>
 <div class="orb orb-2" aria-hidden="true"></div>
 <div class="orb orb-3" aria-hidden="true"></div>
@@ -1193,6 +1234,8 @@ img,svg,video,iframe{max-width:100%}
   {{#if hero.scroll_cue}}<div class="scroll-cue">{{hero.scroll_cue}}<div class="line"></div></div>{{/if}}
 </section>
 
+<div class="gold-divider"><i></i><b></b><i></i></div>
+
 {{#if stats.items}}
 <section class="panel panel--dark">
   <div class="bg" style="background-image:url('{{{stats.bg}}}')"></div>
@@ -1203,6 +1246,7 @@ img,svg,video,iframe{max-width:100%}
     </div>
   </div></div>
 </section>
+<div class="gold-divider"><i></i><b></b><i></i></div>
 {{/if}}
 
 <section class="panel" id="about">
@@ -1241,6 +1285,8 @@ img,svg,video,iframe{max-width:100%}
   </div></div>
 </section>
 
+<div class="gold-divider"><i></i><b></b><i></i></div>
+
 <section class="panel panel--center panel--dark" id="works"{{#if works.watermark}} data-watermark="{{works.watermark}}"{{/if}}>
   <div class="bg" style="background-image:url('{{{works.bg}}}')"></div>
   <div class="wrap"><div class="content">
@@ -1276,6 +1322,8 @@ img,svg,video,iframe{max-width:100%}
     <button class="lb-nav lb-next" id="lbNext" aria-label="Вперёд">❯</button>
   </div>
 </div>
+
+<div class="gold-divider"><i></i><b></b><i></i></div>
 
 <section class="panel panel--center" id="reviews"{{#if reviews.watermark}} data-watermark="{{reviews.watermark}}"{{/if}}>
   <div class="bg" style="background-image:url('{{{reviews.bg}}}')"></div>
@@ -1331,6 +1379,7 @@ img,svg,video,iframe{max-width:100%}
     </div>
   </div></div>
 </section>
+<div class="gold-divider"><i></i><b></b><i></i></div>
 {{/if}}
 
 {{#if process.items}}
@@ -1347,6 +1396,7 @@ img,svg,video,iframe{max-width:100%}
     </div>
   </div></div>
 </section>
+<div class="gold-divider"><i></i><b></b><i></i></div>
 {{/if}}
 
 {{#if guarantees.items}}
@@ -1363,6 +1413,7 @@ img,svg,video,iframe{max-width:100%}
     </div>
   </div></div>
 </section>
+<div class="gold-divider"><i></i><b></b><i></i></div>
 {{/if}}
 
 {{#if cities.items}}
@@ -1380,6 +1431,7 @@ img,svg,video,iframe{max-width:100%}
     </div>
   </div></div>
 </section>
+<div class="gold-divider"><i></i><b></b><i></i></div>
 {{/if}}
 
 <section class="panel panel--center panel--dark">
@@ -1390,6 +1442,8 @@ img,svg,video,iframe{max-width:100%}
     <a href="tel:{{cta.phone_raw}}" class="btn btn-solid reveal">{{cta.button}}</a>
   </div></div>
 </section>
+
+<div class="gold-divider"><i></i><b></b><i></i></div>
 
 <section class="panel panel--dark" id="contacts">
   <div class="bg" style="background-image:url('{{{contacts.bg}}}')"></div>
@@ -1468,22 +1522,40 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
   });
 });
 if(fine&&!reduced){
-  const bgs=document.querySelectorAll('.panel .bg');
-  const contents=document.querySelectorAll('.panel .content');
-  let pTicking=false;
-  function parallax(){if(pTicking)return;pTicking=true;requestAnimationFrame(()=>{
-    bgs.forEach(bg=>{const r=bg.parentElement.getBoundingClientRect();const c=(r.top+r.height/2)-innerHeight/2;bg.style.transform='translateY('+(-c*0.25)+'px)';});
-    contents.forEach(cn=>{const r=cn.parentElement.getBoundingClientRect();const c=(r.top+r.height/2)-innerHeight/2;cn.style.transform='translateY('+(-c*0.06)+'px)';});
-    pTicking=false;});}
-  window.addEventListener('scroll',parallax,{passive:true});parallax();
-}
-if(fine){
-  const g=document.getElementById('cursorGlow');
-  if(g){
-    let gx=innerWidth/2,gy=innerHeight/2,cx=gx,cy=gy;
-    window.addEventListener('mousemove',e=>{gx=e.clientX;gy=e.clientY;},{passive:true});
-    (function loop(){cx+=(gx-cx)*.12;cy+=(gy-cy)*.12;g.style.transform='translate('+(cx-170)+'px,'+(cy-170)+'px)';requestAnimationFrame(loop);})();
+  /* параллакс без замеров на каждом кадре: позиции считаем заранее (дешёво и без лагов) */
+  let items=[],vh=innerHeight;
+  function measure(){
+    vh=innerHeight;
+    items=[];
+    document.querySelectorAll('.panel .bg').forEach(function(bg){
+      const p=bg.parentElement;let top=0,el=p;
+      while(el){top+=el.offsetTop;el=el.offsetParent;}
+      items.push({el:bg,top:top,h:p.offsetHeight,k:-0.22});
+    });
+    document.querySelectorAll('.panel .content').forEach(function(cn){
+      const p=cn.parentElement;let top=0,el=p;
+      while(el){top+=el.offsetTop;el=el.offsetParent;}
+      items.push({el:cn,top:top,h:p.offsetHeight,k:-0.05});
+    });
   }
+  let pT=false;
+  function parallax(){
+    if(pT)return;pT=true;
+    requestAnimationFrame(function(){
+      const sy=window.scrollY||pageYOffset;
+      for(let i=0;i<items.length;i++){
+        const it=items[i];
+        const c=(it.top+it.h/2)-(sy+vh/2);
+        if(Math.abs(c)>vh*2.2)continue;
+        it.el.style.transform='translate3d(0,'+(c*it.k).toFixed(1)+'px,0)';
+      }
+      pT=false;
+    });
+  }
+  measure();parallax();
+  window.addEventListener('scroll',parallax,{passive:true});
+  let rz;window.addEventListener('resize',function(){clearTimeout(rz);rz=setTimeout(function(){measure();parallax();},300);});
+  window.addEventListener('load',function(){setTimeout(function(){measure();parallax();},400);});
 }
 function animateCount(el){
   const target=parseFloat(el.dataset.count)||0;
@@ -1796,7 +1868,7 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
       io2.observe(track);
     });
   }
-  console.log('%cКухни Островский · сборка 2026-10-06-v6 · анимации включены'+(reduced?' (у вас в системе отключена анимация — принудительно: добавьте ?anim=1 к адресу)':''),'color:#d4af6a');
+  console.log('%cКухни Островский · сборка 2026-10-06-v7 · анимации включены'+(reduced?' (у вас в системе отключена анимация — принудительно: добавьте ?anim=1 к адресу)':''),'color:#d4af6a');
 })();
 </script>
 {{{code.body}}}
@@ -2439,31 +2511,41 @@ _sessions = {}
 _login_fails = {}
 
 
+def _session_secret():
+    """Ключ подписи сессии: не меняется между перезапусками/деплоями,
+    поэтому вход в админку сохраняется на устройстве."""
+    raw = "mebel-cms::{}::{}::{}".format(ADMIN_LOGIN_ENV, ADMIN_PASSWORD_ENV, (SUPABASE_SERVICE or "")[:32])
+    return hashlib.sha256(raw.encode("utf-8")).digest()
+
+
 def _new_session():
-    t = secrets.token_urlsafe(32)
-    with _auth_lock:
-        _sessions[t] = time.time() + SESSION_TTL
-        if len(_sessions) > 200:
-            now = time.time()
-            for k in [k for k, v in _sessions.items() if v < now]:
-                _sessions.pop(k, None)
-    return t
+    """Сессия без хранения на сервере: подписанная метка со сроком годности."""
+    exp = int(time.time()) + SESSION_TTL
+    payload = "{}|{}".format(int(time.time()), exp)
+    sig = hmac.new(_session_secret(), payload.encode("utf-8"), hashlib.sha256).hexdigest()[:32]
+    return base64.urlsafe_b64encode(payload.encode("utf-8")).decode("ascii").rstrip("=") + "." + sig
 
 
 def _check_session(token):
-    if not token:
+    if not token or "." not in token:
         return False
-    with _auth_lock:
-        exp = _sessions.get(token)
-        if not exp:
-            return False
-        if exp < time.time():
-            _sessions.pop(token, None)
-            return False
-    return True
+    body, _, sig = token.rpartition(".")
+    try:
+        payload = base64.urlsafe_b64decode(body + "=" * (-len(body) % 4)).decode("utf-8")
+    except Exception:
+        return False
+    good = hmac.new(_session_secret(), payload.encode("utf-8"), hashlib.sha256).hexdigest()[:32]
+    if not hmac.compare_digest(good, sig):
+        return False
+    try:
+        exp = int(payload.split("|")[1])
+    except Exception:
+        return False
+    return exp > time.time()
 
 
 def _drop_session(token):
+    """Подписанную метку на сервере не храним — выход просто стирает cookie."""
     if token:
         with _auth_lock:
             _sessions.pop(token, None)
