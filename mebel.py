@@ -128,8 +128,11 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
          'robots': '',
          'extra_urls': []},
  'code': {'head': '', 'body': ''},
- 'lead_form': {'enabled': True, 'title': 'Оставить заявку', 'subtitle': 'Оставьте номер — свяжемся и обсудим задачу.', 'button': 'Оставить заявку'},
- 'sections': {'stats': True, 'about': True, 'consult': True, 'works': True, 'reviews': True,
+ 'lead_form': {'enabled': True, 'title': 'Оставить заявку', 'subtitle': 'Оставьте номер — свяжемся и обсудим задачу.', 'button': 'Отправить заявку',
+               'kicker': 'Связаться', 'note': 'Контакт нужен только для связи по заявке.'},
+ 'animations': {'enabled': True, 'parallax': True, 'hover3d': True, 'sparks': True, 'scroll_reveal': True,
+                'text_reveal': True, 'loader': True, 'intensity': 'full'},
+ 'sections': {'stats': True, 'about': True, 'consult': True, 'lead_form': True, 'works': True, 'reviews': True,
               'services': True, 'process': True, 'guarantees': True, 'cities': True, 'cta': True,
               'contacts': True, 'footer': True, 'cookie': True},
  'design': {'bg': '#0e0c09',
@@ -438,13 +441,13 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
 # <<<DEFAULT_DATA_END>>>
 
 PAGE = r"""<!DOCTYPE html>
-<html lang="ru" class="js" data-build="2026-10-06-v9">
+<html lang="ru" class="js" data-build="2026-10-07-v10">
 <head>
 <meta charset="UTF-8">
 <script>/* шим: если браузер не умеет IntersectionObserver, показываем блоки сразу (без «мёртвых» скрытых секций) */
 window.IntersectionObserver=window.IntersectionObserver||function(cb){return{observe:function(el){try{cb([{isIntersecting:true,target:el}],this);}catch(e){}},unobserve:function(){},disconnect:function(){}};};
 </script>
-<!-- Кухни Островский · сборка 2026-10-06-v9: анимации, аватарка и favicon из Supabase, защита сохранения (rev), история версий -->
+<!-- Кухни Островский · сборка 2026-10-07-v10: анимации, аватарка и favicon из Supabase, защита сохранения (rev), история версий -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{seo.title}}</title>
 <meta name="description" content="{{seo.description}}">
@@ -1017,8 +1020,8 @@ img{transition:opacity 1s cubic-bezier(.16,1,.3,1),transform .95s cubic-bezier(.
 @media(max-width:520px){.car-nav{width:38px;height:38px;font-size:15px;background:rgba(18,15,11,.82)}.rev-track,.car-track{padding-left:2px;padding-right:2px}}
 
 /* ====== сдержанные, «не-иишные» кнопки ====== */
-.btn{border-radius:11px;letter-spacing:1px;font-size:12.5px;font-weight:700;padding:15px 28px;min-height:48px;text-transform:uppercase;animation:none;transition:transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s,background .5s,border-color .5s,color .5s}
-.btn-solid{background:linear-gradient(180deg,#e7d2a7 0%,#d4af6a 62%,#c09a53 100%);color:#1b1509;box-shadow:0 10px 26px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.34);animation:none}
+.btn{border-radius:11px;letter-spacing:1px;font-size:12.5px;font-weight:700;padding:15px 28px;min-height:48px;transition:transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s,background .5s,border-color .5s,color .5s}
+.btn-solid{background:linear-gradient(180deg,#e7d2a7 0%,#d4af6a 62%,#c09a53 100%);color:#1b1509;box-shadow:0 10px 26px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.34);animation:btnGlow 3.6s ease-in-out infinite}
 .btn-solid:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.42);filter:none}
 .btn-solid:active{transform:translateY(0);box-shadow:0 6px 16px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.3)}
 .btn-solid::before{display:none}
@@ -1032,11 +1035,11 @@ img{transition:opacity 1s cubic-bezier(.16,1,.3,1),transform .95s cubic-bezier(.
 .c-action.c-tg:hover{background:rgba(64,169,242,.17);transform:translateY(-2px)}
 .c-action.c-max{background:rgba(177,88,252,.09);border:1px solid rgba(177,88,252,.3)}
 .c-action.c-max:hover{background:rgba(177,88,252,.17);transform:translateY(-2px)}
-.cta .btn-solid,.cookie-bar .btn{animation:none}
-.menu a.active{animation:none;color:var(--gold-soft)}
-.stat .num{animation:none;filter:drop-shadow(0 6px 18px rgba(212,175,106,.28))}
+.cta .btn-solid,.cookie-bar .btn{animation:pulseGold 3.2s ease-in-out infinite}
+.menu a.active{animation:navGlow 3.4s ease-in-out infinite;color:var(--gold-soft)}
+.stat .num{animation:numGlow 3.6s ease-in-out infinite;filter:drop-shadow(0 6px 18px rgba(212,175,106,.28))}
 .stat:hover .num{filter:drop-shadow(0 8px 24px rgba(236,207,160,.45))}
-.empty,.swipe-hint,.scroll-cue,.car-nav{animation:none}
+.empty{animation:driftGlow 3s ease-in-out infinite}.swipe-hint{animation:hintPulse 1.8s ease-in-out infinite}.scroll-cue{animation:fadeInUp 1s ease .8s both}.car-nav{animation:navGlow 3.8s ease-in-out infinite}
 .brand-ava-w::before{animation:ringPulse 5s ease-in-out infinite}
 .rev-ava-w::after{animation:ringPulse 5.5s ease-in-out infinite}
 .soc{background:rgba(255,255,255,.03)}
@@ -1181,11 +1184,48 @@ img,svg,video,iframe{max-width:100%}
 .car-slide:hover{box-shadow:0 22px 44px -22px rgba(0,0,0,.9)}
 
 
+/* Режимы анимаций из админки */
+html.ost-anim-calm .orb{animation-duration:30s!important}html.ost-anim-calm .panel--hero .bg::before{animation-duration:30s!important}html.ost-anim-calm .spark{opacity:.72}
+html.ost-anim-luxury .orb{animation-duration:12s!important}html.ost-anim-luxury .panel--hero .bg::before{animation-duration:15s!important}html.ost-anim-luxury .spark{filter:drop-shadow(0 0 10px rgba(236,207,160,.9))}
+
 /* ====== анимации всегда включены; выключить можно только ?anim=0 ====== */
 html.no-anim *,html.no-anim *::before,html.no-anim *::after{animation:none!important;transition-duration:.2s!important}
 html.no-anim .js .rv,html.no-anim .js .reveal{opacity:1!important;transform:none!important}
 html.no-anim .spark{display:none}
 
+/* ====== большая форма заявки: отдельный блок под консультацией ====== */
+.lead-panel{min-height:auto;padding-top:clamp(80px,9vw,125px);padding-bottom:clamp(80px,9vw,125px)}
+.lead-panel .lead-bg{opacity:.18;filter:saturate(.75) contrast(1.05)}
+.lead-content{width:100%}
+.lead-shell{position:relative;display:grid;grid-template-columns:minmax(240px,.82fr) minmax(0,1.18fr);gap:clamp(30px,5vw,78px);align-items:center;width:min(980px,100%);margin:0 auto;padding:clamp(28px,4vw,48px);border:1px solid rgba(236,207,160,.2);border-radius:28px;background:linear-gradient(145deg,rgba(21,17,12,.92),rgba(10,9,7,.86));box-shadow:0 32px 90px -50px #000,inset 0 1px 0 rgba(255,255,255,.06);overflow:hidden}
+.lead-shell::before{content:"";position:absolute;inset:-40%;background:radial-gradient(circle at 28% 35%,rgba(236,207,160,.1),transparent 26%),radial-gradient(circle at 85% 70%,rgba(163,124,63,.1),transparent 28%);animation:orbFloat 18s ease-in-out infinite alternate;pointer-events:none}
+.lead-copy,.site-lead-form{position:relative;z-index:1}
+.lead-copy .kicker{display:block;margin-bottom:13px}
+.lead-copy h2{margin:0 0 12px}
+.lead-copy p{margin:0;color:var(--muted);font-size:15px;line-height:1.75;max-width:430px}
+.lead-accent{display:flex;align-items:center;gap:8px;margin-top:28px}
+.lead-accent i{height:1px;width:48px;background:linear-gradient(90deg,transparent,var(--gold));opacity:.75}
+.lead-accent i:last-child{background:linear-gradient(90deg,var(--gold),transparent)}
+.lead-accent b{width:6px;height:6px;transform:rotate(45deg);background:var(--gold-soft);box-shadow:0 0 16px rgba(236,207,160,.45);animation:divPulse 3s ease-in-out infinite}
+.site-lead-form{padding:22px;border:1px solid rgba(236,207,160,.13);border-radius:20px;background:rgba(0,0,0,.22);backdrop-filter:blur(9px)}
+.lead-fields{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.site-lead-form label{display:block}
+.site-lead-form label span{display:block;margin:0 0 7px;color:var(--gold-soft);font:700 10px/1 system-ui;letter-spacing:1.4px;text-transform:uppercase}
+.site-lead-form input,.site-lead-form textarea{width:100%;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.035);color:#fff;padding:13px 14px;font:14px var(--sans);outline:none;transition:border-color .35s,box-shadow .35s,background .35s,transform .35s}
+.site-lead-form input:focus,.site-lead-form textarea:focus{border-color:rgba(236,207,160,.6);box-shadow:0 0 0 4px rgba(236,207,160,.08);background:rgba(255,255,255,.055);transform:translateY(-1px)}
+.site-lead-form textarea{min-height:104px;resize:vertical}
+.lead-wide{grid-column:1/-1}
+.lead-submit{position:relative;overflow:hidden;width:100%;margin-top:15px;display:flex;justify-content:center;align-items:center;gap:9px}
+.lead-submit.loading{pointer-events:none;opacity:.85}
+.lead-spinner{display:none;width:14px;height:14px;border:2px solid rgba(23,16,9,.28);border-top-color:#171009;border-radius:50%;animation:spinLead .7s linear infinite}
+.lead-submit.loading .lead-spinner{display:block}
+.lead-note{margin:10px 0 0;text-align:center;color:#71685c;font:11px/1.45 var(--sans)}
+.lead-result{min-height:20px;margin-top:8px;text-align:center;font:600 12px/1.45 var(--sans);color:var(--gold-soft)}
+.lead-result.error{color:#e5a0a0}
+.lead-hp{position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden}
+@keyframes spinLead{to{transform:rotate(360deg)}}
+@media(max-width:800px){.lead-shell{grid-template-columns:1fr;gap:26px}.lead-copy p{max-width:none}}
+@media(max-width:560px){.lead-shell{padding:20px;border-radius:22px}.site-lead-form{padding:16px}.lead-fields{grid-template-columns:1fr}.lead-wide{grid-column:auto}.lead-panel{padding-top:65px;padding-bottom:65px}}
 /* ====== компактный разделитель и мягкие стыки секций ====== */
 .panel + .panel{margin-top:0}
 .gold-divider{position:relative;z-index:3;display:flex;align-items:center;justify-content:center;gap:9px;
@@ -1318,6 +1358,33 @@ html.no-anim .spark{display:none}
     <p class="reveal">{{{consult.text|html}}}</p>
   </div></div>
 </section>{{/if}}
+
+{{#if sections.lead_form}}{{#if lead_form.enabled}}
+<section class="panel panel--center panel--dark lead-panel" id="lead">
+  <div class="bg lead-bg" style="background-image:url('{{{consult.bg}}}')"></div>
+  <div class="wrap"><div class="content lead-content">
+    <div class="lead-shell reveal">
+      <div class="lead-copy">
+        <span class="kicker">{{lead_form.kicker}}</span>
+        <h2 class="k">{{lead_form.title}}</h2>
+        <p>{{lead_form.subtitle}}</p>
+        <div class="lead-accent"><i></i><b></b><i></i></div>
+      </div>
+      <form class="site-lead-form" id="siteLeadForm" autocomplete="on" novalidate>
+        <div class="lead-fields">
+          <label><span>Имя</span><input name="name" maxlength="120" placeholder="Как к вам обращаться"></label>
+          <label><span>Телефон *</span><input name="phone" type="tel" maxlength="80" required inputmode="tel" placeholder="+7 (___) ___-__-__"></label>
+          <label class="lead-wide"><span>Что нужно сделать</span><textarea name="message" maxlength="1000" placeholder="Например: нужна кухня по размерам"></textarea></label>
+        </div>
+        <div class="lead-hp" aria-hidden="true"><input name="website" tabindex="-1" autocomplete="off"></div>
+        <button class="btn btn-solid lead-submit" type="submit"><span class="lead-submit-text">{{lead_form.button}}</span><span class="lead-spinner" aria-hidden="true"></span></button>
+        <p class="lead-note">{{lead_form.note}}</p>
+        <div class="lead-result" id="siteLeadResult" role="status" aria-live="polite"></div>
+      </form>
+    </div>
+  </div></div>
+</section>
+{{/if}}{{/if}}
 
 <div class="gold-divider"><i></i><b></b><i></i></div>
 
@@ -1522,8 +1589,9 @@ html.no-anim .spark{display:none}
 
 <script>
 (function(){
-const reduced=false;
-const fine=true;
+const reduced=!(window.__OST_ANIM&&window.__OST_ANIM.enabled);
+const parallax=!!(window.__OST_ANIM&&window.__OST_ANIM.parallax);
+const fine=!!(window.__OST_ANIM&&window.__OST_ANIM.hover3d);
 const progress=document.getElementById('progress');
 const header=document.getElementById('header');
 const burger=document.getElementById('burger'),menu=document.getElementById('menu'),scrim=document.getElementById('scrim');
@@ -1555,7 +1623,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
     e.preventDefault();t.scrollIntoView({behavior:reduced?'auto':'smooth',block:'start'});
   });
 });
-if(fine&&!reduced){
+if(parallax&&!reduced){
   /* параллакс без замеров на каждом кадре: позиции считаем заранее (дешёво и без лагов) */
   let items=[],vh=innerHeight;
   function measure(){
@@ -1709,18 +1777,56 @@ try{
 const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYear();
 })();
 </script>
+<script id="siteLeadScript">
+(function(){
+  var form=document.getElementById('siteLeadForm');
+  if(!form)return;
+  var btn=form.querySelector('.lead-submit'), result=document.getElementById('siteLeadResult');
+  function setResult(msg,bad){if(!result)return;result.textContent=msg||'';result.classList.toggle('error',!!bad);}
+  form.addEventListener('submit',async function(e){
+    e.preventDefault();
+    setResult('');
+    var fd=new FormData(form);
+    var phone=String(fd.get('phone')||'').trim();
+    if(phone.replace(/\D/g,'').length<7){setResult('Укажите номер телефона.',true);form.querySelector('[name="phone"]').focus();return;}
+    var body={name:String(fd.get('name')||'').trim(),phone:phone,message:String(fd.get('message')||'').trim(),website:String(fd.get('website')||''),page:location.href};
+    btn.classList.add('loading');btn.disabled=true;
+    var old=btn.querySelector('.lead-submit-text');if(old)old.textContent='Отправляем…';
+    try{
+      var ctl=typeof AbortController!=='undefined'?new AbortController():null;
+      var timer=ctl?setTimeout(function(){try{ctl.abort()}catch(_){}},9000):null;
+      var r=await fetch('/api/lead',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(body),signal:ctl?ctl.signal:undefined});
+      if(timer)clearTimeout(timer);
+      var raw=await r.text(), j={};
+      try{j=JSON.parse(raw||'{}')}catch(_){}
+      if(!r.ok||!j.ok)throw new Error(j.error||('Ошибка отправки ('+r.status+')'));
+      form.reset();setResult('Заявка отправлена. Спасибо! Мы свяжемся с вами.');
+      if(old)old.textContent='Заявка отправлена ✓';
+      setTimeout(function(){if(old)old.textContent='Отправить заявку';btn.disabled=false;btn.classList.remove('loading')},2600);
+    }catch(err){
+      setResult(err&&err.name==='AbortError'?'Сервер отвечает слишком долго. Попробуйте ещё раз или позвоните нам.':'Не удалось отправить заявку. Попробуйте ещё раз.',true);
+      if(old)old.textContent='Отправить заявку';
+      btn.disabled=false;btn.classList.remove('loading');
+    }
+  });
+})();
+</script>
 <script id="beautyScript">
 (function(){
-  var OFF=/[?&]anim=0/.test(location.search);
-  if(OFF)d.documentElement.classList.add('no-anim');
-  var reduced=false;                     /* анимации включены всегда */
-  var fine=true;
   var d=document;
+  var CFG=window.__OST_ANIM||{enabled:true,parallax:true,hover3d:true,sparks:true,scroll:true,text:true,intensity:'full'};
+  var OFF=/[?&]anim=0/.test(location.search);
+  var FORCE=/[?&]anim=1/.test(location.search);
+  var reduced=OFF||(!CFG.enabled&&!FORCE);
+  var fine=!!CFG.hover3d;
+  var parallax=!!CFG.parallax;
+  if(reduced)d.documentElement.classList.add('no-anim');
+  d.documentElement.classList.add('ost-anim-'+(CFG.intensity||'full'));
   function all(sel,root){return Array.prototype.slice.call((root||d).querySelectorAll(sel));}
 
   /* 1. Заголовок героя — появление по словам */
   var h1=d.getElementById('heroTitle');
-  if(h1&&!reduced){
+  if(h1&&!reduced&&CFG.text){
     var texts=[];
     (function collect(n){for(var i=0;i<n.childNodes.length;i++){var c=n.childNodes[i];
       if(c.nodeType===3&&c.nodeValue.trim())texts.push(c);else if(c.nodeType===1)collect(c);}})(h1);
@@ -1753,7 +1859,7 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
   /* 2. Появление блоков по скроллу (у .reveal уже своё — его не трогаем) */
   var RV='.c-line,.features li,.gold-divider,.section-note,.swipe-hint,.lb-bar,.eyebrow,.sub,.btn-row,.scroll-cue,.rev-text,.svc p,.step p,.guar p,.city p,.stat .lbl,footer .flogo,footer .social-row,footer p,.cookie-bar';
   var rvEls=all(RV).filter(function(el){return !el.classList.contains('reveal')&&!el.closest('#heroTitle');});
-  if(reduced||!('IntersectionObserver' in window)){rvEls.forEach(function(el){el.classList.add('rv','in')});}
+  if(reduced||!CFG.scroll||!('IntersectionObserver' in window)){rvEls.forEach(function(el){el.classList.add('rv','in')});}
   else{
     rvEls.forEach(function(el,i){el.classList.add('rv');el.style.transitionDelay=((i%6)*70)+'ms';});
     var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12,rootMargin:'0px 0px -40px 0px'});
@@ -1858,7 +1964,7 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
 
   /* 7. Искры от клика */
   d.addEventListener('click',function(e){
-    if(reduced&&!FORCE)return;
+    if((reduced||!CFG.sparks)&&!FORCE)return;
     for(var i=0;i<7;i++){
       var sp3=d.createElement('span');sp3.className='spark';
       var ang=(Math.PI*2*i)/7+Math.random()*.6,dist=26+Math.random()*34;
@@ -1889,7 +1995,7 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
       io2.observe(track);
     });
   }
-  console.log('%cКухни Островский · сборка 2026-10-06-v9 · анимации включены'+(reduced?' (у вас в системе отключена анимация — принудительно: добавьте ?anim=1 к адресу)':''),'color:#d4af6a');
+  console.log('%cКухни Островский · сборка 2026-10-07-v10 · анимации включены'+(reduced?' (у вас в системе отключена анимация — принудительно: добавьте ?anim=1 к адресу)':''),'color:#d4af6a');
 })();
 </script>
 {{{code.body}}}
@@ -2131,6 +2237,21 @@ def _migrate(raw):
 
     if "stats" in d and isinstance(d["stats"], dict):
         d["stats"].setdefault("items", _json_clone(DEFAULT_DATA.get("stats", {}).get("items") or []))
+    if not isinstance(d.get("animations"), dict):
+        d["animations"] = _json_clone(DEFAULT_DATA.get("animations") or {})
+    else:
+        for k,v in (DEFAULT_DATA.get("animations") or {}).items():
+            d["animations"].setdefault(k, v)
+    if not isinstance(d.get("lead_form"), dict):
+        d["lead_form"] = _json_clone(DEFAULT_DATA.get("lead_form") or {})
+    else:
+        for k,v in (DEFAULT_DATA.get("lead_form") or {}).items():
+            d["lead_form"].setdefault(k, v)
+    if not isinstance(d.get("sections"), dict):
+        d["sections"] = _json_clone(DEFAULT_DATA.get("sections") or {})
+    else:
+        for k,v in (DEFAULT_DATA.get("sections") or {}).items():
+            d["sections"].setdefault(k, v)
 
     return d
 
@@ -2311,9 +2432,9 @@ def _storage_put(bucket, name, blob, mime="application/json", upsert=True):
     return None
 
 
-def _storage_get(bucket, name):
+def _storage_get(bucket, name, timeout=30):
     url = "{}/storage/v1/object/{}/{}".format(SUPABASE_URL, bucket, name)
-    st, js, body = _http("GET", url, headers=_sb_headers(), timeout=30)
+    st, js, body = _http("GET", url, headers=_sb_headers(), timeout=timeout)
     return body if st == 200 else None
 
 
@@ -2382,24 +2503,72 @@ LEADS_FILE = "leads.json"
 AUDIT_FILE = "audit.json"
 _leads_lock = threading.Lock()
 _audit_lock = threading.Lock()
+_private_cache = {}
+_private_cache_lock = threading.Lock()
+_private_cloud_lock = threading.Lock()
+
+
+def _private_local_path(filename):
+    # Файлы лежат рядом с сервером и никогда не раздаются как статика.
+    return os.path.join(ROOT, "." + filename)
 
 
 def _private_json_get(filename, default):
+    path = _private_local_path(filename)
     try:
-        blob = _storage_get(BACKUP_BUCKET, filename)
+        if os.path.isfile(path):
+            with open(path, "r", encoding="utf-8") as f:
+                obj = json.load(f)
+            with _private_cache_lock:
+                _private_cache[filename] = _json_clone(obj)
+            return obj
+    except Exception as e:
+        print("[private-json] local read {}: {}".format(filename, e), flush=True)
+    with _private_cache_lock:
+        if filename in _private_cache:
+            return _json_clone(_private_cache[filename])
+    try:
+        blob = _storage_get(BACKUP_BUCKET, filename, timeout=3)
         if not blob:
             return _json_clone(default)
         obj = json.loads(blob.decode("utf-8"))
+        with _private_cache_lock:
+            _private_cache[filename] = _json_clone(obj)
+        try:
+            tmp = path + ".tmp"
+            with open(tmp, "w", encoding="utf-8") as f:
+                json.dump(obj, f, ensure_ascii=False, indent=1)
+            os.replace(tmp, path)
+        except Exception:
+            pass
         return obj
     except Exception as e:
-        print("[private-json] read {}: {}".format(filename, e), flush=True)
+        print("[private-json] cloud read {}: {}".format(filename, e), flush=True)
         return _json_clone(default)
+
+
+def _private_cloud_put_async(filename, blob):
+    def worker():
+        with _private_cloud_lock:
+            try:
+                _storage_put(BACKUP_BUCKET, filename, blob, "application/json", upsert=True)
+            except Exception as e:
+                print("[private-json] cloud write {}: {}".format(filename, e), flush=True)
+    threading.Thread(target=worker, name="private-json-sync", daemon=True).start()
 
 
 def _private_json_put(filename, obj):
     try:
         blob = json.dumps(obj, ensure_ascii=False, indent=1).encode("utf-8")
-        return bool(_storage_put(BACKUP_BUCKET, filename, blob, "application/json", upsert=True))
+        path = _private_local_path(filename)
+        tmp = path + ".tmp"
+        with open(tmp, "wb") as f:
+            f.write(blob)
+        os.replace(tmp, path)
+        with _private_cache_lock:
+            _private_cache[filename] = _json_clone(obj)
+        _private_cloud_put_async(filename, blob)
+        return True
     except Exception as e:
         print("[private-json] write {}: {}".format(filename, e), flush=True)
         return False
@@ -2914,52 +3083,26 @@ def _bump_data_sig():
 
 
 def _inject_site_ui(html, data):
-    'Добавляет компактную форму заявки и короткую заставку без изменения page.html.'
-    lead = data.get("lead_form") or {}
-    if lead.get("enabled", True) and 'id="ostLeadModal"' not in html:
-        brand = data.get("brand") or {}
-        seo = data.get("seo") or {}
-        name = _escape(str(brand.get("name") or "Кухни Островский"))
-        logo = _escape(str(seo.get("favicon_url") or brand.get("logo_url") or "/favicon-192x192.png"))
-        title = _escape(str(lead.get("title") or "Оставить заявку"))
-        subtitle = _escape(str(lead.get("subtitle") or "Оставьте номер — свяжемся и обсудим задачу."))
-        button = _escape(str(lead.get("button") or "Оставить заявку"))
-        widget = """<style id="ostLeadStyles">
-#ostLeadFab{position:fixed;right:22px;bottom:22px;z-index:8990;border:1px solid rgba(236,207,160,.5);background:linear-gradient(135deg,#ecd09c,#c89e58);color:#17120b;border-radius:999px;padding:13px 18px;font:700 13px/1 system-ui;box-shadow:0 16px 40px -18px #000;cursor:pointer;transition:.3s}
-#ostLeadFab:hover{transform:translateY(-2px)}
-#ostLeadModal{position:fixed;inset:0;z-index:8999;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(8,6,4,.72);backdrop-filter:blur(12px)}
-#ostLeadModal.open{display:flex}
-.ostLeadCard{width:min(470px,100%);position:relative;border:1px solid rgba(236,207,160,.25);border-radius:24px;background:linear-gradient(160deg,rgba(28,23,17,.98),rgba(12,10,8,.98));box-shadow:0 35px 90px -35px #000;padding:28px}
-.ostLeadTop{display:flex;align-items:center;gap:12px;margin-bottom:20px}.ostLeadLogo{width:48px;height:48px;border-radius:15px;object-fit:cover;border:1px solid rgba(236,207,160,.28)}
-.ostLeadCard h3{font:600 25px/1.05 Georgia,serif;color:#fff;margin:0}.ostLeadSub{color:#b9ad9a;font:13px/1.55 system-ui;margin:5px 0 0}
-.ostLeadClose{position:absolute;right:16px;top:14px;width:34px;height:34px;border:1px solid rgba(255,255,255,.1);border-radius:50%;background:rgba(255,255,255,.04);color:#fff;cursor:pointer}
-.ostLeadField{margin:0 0 12px}.ostLeadField label{display:block;color:#eccfa0;font:700 10px/1 system-ui;letter-spacing:1.2px;text-transform:uppercase;margin:0 0 6px}
-.ostLeadField input,.ostLeadField textarea{width:100%;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(0,0,0,.28);color:#fff;padding:12px 13px;font:14px system-ui;outline:none}
-.ostLeadField textarea{min-height:82px;resize:vertical}.ostLeadSend{width:100%;border:0;border-radius:12px;padding:13px 16px;background:linear-gradient(135deg,#ecd09c,#c89e58);color:#17120b;font:800 13px system-ui;cursor:pointer;margin-top:4px}
-.ostLeadNote{color:#71685c;font:10.5px/1.45 system-ui;text-align:center;margin:9px 2px 0}.ostLeadHp{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
-@media(max-width:600px){#ostLeadFab{right:14px;bottom:14px;padding:12px 15px}.ostLeadCard{padding:24px 18px;border-radius:20px}}
-</style>
-<button id="ostLeadFab" type="button">""" + button + """</button>
-<div id="ostLeadModal" aria-hidden="true"><div class="ostLeadCard" role="dialog" aria-modal="true">
-<button class="ostLeadClose" id="ostLeadClose" type="button" aria-label="Закрыть">×</button>
-<div class="ostLeadTop"><img class="ostLeadLogo" src=""" + logo + """ alt=""" + name + """><div><h3>""" + title + """</h3><p class="ostLeadSub">""" + subtitle + """</p></div></div>
-<form id="ostLeadForm" autocomplete="on">
-<div class="ostLeadField"><label>Имя</label><input name="name" maxlength="120" placeholder="Как к вам обращаться"></div>
-<div class="ostLeadField"><label>Телефон *</label><input name="phone" type="tel" maxlength="80" required placeholder="+7 (___) ___-__-__"></div>
-<div class="ostLeadField"><label>Что нужно сделать</label><textarea name="message" maxlength="1000" placeholder="Например: нужна кухня по размерам"></textarea></div>
-<div class="ostLeadHp"><input name="website" tabindex="-1" autocomplete="off"></div>
-<button class="ostLeadSend" type="submit">Отправить заявку</button><p class="ostLeadNote">Контакт нужен только для связи по заявке.</p>
-</form></div></div>
-<script>(function(){const f=document.getElementById('ostLeadFab'),m=document.getElementById('ostLeadModal'),c=document.getElementById('ostLeadClose'),form=document.getElementById('ostLeadForm');function o(){m.classList.add('open');m.setAttribute('aria-hidden','false');setTimeout(()=>form&&form.querySelector('input[name=name]')?.focus(),70)}function x(){m.classList.remove('open');m.setAttribute('aria-hidden','true')}f&&f.addEventListener('click',o);c&&c.addEventListener('click',x);m&&m.addEventListener('click',e=>{if(e.target===m)x()});document.addEventListener('keydown',e=>{if(e.key==='Escape')x()});form&&form.addEventListener('submit',async e=>{e.preventDefault();const b=form.querySelector('.ostLeadSend'),fd=new FormData(form),body={name:String(fd.get('name')||'').trim(),phone:String(fd.get('phone')||'').trim(),message:String(fd.get('message')||'').trim(),website:String(fd.get('website')||''),page:location.href};b.disabled=true;b.textContent='Отправляю…';try{const r=await fetch('/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}),j=await r.json();if(!r.ok||!j.ok)throw Error(j.error||'Ошибка');form.reset();b.textContent='Заявка отправлена ✓';setTimeout(()=>{b.textContent='Отправить заявку';b.disabled=false;x()},850)}catch(err){b.disabled=false;b.textContent='Отправить заявку';alert('Не удалось отправить заявку. Позвоните или напишите напрямую.')}})})();</script>"""
+    """Добавляет только короткую заставку первого входа. Форма заявки живёт отдельным блоком в PAGE."""
+    anim = data.get("animations") or {}
+    enabled = bool(anim.get("enabled", True))
+    loader_enabled = enabled and bool(anim.get("loader", True))
+    brand = data.get("brand") or {}
+    seo = data.get("seo") or {}
+    name = _escape(str(brand.get("name") or "Кухни Островский"))
+    logo = _escape(str(seo.get("favicon_url") or brand.get("logo_url") or "/favicon-192x192.png"))
+    if loader_enabled and 'id="ostSiteLoader"' not in html:
         loader = """<style id="ostLoaderStyles">
-#ostSiteLoader{position:fixed;inset:0;z-index:100000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:radial-gradient(circle at 50% 42%,rgba(236,207,160,.16),transparent 27%),radial-gradient(circle at 20% 80%,rgba(163,124,63,.15),transparent 35%),linear-gradient(135deg,#100d09,#070605 58%,#161007);transition:opacity .28s ease,visibility .28s ease}
-#ostSiteLoader img{width:76px;height:76px;object-fit:cover;border-radius:22px;border:1px solid rgba(236,207,160,.35);box-shadow:0 0 45px rgba(236,207,160,.18),0 18px 45px -25px #000}
-.ostLoaderName{font:600 23px/1 Georgia,serif;letter-spacing:.8px;color:#f8efe0}.ostLoaderLine{width:80px;height:1px;background:linear-gradient(90deg,transparent,#ecd09c,transparent);opacity:.7}
+#ostSiteLoader{position:fixed;inset:0;z-index:100000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:radial-gradient(circle at 50% 42%,rgba(236,207,160,.16),transparent 27%),radial-gradient(circle at 20% 80%,rgba(163,124,63,.15),transparent 35%),linear-gradient(135deg,#100d09,#070605 58%,#161007);transition:opacity .5s cubic-bezier(.22,.61,.36,1),visibility .5s ease}
+#ostSiteLoader img{width:76px;height:76px;object-fit:cover;border-radius:22px;border:1px solid rgba(236,207,160,.35);box-shadow:0 0 45px rgba(236,207,160,.18),0 18px 45px -25px #000;animation:loaderLogoPop .9s cubic-bezier(.34,1.56,.64,1) both}
+.ostLoaderName{font:600 23px/1 Georgia,serif;letter-spacing:.8px;color:#f8efe0;animation:loaderTextIn .7s ease .12s both}.ostLoaderLine{width:80px;height:1px;background:linear-gradient(90deg,transparent,#ecd09c,transparent);opacity:.7;animation:loaderLine 1s ease .25s both}
 #ostSiteLoader.done{opacity:0;visibility:hidden;pointer-events:none}
-html.ost-lite .panel .bg,html.ost-lite .panel .content{transform:none!important}html.ost-lite *,html.ost-lite *::before,html.ost-lite *::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+@keyframes loaderLogoPop{from{opacity:0;transform:scale(.7) translateY(12px)}to{opacity:1;transform:none}}
+@keyframes loaderTextIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes loaderLine{from{width:0;opacity:0}to{width:80px;opacity:.7}}
 </style>"""
         html = html.replace("</head>", loader + "</head>", 1)
-        html = html.replace("</body>", widget + '<div id="ostSiteLoader"><img src="' + logo + '" alt=""><div class="ostLoaderName">' + name + '</div><div class="ostLoaderLine"></div></div><script>(function(){try{var c=navigator.connection;if((c&&c.saveData)||navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4)document.documentElement.classList.add("ost-lite")}catch(e){}var l=document.getElementById("ostSiteLoader");var seen=false;try{seen=sessionStorage.getItem("ostLoaderSeen")==="1"}catch(e){}if(seen){l.remove();return}try{sessionStorage.setItem("ostLoaderSeen","1")}catch(e){}window.addEventListener("load",function(){setTimeout(function(){l.classList.add("done");setTimeout(function(){l.remove()},330)},260)});setTimeout(function(){l.classList.add("done")},1200)})();</script></body>', 1)
+        html = html.replace("</body>", '<div id="ostSiteLoader"><img src="' + logo + '" alt=""><div class="ostLoaderName">' + name + '</div><div class="ostLoaderLine"></div></div><script>(function(){var l=document.getElementById("ostSiteLoader");if(!l)return;var seen=false;try{seen=sessionStorage.getItem("ostLoaderSeen")==="1"}catch(e){}if(seen){l.remove();return}try{sessionStorage.setItem("ostLoaderSeen","1")}catch(e){}window.addEventListener("load",function(){setTimeout(function(){l.classList.add("done");setTimeout(function(){l.remove()},560)},260)});setTimeout(function(){l.classList.add("done")},1400)})();</script></body>', 1)
     return html
 
 
@@ -2978,6 +3121,16 @@ def render_site():
     except Exception as e:
         print("[render] ОШИБКА: {}".format(e), flush=True)
         html = _page_template()
+    anim = data.get("animations") or {}
+    anim_enabled = bool(anim.get("enabled", True))
+    anim_parallax = bool(anim.get("parallax", True))
+    anim_hover = bool(anim.get("hover3d", True))
+    anim_sparks = bool(anim.get("sparks", True))
+    anim_scroll = bool(anim.get("scroll_reveal", True))
+    anim_text = bool(anim.get("text_reveal", True))
+    anim_mode = str(anim.get("intensity") or "full")
+    cfg = '<script>window.__OST_ANIM={enabled:' + str(anim_enabled).lower() + ',parallax:' + str(anim_parallax).lower() + ',hover3d:' + str(anim_hover).lower() + ',sparks:' + str(anim_sparks).lower() + ',scroll:' + str(anim_scroll).lower() + ',text:' + str(anim_text).lower() + ',intensity:' + json.dumps(anim_mode, ensure_ascii=False) + '};</script>'
+    html = html.replace("</head>", cfg + "</head>", 1)
     html = _proxify_urls(html)
     html = _inject_site_ui(html, data)
     with _render_lock:
@@ -3257,6 +3410,7 @@ ADMIN_SCHEMA = [
          {"path": "sections.stats", "label": "Цифры (10+, 5.0, 9/10)", "type": "check"},
          {"path": "sections.about", "label": "О специалисте", "type": "check"},
          {"path": "sections.consult", "label": "Консультация", "type": "check"},
+         {"path": "sections.lead_form", "label": "Блок «Оставить заявку»", "type": "check"},
          {"path": "sections.works", "label": "Работы", "type": "check"},
          {"path": "sections.reviews", "label": "Отзывы", "type": "check"},
          {"path": "sections.services", "label": "Услуги", "type": "check"},
@@ -3281,6 +3435,24 @@ ADMIN_SCHEMA = [
          {"path": "design.muted", "label": "Второстепенный текст", "type": "color"},
          {"path": "design.fonts_url", "label": "Ссылка на шрифты Google", "type": "text", "mono": True},
          {"path": "design.custom_css", "label": "Свой CSS", "type": "textarea", "rows": 8, "mono": True},
+     ]},
+
+    {"id": "animations", "group": "Дизайн", "title": "Анимации", 
+     "hint": "Все анимации сайта собраны здесь. По умолчанию включён полный режим — появления, параллакс, hover-эффекты, искры и плавность.",
+     "fields": [
+         {"path": "animations.enabled", "label": "Анимации сайта", "type": "check", "chkLabel": "включены"},
+         {"path": "animations.scroll_reveal", "label": "Появление блоков при прокрутке", "type": "check", "chkLabel": "включено"},
+         {"path": "animations.text_reveal", "label": "Анимация заголовка по словам", "type": "check", "chkLabel": "включено"},
+         {"path": "animations.parallax", "label": "Параллакс фонов", "type": "check", "chkLabel": "включено"},
+         {"path": "animations.hover3d", "label": "3D-наклон карточек и фото", "type": "check", "chkLabel": "включено"},
+         {"path": "animations.sparks", "label": "Искры при клике", "type": "check", "chkLabel": "включено"},
+         {"path": "animations.loader", "label": "Короткая заставка при первом входе", "type": "check", "chkLabel": "включена"},
+         {"path": "animations.intensity", "label": "Интенсивность", "type": "select", "options": [
+             {"value": "calm", "label": "Спокойная"},
+             {"value": "full", "label": "Полная"},
+             {"value": "luxury", "label": "Максимальная"}
+         ]},
+         {"type": "info", "text": "<b>Важно:</b> обычные CSS-анимации сайта работают всегда. Если выключить общий переключатель, интерактивные эффекты и появления отключатся. Параметр <code>?anim=0</code> временно выключает их только для текущего открытия страницы."}
      ]},
 
     {"id": "brand", "group": "Контент", "title": "Бренд и меню", "fields": [
@@ -3530,12 +3702,14 @@ ADMIN_SCHEMA = [
      ]},
 
     {"id": "lead_settings", "group": "Заявки", "title": "Форма заявки",
-     "hint": "Компактная форма на сайте. Новые обращения автоматически появляются в разделе «Заявки».",
+     "hint": "Большой отдельный блок «Оставить заявку» находится сразу под консультацией. Заявки приходят прямо в админку.",
      "fields": [
-         {"path": "lead_form.enabled", "label": "Показывать форму на сайте", "type": "check", "chkLabel": "включено"},
-         {"path": "lead_form.title", "label": "Заголовок формы", "type": "text"},
+         {"path": "lead_form.enabled", "label": "Показывать блок на сайте", "type": "check", "chkLabel": "включено"},
+         {"path": "lead_form.title", "label": "Заголовок", "type": "text"},
+         {"path": "lead_form.kicker", "label": "Надзаголовок", "type": "text"},
          {"path": "lead_form.subtitle", "label": "Подзаголовок", "type": "textarea", "rows": 2},
-         {"path": "lead_form.button", "label": "Текст плавающей кнопки", "type": "text"},
+         {"path": "lead_form.button", "label": "Текст кнопки", "type": "text"},
+         {"path": "lead_form.note", "label": "Подпись под кнопкой", "type": "text"},
      ]},
 
     {"id": "guide", "group": "Помощь", "title": "Инструкция для админов",
@@ -3626,7 +3800,7 @@ header{position:sticky;top:0;z-index:30;display:flex;justify-content:space-betwe
 .btn-red{background:rgba(220,70,70,.09);border-color:rgba(220,70,70,.28);color:#ff9d9d}
 .btn-red:hover{background:rgba(220,70,70,.16);border-color:rgba(220,70,70,.45)}
 .btn.pulse{animation:softPulse 2s ease-in-out infinite}
-.layout{display:flex;min-height:calc(100vh - 56px);align-items:flex-start}
+.layout{display:flex;gap:10px;min-height:calc(100vh - 56px);align-items:flex-start}
 nav.side{width:254px;flex-shrink:0;position:sticky;top:56px;max-height:calc(100vh - 56px);overflow-y:auto;padding:12px 0 40px;background:rgba(0,0,0,.26);border-right:1px solid var(--bd);scrollbar-width:thin}
 nav.side::-webkit-scrollbar{width:8px}
 nav.side::-webkit-scrollbar-thumb{background:rgba(236,207,160,.16);border-radius:4px}
@@ -3640,11 +3814,24 @@ nav.side a.changed:after{content:"ВНИМАНИЕ";font-size:8px;letter-spacing
 nav.side a{position:relative;display:flex;align-items:center;gap:9px;padding:10px 18px;color:var(--mut);font-size:13.5px;cursor:pointer;border-left:2px solid transparent;transition:color .35s,background .35s,padding-left .35s,border-color .35s}
 nav.side a:hover{color:#fff;background:rgba(255,255,255,.035);padding-left:22px}
 nav.side a.active{color:var(--gs);border-left-color:var(--g);background:linear-gradient(90deg,rgba(212,175,106,.13),transparent)}
+/* Боковая панель — современная карточка в стиле референса */
+nav.side{margin:10px 0 10px 10px;width:236px;top:66px;max-height:calc(100vh - 76px);border:1px solid rgba(150,177,205,.13);border-radius:18px;background:linear-gradient(180deg,rgba(20,39,58,.97),rgba(10,24,38,.98));box-shadow:0 24px 70px -35px #000,inset 0 1px 0 rgba(255,255,255,.04);padding:10px 7px 16px}
+nav.side .nav-group{padding:14px 12px 7px;color:#718297;letter-spacing:1.7px}
+nav.side a{margin:2px 0;padding:9px 10px;border-left:0;border-radius:11px;color:#8290a0;gap:9px}
+nav.side a:hover{padding-left:13px;background:rgba(255,255,255,.045);color:#dbe3eb}
+nav.side a.active{padding-left:10px;color:#f0eadf;border-left:0;background:linear-gradient(135deg,rgba(236,207,160,.15),rgba(255,255,255,.055));box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 8px 22px -16px #000}
+nav.side a.changed{margin:2px 0;padding-left:10px}
+nav.side a.changed:hover{padding-left:13px}
+nav.side .nav-ico{background:rgba(255,255,255,.025);border-color:rgba(255,255,255,.045);color:#73869a}
+nav.side::-webkit-scrollbar-thumb{background:rgba(170,191,214,.16)}
+
 nav.side a .cap{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 nav.side a .dot{width:6px;height:6px;border-radius:50%;background:var(--g);opacity:0;transform:scale(.4);transition:opacity .35s,transform .35s;flex-shrink:0}
+nav.side a .nav-ico{width:23px;height:23px;display:grid;place-items:center;border-radius:8px;color:#718093;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.035);font-size:12px;font-weight:700;transition:color .35s,background .35s,border-color .35s,transform .35s;flex-shrink:0}nav.side a:hover .nav-ico,nav.side a.active .nav-ico{color:var(--gs);background:rgba(236,207,160,.08);border-color:rgba(236,207,160,.16);transform:translateY(-1px)}
 nav.side a.changed .dot{opacity:1;transform:none;box-shadow:0 0 10px rgba(212,175,106,.85)}
 .nav-group{padding:14px 18px 6px;font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:#6f6659;font-weight:700}
 main{flex:1;min-width:0;max-width:1080px;padding:24px clamp(16px,3vw,30px) 150px;animation:fadeUp .5s cubic-bezier(.16,1,.3,1)}
+.page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:18px}.eyebrow-admin{display:inline-flex;align-items:center;gap:7px;color:#738193;font-size:10px;letter-spacing:2px;font-weight:800}.live-pill{display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid rgba(236,207,160,.12);background:rgba(255,255,255,.025);border-radius:999px;color:#9e9588;font-size:11px}.live-pill i{width:7px;height:7px;border-radius:50%;background:#7bd69c;box-shadow:0 0 0 0 rgba(123,214,156,.5);animation:softPulse 2s infinite}.empty-leads{display:flex;flex-direction:column;gap:5px;align-items:center;justify-content:center;min-height:180px;text-align:center}.empty-leads strong{font-size:16px;color:#eee4d5}.empty-leads span{font-size:12px;color:#776f63}
 h2{font-family:Georgia,serif;font-size:24px;color:#fff;margin-bottom:6px}
 p.hint{color:var(--mut);font-size:13px;margin-bottom:18px}
 .field{margin-bottom:15px;animation:fadeUp .5s cubic-bezier(.16,1,.3,1) both;animation-delay:var(--d,0s)}
@@ -3809,7 +3996,7 @@ function searchHTML(){
   return h;
 }
 function renderLeads(){
-  q('#main').innerHTML='<h2>Заявки</h2><p class="hint">Новые обращения с формы сайта. Здесь только реальные отправленные заявки — ничего не нужно переносить вручную.</p><div class="dashboard"><div class="dash"><b id="leadTotal">—</b><span>всего заявок</span></div><div class="dash"><b id="leadUnread">—</b><span>новых</span></div><div class="dash"><b>24/7</b><span>форма принимает обращения</span></div></div><div class="actions" style="margin-bottom:16px"><button class="btn btn-gold" id="refreshLeads">Обновить</button><button class="btn" id="readAllLeads">Отметить всё прочитанным</button></div><div id="leadsOut"><div class="skel big"></div><div class="skel"></div></div>';
+  q('#main').innerHTML='<div class="page-head"><div><span class="eyebrow-admin">ВХОДЯЩИЕ</span><h2>Заявки</h2><p class="hint">Новые обращения с формы сайта. Они сохраняются автоматически и сразу появляются здесь.</p></div><div class="live-pill"><i></i> Форма онлайн</div></div><div class="dashboard"><div class="dash"><b id="leadTotal">0</b><span>всего заявок</span></div><div class="dash"><b id="leadUnread">0</b><span>новых</span></div><div class="dash"><b>∞</b><span>принимаем обращения</span></div></div><div class="actions" style="margin-bottom:16px"><button class="btn btn-gold" id="refreshLeads">Обновить</button><button class="btn" id="readAllLeads">Отметить всё прочитанным</button></div><div id="leadsOut"><div class="info empty-leads"><strong>Проверяем заявки…</strong><span>Это займёт совсем немного времени.</span></div></div>';
   q('#refreshLeads').onclick=loadLeads;
   q('#readAllLeads').onclick=function(){api('/admin/api/leads/read',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}).then(loadLeads)};
   loadLeads();
@@ -3847,13 +4034,14 @@ function render(){
   var groups={},order=[];
   SCHEMA.forEach(function(t){if(!groups[t.group]){groups[t.group]=[];order.push(t.group)}groups[t.group].push(t)});
   var nav='<div class="side-search"><span class="ic">⌕</span><input id="search" type="search" placeholder="Поиск по всем полям…" value="'+esc(SEARCH)+'"></div>';
-  nav+='<div class="nav-group">Рабочее</div><a data-tab="leads" class="'+(TAB==='leads'?'active':'')+'"><span class="dot"></span><span class="cap">Заявки</span><span id="leadBadge" class="status" style="display:none;padding:2px 7px;margin-left:auto;background:rgba(236,207,160,.15);color:#ecd09c;border:1px solid rgba(236,207,160,.25)">0</span></a>';
-  nav+='<a data-tab="audit" class="'+(TAB==='audit'?'active':'')+'"><span class="dot"></span><span class="cap">Журнал действий</span></a>';
+  nav+='<div class="nav-group">Рабочее</div><a data-tab="leads" class="'+(TAB==='leads'?'active':'')+'"><span class="nav-ico">◉</span><span class="cap">Заявки</span><span id="leadBadge" class="status" style="display:none;padding:2px 7px;margin-left:auto;background:rgba(236,207,160,.15);color:#ecd09c;border:1px solid rgba(236,207,160,.25)">0</span></a>';
+  nav+='<a data-tab="audit" class="'+(TAB==='audit'?'active':'')+'"><span class="nav-ico">◌</span><span class="cap">Журнал действий</span></a>';
   order.forEach(function(g){
     nav+='<div class="nav-group">'+esc(g)+'</div>';
     groups[g].forEach(function(t){
       var cls=(t.id===TAB?' active':'')+(tabChanged(t)?' changed':'');
-      nav+='<a data-tab="'+t.id+'" class="'+(cls.trim()||'')+'"><span class="dot"></span><span class="cap">'+esc(t.title)+'</span></a>';
+      var icons={seo:'⌁',code:'</>',design:'✦',animations:'✦',brand:'◈',hero:'⌂',stats:'◫',about:'◎',consult:'◌',works:'▧',reviews:'☆',services:'✣',process:'↝',guarantees:'◇',cities:'⌖',cta:'↗',contacts:'⌂',footer:'▤',cookie:'◍',lead_settings:'✉',guide:'?',media:'▦',history:'↶'};
+      nav+='<a data-tab="'+t.id+'" class="'+(cls.trim()||'')+'"><span class="nav-ico">'+(icons[t.id]||'•')+'</span><span class="cap">'+esc(t.title)+'</span></a>';
     });
   });
   q('#side').innerHTML=nav;
@@ -4157,7 +4345,7 @@ ADMIN_HTML = ADMIN_HTML.replace("__SCHEMA__", _SCHEMA_JSON)
 
 STATIC_EXT = {".html", ".htm", ".txt", ".xml", ".svg", ".png", ".jpg", ".jpeg", ".webp", ".gif", ".ico",
               ".css", ".js", ".json", ".webmanifest", ".woff", ".woff2", ".pdf", ".mp4"}
-STATIC_BLOCK = {"page.html", "mebel.py", "requirements.txt", "Dockerfile", "robots.txt", "sitemap.xml"}
+STATIC_BLOCK = {"page.html", "mebel.py", "requirements.txt", "Dockerfile", "robots.txt", "sitemap.xml", ".leads.json", ".audit.json", "leads.json", "audit.json"}
 MIME = {".html": "text/html; charset=utf-8", ".htm": "text/html; charset=utf-8", ".txt": "text/plain; charset=utf-8",
         ".xml": "application/xml; charset=utf-8", ".svg": "image/svg+xml", ".png": "image/png",
         ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".webp": "image/webp", ".gif": "image/gif",
