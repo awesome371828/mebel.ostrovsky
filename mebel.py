@@ -564,14 +564,15 @@ def _apply_filter(name, value):
 def _extract_block(tpl, pos):
     """Возвращает (тело, else-ветка, новая_позиция) для блока #each/#if/#unless."""
     depth = 0
-    main, alt, cur = [], [], main
+    main_parts, alt_parts = [], []
+    cur = main_parts
     seen_else = False
     p = pos
     while True:
         m = _TAG_RE.search(tpl, p)
         if not m:
             cur.append(tpl[p:])
-            return "".join(main), ("".join(alt) if seen_else else ""), len(tpl)
+            return "".join(main_parts), ("".join(alt_parts) if seen_else else ""), len(tpl)
         expr = m.group(1).strip()
         cur.append(tpl[p:m.start()])
         p = m.end()
@@ -580,12 +581,12 @@ def _extract_block(tpl, pos):
             cur.append(m.group(0))
         elif expr in ("/each", "/if", "/unless"):
             if depth == 0:
-                return "".join(main), ("".join(alt) if seen_else else ""), p
+                return "".join(main_parts), ("".join(alt_parts) if seen_else else ""), p
             depth -= 1
             cur.append(m.group(0))
         elif expr == "else" and depth == 0 and not seen_else:
             seen_else = True
-            cur = alt
+            cur = alt_parts
         else:
             cur.append(m.group(0))
 
