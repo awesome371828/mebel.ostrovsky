@@ -26,41 +26,38 @@ MAX_UPLOAD = 8 * 1024 * 1024
 DATA_ROW_ID = 1
 CACHE_TTL = 15
 HTTP_TIMEOUT = 12
-FAVICON_URL = "https://sun9-71.vkuserphoto.ru/s/v1/ig2/vrD0P7wnU0dU8cSoW8yBUOc-naoKs1vJN5OXMrUFeAdLJQi9qfWScCGH9JV3-r4btxsDfbPh--pJ1tSjOlkfiVRw2Celdw.jpg?quality=95&cs=1254x0"
+FAVICON_URL = "https://sun9-71.vkuserphoto.ru/s/v1/ig2/vrD0P7wnU0dU8cSoW8yBUOc-naoKs1vJN5OXMrUFeAdLJQi9qfWScCGH9JV3-r4btxsDfbPh--pJ1tSjOlkfiVRw2Celdw.jpg?quality=95&from=bu&u=-mZnLUrNq7bsSRyuT0gwpcYkWHU9MA-lwwC3ZYRE2Uw&cs=512x0"
 
 ANIM_STYLE = """<style id="goldAnimations">
 @keyframes shimmerX{0%{background-position:-200% 0}100%{background-position:200% 0}}
 @keyframes goldGradient{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-@keyframes particleFloat{0%{transform:translateY(100vh) scale(.5);opacity:0}10%{opacity:1}90%{opacity:.85}100%{transform:translateY(-100px) scale(1.1);opacity:0}}
 @keyframes rippleAnim{to{transform:scale(4);opacity:0}}
 @keyframes glowPulse{0%,100%{text-shadow:0 0 10px rgba(236,207,160,.3)}50%{text-shadow:0 0 30px rgba(236,207,160,.8),0 0 60px rgba(212,175,106,.5)}}
 @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
-@keyframes floatSlow{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(3deg)}}
+@keyframes floatSlow{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-5px) rotate(2deg)}}
 @keyframes fadeInSoft{from{opacity:0}to{opacity:1}}
-@keyframes pulseGlow{0%,100%{box-shadow:0 16px 42px rgba(212,175,106,.26)}50%{box-shadow:0 26px 70px rgba(236,207,160,.6)}}
+@keyframes pulseGlow{0%,100%{box-shadow:0 16px 42px rgba(212,175,106,.26)}50%{box-shadow:0 26px 70px rgba(236,207,160,.5)}}
 @keyframes ringPulse{0%,100%{transform:scale(.94);opacity:.35}50%{transform:scale(1.08);opacity:.75}}
-@keyframes playPulse{0%,100%{box-shadow:0 0 0 8px rgba(212,175,106,.14),0 0 30px rgba(212,175,106,.4)}50%{box-shadow:0 0 0 14px rgba(212,175,106,.08),0 0 44px rgba(212,175,106,.6)}}
+@keyframes playPulse{0%,100%{box-shadow:0 0 0 8px rgba(212,175,106,.14),0 0 30px rgba(212,175,106,.4)}50%{box-shadow:0 0 0 14px rgba(212,175,106,.08),0 0 44px rgba(212,175,106,.5)}}
 @keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 @keyframes hintArrow{0%,100%{transform:translateX(0);opacity:.5}50%{transform:translateX(7px);opacity:1}}
 @keyframes hintPulse{0%,100%{opacity:.55}50%{opacity:1}}
-@keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.15)}}
+@keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.12)}}
 @keyframes fadeInUp{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
 h1,h2.k,.sec-head h2,.about-body h2,.contact-info h2,.cta h2{background-image:linear-gradient(90deg,#faf3e6 0%,#faf3e6 30%,#eccfa0 50%,#faf3e6 70%,#faf3e6 100%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;transition:background-position 1.6s ease;background-position:100% 0}
 h1 em,.shimmer,h1 em.shimmer{background-image:linear-gradient(90deg,#eccfa0,#fff 35%,#eccfa0 70%,#eccfa0 100%);background-size:220% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerX 4s linear infinite}
 .js .anim-visible h1,.js h1.anim-visible,.js .anim-visible h2,.js h2.anim-visible{background-position:0% 0}
-.js .stat,.js .svc,.js .step,.js .guar,.js .city,.js .car-slide,.js .rev-card,.js .about-card,.js .about-body,.js .call-block,.js .contact-info,.js .sec-head,.js .c-line,.js .features li,.js .btn-row .btn,.js .gold-divider,.js .swipe-hint{opacity:0;transform:translateY(70px) scale(.94);filter:blur(6px);transition:opacity 1.2s cubic-bezier(.22,.61,.36,1),transform 1.2s cubic-bezier(.22,.61,.36,1),filter 1.2s ease}
-.js .stat.anim-in,.js .svc.anim-in,.js .step.anim-in,.js .guar.anim-in,.js .city.anim-in,.js .car-slide.anim-in,.js .rev-card.anim-in,.js .about-card.anim-in,.js .about-body.anim-in,.js .call-block.anim-in,.js .contact-info.anim-in,.js .sec-head.anim-in,.js .c-line.anim-in,.js .features li.anim-in,.js .btn-row .btn.anim-in,.js .gold-divider.anim-in,.js .swipe-hint.anim-in{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
-.js .stats .stat:nth-child(1){transition-delay:.05s}.js .stats .stat:nth-child(2){transition-delay:.18s}.js .stats .stat:nth-child(3){transition-delay:.31s}.js .stats .stat:nth-child(4){transition-delay:.44s}
-.js .svc-grid .svc:nth-child(1){transition-delay:.05s}.js .svc-grid .svc:nth-child(2){transition-delay:.15s}.js .svc-grid .svc:nth-child(3){transition-delay:.25s}.js .svc-grid .svc:nth-child(4){transition-delay:.35s}.js .svc-grid .svc:nth-child(5){transition-delay:.45s}.js .svc-grid .svc:nth-child(6){transition-delay:.55s}
-.js .steps .step:nth-child(1){transition-delay:.05s}.js .steps .step:nth-child(2){transition-delay:.15s}.js .steps .step:nth-child(3){transition-delay:.25s}.js .steps .step:nth-child(4){transition-delay:.35s}.js .steps .step:nth-child(5){transition-delay:.45s}.js .steps .step:nth-child(6){transition-delay:.55s}
-.js .guar-grid .guar:nth-child(1){transition-delay:.05s}.js .guar-grid .guar:nth-child(2){transition-delay:.17s}.js .guar-grid .guar:nth-child(3){transition-delay:.29s}.js .guar-grid .guar:nth-child(4){transition-delay:.41s}
-.js .city-grid .city:nth-child(1){transition-delay:.05s}.js .city-grid .city:nth-child(2){transition-delay:.19s}.js .city-grid .city:nth-child(3){transition-delay:.33s}
-.js .features li:nth-child(1){transition-delay:.05s}.js .features li:nth-child(2){transition-delay:.14s}.js .features li:nth-child(3){transition-delay:.23s}.js .features li:nth-child(4){transition-delay:.32s}
+.js .stat,.js .svc,.js .step,.js .guar,.js .city,.js .car-slide,.js .rev-card,.js .about-card,.js .about-body,.js .call-block,.js .contact-info,.js .sec-head,.js .c-line,.js .features li,.js .btn-row .btn,.js .gold-divider,.js .swipe-hint{opacity:0;transform:translateY(60px) scale(.96);transition:opacity 1.1s cubic-bezier(.22,.61,.36,1),transform 1.1s cubic-bezier(.22,.61,.36,1)}
+.js .stat.anim-in,.js .svc.anim-in,.js .step.anim-in,.js .guar.anim-in,.js .city.anim-in,.js .car-slide.anim-in,.js .rev-card.anim-in,.js .about-card.anim-in,.js .about-body.anim-in,.js .call-block.anim-in,.js .contact-info.anim-in,.js .sec-head.anim-in,.js .c-line.anim-in,.js .features li.anim-in,.js .btn-row .btn.anim-in,.js .gold-divider.anim-in,.js .swipe-hint.anim-in{opacity:1;transform:translateY(0) scale(1)}
+.js .stats .stat:nth-child(1){transition-delay:.05s}.js .stats .stat:nth-child(2){transition-delay:.15s}.js .stats .stat:nth-child(3){transition-delay:.25s}.js .stats .stat:nth-child(4){transition-delay:.35s}
+.js .svc-grid .svc:nth-child(1){transition-delay:.05s}.js .svc-grid .svc:nth-child(2){transition-delay:.13s}.js .svc-grid .svc:nth-child(3){transition-delay:.21s}.js .svc-grid .svc:nth-child(4){transition-delay:.29s}.js .svc-grid .svc:nth-child(5){transition-delay:.37s}.js .svc-grid .svc:nth-child(6){transition-delay:.45s}
+.js .steps .step:nth-child(1){transition-delay:.05s}.js .steps .step:nth-child(2){transition-delay:.13s}.js .steps .step:nth-child(3){transition-delay:.21s}.js .steps .step:nth-child(4){transition-delay:.29s}.js .steps .step:nth-child(5){transition-delay:.37s}.js .steps .step:nth-child(6){transition-delay:.45s}
+.js .guar-grid .guar:nth-child(1){transition-delay:.05s}.js .guar-grid .guar:nth-child(2){transition-delay:.15s}.js .guar-grid .guar:nth-child(3){transition-delay:.25s}.js .guar-grid .guar:nth-child(4){transition-delay:.35s}
+.js .city-grid .city:nth-child(1){transition-delay:.05s}.js .city-grid .city:nth-child(2){transition-delay:.17s}.js .city-grid .city:nth-child(3){transition-delay:.29s}
+.js .features li:nth-child(1){transition-delay:.05s}.js .features li:nth-child(2){transition-delay:.13s}.js .features li:nth-child(3){transition-delay:.21s}.js .features li:nth-child(4){transition-delay:.29s}
 .btn{position:relative;overflow:hidden;transform:translateZ(0)}
 .btn .ripple-el{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.55),transparent 70%);transform:scale(0);animation:rippleAnim .8s ease-out forwards;pointer-events:none}
 .btn-solid{background-size:200% 200%;animation:goldGradient 6s ease infinite,pulseGlow 3.6s ease-in-out infinite}
-#goldParticles{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
-#goldParticles span{position:absolute;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,rgba(236,207,160,.95),rgba(212,175,106,.4) 40%,transparent 70%);box-shadow:0 0 14px rgba(236,207,160,.7);animation:particleFloat linear infinite}
 .svc svg,.guar .ico,.c-ico,.vb-play,.soc svg{transition:transform .55s cubic-bezier(.34,1.56,.64,1),filter .35s,box-shadow .35s}
 .svc svg{animation:floatSlow 5s ease-in-out infinite}
 .svc:nth-child(2n) svg{animation-delay:-2.5s}
@@ -86,7 +83,7 @@ h1 em,.shimmer,h1 em.shimmer{background-image:linear-gradient(90deg,#eccfa0,#fff
 .panel .bg-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;z-index:0}
 .scroll-cue .line{animation:drip 2.4s infinite}
 .swipe-hint::after{animation:hintArrow 1.4s ease-in-out infinite}
-.panel--hero .bg-img{animation:kenburns 22s ease-in-out infinite alternate}
+.panel--hero .bg-img{animation:kenburns 24s ease-in-out infinite alternate}
 </style>"""
 
 ANIM_SCRIPT = """<script id="goldAnimationScript">
@@ -101,7 +98,6 @@ ANIM_SCRIPT = """<script id="goldAnimationScript">
     document.querySelectorAll('h1,h2.k,.sec-head h2,.about-body h2,.contact-info h2,.cta h2').forEach(function(el){headIo.observe(el)});
   }catch(err){showAll()}
   setTimeout(showAll,2500);
-  (function(){var c=document.createElement('div');c.id='goldParticles';document.body.appendChild(c);var n=window.innerWidth<700?18:36;for(var i=0;i<n;i++){var s=document.createElement('span');var sz=3+Math.random()*6;s.style.width=sz+'px';s.style.height=sz+'px';s.style.left=(Math.random()*100)+'%';s.style.animationDuration=(12+Math.random()*16)+'s';s.style.animationDelay=(-Math.random()*20)+'s';s.style.opacity=(0.4+Math.random()*0.6);c.appendChild(s)}})();
   document.addEventListener('click',function(e){var btn=e.target.closest('.btn, .c-action, .car-dot, .soc');if(!btn)return;var r=btn.getBoundingClientRect();var rp=document.createElement('span');rp.className='ripple-el';var s=Math.max(r.width,r.height);rp.style.width=s+'px';rp.style.height=s+'px';rp.style.left=(e.clientX-r.left-s/2)+'px';rp.style.top=(e.clientY-r.top-s/2)+'px';btn.appendChild(rp);setTimeout(function(){rp.remove()},850)},{passive:true});
   var fine=matchMedia('(hover:hover) and (pointer:fine)').matches;
   if(fine){
@@ -118,7 +114,7 @@ ANIM_SCRIPT = """<script id="goldAnimationScript">
 DEFAULT_DATA = {
  'seo': {'title':'Кухни Островский — кухни на заказ в Ростове, Батайске и Азове | Мебель под ключ',
   'keywords':'кухни остров, кухни островский, кухни островского, кухни островский ростов, кухни ростов островский, кухни батайск островский, кухни азов островский, кухни на заказ ростов, кухни на заказ батайск, кухни на заказ азов, мебель островского, мебель на заказ ростов, корпусная мебель, шкафы купе, гардеробные, прихожие, кухни под ключ, мебель островский',
-  'og_image':'https://sun9-71.vkuserphoto.ru/s/v1/ig2/vrD0P7wnU0dU8cSoW8yBUOc-naoKs1vJN5OXMrUFeAdLJQi9qfWScCGH9JV3-r4btxsDfbPh--pJ1tSjOlkfiVRw2Celdw.jpg?quality=95&from=bu&u=-mZnLUrNq7bsSRyuT0gwpcYkWHU9MA-lwwC3ZYRE2Uw&cs=1254x0',
+  'og_image':'https://sun9-71.vkuserphoto.ru/s/v1/ig2/vrD0P7wnU0dU8cSoW8yBUOc-naoKs1vJN5OXMrUFeAdLJQi9qfWScCGH9JV3-r4btxsDfbPh--pJ1tSjOlkfiVRw2Celdw.jpg?quality=95&from=bu&u=-mZnLUrNq7bsSRyuT0gwpcYkWHU9MA-lwwC3ZYRE2Uw&cs=512x0',
   'description':'Кухни на заказ в Ростове-на-Дону, Батайске и Азове от мастерской «Кухни Островский». Бесплатный замер и 3D-проект, собственное производство, монтаж под ключ. ☎ +7 (950) 846-53-97',
   'og_title':'Кухни Островский — кухни и корпусная мебель на заказ',
   'og_description':'Кухни, шкафы и гардеробные под ключ в Ростове-на-Дону, Батайске и Азове. Бесплатный замер и 3D-проект.',
@@ -129,43 +125,43 @@ DEFAULT_DATA = {
  'design': {'bg':'#0e0c09','gold':'#d4af6a','gold_soft':'#eccfa0','gold_deep':'#a37c3f','text':'#f5efe3','muted':'#b9ad9a',
   'fonts_url':'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Manrope:wght@300;400;500;600;700;800&display=swap','custom_css':''},
  'brand': {'vk':'https://vk.com/mebel.ostrovsky','sub':'Ростов · Батайск · Азов','name':'Кухни Островский','phone':'+7 (950) 846-53-97',
-  'logo_url':'https://sun9-71.vkuserphoto.ru/s/v1/ig2/vrD0P7wnU0dU8cSoW8yBUOc-naoKs1vJN5OXMrUFeAdLJQi9qfWScCGH9JV3-r4btxsDfbPh--pJ1tSjOlkfiVRw2Celdw.jpg?quality=95&from=bu&u=-mZnLUrNq7bsSRyuT0gwpcYkWHU9MA-lwwC3ZYRE2Uw&cs=1254x0',
+  'logo_url':'https://sun9-71.vkuserphoto.ru/s/v1/ig2/vrD0P7wnU0dU8cSoW8yBUOc-naoKs1vJN5OXMrUFeAdLJQi9qfWScCGH9JV3-r4btxsDfbPh--pJ1tSjOlkfiVRw2Celdw.jpg?quality=95&from=bu&u=-mZnLUrNq7bsSRyuT0gwpcYkWHU9MA-lwwC3ZYRE2Uw&cs=512x0',
   'telegram':'https://t.me/fanny161','phone_raw':'+79508465397'},
  'nav': {'items':[{'label':'Специалист','href':'#about'},{'label':'Работы','href':'#works'},{'label':'Отзывы','href':'#reviews'},{'label':'Услуги','href':'#services'},{'label':'Как работаем','href':'#process'},{'label':'Города','href':'#cities'},{'label':'Контакты','href':'#contacts'}],
   'cta_label':'Позвонить','cta_href':'tel:+79508465397'},
- 'hero': {'bg':'https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&as=32x21,48x32,72x48,108x72,160x107,240x160,360x241,480x321,540x361,640x428,720x481,1080x722,1280x855,1440x962,2560x1711&from=bu&u=udyioV6Vl_ghNhYbFZ9zjc-ZU_IjlhkVV114xfpUZJs&cs=1080x0',
+ 'hero': {'bg':'https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&from=bu&u=udyioV6Vl_ghNhYbFZ9zjc-ZU_IjlhkVV114xfpUZJs&cs=2560x0',
   'sub':'Проектируем и изготавливаем кухни, шкафы, гардеробные и другую корпусную мебель в Ростове, Батайске и Азове — по вашему проекту, от замера до монтажа.',
   'btn1':'Получить консультацию','btn2':'Смотреть работы','eyebrow':'Мебель и кухни на заказ','title_em':'создаёт настроение','title_before':'Мебель, которая ','btn1_href':'#consult','btn2_href':'#works'},
- 'stats': {'bg':'https://sun9-20.vkuserphoto.ru/s/v1/ig2/9W8TzKo3y8t8-s63NRmlys3yJtHJAKPBOp2QIyuqMSTinG9q-UFuD5sYkz4wbd7QZDv7wQxsZlldmCrAM-PzPlDJ.jpg?quality=95&from=bu&u=kySpH3qK1oaqlWr8kbrP_y7iDDbASMEGWuJ5dgxf5MU&cs=1080x0',
+ 'stats': {'bg':'https://sun9-39.vkuserphoto.ru/s/v1/ig2/xiwu_WFFyjmJc4_VAOD1BHikAdMqBy9N-SuKyiWu7xC8OYE-pfhtW5GkOyO5No0KjOrNQUwcgOW3Gr2bCnjvFp2H.jpg?quality=95&from=bu&u=VpmAnVyzkXcBCcJLy2DSlVkJJG2zYnSPbLzk7-TXGGk&cs=2560x0',
   'items':[{'prefix':'','num':'10','suffix':'+','decimal':'','label':'лет опыта'},{'prefix':'','num':'5','suffix':'','decimal':'1','label':'средняя оценка клиентов'},{'prefix':'','num':'8','suffix':'/10','decimal':'','label':'клиентов по рекомендации'},{'prefix':'','num':'100','suffix':'%','decimal':'','label':'полный цикл под ключ'}]},
- 'about': {'bg':'https://sun9-50.vkuserphoto.ru/s/v1/ig2/_uJbJ-Gw0zJ3jVPyc4QJRGUErYM5zju63UDQM6FFDezILgQ54i5ycLVvhgSHl5hHPVIKikt0AL9V6DrmqDH7G5C6.jpg?quality=95&from=bu&u=9_d3vo4cDIif_5OxDZbDgMLFC1xuAQSKRY1zAPscIwM&cs=1080x0',
+ 'about': {'bg':'https://sun9-50.vkuserphoto.ru/s/v1/ig2/C_b5sF8D1xkYdXe0s1BPq0c52G5b_U0r8MpWIaYYJzh9CXIE4qk0Q3rnZh2FuNZhpnp78BBveTceOk2Js-tECU_z.jpg?quality=95&from=bu&u=YCey971XM2nuNjhkwSaIOfPMTMneMAyHLaPyHT4mLyY&cs=2560x0',
   'name':'Роман Островский','role':'Руководитель мебельной мастерской Островского','photo':'https://i.ibb.co/mVchNnp1/photo-2026-09-10-18-48-37.jpg',
   'title':'Кухни и мебель под ключ — с заботой о деталях','kicker':'О руководителе',
   'features':['Кухни, шкафы, гардеробные и прихожие','Честный расчёт — без навязывания лишнего','Аккуратность, пунктуальность, сопровождение','Гарантия качества'],
   'card_text':'С командой изготавливаем кухни и корпусную мебель по индивидуальным проектам — с учётом ваших идей, размеров и задач.',
   'text':'Мы помогаем с планировкой и подбором материалов, предлагаем решения даже для сложных задач — когда другие разводят руками. Ведём вас от консультации и замера до сборки и установки.'},
- 'consult': {'bg':'https://sun9-41.vkuserphoto.ru/s/v1/ig2/qi7m_VnJPio2P4oKJhNr6X-9HJD2kCt6f98XGtveyiAxhJ4ru17yVoibjERFJ4-ZWDOm8Lr7xGMwRP6dSudvgPnG.jpg?quality=95&from=bu&u=myRGe7iEVeLqDstzbpBsld7P0jp7l04_xCLynpcz4So&cs=1080x0',
+ 'consult': {'bg':'https://sun9-8.vkuserphoto.ru/s/v1/ig2/AoDEQQq8KCsEBOBqdk9RRlULuWjVVgCUagW7IM8b_22MwfOkqLPub-TPecVvAY3Ke9SQAv0kJ2TNClg7D6J-A8exIN_BuA.jpg?quality=95&from=bu&u=xBWfVkxER60DRx2RPw1WHR9rn8qTl1UR9ISeVZcgPwg&cs=2560x0',
   'text':'Позвоните или напишите нам в Telegram или MAX — расскажем про кухни и мебель, всё обсудим и договоримся о бесплатном замере.',
   'title':'Консультация','kicker':'Бесплатно','phone':'+7 (950) 846-53-97','phone_raw':'+79508465397'},
- 'works': {'bg':'https://sun9-32.vkuserphoto.ru/s/v1/ig2/ipQDYrxkEiu9wFqxHUIJNhf4YERP29pOrzOhJ2hTcO6Z-fqWBrPA9D1vCltHlp9RltkldMRefKPMMkB8aD8jhZfR.jpg?quality=95&from=bu&u=q3wKCscaGbBU8n3umOUNA0wOvLkQBDAVXIkzDrivHgk&cs=1080x0',
+ 'works': {'bg':'https://sun9-16.vkuserphoto.ru/s/v1/ig2/ixSL4F3j2Ap0i5_nVXsAKJNZZNAI7zoUPBfzKGHoj3gghnjX-hMD-JRLJaSlCoWevjw84ikJrGOfVeMqWyZ7ftzM.jpg?quality=95&from=bu&u=Hi5Fq7gERANWB1IvzcabCXeXmxxxNUnpsZZcwxzz4Uw&cs=2560x0',
   'items':[
-   {'alt':'Кухня на заказ в Ростове','url':'https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&from=bu&u=udyioV6Vl_ghNhYbFZ9zjc-ZU_IjlhkVV114xfpUZJs&cs=1080x0'},
-   {'alt':'Кухня на заказ в Батайске','url':'https://sun9-8.vkuserphoto.ru/s/v1/ig2/AoDEQQq8KCsEBOBqdk9RRlULuWjVVgCUagW7IM8b_22MwfOkqLPub-TPecVvAY3Ke9SQAv0kJ2TNClg7D6J-A8exIN_BuA.jpg?quality=95&from=bu&u=xBWfVkxER60DRx2RPw1WHR9rn8qTl1UR9ISeVZcgPwg&cs=1080x0'},
-   {'alt':'Кухня на заказ в Азове','url':'https://sun9-16.vkuserphoto.ru/s/v1/ig2/ixSL4F3j2Ap0i5_nVXsAKJNZZNAI7zoUPBfzKGHoj3gghnjX-hMD-JRLJaSlCoWevjw84ikJrGOfVeMqWyZ7ftzM.jpg?quality=95&from=bu&u=Hi5Fq7gERANWB1IvzcabCXeXmxxxNUnpsZZcwxzz4Uw&cs=1080x0'},
-   {'alt':'Мебель на заказ в Ростове','url':'https://sun9-6.vkuserphoto.ru/s/v1/ig2/JKHhwxCxe9S8QiEr0nEM-BhAyX2i0e3uIKGPBdi__ZkSecHlRyd93LMhVldSePb2ePDSA6kgE41mw1rNGCHoKdAnBE3sGg.jpg?quality=95&from=bu&u=x10vDKxOA2tCTtvYOJ9020Oa_0vK-gO85qQ9ePr3Sio&cs=1080x0'},
-   {'alt':'Кухня на заказ','url':'https://sun9-4.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&from=bu&u=Nvm4RvDsPWiWKPcNY4MqobV8Bzui8CgGtcwB8fhQDqA&cs=1080x0'},
-   {'alt':'Шкаф-купе на заказ','url':'https://sun9-71.vkuserphoto.ru/s/v1/ig2/4XeUobSuuxA-pHVDGYziNB5aAnUsbLzt1Bgi8TtDa5yKbWt2yRxo8Egt_2a_Sz_jAYg1f2sxfOOy-ngKWvlDbjuqyHjSaQ.jpg?quality=95&from=bu&u=FR7AP1mjCAEcKAjTUpmgUXVIbDqMTCaV2XHXrDjnsaM&cs=1080x0'},
-   {'alt':'Мебель на заказ в Батайске','url':'https://sun9-39.vkuserphoto.ru/s/v1/ig2/xiwu_WFFyjmJc4_VAOD1BHikAdMqBy9N-SuKyiWu7xC8OYE-pfhtW5GkOyO5No0KjOrNQUwcgOW3Gr2bCnjvFp2H.jpg?quality=95&from=bu&u=VpmAnVyzkXcBCcJLy2DSlVkJJG2zYnSPbLzk7-TXGGk&cs=1080x0'},
-   {'alt':'Кухня на заказ','url':'https://sun9-50.vkuserphoto.ru/s/v1/ig2/C_b5sF8D1xkYdXe0s1BPq0c52G5b_U0r8MpWIaYYJzh9CXIE4qk0Q3rnZh2FuNZhpnp78BBveTceOk2Js-tECU_z.jpg?quality=95&from=bu&u=YCey971XM2nuNjhkwSaIOfPMTMneMAyHLaPyHT4mLyY&cs=1080x0'},
-   {'alt':'Кухня на заказ','url':'https://sun9-16.vkuserphoto.ru/s/v1/ig2/_AK_Czw9ThnFAWSmhSfPYvg9RvHW0QYDGS9DhqW75-oe2hQSjQob1DbdypL9Hx3wBn09V3pUvlfCN6Efcbojr7T81tfxQQ.jpg?quality=95&from=bu&u=nJxYjuRlnA-5zI6wLLGQAWZA3D28y3FozWX9Lt_c7hQ&cs=1080x0'},
-   {'alt':'Мебель на заказ','url':'https://sun9-65.vkuserphoto.ru/s/v1/ig2/X4rCpkIxEZW50prB2rGftYiyGQpOQ3E_QQl-211zjBdRmXjKBx5Si91JffsT0LxA1oPbjqueZA0oI1diMrJIRBFMkYuglw.jpg?quality=95&from=bu&u=AkkVsl6OGh2zXPquIZAnWBgglzMZurNFJTsT_Gmceiw&cs=1080x0'},
-   {'alt':'Кухня на заказ в Батайске','url':'https://sun9-40.vkuserphoto.ru/s/v1/ig2/6mMk6psQJqaVgakjpP8A0DWbiwzLbWcoj3Gxz_Om-TUclffQ0Ic3VfIW1-fA1hDVhIHu6cqb3QifLlY7mNhIvynD.jpg?quality=95&from=bu&u=VjAzanpxFEJgraidqUpXWR5EqjEzuffXEUVvjgoVjrE&cs=1080x0'},
-   {'alt':'Мебель на заказ','url':'https://sun9-72.vkuserphoto.ru/s/v1/ig2/NEuGxEzenp7yiZvM8YDHtxZdKGuEE4RvCN46VZcwJR0oWlxofxoJAu0QLcnyALApDuTlQ_exYkbXwlk4iu00Z5UBO0cfeQ.jpg?quality=95&from=bu&u=lvIk2iwchHkWHCSIv-jhCB1idqUsfpO2CVjs3OxL-u0&cs=1080x0'},
-   {'alt':'Кухня на заказ','url':'https://sun9-40.vkuserphoto.ru/s/v1/ig2/rA9HFBKMnfFIVA28MtcyfJNKYeenK9q0xNcFimhjyZhCsOgl_QUYo8FRlHhpkZroHhqfIdCWMKV476q_reTRf3a341bQyA.jpg?quality=95&from=bu&u=qEc7bVmCiRSShSpucxSXh4goIyyXAVULZ-iPIInq_x8&cs=1080x0'},
-   {'alt':'Кухня на заказ','url':'https://sun9-56.vkuserphoto.ru/s/v1/ig2/_T-Vhn73AJldw70Jxj_hZ9GbeGonrHRdbUUgTMk3T0A3wmwmLdlqPLry0AHGdd1gi0t46exXUpHT-KcFycxQVkfuyGb5SA.jpg?quality=95&from=bu&u=12zCsrGnvSg4ptA7clGDI6gvnN-L7bDoOSbcHm04HXo&cs=1080x0'},
-   {'alt':'Шкаф-купе на заказ','url':'https://sun9-87.vkuserphoto.ru/s/v1/ig2/WHkPw7TZze6TV4t2q6Yr2pw61S1zWDeDyp8Dbe2IFm31aAuhXVSQ2DUTnM6AIt5u3cLTp9mh-YN2b_Lb0q5iHCFu.jpg?quality=95&from=bu&u=bQW477ZK7yLopHDa2oCbH-uA483cvDm58BTlNs29AoE&cs=1080x0'}
+   {'alt':'Кухня на заказ в Ростове','url':'https://sun9-70.vkuserphoto.ru/s/v1/ig2/s4A0AFD1sjqbbnq-mAfS6e6lCbOTfaw6skzD08T04rMk8FkgYcORaFyMLFJIPcR9EamDGrZ3fDDamkpzifiUnmkO.jpg?quality=95&from=bu&u=udyioV6Vl_ghNhYbFZ9zjc-ZU_IjlhkVV114xfpUZJs&cs=2560x0'},
+   {'alt':'Кухня на заказ в Батайске','url':'https://sun9-8.vkuserphoto.ru/s/v1/ig2/AoDEQQq8KCsEBOBqdk9RRlULuWjVVgCUagW7IM8b_22MwfOkqLPub-TPecVvAY3Ke9SQAv0kJ2TNClg7D6J-A8exIN_BuA.jpg?quality=95&from=bu&u=xBWfVkxER60DRx2RPw1WHR9rn8qTl1UR9ISeVZcgPwg&cs=2560x0'},
+   {'alt':'Кухня на заказ в Азове','url':'https://sun9-16.vkuserphoto.ru/s/v1/ig2/ixSL4F3j2Ap0i5_nVXsAKJNZZNAI7zoUPBfzKGHoj3gghnjX-hMD-JRLJaSlCoWevjw84ikJrGOfVeMqWyZ7ftzM.jpg?quality=95&from=bu&u=Hi5Fq7gERANWB1IvzcabCXeXmxxxNUnpsZZcwxzz4Uw&cs=2560x0'},
+   {'alt':'Мебель на заказ в Ростове','url':'https://sun9-6.vkuserphoto.ru/s/v1/ig2/JKHhwxCxe9S8QiEr0nEM-BhAyX2i0e3uIKGPBdi__ZkSecHlRyd93LMhVldSePb2ePDSA6kgE41mw1rNGCHoKdAnBE3sGg.jpg?quality=95&from=bu&u=x10vDKxOA2tCTtvYOJ9020Oa_0vK-gO85qQ9ePr3Sio&cs=2560x0'},
+   {'alt':'Кухня на заказ','url':'https://sun9-4.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&from=bu&u=Nvm4RvDsPWiWKPcNY4MqobV8Bzui8CgGtcwB8fhQDqA&cs=2560x0'},
+   {'alt':'Шкаф-купе на заказ','url':'https://sun9-71.vkuserphoto.ru/s/v1/ig2/4XeUobSuuxA-pHVDGYziNB5aAnUsbLzt1Bgi8TtDa5yKbWt2yRxo8Egt_2a_Sz_jAYg1f2sxfOOy-ngKWvlDbjuqyHjSaQ.jpg?quality=95&from=bu&u=FR7AP1mjCAEcKAjTUpmgUXVIbDqMTCaV2XHXrDjnsaM&cs=2560x0'},
+   {'alt':'Мебель на заказ в Батайске','url':'https://sun9-39.vkuserphoto.ru/s/v1/ig2/xiwu_WFFyjmJc4_VAOD1BHikAdMqBy9N-SuKyiWu7xC8OYE-pfhtW5GkOyO5No0KjOrNQUwcgOW3Gr2bCnjvFp2H.jpg?quality=95&from=bu&u=VpmAnVyzkXcBCcJLy2DSlVkJJG2zYnSPbLzk7-TXGGk&cs=2560x0'},
+   {'alt':'Кухня на заказ','url':'https://sun9-50.vkuserphoto.ru/s/v1/ig2/C_b5sF8D1xkYdXe0s1BPq0c52G5b_U0r8MpWIaYYJzh9CXIE4qk0Q3rnZh2FuNZhpnp78BBveTceOk2Js-tECU_z.jpg?quality=95&from=bu&u=YCey971XM2nuNjhkwSaIOfPMTMneMAyHLaPyHT4mLyY&cs=2560x0'},
+   {'alt':'Кухня на заказ','url':'https://sun9-16.vkuserphoto.ru/s/v1/ig2/_AK_Czw9ThnFAWSmhSfPYvg9RvHW0QYDGS9DhqW75-oe2hQSjQob1DbdypL9Hx3wBn09V3pUvlfCN6Efcbojr7T81tfxQQ.jpg?quality=95&from=bu&u=nJxYjuRlnA-5zI6wLLGQAWZA3D28y3FozWX9Lt_c7hQ&cs=2560x0'},
+   {'alt':'Мебель на заказ','url':'https://sun9-65.vkuserphoto.ru/s/v1/ig2/X4rCpkIxEZW50prB2rGftYiyGQpOQ3E_QQl-211zjBdRmXjKBx5Si91JffsT0LxA1oPbjqueZA0oI1diMrJIRBFMkYuglw.jpg?quality=95&from=bu&u=AkkVsl6OGh2zXPquIZAnWBgglzMZurNFJTsT_Gmceiw&cs=2560x0'},
+   {'alt':'Кухня на заказ в Батайске','url':'https://sun9-40.vkuserphoto.ru/s/v1/ig2/6mMk6psQJqaVgakjpP8A0DWbiwzLbWcoj3Gxz_Om-TUclffQ0Ic3VfIW1-fA1hDVhIHu6cqb3QifLlY7mNhIvynD.jpg?quality=95&from=bu&u=VjAzanpxFEJgraidqUpXWR5EqjEzuffXEUVvjgoVjrE&cs=2560x0'},
+   {'alt':'Мебель на заказ','url':'https://sun9-72.vkuserphoto.ru/s/v1/ig2/NEuGxEzenp7yiZvM8YDHtxZdKGuEE4RvCN46VZcwJR0oWlxofxoJAu0QLcnyALApDuTlQ_exYkbXwlk4iu00Z5UBO0cfeQ.jpg?quality=95&from=bu&u=lvIk2iwchHkWHCSIv-jhCB1idqUsfpO2CVjs3OxL-u0&cs=2560x0'},
+   {'alt':'Кухня на заказ','url':'https://sun9-40.vkuserphoto.ru/s/v1/ig2/rA9HFBKMnfFIVA28MtcyfJNKYeenK9q0xNcFimhjyZhCsOgl_QUYo8FRlHhpkZroHhqfIdCWMKV476q_reTRf3a341bQyA.jpg?quality=95&from=bu&u=qEc7bVmCiRSShSpucxSXh4goIyyXAVULZ-iPIInq_x8&cs=2560x0'},
+   {'alt':'Кухня на заказ','url':'https://sun9-56.vkuserphoto.ru/s/v1/ig2/_T-Vhn73AJldw70Jxj_hZ9GbeGonrHRdbUUgTMk3T0A3wmwmLdlqPLry0AHGdd1gi0t46exXUpHT-KcFycxQVkfuyGb5SA.jpg?quality=95&from=bu&u=12zCsrGnvSg4ptA7clGDI6gvnN-L7bDoOSbcHm04HXo&cs=2560x0'},
+   {'alt':'Шкаф-купе на заказ','url':'https://sun9-87.vkuserphoto.ru/s/v1/ig2/WHkPw7TZze6TV4t2q6Yr2pw61S1zWDeDyp8Dbe2IFm31aAuhXVSQ2DUTnM6AIt5u3cLTp9mh-YN2b_Lb0q5iHCFu.jpg?quality=95&from=bu&u=bQW477ZK7yLopHDa2oCbH-uA483cvDm58BTlNs29AoE&cs=2560x0'}
   ],'title':'Кухни и мебель, которые мы сделали','kicker':'Наши работы','subtitle':'Нажмите на фото, чтобы рассмотреть в большом размере.','hint':'Листайте'},
- 'reviews': {'bg':'https://sun9-4.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&from=bu&u=Nvm4RvDsPWiWKPcNY4MqobV8Bzui8CgGtcwB8fhQDqA&cs=1080x0',
+ 'reviews': {'bg':'https://sun9-6.vkuserphoto.ru/s/v1/ig2/JKHhwxCxe9S8QiEr0nEM-BhAyX2i0e3uIKGPBdi__ZkSecHlRyd93LMhVldSePb2ePDSA6kgE41mw1rNGCHoKdAnBE3sGg.jpg?quality=95&from=bu&u=x10vDKxOA2tCTtvYOJ9020Oa_0vK-gO85qQ9ePr3Sio&cs=2560x0',
   'items':[
    {'sub':'Кухня на заказ','name':'Виктория Брандикова','text':'Заказывали у Романа кухню, всё прошло на высшем уровне, начиная от замеров, до установки! Мы очень рады, что обратились именно к нему (нашли в объявлении и нам крупно повезло), Роман супер профессионал своего дела!!! Кухня у нас маленькая, не стандартная, сверху выступы, вся на трубах, расположение мойки и кухонной плиты не удобное и вытяжку мы хотели, но нам некуда было её устанавливать (как мы думали), но Роман всё разрешил, практично разместил технику (в том числе и вытяжку), переставил мойку, установил подсветку сделал кухню функциональной светлой, практичной и современной. Кухня была готова в короткие сроки, установкой очень довольны, всё под ключ с установкой техники и подключением, всё быстро, качественно, и чисто! Мы не ожидали такого результата, просто не верится, что у нас теперь удобная, вместительная, современная кухня, о такой даже и не мечтали, даже несмотря на то, что кухня бюджетная. За мебелью теперь только к Роману!!! Однозначно всем буду рекомендовать!!!','stars':5,'video':'','avatar':'https://sun9-3.vkuserphoto.ru/s/v1/ig2/-cVZEipS5I4ROZUZ2fxoIaGJBZXpUs76_WKoUZpPw_r2-gnqqUvgTqjLjYoTZ0R21nsCSvjUPyw_vSn1jxAYJC8K.jpg?quality=95&from=bu&cs=256x0'},
    {'sub':'Кухня и гардеробная','name':'Виктория Маренко','text':'И вновь мы обратились к Роману! Понадобилась кухня. Кухня на самом деле очень удобная! Как и хотелось она светлая, но не маркая. Как всегда учтены все пожелания и воплощены в жизнь! Очень трудно нам дался выбор цветов, но Роман спокойно вынес все наши метания, выполнил работу достойно, внимательно и аккуратно! Однозначно советую обращаться к нему. Гардеробную так же заказывали у Романа, и она идеальна! Ответственный подход, качество, внимательность и чистота исполнения - его качества, которые для нас важны.','stars':5,'video':'','avatar':'https://sun9-41.vkuserphoto.ru/s/v1/ig2/qi7m_VnJPio2P4oKJhNr6X-9HJD2kCt6f98XGtveyiAxhJ4ru17yVoibjERFJ4-ZWDOm8Lr7xGMwRP6dSudvgPnG.jpg?quality=95&from=bu&u=myRGe7iEVeLqDstzbpBsld7P0jp7l04_xCLynpcz4So&cs=256x0'},
@@ -175,8 +171,8 @@ DEFAULT_DATA = {
    {'sub':'Два шкафа, гардеробная','name':'Анастасия Зайцева','text':'Заказывали у Романа два шкафа. Во время замеров у нас не было определённой идеи, как сделать вместительный шкаф в нашу небольшую спальню, ещё и с несущей колонной. Роман подкинул прекрасную идею, в итоге получился не просто шкаф, а целая угловая гардеробная, я была в восторге! Большой выбор цветов и текстур. Работа выполнена в оговорённый срок и качественно. Большое спасибо за эстетичное воплощение нашей мечты!','stars':5,'video':'','avatar':'https://sun9-48.vkuserphoto.ru/s/v1/ig2/OdS0JaUmpkj7vzQLNz1oyY6PBksnYylZuY54LZ2vnibrqxNc0IimIjE6d6NWySeMm6N2MLIUHG6WLKtAFJ82ICwE.jpg?quality=95&from=bu&cs=256x0'},
    {'sub':'Видеоотзыв · Кухня на заказ','name':'Александр Карташев','text':'«Прям гордость квартиры! За приемлемую цену получили отличную кухню: выступ стояка закрыли пеналом, а в ножку барного стола встроили розетки».','stars':5,'video':'https://vk.ru/video_ext.php?oid=-212015374&id=456239019&hash=6abf300a7c2518d4','avatar':''}
   ],'title':'Что говорят наши клиенты','kicker':'Отзывы','subtitle':'Реальные отзывы о нашей работе. Листайте влево-вправо.','hint':'Листайте',
-  'video_poster':'https://sun9-4.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&from=bu&u=Nvm4RvDsPWiWKPcNY4MqobV8Bzui8CgGtcwB8fhQDqA&cs=1080x0'},
- 'services': {'bg':'https://sun9-88.vkuserphoto.ru/s/v1/ig2/vCipZmkZdy5Ix0cFh98i0yhNAYynqzh2gm00rWx5Qr019O4RHjwcs7pN6iKT4L_d1vanDAbUJ9JRrHj_uw13YVhg.jpg?quality=95&from=bu&u=lrbIDUwRUQKMEvaw12w2pRXFBLE0sHCmc6AYF8H7CIA&cs=1080x0',
+  'video_poster':'https://sun9-4.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&from=bu&u=Nvm4RvDsPWiWKPcNY4MqobV8Bzui8CgGtcwB8fhQDqA&cs=2560x0'},
+ 'services': {'bg':'https://sun9-4.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&from=bu&u=Nvm4RvDsPWiWKPcNY4MqobV8Bzui8CgGtcwB8fhQDqA&cs=2560x0',
   'items':[
    {'icon':'M3 9h18M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9M3 9l2-4h14l2 4M8 9v2M12 9v2M16 9v2','text':'Проектируем кухню точно под ваш размер, стиль и привычки — от классики до минимализма.','title':'Кухни на заказ'},
    {'icon':'M3 3h18v18H3zM3 8h18M8 8v13M16 8v13','text':'Шкафы-купе, гардеробные, тумбы и комоды — встроенные и отдельно стоящие.','title':'Шкафы и гардеробные'},
@@ -185,18 +181,18 @@ DEFAULT_DATA = {
    {'icon':'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 3v18M3 12h18','text':'Выезжаем на замер, делаем планировку и 3D-проект — бесплатно.','title':'Замер и проект'},
    {'icon':'M3 12a9 9 0 1 0 9-9M3 12h6M3 12l4-4M3 12l4 4','text':'Освежим фасады и фурнитуру существующей кухни — дешевле, чем новая.','title':'Обновление мебели'}
   ],'title':'Услуги','kicker':'Что мы делаем','subtitle':'Индивидуальный подход к каждому проекту и полный цикл производства.'},
- 'process': {'bg':'https://sun9-39.vkuserphoto.ru/s/v1/ig2/xiwu_WFFyjmJc4_VAOD1BHikAdMqBy9N-SuKyiWu7xC8OYE-pfhtW5GkOyO5No0KjOrNQUwcgOW3Gr2bCnjvFp2H.jpg?quality=95&from=bu&u=VpmAnVyzkXcBCcJLy2DSlVkJJG2zYnSPbLzk7-TXGGk&cs=1080x0',
+ 'process': {'bg':'https://sun9-16.vkuserphoto.ru/s/v1/ig2/_AK_Czw9ThnFAWSmhSfPYvg9RvHW0QYDGS9DhqW75-oe2hQSjQob1DbdypL9Hx3wBn09V3pUvlfCN6Efcbojr7T81tfxQQ.jpg?quality=95&from=bu&u=nJxYjuRlnA-5zI6wLLGQAWZA3D28y3FozWX9Lt_c7hQ&cs=2560x0',
   'items':[{'n':'01','text':'Вы звоните или пишете — обговариваем задачу и пожелания.','title':'Обращение'},{'n':'02','text':'Выезжаем, снимаем размеры и обсуждаем планировку. Бесплатно.','title':'Замер'},{'n':'03','text':'Готовим 3D-проект и подбираем материалы с фурнитурой.','title':'Проект'},{'n':'04','text':'Фиксируем стоимость и условия, подписываем договор.','title':'Договор'},{'n':'05','text':'Изготавливаем мебель на собственном производстве.','title':'Производство'},{'n':'06','text':'Привозим, собираем и устанавливаем. Сдаём с гарантией.','title':'Доставка и монтаж'}],
   'title':'Путь от идеи до готовой мебели','kicker':'Как мы работаем'},
- 'guarantees': {'bg':'https://sun9-50.vkuserphoto.ru/s/v1/ig2/C_b5sF8D1xkYdXe0s1BPq0c52G5b_U0r8MpWIaYYJzh9CXIE4qk0Q3rnZh2FuNZhpnp78BBveTceOk2Js-tECU_z.jpg?quality=95&from=bu&u=YCey971XM2nuNjhkwSaIOfPMTMneMAyHLaPyHT4mLyY&cs=1080x0',
+ 'guarantees': {'bg':'https://sun9-65.vkuserphoto.ru/s/v1/ig2/X4rCpkIxEZW50prB2rGftYiyGQpOQ3E_QQl-211zjBdRmXjKBx5Si91JffsT0LxA1oPbjqueZA0oI1diMrJIRBFMkYuglw.jpg?quality=95&from=bu&u=AkkVsl6OGh2zXPquIZAnWBgglzMZurNFJTsT_Gmceiw&cs=2560x0',
   'items':[{'icon':'M12 3l7 3v6c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V6l7-3zM9 12l2 2 4-4','text':'Отвечаем за свою работу и сопровождаем после установки.','title':'Гарантия качества'},{'icon':'M4 20h16M6 20V8l6-4 6 4v12M9 11h6M9 15h6M10 11v8M14 11v8','text':'Без навязывания лишнего и скрытых доплат.','title':'Честный расчёт'},{'icon':'M3 21V9l9-5 9 5v12M3 21h18M9 21v-6h6v6M12 9v2','text':'Без посредников — контролируем качество на каждом этапе.','title':'Собственное производство'},{'icon':'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM4 21c0-4 3.6-6 8-6s8 2 8 6','text':'Вы всегда на связи со специалистом — от замера до монтажа.','title':'Личное сопровождение'}],
   'title':'Гарантии и преимущества','kicker':'Почему мы'},
- 'cities': {'bg':'https://sun9-87.vkuserphoto.ru/s/v1/ig2/WHkPw7TZze6TV4t2q6Yr2pw61S1zWDeDyp8Dbe2IFm31aAuhXVSQ2DUTnM6AIt5u3cLTp9mh-YN2b_Lb0q5iHCFu.jpg?quality=95&from=bu&u=bQW477ZK7yLopHDa2oCbH-uA483cvDm58BTlNs29AoE&cs=1080x0',
+ 'cities': {'bg':'https://sun9-87.vkuserphoto.ru/s/v1/ig2/WHkPw7TZze6TV4t2q6Yr2pw61S1zWDeDyp8Dbe2IFm31aAuhXVSQ2DUTnM6AIt5u3cLTp9mh-YN2b_Lb0q5iHCFu.jpg?quality=95&from=bu&u=bQW477ZK7yLopHDa2oCbH-uA483cvDm58BTlNs29AoE&cs=2560x0',
   'items':[{'name':'Ростов-на-Дону','text':'Выезд на замер, проектирование, производство и монтаж мебели под ключ.'},{'name':'Батайск','text':'Кухни и корпусная мебель с бесплатным замером и 3D-проектом.'},{'name':'Азов','text':'Индивидуальные проекты, доставка, сборка и установка с гарантией.'}],
   'title':'Три города — один стандарт качества','kicker':'Где работаем','subtitle':'Бесплатный замер и проект в каждом из городов.'},
- 'cta': {'bg':'https://sun9-4.vkuserphoto.ru/s/v1/ig2/wllk0NJeZqqGu0oNhLoLS7k3FJSugAEpIBElk8HeWwp_EqOH7dKCix844jHZRQwXWkISHmdmXW9hWEaFuC-CCB84.jpg?quality=95&from=bu&u=Nvm4RvDsPWiWKPcNY4MqobV8Bzui8CgGtcwB8fhQDqA&cs=1080x0',
+ 'cta': {'bg':'https://sun9-40.vkuserphoto.ru/s/v1/ig2/6mMk6psQJqaVgakjpP8A0DWbiwzLbWcoj3Gxz_Om-TUclffQ0Ic3VfIW1-fA1hDVhIHu6cqb3QifLlY7mNhIvynD.jpg?quality=95&from=bu&u=VjAzanpxFEJgraidqUpXWR5EqjEzuffXEUVvjgoVjrE&cs=2560x0',
   'text':'Позвоните нам — бесплатно проконсультируем, посчитаем и запишем на замер.','title':'Готовы обсудить вашу мебель?','button':'📞 Позвонить специалисту'},
- 'contacts': {'bg':'https://sun9-52.vkuserphoto.ru/s/v1/ig2/iD_ZIKN3aW1Ml52LPM3C65Qa7raIjG1CUC-fRrbHZEdxtU9hrsvTAh80W9sM3wI2hBUlsHc86fnHiG43aAOPlRuP.jpg?quality=95&from=bu&u=mdGpdzTBkRhwLQzuIJS1nz6l-_CWqdnxhW1cwsXNCx8&cs=1080x0',
+ 'contacts': {'bg':'https://sun9-72.vkuserphoto.ru/s/v1/ig2/NEuGxEzenp7yiZvM8YDHtxZdKGuEE4RvCN46VZcwJR0oWlxofxoJAu0QLcnyALApDuTlQ_exYkbXwlk4iu00Z5UBO0cfeQ.jpg?quality=95&from=bu&u=lvIk2iwchHkWHCSIv-jhCB1idqUsfpO2CVjs3OxL-u0&cs=2560x0',
   'title':'Создадим мебель, о которой вы мечтали','kicker':'Контакты','regions':'Ростов-на-Дону, Батайск, Азов',
   'subtitle':'Позвоните или напишите — ответим быстро и подскажем по всем вопросам.',
   'call_label':'Свяжитесь с нами удобным способом','call_number':'+7 (950) 846-53-97',
@@ -262,20 +258,16 @@ def _apply_filter(name, value):
     if name == "up": return _escape(_stringify(value).upper())
     return _escape(_stringify(value))
 def _extract_block(tpl, pos):
-    depth = 0
-    main_parts, alt_parts = [], []
-    cur = main_parts; seen_else = False; p = pos
+    depth = 0; main_parts, alt_parts = [], []; cur = main_parts; seen_else = False; p = pos
     while True:
         m = _TAG_RE.search(tpl, p)
         if not m:
-            cur.append(tpl[p:])
-            return "".join(main_parts), ("".join(alt_parts) if seen_else else ""), len(tpl)
+            cur.append(tpl[p:]); return "".join(main_parts), ("".join(alt_parts) if seen_else else ""), len(tpl)
         expr = m.group(1).strip(); cur.append(tpl[p:m.start()]); p = m.end()
         if expr.startswith("#each ") or expr.startswith("#if ") or expr.startswith("#unless "):
             depth += 1; cur.append(m.group(0))
         elif expr in ("/each","/if","/unless"):
-            if depth == 0:
-                return "".join(main_parts), ("".join(alt_parts) if seen_else else ""), p
+            if depth == 0: return "".join(main_parts), ("".join(alt_parts) if seen_else else ""), p
             depth -= 1; cur.append(m.group(0))
         elif expr == "else" and depth == 0 and not seen_else:
             seen_else = True; cur = alt_parts
@@ -286,8 +278,7 @@ def render(tpl, ctx):
         m = _TAG_RE.search(tpl, pos)
         if not m: out.append(tpl[pos:]); break
         out.append(tpl[pos:m.start()])
-        token, expr = m.group(0), m.group(1).strip()
-        is_raw = token.startswith("{{{")
+        token, expr = m.group(0), m.group(1).strip(); is_raw = token.startswith("{{{")
         pos = m.end()
         if expr.startswith("#each "):
             body, _alt, pos = _extract_block(tpl, pos)
@@ -320,6 +311,7 @@ PAGE_TEMPLATE = r'''<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
 <title>{{seo.title}}</title>
 <meta name="description" content="{{seo.description}}">
 <meta name="keywords" content="{{seo.keywords}}">
@@ -330,9 +322,9 @@ PAGE_TEMPLATE = r'''<!DOCTYPE html>
 <link rel="canonical" href="{{seo.canonical}}">
 {{#if seo.yandex_verification}}<meta name="yandex-verification" content="{{seo.yandex_verification}}">{{/if}}
 {{#if seo.google_verification}}<meta name="google-site-verification" content="{{seo.google_verification}}">{{/if}}
-<link rel="shortcut icon" href="/favicon.ico">
-<link rel="icon" type="image/x-icon" href="/favicon.ico">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/jpeg" href="{{brand.logo_url}}">
+<link rel="shortcut icon" href="{{brand.logo_url}}">
+<link rel="apple-touch-icon" href="{{brand.logo_url}}">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ru_RU">
@@ -358,7 +350,6 @@ body::before{content:"";position:fixed;inset:0;z-index:-2;background:radial-grad
 .orb-2{width:480px;height:480px;right:-160px;top:40%;background:radial-gradient(circle,rgba(163,124,63,.12),transparent 65%);animation:orbFloat 24s ease-in-out infinite alternate-reverse}
 .orb-3{width:640px;height:640px;left:28%;bottom:-240px;background:radial-gradient(circle,rgba(212,175,106,.08),transparent 65%);animation:orbFloat 30s ease-in-out infinite alternate}
 @keyframes orbFloat{from{transform:translateY(-36px)}to{transform:translateY(44px)}}
-.grain{position:fixed;inset:0;z-index:2147480000;pointer-events:none;opacity:.03}
 ::selection{background:rgba(212,175,106,.32);color:#fff}
 h1,h2,h3{font-family:var(--serif);overflow-wrap:break-word;word-break:break-word;letter-spacing:.3px}
 img{max-width:100%;display:block}
@@ -398,9 +389,9 @@ header.solid{background:rgba(14,12,9,.92);box-shadow:0 12px 44px rgba(0,0,0,.45)
 [data-watermark] .wrap{position:relative;z-index:1}
 .panel{position:relative;min-height:100vh;display:flex;align-items:center;padding:150px 0;overflow:hidden}
 .panel .bg{position:absolute;inset:-14% 0;z-index:0;overflow:hidden;background:linear-gradient(135deg,#16120c,#0b0906)}
-.panel .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(to right,rgba(10,8,6,.88) 22%,rgba(10,8,6,.5) 58%,rgba(10,8,6,.7));z-index:2}
-.panel--center .bg::after{background:linear-gradient(180deg,rgba(10,8,6,.82),rgba(10,8,6,.55))}
-.panel--dark .bg::after{background:linear-gradient(180deg,rgba(10,8,6,.85),rgba(10,8,6,.6))}
+.panel .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(to right,rgba(10,8,6,.85) 22%,rgba(10,8,6,.48) 58%,rgba(10,8,6,.68));z-index:2}
+.panel--center .bg::after{background:linear-gradient(180deg,rgba(10,8,6,.78),rgba(10,8,6,.52))}
+.panel--dark .bg::after{background:linear-gradient(180deg,rgba(10,8,6,.82),rgba(10,8,6,.58))}
 .panel .content{position:relative;z-index:2;width:100%}
 .panel--center .content{text-align:center}
 .panel + .panel{margin-top:16px}
@@ -476,7 +467,7 @@ h2.k{position:relative;font-size:clamp(32px,4.6vw,48px);color:#faf3e6;font-weigh
 .swipe-hint::after{content:"→";display:inline-block}
 .car-slide{flex:0 0 auto;width:min(78vw,440px);scroll-snap-align:center;border-radius:var(--r-lg);overflow:hidden;border:1px solid rgba(255,255,255,.08);background:linear-gradient(135deg,#16120c,#0b0906);cursor:zoom-in;transition:transform .5s cubic-bezier(.22,.61,.36,1),box-shadow .5s,border-color .5s;box-shadow:var(--shadow-md);position:relative}
 .car-slide:hover{transform:translateY(-8px);border-color:rgba(236,207,160,.3);box-shadow:var(--shadow-lg)}
-.car-slide img{width:100%;height:300px;object-fit:cover;display:block}
+.car-slide img{width:100%;height:320px;object-fit:cover;display:block}
 .rev-track{align-items:flex-start}
 .rev-card{scroll-snap-align:center;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:var(--r-lg);padding:24px 26px;width:min(82vw,520px);flex:0 0 auto;display:flex;flex-direction:column;box-shadow:var(--shadow-md);position:relative;overflow:hidden;transition:transform .5s,box-shadow .5s}
 .rev-card:hover{transform:translateY(-8px);border-color:rgba(236,207,160,.28);box-shadow:var(--shadow-lg)}
@@ -492,26 +483,26 @@ h2.k{position:relative;font-size:clamp(32px,4.6vw,48px);color:#faf3e6;font-weigh
 .vb-play svg{width:22px;height:22px;fill:currentColor;margin-left:3px}
 .video-box iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.svc{position:relative;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);padding:38px 30px;transition:transform .5s cubic-bezier(.22,.61,.36,1),box-shadow .5s,border-color .5s;border-radius:var(--r-lg);overflow:hidden}
-.svc:hover{transform:translateY(-8px);background:rgba(255,255,255,.05);box-shadow:var(--shadow-lg);border-color:rgba(236,207,160,.26)}
+.svc{position:relative;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);padding:38px 30px;transition:transform .5s cubic-bezier(.22,.61,.36,1),box-shadow .5s,border-color .5s;border-radius:var(--r-lg);overflow:hidden;backdrop-filter:blur(4px)}
+.svc:hover{transform:translateY(-8px);background:rgba(255,255,255,.07);box-shadow:var(--shadow-lg);border-color:rgba(236,207,160,.26)}
 .svc svg{width:34px;height:34px;stroke:var(--gold-soft);fill:none;stroke-width:1.4;margin-bottom:20px}
 .svc h3{font-size:23px;color:#fff;margin-bottom:9px}
 .svc p{color:var(--muted);font-size:14px;line-height:1.7}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.step{position:relative;padding:34px 26px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:var(--r-lg);transition:transform .45s,box-shadow .45s,border-color .45s;overflow:hidden}
+.step{position:relative;padding:34px 26px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:var(--r-lg);transition:transform .45s,box-shadow .45s,border-color .45s;overflow:hidden;backdrop-filter:blur(4px)}
 .step:hover{transform:translateY(-7px);border-color:rgba(236,207,160,.28);box-shadow:var(--shadow-md)}
 .step .n{font-family:var(--serif);font-size:54px;line-height:1;background:linear-gradient(160deg,var(--gold-soft),var(--gold-deep));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .step h3{font-size:22px;color:#fff;margin:14px 0 8px}
 .step p{color:var(--muted);font-size:14px;line-height:1.7}
 .guar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
-.guar{position:relative;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);padding:38px 26px;text-align:center;transition:transform .45s,box-shadow .45s,border-color .45s;border-radius:var(--r-lg);overflow:hidden}
+.guar{position:relative;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);padding:38px 26px;text-align:center;transition:transform .45s,box-shadow .45s,border-color .45s;border-radius:var(--r-lg);overflow:hidden;backdrop-filter:blur(4px)}
 .guar:hover{transform:translateY(-8px);box-shadow:var(--shadow-lg);border-color:rgba(236,207,160,.26)}
 .guar .ico{width:54px;height:54px;margin:0 auto 18px;border:1px solid rgba(236,207,160,.35);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold-soft);background:radial-gradient(circle at 30% 30%,rgba(236,207,160,.16),rgba(212,175,106,.03));transition:transform .45s}
 .guar .ico svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.5}
 .guar h3{font-size:18px;color:#fff;margin-bottom:8px}
 .guar p{color:var(--muted);font-size:13px;line-height:1.7}
 .city-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.city{position:relative;padding:38px 28px;border-radius:var(--r-lg);background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);text-align:center;transition:transform .45s,box-shadow .45s,border-color .45s;overflow:hidden}
+.city{position:relative;padding:38px 28px;border-radius:var(--r-lg);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);text-align:center;transition:transform .45s,box-shadow .45s,border-color .45s;overflow:hidden;backdrop-filter:blur(4px)}
 .city:hover{transform:translateY(-7px);box-shadow:var(--shadow-lg);border-color:rgba(236,207,160,.26)}
 .city .city-name{font-family:var(--serif);font-size:28px;color:#fff;font-weight:500}
 .city .city-line{width:42px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:14px auto}
@@ -527,7 +518,7 @@ h2.k{position:relative;font-size:clamp(32px,4.6vw,48px);color:#faf3e6;font-weigh
 .c-line .lab{font-size:10.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
 .c-line .val{font-size:18px;font-weight:600;color:var(--text);word-break:break-word}
 .c-line a.val:hover{color:var(--gold-soft)}
-.call-block{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);padding:46px 36px;text-align:center;border-radius:var(--r-lg);box-shadow:var(--shadow-md);position:relative;overflow:hidden}
+.call-block{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);padding:46px 36px;text-align:center;border-radius:var(--r-lg);box-shadow:var(--shadow-md);position:relative;overflow:hidden;backdrop-filter:blur(6px)}
 .call-block::before{content:"";position:absolute;top:0;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,var(--gold-soft),transparent);opacity:.6}
 .call-block .cb-lab{font-size:12px;letter-spacing:4px;text-transform:uppercase;color:var(--gold-soft)}
 .call-block .cb-num{display:block;font-weight:800;font-size:clamp(27px,3.6vw,44px);color:#fff;margin:14px 0 18px;white-space:nowrap;transition:color .3s;text-shadow:0 5px 22px rgba(0,0,0,.42)}
@@ -572,13 +563,12 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-weight:500;letter-
 .js .reveal.in{opacity:1;transform:none}
 @media(max-width:1024px){.stats{grid-template-columns:repeat(2,1fr);gap:30px}.svc-grid{grid-template-columns:repeat(2,1fr)}.guar-grid{grid-template-columns:repeat(2,1fr)}.panel{padding:132px 0}}
 @media(max-width:860px){.menu{position:fixed;top:auto;left:0;right:0;bottom:0;width:100%;max-height:82vh;background:linear-gradient(180deg,#16130e,#0b0907);flex-direction:column;gap:4px;padding:12px 24px 22px;transform:translateY(105%);transition:transform .45s;z-index:205;border-radius:26px 26px 0 0;overflow-y:auto;height:auto}.menu.open{transform:none}.sheet-handle{display:flex;justify-content:center;padding:4px 0 8px}.sheet-handle span{width:42px;height:4px;border-radius:99px;background:rgba(236,207,160,.35)}.menu a{font-size:19px;font-family:var(--serif);color:#fff;border-bottom:1px solid rgba(236,207,160,.12);padding:13px 6px;display:flex;align-items:center;min-height:48px}.menu a::after{display:none}.menu-call{display:block;margin-top:10px;padding-top:10px;border-top:1px solid rgba(236,207,160,.14)}.menu-call a{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:52px;background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120b;font-size:14.5px;font-weight:700;border:none;border-radius:var(--r-sm);padding:15px 18px}.burger{display:block}.scrim{display:block}.about{grid-template-columns:1fr;gap:36px}.features{grid-template-columns:1fr}.steps{grid-template-columns:1fr;gap:20px}.contact-grid{grid-template-columns:1fr;gap:36px}.city-grid{grid-template-columns:1fr}.panel{padding:116px 0}.car-nav{display:none}.rev-card{width:86vw}.video-box{height:230px}}
-@media(max-width:520px){.logo .brand-ava{width:40px;height:40px}.logo .brand-txt .name{font-size:20px}.nav{height:64px}.panel{min-height:auto;padding:96px 0 56px}h1{font-size:31px}.sub{font-size:15px;margin:18px 0 26px}.btn-row{width:100%}.btn{width:100%;text-align:center}.car-slide{width:84vw}.car-slide img{height:205px}.rev-card{width:92vw;padding:17px}.rev-text{font-size:12.5px}.video-box{height:190px}.consult .phone{font-size:25px}.call-block .cb-num{font-size:22px}}
+@media(max-width:520px){.logo .brand-ava{width:40px;height:40px}.logo .brand-txt .name{font-size:20px}.nav{height:64px}.panel{min-height:auto;padding:96px 0 56px}h1{font-size:31px}.sub{font-size:15px;margin:18px 0 26px}.btn-row{width:100%}.btn{width:100%;text-align:center}.car-slide{width:84vw}.car-slide img{height:240px}.rev-card{width:92vw;padding:17px}.rev-text{font-size:12.5px}.video-box{height:190px}.consult .phone{font-size:25px}.call-block .cb-num{font-size:22px}}
 {{#if design.custom_css}}{{{design.custom_css|raw}}}{{/if}}
 </style>
 </head>
 <body>
 <div class="progress" id="progress"></div>
-<div class="grain" aria-hidden="true"></div>
 <div id="cursorGlow" aria-hidden="true"></div>
 <div class="orb orb-1" aria-hidden="true"></div>
 <div class="orb orb-2" aria-hidden="true"></div>
@@ -586,7 +576,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-weight:500;letter-
 <header id="header">
   <div class="wrap nav">
     <a href="#top" class="logo" id="logo">
-      <span class="brand-ava-w"><img class="brand-ava" referrerpolicy="no-referrer" src="{{brand.logo_url}}" width="46" height="46" alt="{{brand.name}}"></span>
+      <span class="brand-ava-w"><img class="brand-ava" src="{{brand.logo_url}}" width="46" height="46" alt="{{brand.name}}"></span>
       <span class="brand-txt"><span class="name">{{brand.name}}</span><span class="sub">{{brand.sub}}</span></span>
     </a>
     <button class="burger" id="burger" aria-label="Меню"><span></span><span></span><span></span></button>
@@ -600,7 +590,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-weight:500;letter-
 </ul>
 <div class="scrim" id="scrim"></div>
 <section class="panel panel--hero" id="top" data-watermark="Мебель">
-  <div class="bg"><img class="bg-img" referrerpolicy="no-referrer" src="{{hero.bg}}" alt=""></div>
+  <div class="bg"><img class="bg-img" src="{{hero.bg}}" alt=""></div>
   <div class="hero-glow"></div>
   <div class="wrap"><div class="content">
     <span class="eyebrow">{{hero.eyebrow}}</span>
@@ -614,7 +604,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-weight:500;letter-
   <div class="scroll-cue">Листайте<div class="line"></div></div>
 </section>
 <section class="panel panel--dark">
-  <div class="bg"><img class="bg-img" referrerpolicy="no-referrer" src="{{stats.bg}}" alt=""></div>
+  <div class="bg"><img class="bg-img" src="{{stats.bg}}" alt=""></div>
   <div class="wrap"><div class="content">
     <div class="stats">
       {{#each stats.items}}<div class="stat reveal"><div class="num" data-count="{{this.num}}"{{#if this.suffix}} data-suffix="{{this.suffix}}"{{/if}}{{#if this.decimal}} data-decimal="{{this.decimal}}"{{/if}}>0</div><div class="lbl">{{this.label}}</div></div>
@@ -623,11 +613,11 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-weight:500;letter-
   </div></div>
 </section>
 <section class="panel" id="about">
-  <div class="bg"><img class="bg-img" referrerpolicy="no-referrer" src="{{about.bg}}" alt=""></div>
+  <div class="bg"><img class="bg-img" src="{{about.bg}}" alt=""></div>
   <div class="wrap"><div class="content">
     <div class="about">
       <div class="about-card reveal">
-        <div class="avatar"><img referrerpolicy="no-referrer" src="{{about.photo}}" width="130" height="130" loading="lazy" alt="{{about.name}}"></div>
+        <div class="avatar"><img src="{{about.photo}}" width="130" height="130" loading="lazy" alt="{{about.name}}"></div>
         <h3>{{about.name}}</h3>
         <div class="role">{{about.role}}</div>
         <div class="sep"></div>
@@ -647,7 +637,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-weight:500;letter-
 </section>
 <div class="gold-divider"><i></i><b></b><i></i></div>
 <section class="panel panel--center panel--dark" id="consult">
-  <div class="bg"><img class="bg-img" referrerpolicy="no-referrer" src="{{consult.bg}}" alt=""></div>
+  <div class="bg"><img class="bg-img" src="{{consult.bg}}" alt=""></div>
   <div class="wrap"><div class="content consult">
     <span class="kicker reveal" style="color:var(--gold-soft);letter-spacing:6px;text-transform:uppercase;font-size:12px;font-weight:600">{{consult.kicker}}</span>
     <h2 class="k reveal">{{consult.title}}</h2>
@@ -656,7 +646,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-weight:500;letter-
   </div></div>
 </section>
 <section class="panel panel--center panel--dark" id="works" data-watermark="Работы">
-  <div class="bg"><img class="bg-img" referrerpolicy="no-referrer" src="{{works.bg}}" alt=""></div>
+  <div class="bg"><img class="bg-img" src="{{works.bg}}" alt=""></div>
   <div class="wrap"><div class="content">
     <div class="sec-head reveal">
       <div class="kicker">{{works.kicker}}</div>
@@ -666,7 +656,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-weight:500;letter-
     <div class="carousel reveal">
       <button class="car-nav car-prev" id="carPrev">❮</button>
       <div class="car-track" id="carTrack">
-        {{#each works.items}}<div class="car-slide"><img loading="lazy" referrerpolicy="no-referrer" src="{{this.url}}" alt="{{this.alt}}"></div>
+        {{#each works.items}}<div class="car-slide"><img loading="lazy" src="{{this.url}}" alt="{{this.alt}}"></div>
         {{/each}}
       </div>
       <button class="car-nav car-next" id="carNext">❯</button>
@@ -678,7 +668,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-weight:500;letter-
 </section>
 <div class="lightbox" id="lightbox">
   <button class="lb-close" id="lbClose">×</button>
-  <div class="lb-stage" id="lbStage"><img id="lbImg" alt="Работа" referrerpolicy="no-referrer"></div>
+  <div class="lb-stage" id="lbStage"><img id="lbImg" alt="Работа"></div>
   <div class="lb-bar">
     <button class="lb-nav lb-prev" id="lbPrev">❮</button>
     <div class="lb-count" id="lbCount"></div>
@@ -686,7 +676,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-weight:500;letter-
   </div>
 </div>
 <section class="panel panel--center" id="reviews" data-watermark="Отзывы">
-  <div class="bg"><img class="bg-img" referrerpolicy="no-referrer" src="{{reviews.bg}}" alt=""></div>
+  <div class="bg"><img class="bg-img" src="{{reviews.bg}}" alt=""></div>
   <div class="wrap"><div class="content">
     <div class="sec-head reveal">
       <div class="kicker">{{reviews.kicker}}</div>
@@ -698,7 +688,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-weight:500;letter-
       <div class="car-track rev-track" id="revTrack">
         {{#each reviews.items}}<div class="rev-card">
           <div class="rev-head">
-            {{#if this.avatar}}<img class="rev-ava" loading="lazy" referrerpolicy="no-referrer" width="50" height="50" src="{{this.avatar}}" alt="Отзыв: {{this.name}}">{{/if}}
+            {{#if this.avatar}}<img class="rev-ava" loading="lazy" width="50" height="50" src="{{this.avatar}}" alt="Отзыв: {{this.name}}">{{/if}}
             <div><div class="rev-name">{{this.name}}</div><div class="rev-sub">{{this.sub}}</div></div>
             <div class="rev-stars">{{this.stars|stars}}</div>
           </div>
@@ -720,7 +710,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-weight:500;letter-
 </section>
 <div class="gold-divider"><i></i><b></b><i></i></div>
 <section class="panel panel--dark" id="services" data-watermark="Услуги">
-  <div class="bg"><img class="bg-img" referrerpolicy="no-referrer" src="{{services.bg}}" alt=""></div>
+  <div class="bg"><img class="bg-img" src="{{services.bg}}" alt=""></div>
   <div class="wrap"><div class="content">
     <div class="sec-head reveal">
       <div class="kicker">{{services.kicker}}</div>
@@ -734,7 +724,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-weight:500;letter-
   </div></div>
 </section>
 <section class="panel" id="process">
-  <div class="bg"><img class="bg-img" referrerpolicy="no-referrer" src="{{process.bg}}" alt=""></div>
+  <div class="bg"><img class="bg-img" src="{{process.bg}}" alt=""></div>
   <div class="wrap"><div class="content">
     <div class="sec-head reveal">
       <div class="kicker">{{process.kicker}}</div>
@@ -747,7 +737,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-weight:500;letter-
   </div></div>
 </section>
 <section class="panel panel--dark">
-  <div class="bg"><img class="bg-img" referrerpolicy="no-referrer" src="{{guarantees.bg}}" alt=""></div>
+  <div class="bg"><img class="bg-img" src="{{guarantees.bg}}" alt=""></div>
   <div class="wrap"><div class="content">
     <div class="sec-head reveal">
       <div class="kicker">{{guarantees.kicker}}</div>
@@ -760,7 +750,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-weight:500;letter-
   </div></div>
 </section>
 <section class="panel panel--center panel--dark" id="cities">
-  <div class="bg"><img class="bg-img" referrerpolicy="no-referrer" src="{{cities.bg}}" alt=""></div>
+  <div class="bg"><img class="bg-img" src="{{cities.bg}}" alt=""></div>
   <div class="wrap"><div class="content">
     <div class="sec-head reveal">
       <div class="kicker">{{cities.kicker}}</div>
@@ -774,7 +764,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-weight:500;letter-
   </div></div>
 </section>
 <section class="panel panel--center panel--dark">
-  <div class="bg"><img class="bg-img" referrerpolicy="no-referrer" src="{{cta.bg}}" alt=""></div>
+  <div class="bg"><img class="bg-img" src="{{cta.bg}}" alt=""></div>
   <div class="wrap"><div class="content cta">
     <h2 class="reveal shimmer">{{cta.title}}</h2>
     <p class="reveal">{{cta.text}}</p>
@@ -782,7 +772,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-weight:500;letter-
   </div></div>
 </section>
 <section class="panel panel--dark" id="contacts">
-  <div class="bg"><img class="bg-img" referrerpolicy="no-referrer" src="{{contacts.bg}}" alt=""></div>
+  <div class="bg"><img class="bg-img" src="{{contacts.bg}}" alt=""></div>
   <div class="wrap"><div class="content">
     <div class="contact-grid">
       <div class="contact-info reveal">
@@ -821,7 +811,6 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-weight:500;letter-
 </div>
 <script>
 (function(){
-var reduced=false;
 var fine=matchMedia('(hover:hover) and (pointer:fine)').matches;
 var progress=document.getElementById('progress');
 var header=document.getElementById('header');
@@ -844,13 +833,13 @@ function openMenu(){burger.classList.add('open');menu.classList.add('open');scri
 burger.addEventListener('click',function(){if(menuOpen)closeMenu();else openMenu();});
 scrim.addEventListener('click',closeMenu);
 menu.querySelectorAll('a').forEach(function(a){a.addEventListener('click',closeMenu);});
-if(fine&&!reduced){
+if(fine){
   var bgs=document.querySelectorAll('.panel .bg');
   var contents=document.querySelectorAll('.panel .content');
   var pT=false;
   function parallax(){if(pT)return;pT=true;requestAnimationFrame(function(){
-    bgs.forEach(function(bg){var r=bg.parentElement.getBoundingClientRect();var c=(r.top+r.height/2)-innerHeight/2;bg.style.transform='translateY('+(-c*0.25)+'px)';});
-    contents.forEach(function(cn){var r=cn.parentElement.getBoundingClientRect();var c=(r.top+r.height/2)-innerHeight/2;cn.style.transform='translateY('+(-c*0.06)+'px)';});
+    bgs.forEach(function(bg){var r=bg.parentElement.getBoundingClientRect();var c=(r.top+r.height/2)-innerHeight/2;bg.style.transform='translateY('+(-c*0.22)+'px)';});
+    contents.forEach(function(cn){var r=cn.parentElement.getBoundingClientRect();var c=(r.top+r.height/2)-innerHeight/2;cn.style.transform='translateY('+(-c*0.05)+'px)';});
     pT=false;});}
   window.addEventListener('scroll',parallax,{passive:true});parallax();
 }
@@ -868,7 +857,7 @@ document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
 function initCarousel(trackId,prevId,nextId,dotsId){var track=document.getElementById(trackId),prev=document.getElementById(prevId),next=document.getElementById(nextId),dotsBox=document.getElementById(dotsId),items=[].slice.call(track.children);dotsBox.innerHTML='';items.forEach(function(_,i){var d=document.createElement('button');d.className='car-dot'+(i===0?' active':'');d.setAttribute('aria-label','Слайд '+(i+1));d.addEventListener('click',function(){items[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});});dotsBox.appendChild(d);});var dots=[].slice.call(dotsBox.children);var step=function(){return items[0].offsetWidth+20;};var sT=false;track.addEventListener('scroll',function(){if(sT)return;sT=true;requestAnimationFrame(function(){var idx=Math.round(track.scrollLeft/step());dots.forEach(function(d,i){d.classList.toggle('active',i===idx);});sT=false;});},{passive:true});prev.addEventListener('click',function(){track.scrollBy({left:-step(),behavior:'smooth'});});next.addEventListener('click',function(){track.scrollBy({left:step(),behavior:'smooth'});});}
 initCarousel('carTrack','carPrev','carNext','carDots');
 initCarousel('revTrack','revPrev','revNext','revDots');
-if(fine&&!reduced){
+if(fine){
   document.querySelectorAll('.car-slide').forEach(function(slide){var img=slide.querySelector('img');slide.addEventListener('mousemove',function(e){var r=slide.getBoundingClientRect();var dx=(e.clientX-r.left)/r.width-.5;var dy=(e.clientY-r.top)/r.height-.5;img.style.transform='scale(1.07) translate('+(dx*8)+'px,'+(dy*8)+'px)';});slide.addEventListener('mouseleave',function(){img.style.transform='';});});
 }
 var lightbox=document.getElementById('lightbox'),lbStage=document.getElementById('lbStage'),lbImg=document.getElementById('lbImg'),lbCount=document.getElementById('lbCount');
@@ -907,11 +896,6 @@ def _merge_deep(b, o):
 def _migrate(raw):
     if not isinstance(raw, dict): return {}
     d = _json_clone(raw)
-    a = d.get("about")
-    if isinstance(a, dict):
-        if "body" in a and "card_text" not in a:
-            a["card_text"] = a.pop("text", ""); a["text"] = a.pop("body", "")
-        a.pop("body", None)
     c = d.get("contacts")
     if isinstance(c, dict) and "lines" not in c:
         lines = _json_clone(DEFAULT_DATA.get("contacts", {}).get("lines") or [])
@@ -1021,7 +1005,6 @@ def _ai_yandex(system, user, max_tokens=700):
         try: return js["result"]["alternatives"][0]["message"]["text"], None
         except Exception: return None, "err"
     return None, "Yandex HTTP {}".format(st)
-
 _gc = {"token": "", "exp": 0.0}; _gc_lock = threading.Lock()
 def _gigachat_token():
     with _gc_lock:
@@ -1079,9 +1062,8 @@ def _ai_ask(data, task, path, value):
     base = "Компания: {}. Города: {}. Услуги: {}. Телефон: {}. Сайт: {}.".format(
         brand.get("name","Кухни Островский"), cities or "Ростов-на-Дону, Батайск, Азов",
         services or "кухни и корпусная мебель на заказ", brand.get("phone",""), seo.get("domain") or DOMAIN)
-    system = "Ты опытный русскоязычный копирайтер и SEO-специалист. Пиши живым языком, без воды, без markdown, без кавычек. Отвечай ТОЛЬКО готовым текстом."
-    rules = "Без emoji. Без англицизмов. Не выдумывай цены и сроки."
-    user = base + "\n" + rules + "\n\n"
+    system = "Ты опытный русскоязычный копирайтер и SEO-специалист. Пиши живым языком, без воды, без markdown, без кавычек."
+    user = base + "\n\n"
     if task == "seo_title": user += "Составь SEO Title до 65 символов."
     elif task == "seo_description": user += "Составь meta description до 160 символов."
     elif task == "seo_keywords": user += "Составь 12-15 ключевых фраз через запятую."
@@ -1153,8 +1135,6 @@ def save_data(data):
         with _data_lock: _data_cache = _merge_deep(DEFAULT_DATA, _migrate(data)); _cache_ts = time.time()
     return ok
 
-def _proxify_urls(html): return html
-
 _page_lock = threading.Lock(); _page_cache = {"tpl": ""}
 def _page_template():
     with _page_lock:
@@ -1191,8 +1171,7 @@ def build_manifest(data):
     b = data.get("brand") or {}; d = data.get("design") or {}
     return json.dumps({"name": b.get("name","Кухни Островский"), "short_name": b.get("name","Кухни Островский"),
         "start_url": "/", "display": "standalone", "background_color": d.get("bg","#0e0c09"), "theme_color": d.get("bg","#0e0c09"),
-        "lang": "ru-RU", "icons": [{"src": "/favicon-192x192.png", "sizes": "192x192", "type": "image/png"},
-        {"src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png"}]}, ensure_ascii=False)
+        "lang": "ru-RU", "icons": [{"src": b.get("logo_url",""), "sizes": "512x512", "type": "image/jpeg"}]}, ensure_ascii=False)
 def build_404(data):
     p = data.get("page404") or {}
     t = p.get("title") or "Страница не найдена"
@@ -1201,30 +1180,22 @@ def build_404(data):
     return ("<!DOCTYPE html><html lang=\"ru\"><head><meta charset=\"UTF-8\"><title>{t}</title></head>"
         "<body style=\"margin:0;background:#0e0c09;color:#f5efe3;font-family:system-ui;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center\">"
         "<div><h1 style=\"font-size:72px;color:#eccfa0\">404</h1><p>{t}</p><p>{x}</p>"
-        "<a href=\"/\" style=\"display:inline-block;margin-top:22px;padding:14px 26px;border-radius:12px;background:linear-gradient(135deg,#eccfa0,#d4af6a 55%,#a37c3f);color:#17120b;font-weight:700;text-decoration:none;text-transform:uppercase\">{b}</a></div>"
+        "<a href=\"/\" style=\"display:inline-block;margin-top:22px;padding:14px 26px;border-radius:12px;background:linear-gradient(135deg,#eccfa0,#d4af6a 55%,#a37c3f);color:#17120b;font-weight:700;text-decoration:none\">{b}</a></div>"
         "</body></html>").format(t=_escape(t), x=_escape(x), b=_escape(b))
 
-_fc = {"data": None, "ts": 0.0}; _ic = {"ico": None, "png16": None, "png32": None, "png180": None, "png192": None}; _fc_lock = threading.Lock()
-def _make_icons(data):
-    try: from PIL import Image
-    except Exception: return
-    try:
-        img = Image.open(io.BytesIO(data)).convert("RGBA")
-        buf = io.BytesIO(); img.save(buf, format="ICO", sizes=[(16,16),(32,32),(48,48),(64,64)]); _ic["ico"] = buf.getvalue()
-        def png(s):
-            c = img.copy(); c.thumbnail((s,s)); b = io.BytesIO(); c.save(b, format="PNG"); return b.getvalue()
-        _ic["png16"] = png(16); _ic["png32"] = png(32); _ic["png180"] = png(180); _ic["png192"] = png(192)
-    except Exception: pass
+_fc = {"data": None, "ts": 0.0, "ct": "image/jpeg"}; _fc_lock = threading.Lock()
 def get_favicon():
     now = time.time()
     with _fc_lock:
-        if _fc["data"] is not None and now - _fc["ts"] < 3600: return _fc["data"]
+        if _fc["data"] is not None and now - _fc["ts"] < 3600: return _fc["data"], _fc["ct"]
     try:
         req = urllib.request.Request(FAVICON_URL, headers={"User-Agent": "Mozilla/5.0", "Referer": "https://vk.com/"})
-        with urllib.request.urlopen(req, timeout=15) as r: data = r.read()
-        with _fc_lock: _fc["data"] = data; _fc["ts"] = now
-        _make_icons(data); return data
-    except Exception: return None
+        with urllib.request.urlopen(req, timeout=15) as r:
+            data = r.read(); ct = r.headers.get("Content-Type", "image/jpeg")
+        with _fc_lock: _fc["data"] = data; _fc["ts"] = now; _fc["ct"] = ct
+        return data, ct
+    except Exception as e:
+        print("[favicon] {}".format(e), flush=True); return None, None
 
 def _svg_icon(_=None): return {"path": "icon", "label": "Иконка", "type": "textarea", "rows": 2, "mono": True, "hint": "Содержимое d у path"}
 
@@ -1245,39 +1216,39 @@ ADMIN_SCHEMA = [
    {"path":"code.head","label":"Код в <head>","type":"textarea","rows":8,"mono":True},
    {"path":"code.body","label":"Код перед </body>","type":"textarea","rows":8,"mono":True}]},
  {"id":"design","group":"SEO","title":"Дизайн","fields":[
-   {"path":"design.bg","label":"Фон сайта","type":"color"},
+   {"path":"design.bg","label":"Фон","type":"color"},
    {"path":"design.gold","label":"Золотой","type":"color"},
    {"path":"design.gold_soft","label":"Светлое золото","type":"color"},
    {"path":"design.gold_deep","label":"Тёмное золото","type":"color"},
    {"path":"design.text","label":"Основной текст","type":"color"},
    {"path":"design.muted","label":"Второстепенный текст","type":"color"},
-   {"path":"design.fonts_url","label":"Шрифты Google","type":"text","mono":True},
+   {"path":"design.fonts_url","label":"Шрифты","type":"text","mono":True},
    {"path":"design.custom_css","label":"Свой CSS","type":"textarea","rows":8,"mono":True}]},
  {"id":"brand","group":"Контент","title":"Бренд","fields":[
    {"path":"brand.name","label":"Название","type":"text"},
    {"path":"brand.sub","label":"Подпись","type":"text"},
    {"path":"brand.logo_url","label":"Логотип","type":"image"},
    {"path":"brand.phone","label":"Телефон","type":"text"},
-   {"path":"brand.phone_raw","label":"Телефон для tel:","type":"text"},
+   {"path":"brand.phone_raw","label":"tel:","type":"text"},
    {"path":"brand.telegram","label":"Telegram","type":"text"},
    {"path":"brand.vk","label":"VK","type":"text"},
-   {"path":"nav.cta_label","label":"Кнопка в меню","type":"text"},
-   {"path":"nav.cta_href","label":"Кнопка (ссылка)","type":"text"}],
-  "lists":[{"path":"nav.items","label":"Пункты меню","titleField":"label","tpl":{"label":"Пункт","href":"#top"},
+   {"path":"nav.cta_label","label":"Кнопка меню","type":"text"},
+   {"path":"nav.cta_href","label":"Кнопка ссылка","type":"text"}],
+  "lists":[{"path":"nav.items","label":"Меню","titleField":"label","tpl":{"label":"Пункт","href":"#top"},
     "item":[{"path":"label","label":"Текст","type":"text"},{"path":"href","label":"Ссылка","type":"text"}]}]},
  {"id":"hero","group":"Контент","title":"Главный","fields":[
    {"path":"hero.eyebrow","label":"Надзаголовок","type":"text"},
-   {"path":"hero.title_before","label":"Заголовок (начало)","type":"text"},
-   {"path":"hero.title_em","label":"Заголовок (золото)","type":"text"},
+   {"path":"hero.title_before","label":"Заголовок 1","type":"text"},
+   {"path":"hero.title_em","label":"Заголовок золото","type":"text"},
    {"path":"hero.sub","label":"Подзаголовок","type":"textarea","rows":3,"ai":"hero_sub"},
    {"path":"hero.btn1","label":"Кнопка 1","type":"text"},
-   {"path":"hero.btn1_href","label":"Кнопка 1 (ссылка)","type":"text"},
+   {"path":"hero.btn1_href","label":"Кнопка 1 ссылка","type":"text"},
    {"path":"hero.btn2","label":"Кнопка 2","type":"text"},
-   {"path":"hero.btn2_href","label":"Кнопка 2 (ссылка)","type":"text"},
+   {"path":"hero.btn2_href","label":"Кнопка 2 ссылка","type":"text"},
    {"path":"hero.bg","label":"Фон","type":"image"}]},
  {"id":"stats","group":"Контент","title":"Цифры","fields":[{"path":"stats.bg","label":"Фон","type":"image"}],
   "lists":[{"path":"stats.items","label":"Цифры","titleField":"label","tpl":{"prefix":"","num":"10","suffix":"+","decimal":"","label":""},
-    "item":[{"path":"num","label":"Число","type":"text"},{"path":"decimal","label":"Знаков после","type":"text"},{"path":"prefix","label":"Префикс","type":"text"},{"path":"suffix","label":"Суффикс","type":"text"},{"path":"label","label":"Подпись","type":"text"}]}]},
+    "item":[{"path":"num","label":"Число","type":"text"},{"path":"decimal","label":"Знаков","type":"text"},{"path":"prefix","label":"Префикс","type":"text"},{"path":"suffix","label":"Суффикс","type":"text"},{"path":"label","label":"Подпись","type":"text"}]}]},
  {"id":"about","group":"Контент","title":"О специалисте","fields":[
    {"path":"about.kicker","label":"Надзаголовок","type":"text"},
    {"path":"about.title","label":"Заголовок","type":"text"},
@@ -1302,7 +1273,7 @@ ADMIN_SCHEMA = [
    {"path":"works.subtitle","label":"Подзаголовок","type":"textarea","rows":2},
    {"path":"works.hint","label":"Листайте","type":"text"},
    {"path":"works.bg","label":"Фон","type":"image"}],
-  "lists":[{"path":"works.items","label":"Фото работ","titleField":"alt","tpl":{"url":"","alt":"Кухня"},
+  "lists":[{"path":"works.items","label":"Фото","titleField":"alt","tpl":{"url":"","alt":"Кухня"},
     "item":[{"path":"url","label":"Картинка","type":"image"},{"path":"alt","label":"Alt","type":"text"}]}]},
  {"id":"reviews","group":"Контент","title":"Отзывы","fields":[
    {"path":"reviews.kicker","label":"Надзаголовок","type":"text"},
@@ -1350,7 +1321,7 @@ ADMIN_SCHEMA = [
    {"path":"contacts.subtitle","label":"Подзаголовок","type":"textarea","rows":2},
    {"path":"contacts.call_label","label":"Подпись звонка","type":"text"},
    {"path":"contacts.call_number","label":"Телефон","type":"text"},
-   {"path":"contacts.call_hint","label":"Текст под телефоном","type":"textarea","rows":2},
+   {"path":"contacts.call_hint","label":"Под телефоном","type":"textarea","rows":2},
    {"path":"contacts.bg","label":"Фон","type":"image"}],
   "lists":[
     {"path":"contacts.lines","label":"Строки","titleField":"label","tpl":{"label":"","value":"","href":"","icon":""},
@@ -1511,7 +1482,7 @@ function fieldHTML(f,base){
       +'<input type="text" data-path="'+p+'" value="'+esc(v)+'">'
       +'<label class="btn mini">📁<input type="file" accept="image/*" data-upload="'+p+'" hidden></label>'
       +'<button class="btn mini" data-media="'+p+'">🗂</button></div>'
-      +'<div class="prev" data-prev="'+p+'">'+(v?'<img src="'+esc(v)+'" loading="lazy" referrerpolicy="no-referrer">':'')+'</div></div>';
+      +'<div class="prev" data-prev="'+p+'">'+(v?'<img src="'+esc(v)+'" loading="lazy">':'')+'</div></div>';
   }
   if(f.type==='textarea')inp='<textarea data-path="'+p+'" rows="'+(f.rows||3)+'"'+(f.mono?' class="mono"':'')+' placeholder="'+esc(f.placeholder||'')+'">'+esc(v)+'</textarea>';
   else if(f.type==='check')inp='<label class="chk"><input type="checkbox" data-path="'+p+'"'+(v?' checked':'')+'> '+(f.chkLabel||'включено')+'</label>';
@@ -1543,7 +1514,7 @@ function bind(){
       var val=(el.type==='checkbox')?!!el.checked:el.value;
       setPath(DATA,p,val); setDirty(true);
       qa('[data-path="'+p+'"]').forEach(function(o){if(o!==el){if(o.type==='checkbox')o.checked=!!val;else o.value=val}});
-      var pv=q('[data-prev="'+p+'"]'); if(pv)pv.innerHTML=val?'<img src="'+esc(val)+'" loading="lazy" referrerpolicy="no-referrer">':'';
+      var pv=q('[data-prev="'+p+'"]'); if(pv)pv.innerHTML=val?'<img src="'+esc(val)+'" loading="lazy">':'';
     });
   });
   qa('[data-upload]').forEach(function(inp){inp.addEventListener('change',function(){upload(inp)})});
@@ -1557,7 +1528,7 @@ function bind(){
 function addItem(path,tpl){var arr=getPath(DATA,path); if(!Array.isArray(arr)){arr=[];setPath(DATA,path,arr)} var item; try{item=JSON.parse(tpl)}catch(e){item=tpl} arr.push(item); setDirty(true); render();}
 function delItem(path,i){if(!confirm('Удалить?'))return;var arr=getPath(DATA,path);arr.splice(i,1);setDirty(true);render();}
 function moveItem(path,i,d){var arr=getPath(DATA,path),j=i+d;if(j<0||j>=arr.length)return;var x=arr[i];arr[i]=arr[j];arr[j]=x;setDirty(true);render();}
-function refreshField(p,val){qa('[data-path="'+p+'"]').forEach(function(o){o.value=val});var pv=q('[data-prev="'+p+'"]');if(pv)pv.innerHTML=val?'<img src="'+esc(val)+'" loading="lazy" referrerpolicy="no-referrer">':'';}
+function refreshField(p,val){qa('[data-path="'+p+'"]').forEach(function(o){o.value=val});var pv=q('[data-prev="'+p+'"]');if(pv)pv.innerHTML=val?'<img src="'+esc(val)+'" loading="lazy">':'';}
 function upload(inp){
   var p=inp.dataset.upload,f=inp.files[0]; if(!f)return;
   if(f.size>8*1024*1024){toast('Файл больше 8 МБ',true);return}
@@ -1582,7 +1553,7 @@ function openMedia(p){
   q('#modal').classList.add('open');
   api('/admin/api/media').then(function(j){
     if(!j||!j.items||!j.items.length){q('#mediaGrid').innerHTML='<p class="hint" style="padding:16px">Нет файлов.</p>';return}
-    q('#mediaGrid').innerHTML=j.items.map(function(it){return '<button data-pick="'+esc(it.url)+'"><img src="'+esc(it.url)+'" loading="lazy" referrerpolicy="no-referrer"><div class="nm">'+esc(it.name)+'</div></button>';}).join('');
+    q('#mediaGrid').innerHTML=j.items.map(function(it){return '<button data-pick="'+esc(it.url)+'"><img src="'+esc(it.url)+'" loading="lazy"><div class="nm">'+esc(it.name)+'</div></button>';}).join('');
     qa('[data-pick]').forEach(function(b){b.addEventListener('click',function(){
       setPath(DATA,mediaTarget,b.dataset.pick);setDirty(true);refreshField(mediaTarget,b.dataset.pick);
       q('#modal').classList.remove('open');
@@ -1647,7 +1618,7 @@ q('#importFile').addEventListener('change',function(){
   var f=this.files[0]; if(!f)return;
   var r=new FileReader();
   r.onload=function(){
-    try{var obj=JSON.parse(r.result);DATA=obj;setDirty(true);render();toast('Бэкап загружен — Сохранить');}
+    try{var obj=JSON.parse(r.result);DATA=obj;setDirty(true);render();toast('Бэкап загружен');}
     catch(err){toast('Не разобрал JSON: '+err.message,true)}
   };
   r.readAsText(f,'utf-8'); this.value='';
@@ -1682,7 +1653,7 @@ def _parse_multipart(body, boundary):
 
 class Handler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
-    server_version = "OstrovskyCMS/6.0"
+    server_version = "OstrovskyCMS/7.0"
     _head_only = False
     def _tok(self):
         raw = self.headers.get("Cookie", "")
@@ -1765,17 +1736,15 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/robots.txt": self._send(200, build_robots(load_data()), "text/plain; charset=utf-8", "public, max-age=3600"); return
         if path == "/sitemap.xml": self._send(200, build_sitemap(load_data()), "application/xml; charset=utf-8", "public, max-age=3600"); return
         if path == "/manifest.webmanifest": self._send(200, build_manifest(load_data()), "application/manifest+json; charset=utf-8", "public, max-age=86400"); return
-        if path in ("/favicon.ico","/favicon-16x16.png","/favicon-32x32.png","/apple-touch-icon.png","/favicon-192x192.png"):
-            if path == "/favicon.ico":
-                d = get_favicon()
-                if _ic["ico"]: self._send(200, _ic["ico"], "image/x-icon", "public, max-age=86400", gzip_ok=False)
-                elif d: self._send(200, d, "image/x-icon", "public, max-age=86400", gzip_ok=False)
-                else: self._redir(FAVICON_URL)
-            else:
-                key = {"/favicon-16x16.png":"png16","/favicon-32x32.png":"png32","/apple-touch-icon.png":"png180","/favicon-192x192.png":"png192"}[path]
-                if _ic.get(key) is None: get_favicon()
-                if _ic.get(key): self._send(200, _ic[key], "image/png", "public, max-age=86400", gzip_ok=False)
-                else: self._redir(FAVICON_URL)
+        if path == "/favicon.ico" or path == "/favicon.png":
+            data, ct = get_favicon()
+            if data: self._send(200, data, ct or "image/jpeg", "public, max-age=86400", gzip_ok=False)
+            else: self._redir(FAVICON_URL)
+            return
+        if path in ("/favicon-16x16.png","/favicon-32x32.png","/apple-touch-icon.png","/favicon-192x192.png"):
+            data, ct = get_favicon()
+            if data: self._send(200, data, ct or "image/jpeg", "public, max-age=86400", gzip_ok=False)
+            else: self._redir(FAVICON_URL)
             return
         if self._serve_static(path): return
         self._send(404, build_404(load_data()), "text/html; charset=utf-8")
@@ -1849,7 +1818,7 @@ class Handler(BaseHTTPRequestHandler):
         if os.environ.get("VERBOSE"): print("[http] " + (fmt % args), flush=True)
 
 def main():
-    print("BOOT: Кухни Островский CMS (v6)", flush=True)
+    print("BOOT: Кухни Островский CMS (v7)", flush=True)
     print("BOOT: PORT = {}".format(PORT), flush=True)
     print("BOOT: DOMAIN = {} ({})".format(_domain(), _host()), flush=True)
     print("BOOT: Supabase = {}".format(SUPABASE_URL), flush=True)
