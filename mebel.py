@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 mebel.py — Кухни Островский. Один файл: сайт + админка + Supabase + AI.
+Все картинки грузятся напрямую из VK через браузер (referrerpolicy=no-referrer).
 """
 
 import base64, gzip, hashlib, hmac, html as _html, io, json, os, re, secrets, ssl, threading, time
@@ -33,27 +34,25 @@ SESSION_TTL = 604800
 MAX_UPLOAD = 8 * 1024 * 1024
 DATA_ROW_ID = 1
 CACHE_TTL = 15
-IMG_TTL = 604800
 HTTP_TIMEOUT = 12
 
 FAVICON_URL = "https://sun9-71.vkuserphoto.ru/s/v1/ig2/vrD0P7wnU0dU8cSoW8yBUOc-naoKs1vJN5OXMrUFeAdLJQi9qfWScCGH9JV3-r4btxsDfbPh--pJ1tSjOlkfiVRw2Celdw.jpg?quality=95&cs=1254x0"
 
-# ============ АНИМАЦИИ (дополнительный слой) ============
+# ============ АНИМАЦИИ ============
 ANIM_STYLE = """<style id="goldAnimations">
 @keyframes shimmerX{0%{background-position:-200% 0}100%{background-position:200% 0}}
 @keyframes goldGradient{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 @keyframes particleFloat{0%{transform:translateY(100vh) scale(.5);opacity:0}10%{opacity:1}90%{opacity:.85}100%{transform:translateY(-100px) scale(1.1);opacity:0}}
 @keyframes rippleAnim{to{transform:scale(4);opacity:0}}
 @keyframes glowPulse{0%,100%{text-shadow:0 0 10px rgba(236,207,160,.3)}50%{text-shadow:0 0 30px rgba(236,207,160,.8),0 0 60px rgba(212,175,106,.5)}}
-@keyframes floatUp{0%{opacity:0;transform:translateY(40px) scale(.96)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+@keyframes floatCard{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @keyframes fadeInSoft{from{opacity:0}to{opacity:1}}
-@keyframes shimmerLine{0%{background-position:-200% 0}100%{background-position:200% 0}}
-@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
 h1,h2.k,.sec-head h2,.about-body h2,.contact-info h2,.cta h2{background-image:linear-gradient(90deg,#faf3e6 0%,#faf3e6 30%,#eccfa0 50%,#faf3e6 70%,#faf3e6 100%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;transition:background-position 1.6s ease;background-position:100% 0}
 h1 em,.shimmer,h1 em.shimmer{background-image:linear-gradient(90deg,#eccfa0,#fff 35%,#eccfa0 70%,#eccfa0 100%);background-size:220% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerX 4s linear infinite}
 .js .anim-visible h1,.js h1.anim-visible,.js .anim-visible h2,.js h2.anim-visible{background-position:0% 0}
-.js .stat,.js .svc,.js .step,.js .guar,.js .city,.js .car-slide,.js .rev-card,.js .about-card,.js .about-body,.js .call-block,.js .contact-info,.js .sec-head,.js .c-line,.js .features li{opacity:0;transform:translateY(30px);transition:opacity .9s cubic-bezier(.22,.61,.36,1),transform .9s cubic-bezier(.22,.61,.36,1)}
-.js .stat.anim-in,.js .svc.anim-in,.js .step.anim-in,.js .guar.anim-in,.js .city.anim-in,.js .car-slide.anim-in,.js .rev-card.anim-in,.js .about-card.anim-in,.js .about-body.anim-in,.js .call-block.anim-in,.js .contact-info.anim-in,.js .sec-head.anim-in,.js .c-line.anim-in,.js .features li.anim-in{opacity:1;transform:translateY(0)}
+.js .stat,.js .svc,.js .step,.js .guar,.js .city,.js .car-slide,.js .rev-card,.js .about-card,.js .about-body,.js .call-block,.js .contact-info,.js .sec-head,.js .c-line,.js .features li,.js .btn-row .btn,.js .gold-divider,.js .swipe-hint{opacity:0;transform:translateY(30px);transition:opacity .9s cubic-bezier(.22,.61,.36,1),transform .9s cubic-bezier(.22,.61,.36,1)}
+.js .stat.anim-in,.js .svc.anim-in,.js .step.anim-in,.js .guar.anim-in,.js .city.anim-in,.js .car-slide.anim-in,.js .rev-card.anim-in,.js .about-card.anim-in,.js .about-body.anim-in,.js .call-block.anim-in,.js .contact-info.anim-in,.js .sec-head.anim-in,.js .c-line.anim-in,.js .features li.anim-in,.js .btn-row .btn.anim-in,.js .gold-divider.anim-in,.js .swipe-hint.anim-in{opacity:1;transform:translateY(0)}
 .js .stats .stat:nth-child(2){transition-delay:.12s}.js .stats .stat:nth-child(3){transition-delay:.24s}.js .stats .stat:nth-child(4){transition-delay:.36s}
 .js .svc-grid .svc:nth-child(2){transition-delay:.1s}.js .svc-grid .svc:nth-child(3){transition-delay:.2s}.js .svc-grid .svc:nth-child(4){transition-delay:.3s}.js .svc-grid .svc:nth-child(5){transition-delay:.4s}.js .svc-grid .svc:nth-child(6){transition-delay:.5s}
 .js .steps .step:nth-child(2){transition-delay:.1s}.js .steps .step:nth-child(3){transition-delay:.2s}.js .steps .step:nth-child(4){transition-delay:.3s}.js .steps .step:nth-child(5){transition-delay:.4s}.js .steps .step:nth-child(6){transition-delay:.5s}
@@ -77,16 +76,17 @@ h1 em,.shimmer,h1 em.shimmer{background-image:linear-gradient(90deg,#eccfa0,#fff
 .logo .brand-ava-w::before{animation:ringPulse 3.6s ease-in-out infinite,breathe 4s ease-in-out infinite}
 .avatar,.rev-ava{animation:fadeInSoft .8s ease}
 .stat,.svc,.step,.guar,.city{will-change:transform,opacity}
+.stat:hover,.svc:hover,.step:hover,.guar:hover,.city:hover{animation:floatCard 3s ease-in-out infinite}
 .rev-card:hover,.about-card:hover{box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 40px rgba(212,175,106,.15)}
 .panel .bg{transition:transform 1.2s cubic-bezier(.22,.61,.36,1)}
-.c-action,.soc,.btn-line,.btn-solid{will-change:transform}
+.panel .bg-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block}
 .hero-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(236,207,160,.08),transparent 65%);pointer-events:none;z-index:1;animation:breathe 8s ease-in-out infinite}
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}}
 </style>"""
 
 ANIM_SCRIPT = """<script id="goldAnimationScript">
 (function(){
-  var SEL='.stat,.svc,.step,.guar,.city,.car-slide,.rev-card,.about-card,.about-body,.call-block,.contact-info,.sec-head,.c-line,.features li';
+  var SEL='.stat,.svc,.step,.guar,.city,.car-slide,.rev-card,.about-card,.about-body,.call-block,.contact-info,.sec-head,.c-line,.features li,.btn-row .btn,.gold-divider,.swipe-hint';
   function showAll(){var n=document.querySelectorAll(SEL);for(var i=0;i<n.length;i++)n[i].classList.add('anim-in')}
   if(!('IntersectionObserver' in window)){showAll();document.documentElement.classList.remove('js');return;}
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){showAll();document.documentElement.classList.remove('js');return;}
@@ -307,7 +307,6 @@ DEFAULT_DATA = {
 
 # ============ ШАБЛОНИЗАТОР ============
 _TAG_RE = re.compile(r"\{\{\{?(.*?)\}\}\}?", re.S)
-
 def _escape(s): return _html.escape(s, quote=True)
 def _stringify(v):
     if v is None: return ""
@@ -316,7 +315,6 @@ def _stringify(v):
     if isinstance(v, int): return str(v)
     if isinstance(v, (dict, list, tuple)): return ""
     return str(v)
-
 def _truthy(v):
     if v is None: return False
     if isinstance(v, bool): return v
@@ -324,17 +322,13 @@ def _truthy(v):
     if isinstance(v, (list, tuple, dict)): return len(v) > 0
     s = str(v).strip()
     return s != "" and s.lower() not in ("0","false","none","null","нет")
-
 def _lookup(ctx, path):
     path = (path or "").strip()
     if not path: return ""
     if path == "this": return ctx.get("this", "")
-    if path.startswith("this."):
-        cur = ctx.get("this"); rest = path[5:]
-    elif path.startswith("@"):
-        return ctx.get(path, "")
-    else:
-        cur = ctx; rest = path
+    if path.startswith("this."): cur = ctx.get("this"); rest = path[5:]
+    elif path.startswith("@"): return ctx.get(path, "")
+    else: cur = ctx; rest = path
     for part in rest.split("."):
         if part == "": continue
         if isinstance(cur, dict): cur = cur.get(part)
@@ -345,35 +339,27 @@ def _lookup(ctx, path):
         else: return ""
         if cur is None: return ""
     return cur
-
 def _apply_filter(name, value):
     name = (name or "").strip()
-    if name == "nl2br":
-        return _escape(_stringify(value)).replace("\r\n","\n").replace("\n","<br>")
+    if name == "nl2br": return _escape(_stringify(value)).replace("\r\n","\n").replace("\n","<br>")
     if name == "stars":
         try: n = int(float(str(value).strip()))
         except Exception: return _escape(_stringify(value))
         n = max(0, min(5, n))
         return "\u2605"*n + "\u2606"*(5-n)
-    if name == "json":
-        return json.dumps(_stringify(value), ensure_ascii=False)[1:-1]
+    if name == "json": return json.dumps(_stringify(value), ensure_ascii=False)[1:-1]
     if name == "up": return _escape(_stringify(value).upper())
     return _escape(_stringify(value))
-
 def _extract_block(tpl, pos):
     depth = 0
     main_parts, alt_parts = [], []
-    cur = main_parts
-    seen_else = False
-    p = pos
+    cur = main_parts; seen_else = False; p = pos
     while True:
         m = _TAG_RE.search(tpl, p)
         if not m:
             cur.append(tpl[p:])
             return "".join(main_parts), ("".join(alt_parts) if seen_else else ""), len(tpl)
-        expr = m.group(1).strip()
-        cur.append(tpl[p:m.start()])
-        p = m.end()
+        expr = m.group(1).strip(); cur.append(tpl[p:m.start()]); p = m.end()
         if expr.startswith("#each ") or expr.startswith("#if ") or expr.startswith("#unless "):
             depth += 1; cur.append(m.group(0))
         elif expr in ("/each","/if","/unless"):
@@ -383,13 +369,11 @@ def _extract_block(tpl, pos):
         elif expr == "else" and depth == 0 and not seen_else:
             seen_else = True; cur = alt_parts
         else: cur.append(m.group(0))
-
 def render(tpl, ctx):
     out, pos = [], 0
     while True:
         m = _TAG_RE.search(tpl, pos)
-        if not m:
-            out.append(tpl[pos:]); break
+        if not m: out.append(tpl[pos:]); break
         out.append(tpl[pos:m.start()])
         token, expr = m.group(0), m.group(1).strip()
         is_raw = token.startswith("{{{")
@@ -432,18 +416,12 @@ PAGE_TEMPLATE = r'''<!DOCTYPE html>
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 <meta name="geo.region" content="RU-ROS">
 <meta name="geo.placename" content="Ростов-на-Дону">
-<meta name="geo.position" content="47.2357;39.7015">
-<meta name="ICBM" content="47.2357, 39.7015">
 <meta name="theme-color" content="{{design.bg}}">
 <link rel="canonical" href="{{seo.canonical}}">
-<link rel="alternate" hreflang="ru" href="{{seo.canonical}}">
-<link rel="alternate" hreflang="x-default" href="{{seo.canonical}}">
 {{#if seo.yandex_verification}}<meta name="yandex-verification" content="{{seo.yandex_verification}}">{{/if}}
 {{#if seo.google_verification}}<meta name="google-site-verification" content="{{seo.google_verification}}">{{/if}}
 <link rel="shortcut icon" href="/favicon.ico">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta property="og:type" content="website">
@@ -454,29 +432,23 @@ PAGE_TEMPLATE = r'''<!DOCTYPE html>
 <meta property="og:description" content="{{seo.og_description}}">
 <meta property="og:image" content="{{seo.og_image}}">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{{seo.og_title}}">
-<meta name="twitter:description" content="{{seo.og_description}}">
-<meta name="twitter:image" content="{{seo.og_image}}">
 {{#if code.head}}{{{code.head|raw}}}{{/if}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{{design.fonts_url}}" rel="stylesheet">
-<link rel="preconnect" href="https://sun9-70.vkuserphoto.ru">
-<link rel="preconnect" href="https://sun9-20.vkuserphoto.ru">
 <style>
-:root{--bg:{{design.bg}};--gold:{{design.gold}};--gold-soft:{{design.gold_soft}};--gold-deep:{{design.gold_deep}};--text:{{design.text}};--muted:{{design.muted}};--line:rgba(212,175,106,.14);--r-lg:24px;--r-md:16px;--r-sm:12px;--shadow-lg:0 34px 80px rgba(0,0,0,.5);--shadow-md:0 18px 46px rgba(0,0,0,.36);--shadow-gold:0 16px 42px rgba(212,175,106,.26);--serif:'Cormorant Garamond',Georgia,serif;--sans:'Manrope',system-ui,sans-serif}
+:root{--bg:{{design.bg}};--gold:{{design.gold}};--gold-soft:{{design.gold_soft}};--gold-deep:{{design.gold_deep}};--text:{{design.text}};--muted:{{design.muted}};--r-lg:24px;--r-md:16px;--r-sm:12px;--shadow-lg:0 34px 80px rgba(0,0,0,.5);--shadow-md:0 18px 46px rgba(0,0,0,.36);--shadow-gold:0 16px 42px rgba(212,175,106,.26);--serif:'Cormorant Garamond',Georgia,serif;--sans:'Manrope',system-ui,sans-serif}
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;overflow-x:hidden}
 section{scroll-margin-top:92px}
 body{font-family:var(--sans);color:var(--text);line-height:1.72;-webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative;min-height:100vh}
-body::before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(1200px 700px at 85% -10%,rgba(212,175,106,.16),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(212,175,106,.09),transparent 55%),radial-gradient(1400px 900px at 50% 120%,rgba(163,124,63,.14),transparent 60%),linear-gradient(180deg,#12100b,#0c0a07 45%,#100d09)}
-body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(115deg,transparent 30%,rgba(236,207,160,.028) 50%,transparent 70%),radial-gradient(900px 600px at 50% 0%,rgba(0,0,0,0),rgba(0,0,0,.28))}
-.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:-1;will-change:transform}
+body::before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(1200px 700px at 85% -10%,rgba(212,175,106,.16),transparent 60%),radial-gradient(1000px 640px at -10% 30%,rgba(212,175,106,.09),transparent 55%),linear-gradient(180deg,#12100b,#0c0a07 45%,#100d09)}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:-1}
 .orb-1{width:560px;height:560px;left:-180px;top:10%;background:radial-gradient(circle,rgba(212,175,106,.13),transparent 65%);animation:orbFloat 18s ease-in-out infinite alternate}
 .orb-2{width:480px;height:480px;right:-160px;top:40%;background:radial-gradient(circle,rgba(163,124,63,.12),transparent 65%);animation:orbFloat 24s ease-in-out infinite alternate-reverse}
 .orb-3{width:640px;height:640px;left:28%;bottom:-240px;background:radial-gradient(circle,rgba(212,175,106,.08),transparent 65%);animation:orbFloat 30s ease-in-out infinite alternate}
 @keyframes orbFloat{from{transform:translateY(-36px)}to{transform:translateY(44px)}}
-.grain{position:fixed;inset:0;z-index:2147480000;pointer-events:none;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E")}
+.grain{position:fixed;inset:0;z-index:2147480000;pointer-events:none;opacity:.03}
 ::selection{background:rgba(212,175,106,.32);color:#fff}
 h1,h2,h3{font-family:var(--serif);overflow-wrap:break-word;word-break:break-word;letter-spacing:.3px}
 img{max-width:100%;display:block}
@@ -484,14 +456,13 @@ a{text-decoration:none;color:inherit}
 ul{list-style:none}
 button{font-family:inherit;cursor:pointer}
 .wrap{width:100%;max-width:1180px;margin:0 auto;padding:0 20px}
-.progress{position:fixed;top:0;left:0;height:3px;z-index:300;background:linear-gradient(90deg,var(--gold-deep),var(--gold-soft),var(--gold));width:0%;box-shadow:0 0 14px rgba(236,207,160,.7);will-change:width}
-#cursorGlow{position:fixed;left:0;top:0;width:340px;height:340px;border-radius:50%;pointer-events:none;z-index:55;background:radial-gradient(circle,rgba(212,175,106,.09),transparent 66%);mix-blend-mode:screen;will-change:transform;display:none}
+.progress{position:fixed;top:0;left:0;height:3px;z-index:300;background:linear-gradient(90deg,var(--gold-deep),var(--gold-soft),var(--gold));width:0%;box-shadow:0 0 14px rgba(236,207,160,.7)}
+#cursorGlow{position:fixed;left:0;top:0;width:340px;height:340px;border-radius:50%;pointer-events:none;z-index:55;background:radial-gradient(circle,rgba(212,175,106,.09),transparent 66%);mix-blend-mode:screen;display:none}
 @media(hover:hover) and (pointer:fine){#cursorGlow{display:block}}
-header{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(14,12,9,.55);backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);transition:background .45s,box-shadow .45s}
-header.solid{background:rgba(14,12,9,.92);box-shadow:0 12px 44px rgba(0,0,0,.45),inset 0 -1px 0 var(--line)}
+header{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(14,12,9,.55);backdrop-filter:blur(18px);transition:background .45s,box-shadow .45s}
+header.solid{background:rgba(14,12,9,.92);box-shadow:0 12px 44px rgba(0,0,0,.45)}
 .nav{display:flex;align-items:center;justify-content:space-between;height:78px;gap:12px}
-.logo{display:flex;align-items:center;gap:13px;min-width:0;max-width:100%;cursor:pointer;transition:opacity .3s}
-.logo:hover{opacity:.86}
+.logo{display:flex;align-items:center;gap:13px;min-width:0;max-width:100%;cursor:pointer}
 .brand-ava-w{position:relative;flex-shrink:0;display:inline-flex}
 .brand-ava-w::before{content:"";position:absolute;inset:-5px;border-radius:50%;border:1px solid rgba(236,207,160,.5);opacity:.7;animation:ringPulse 3.6s ease-in-out infinite}
 @keyframes ringPulse{0%,100%{transform:scale(.94);opacity:.35}50%{transform:scale(1.08);opacity:.75}}
@@ -517,33 +488,32 @@ header.solid{background:rgba(14,12,9,.92);box-shadow:0 12px 44px rgba(0,0,0,.45)
 [data-watermark]::before{content:attr(data-watermark);position:absolute;top:4%;right:2%;font-family:var(--serif);font-size:clamp(110px,16vw,230px);line-height:1;font-weight:600;color:transparent;-webkit-text-stroke:1px rgba(212,175,106,.07);white-space:nowrap;pointer-events:none;user-select:none;z-index:0}
 [data-watermark] .wrap{position:relative;z-index:1}
 .panel{position:relative;min-height:100vh;display:flex;align-items:center;padding:150px 0;overflow:hidden}
-.panel .bg{position:absolute;inset:-14% 0;z-index:0;background-size:cover;background-position:center;will-change:transform;transform:translateZ(0)}
-.panel .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(to right,rgba(10,8,6,.94) 22%,rgba(10,8,6,.6) 58%,rgba(10,8,6,.75))}
-.panel--hero .bg::before{content:"";position:absolute;inset:-8%;background-image:inherit;background-size:cover;background-position:center;animation:kenburns 22s ease-in-out infinite alternate;will-change:transform}
-@keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.1)}}
-.panel--hero .bg::after{z-index:1}
-.panel .content{position:relative;z-index:2;width:100%;will-change:transform;transform:translateZ(0)}
-.panel--center .content{text-align:center}
+.panel .bg{position:absolute;inset:-14% 0;z-index:0;overflow:hidden;background:linear-gradient(135deg,#16120c,#0b0906)}
+.panel .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(to right,rgba(10,8,6,.94) 22%,rgba(10,8,6,.6) 58%,rgba(10,8,6,.75));z-index:2}
 .panel--center .bg::after{background:linear-gradient(180deg,rgba(10,8,6,.86),rgba(10,8,6,.62))}
 .panel--dark .bg::after{background:linear-gradient(180deg,rgba(10,8,6,.9),rgba(10,8,6,.7))}
+.panel--hero .bg::before{content:"";position:absolute;inset:-8%;background-image:inherit;background-size:cover;background-position:center;animation:kenburns 22s ease-in-out infinite alternate;z-index:1}
+@keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.1)}}
+.panel .content{position:relative;z-index:2;width:100%}
+.panel--center .content{text-align:center}
 .panel + .panel{margin-top:16px}
 .gold-divider{display:flex;align-items:center;justify-content:center;gap:14px;padding:6px 0}
 .gold-divider i{display:inline-block;width:64px;height:1px;background:linear-gradient(90deg,transparent,var(--gold));opacity:.6}
 .gold-divider i:last-child{background:linear-gradient(90deg,var(--gold),transparent)}
 .gold-divider b{width:7px;height:7px;transform:rotate(45deg);background:var(--gold);box-shadow:0 0 12px rgba(212,175,106,.55)}
 .eyebrow{display:inline-flex;align-items:center;gap:12px;color:var(--gold-soft);letter-spacing:5px;text-transform:uppercase;font-size:12px;font-weight:600;margin-bottom:20px}
-.eyebrow::before{content:"";width:42px;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
-.eyebrow::after{content:"";width:42px;height:1px;background:linear-gradient(90deg,var(--gold),transparent)}
-h1{font-size:clamp(34px,6vw,76px);font-weight:500;line-height:1.08;color:#fff;letter-spacing:.4px;text-shadow:0 5px 30px rgba(0,0,0,.5);overflow-wrap:break-word;word-break:break-word;max-width:100%}
+.eyebrow::before,.eyebrow::after{content:"";width:42px;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
+.eyebrow::after{background:linear-gradient(90deg,var(--gold),transparent)}
+h1{font-size:clamp(34px,6vw,76px);font-weight:500;line-height:1.08;color:#fff;letter-spacing:.4px;text-shadow:0 5px 30px rgba(0,0,0,.5);max-width:100%}
 h1 em{font-style:italic}
 .sub{color:rgba(245,239,227,.9);font-size:clamp(16px,1.8vw,19.5px);font-weight:300;margin:24px 0 34px;max-width:580px;text-shadow:0 2px 16px rgba(0,0,0,.55)}
 .btn-row{display:flex;gap:16px;flex-wrap:wrap}
-.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:15px 30px;font-size:13px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;transition:transform .4s cubic-bezier(.22,.61,.36,1),box-shadow .4s,filter .4s,background .4s,color .4s;cursor:pointer;border-radius:13px;border:none}
+.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:15px 30px;font-size:13px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;transition:transform .4s cubic-bezier(.22,.61,.36,1),box-shadow .4s;cursor:pointer;border-radius:13px;border:none}
 .btn-solid{background:linear-gradient(135deg,var(--gold-soft),var(--gold) 55%,var(--gold-deep));color:#17120b;box-shadow:var(--shadow-gold);animation:btnGlow 3.6s ease-in-out infinite}
 @keyframes btnGlow{0%,100%{box-shadow:0 16px 42px rgba(212,175,106,.26)}50%{box-shadow:0 24px 62px rgba(236,207,160,.5)}}
 .btn-solid:hover{transform:translateY(-4px);box-shadow:0 26px 60px rgba(212,175,106,.45)}
 .btn-line{border:1px solid rgba(255,255,255,.4);color:#fff;background:rgba(255,255,255,.04)}
-.btn-line:hover{background:rgba(255,255,255,.12);color:#fff;transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.btn-line:hover{background:rgba(255,255,255,.12);transform:translateY(-4px)}
 .btn::after{content:"";position:absolute;top:0;left:-130%;width:55%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,.4),transparent);transform:skewX(-20deg);transition:left .7s ease}
 .btn:hover::after{left:145%}
 .shimmer{background:linear-gradient(90deg,var(--gold-soft),#fff 35%,var(--gold-soft) 70%);background-size:220% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerMove 3.4s linear infinite}
@@ -564,141 +534,125 @@ h1 em.shimmer{-webkit-text-fill-color:transparent}
 h2.k{position:relative;font-size:clamp(32px,4.6vw,48px);color:#faf3e6;font-weight:500;margin:16px 0 14px;text-align:center;text-shadow:0 4px 22px rgba(0,0,0,.45),0 0 40px rgba(212,175,106,.14)}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:center}
 .stat{padding:32px 16px;border-radius:var(--r-md);background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);transition:transform .45s,border-color .45s,box-shadow .45s}
-.stat:hover{transform:translateY(-6px);border-color:rgba(236,207,160,.3);box-shadow:0 22px 54px rgba(0,0,0,.42),0 0 34px rgba(212,175,106,.05)}
-.stat .num{font-family:var(--serif);font-size:58px;font-weight:500;line-height:1;background:linear-gradient(160deg,var(--gold-soft),var(--gold) 60%,var(--gold-deep));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 5px 16px rgba(212,175,106,.35))}
+.stat:hover{transform:translateY(-6px);border-color:rgba(236,207,160,.3);box-shadow:0 22px 54px rgba(0,0,0,.42)}
+.stat .num{font-family:var(--serif);font-size:58px;font-weight:500;line-height:1;background:linear-gradient(160deg,var(--gold-soft),var(--gold) 60%,var(--gold-deep));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .stat .lbl{color:var(--muted);font-size:13.5px;margin-top:12px}
 .about{display:grid;grid-template-columns:1fr 1.1fr;gap:64px;align-items:center}
 .about-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);padding:48px 40px;text-align:center;border-radius:var(--r-lg);box-shadow:var(--shadow-md);position:relative;overflow:hidden}
 .about-card::before{content:"";position:absolute;top:0;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,var(--gold-soft),transparent);opacity:.6}
 .avatar{width:130px;height:130px;border-radius:50%;margin:0 auto 22px;overflow:hidden;border:1.5px solid rgba(236,207,160,.65);box-shadow:0 0 0 7px rgba(212,175,106,.12),0 16px 40px rgba(0,0,0,.5);position:relative}
 .avatar img{width:100%;height:100%;object-fit:cover}
-.avatar::after{content:"";position:absolute;inset:0;border-radius:50%;box-shadow:inset 0 0 0 3px rgba(236,207,160,.4)}
 .about-card h3{font-size:29px;color:#fff}
 .about-card .role{color:var(--gold-soft);font-size:13px;margin-top:5px}
 .about-card .sep{width:52px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:22px auto}
 .about-card p{color:var(--muted);font-size:14.5px;line-height:1.76}
 .about-body .kicker{color:var(--gold-soft);letter-spacing:5px;text-transform:uppercase;font-size:11px;font-weight:600}
-.about-body h2{font-size:clamp(30px,3.6vw,44px);font-weight:500;margin:16px 0 22px;line-height:1.14;color:#faf3e6;text-shadow:0 4px 22px rgba(0,0,0,.45)}
+.about-body h2{font-size:clamp(30px,3.6vw,44px);font-weight:500;margin:16px 0 22px;line-height:1.14;color:#faf3e6}
 .about-body p{color:var(--muted);font-size:15.5px;margin-bottom:26px}
 .features{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.features li{position:relative;padding-left:36px;color:var(--text);font-size:14.5px;overflow-wrap:break-word;transition:transform .3s}
+.features li{position:relative;padding-left:36px;color:var(--text);font-size:14.5px;transition:transform .3s}
 .features li:hover{transform:translateX(5px)}
 .features li::before{content:"";position:absolute;left:0;top:4px;width:18px;height:18px;border:1.5px solid rgba(212,175,106,.6);border-radius:50%;background:rgba(212,175,106,.08)}
 .features li::after{content:"✓";position:absolute;left:4px;top:4px;font-size:11px;color:var(--gold-soft);font-weight:800}
-.consult .phone{display:inline-block;font-family:var(--sans);font-weight:800;font-size:clamp(30px,4.4vw,52px);letter-spacing:1px;margin-top:12px;white-space:nowrap;background:linear-gradient(120deg,var(--gold-soft),var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 7px 22px rgba(212,175,106,.35))}
-.consult p{color:var(--muted);font-size:15.5px;margin:30px auto 0;max-width:630px;line-height:1.82;overflow-wrap:break-word}
+.consult .phone{display:inline-block;font-weight:800;font-size:clamp(30px,4.4vw,52px);letter-spacing:1px;margin-top:12px;white-space:nowrap;background:linear-gradient(120deg,var(--gold-soft),var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.consult p{color:var(--muted);font-size:15.5px;margin:30px auto 0;max-width:630px;line-height:1.82}
 .carousel{position:relative;max-width:1120px;margin:0 auto}
-.car-track{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;touch-action:pan-x;padding:12px 8px 24px;scrollbar-width:none}
+.car-track{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;padding:12px 8px 24px;scrollbar-width:none}
 .car-track::-webkit-scrollbar{display:none}
-.car-nav{position:absolute;top:38%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:rgba(14,12,9,.68);border:1px solid rgba(236,207,160,.35);color:var(--gold-soft);font-size:21px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .4s,border-color .4s,background .4s;z-index:5;box-shadow:var(--shadow-md)}
+.car-nav{position:absolute;top:38%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:rgba(14,12,9,.68);border:1px solid rgba(236,207,160,.35);color:var(--gold-soft);font-size:21px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .4s;z-index:5}
 .car-nav:hover{background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120b;transform:translateY(-50%) scale(1.08)}
 .car-prev{left:-16px}.car-next{right:-16px}
 .car-dots{display:flex;justify-content:center;gap:10px;margin-top:12px;flex-wrap:wrap}
-.car-dot{width:8px;height:8px;min-width:8px;border-radius:99px;background:rgba(255,255,255,.2);cursor:pointer;transition:width .35s,background .35s,transform .35s;border:none;padding:0}
+.car-dot{width:8px;height:8px;min-width:8px;border-radius:99px;background:rgba(255,255,255,.2);cursor:pointer;transition:width .35s,background .35s;border:none;padding:0}
 .car-dot:hover{background:rgba(236,207,160,.55)}
 .car-dot.active{width:26px;background:linear-gradient(135deg,var(--gold-soft),var(--gold));box-shadow:0 0 12px rgba(236,207,160,.6)}
 .swipe-hint{display:flex;align-items:center;justify-content:center;gap:8px;color:var(--muted);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;margin-top:10px;animation:hintPulse 1.8s ease-in-out infinite}
-.swipe-hint::after{content:"→";display:inline-block;animation:hintArrow 1.4s ease-in-out infinite}
+.swipe-hint::after{content:"→";animation:hintArrow 1.4s ease-in-out infinite}
 @keyframes hintArrow{0%,100%{transform:translateX(0);opacity:.5}50%{transform:translateX(7px);opacity:1}}
 @keyframes hintPulse{0%,100%{opacity:.55}50%{opacity:1}}
-.car-slide{flex:0 0 auto;width:min(78vw,440px);scroll-snap-align:center;border-radius:var(--r-lg);overflow:hidden;border:1px solid rgba(255,255,255,.08);background:rgba(14,12,9,.55);cursor:zoom-in;transition:transform .5s cubic-bezier(.22,.61,.36,1),box-shadow .5s,border-color .5s;box-shadow:var(--shadow-md);position:relative}
-.car-slide::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(100deg,rgba(255,255,255,.02),rgba(255,255,255,.07),rgba(255,255,255,.02));background-size:200% 100%;animation:shim 1.4s infinite}
-@keyframes shim{0%{background-position:120% 0}100%{background-position:-120% 0}}
+.car-slide{flex:0 0 auto;width:min(78vw,440px);scroll-snap-align:center;border-radius:var(--r-lg);overflow:hidden;border:1px solid rgba(255,255,255,.08);background:linear-gradient(135deg,#16120c,#0b0906);cursor:zoom-in;transition:transform .5s cubic-bezier(.22,.61,.36,1),box-shadow .5s,border-color .5s;box-shadow:var(--shadow-md);position:relative}
 .car-slide:hover{transform:translateY(-8px);border-color:rgba(236,207,160,.3);box-shadow:var(--shadow-lg)}
-.car-slide img{width:100%;height:300px;object-fit:cover;display:block;position:relative;z-index:2}
-.car-slide:hover img{transform:scale(1.07)}
+.car-slide img{width:100%;height:300px;object-fit:cover;display:block}
 .rev-track{align-items:flex-start}
-.rev-card{scroll-snap-align:center;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:var(--r-lg);padding:24px 26px;width:min(82vw,520px);flex:0 0 auto;display:flex;flex-direction:column;box-shadow:var(--shadow-md);position:relative;overflow:hidden;transition:transform .5s,box-shadow .5s,border-color .5s}
+.rev-card{scroll-snap-align:center;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:var(--r-lg);padding:24px 26px;width:min(82vw,520px);flex:0 0 auto;display:flex;flex-direction:column;box-shadow:var(--shadow-md);position:relative;overflow:hidden;transition:transform .5s,box-shadow .5s}
 .rev-card:hover{transform:translateY(-8px);border-color:rgba(236,207,160,.28);box-shadow:var(--shadow-lg)}
-.rev-card::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-soft),transparent);opacity:.75}
 .rev-head{display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap}
-.rev-ava{width:50px;height:50px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(236,207,160,.6);box-shadow:0 0 0 4px rgba(212,175,106,.1),0 0 14px rgba(212,175,106,.32);flex-shrink:0}
+.rev-ava{width:50px;height:50px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(236,207,160,.6);flex-shrink:0}
 .rev-name{color:#fff;font-weight:700;font-size:14.5px}
 .rev-sub{color:var(--muted);font-size:11px;margin-top:2px}
-.rev-stars{color:var(--gold-soft);letter-spacing:3px;font-size:14px;margin-left:auto;white-space:nowrap;text-shadow:0 0 14px rgba(236,207,160,.45)}
-.rev-text{color:#ece2cd;font-size:13.5px;line-height:1.66;font-weight:300;text-align:left;overflow-wrap:break-word;word-break:break-word}
-.rev-video{margin-top:14px;border-radius:var(--r-md);overflow:hidden;border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow-md)}
-.video-box{position:relative;width:100%;height:260px;background-size:cover;background-position:center;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.video-box::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,8,6,.12),rgba(10,8,6,.34));transition:.3s}
-.video-box:hover::after{background:linear-gradient(180deg,rgba(10,8,6,.02),rgba(10,8,6,.2))}
-.vb-play{position:relative;z-index:2;width:64px;height:64px;border-radius:50%;border:1px solid rgba(236,207,160,.7);background:rgba(14,12,9,.55);color:var(--gold-soft);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .35s,background .35s;box-shadow:0 0 0 8px rgba(212,175,106,.14),0 0 30px rgba(212,175,106,.4);animation:playPulse 2.4s ease-in-out infinite}
+.rev-stars{color:var(--gold-soft);letter-spacing:3px;font-size:14px;margin-left:auto;white-space:nowrap}
+.rev-text{color:#ece2cd;font-size:13.5px;line-height:1.66;font-weight:300;text-align:left;word-break:break-word}
+.rev-video{margin-top:14px;border-radius:var(--r-md);overflow:hidden;border:1px solid rgba(255,255,255,.08)}
+.video-box{position:relative;width:100%;height:260px;background-size:cover;background-position:center;cursor:pointer;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#16120c,#0b0906)}
+.vb-play{position:relative;z-index:2;width:64px;height:64px;border-radius:50%;border:1px solid rgba(236,207,160,.7);background:rgba(14,12,9,.55);color:var(--gold-soft);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 0 8px rgba(212,175,106,.14),0 0 30px rgba(212,175,106,.4);animation:playPulse 2.4s ease-in-out infinite}
 @keyframes playPulse{0%,100%{box-shadow:0 0 0 8px rgba(212,175,106,.14),0 0 30px rgba(212,175,106,.4)}50%{box-shadow:0 0 0 14px rgba(212,175,106,.08),0 0 44px rgba(212,175,106,.6)}}
-.video-box:hover .vb-play{transform:scale(1.1);background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120b}
 .vb-play svg{width:22px;height:22px;fill:currentColor;margin-left:3px}
 .video-box iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.svc{position:relative;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);padding:38px 30px;transition:transform .5s cubic-bezier(.22,.61,.36,1),box-shadow .5s,border-color .5s;border-radius:var(--r-lg);overflow-wrap:break-word;overflow:hidden}
-.svc::before{content:"";position:absolute;top:0;left:22%;right:22%;height:1px;background:linear-gradient(90deg,transparent,var(--gold-soft),transparent);opacity:0;transition:.5s}
+.svc{position:relative;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);padding:38px 30px;transition:transform .5s cubic-bezier(.22,.61,.36,1),box-shadow .5s,border-color .5s;border-radius:var(--r-lg);overflow:hidden}
 .svc:hover{transform:translateY(-8px);background:rgba(255,255,255,.05);box-shadow:var(--shadow-lg);border-color:rgba(236,207,160,.26)}
-.svc:hover::before{opacity:.7}
-.svc svg{width:34px;height:34px;stroke:var(--gold-soft);fill:none;stroke-width:1.4;margin-bottom:20px;transition:transform .55s cubic-bezier(.22,.61,.36,1)}
-.svc:hover svg{transform:scale(1.12) rotate(-4deg)}
+.svc svg{width:34px;height:34px;stroke:var(--gold-soft);fill:none;stroke-width:1.4;margin-bottom:20px}
 .svc h3{font-size:23px;color:#fff;margin-bottom:9px}
 .svc p{color:var(--muted);font-size:14px;line-height:1.7}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.step{position:relative;padding:34px 26px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:var(--r-lg);transition:transform .45s cubic-bezier(.22,.61,.36,1),box-shadow .45s,border-color .45s;overflow-wrap:break-word;overflow:hidden}
+.step{position:relative;padding:34px 26px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:var(--r-lg);transition:transform .45s,box-shadow .45s,border-color .45s;overflow:hidden}
 .step:hover{transform:translateY(-7px);border-color:rgba(236,207,160,.28);box-shadow:var(--shadow-md)}
-.step .n{font-family:var(--serif);font-size:54px;line-height:1;background:linear-gradient(160deg,var(--gold-soft),var(--gold-deep));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;transition:transform .45s}
-.step:hover .n{transform:scale(1.1)}
+.step .n{font-family:var(--serif);font-size:54px;line-height:1;background:linear-gradient(160deg,var(--gold-soft),var(--gold-deep));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .step h3{font-size:22px;color:#fff;margin:14px 0 8px}
 .step p{color:var(--muted);font-size:14px;line-height:1.7}
 .guar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
-.guar{position:relative;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);padding:38px 26px;text-align:center;transition:transform .45s,box-shadow .45s,border-color .45s;border-radius:var(--r-lg);overflow-wrap:break-word;overflow:hidden}
-.guar::before{content:"";position:absolute;top:0;left:25%;right:25%;height:1px;background:linear-gradient(90deg,transparent,var(--gold-soft),transparent);opacity:0;transition:.45s}
+.guar{position:relative;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);padding:38px 26px;text-align:center;transition:transform .45s,box-shadow .45s,border-color .45s;border-radius:var(--r-lg);overflow:hidden}
 .guar:hover{transform:translateY(-8px);box-shadow:var(--shadow-lg);border-color:rgba(236,207,160,.26)}
-.guar:hover::before{opacity:.7}
-.guar .ico{width:54px;height:54px;margin:0 auto 18px;border:1px solid rgba(236,207,160,.35);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold-soft);background:radial-gradient(circle at 30% 30%,rgba(236,207,160,.16),rgba(212,175,106,.03));box-shadow:0 0 22px rgba(212,175,106,.16);transition:transform .45s}
+.guar .ico{width:54px;height:54px;margin:0 auto 18px;border:1px solid rgba(236,207,160,.35);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold-soft);background:radial-gradient(circle at 30% 30%,rgba(236,207,160,.16),rgba(212,175,106,.03));transition:transform .45s}
 .guar:hover .ico{transform:scale(1.12) rotate(6deg)}
 .guar .ico svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.5}
 .guar h3{font-size:18px;color:#fff;margin-bottom:8px}
 .guar p{color:var(--muted);font-size:13px;line-height:1.7}
 .city-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
 .city{position:relative;padding:38px 28px;border-radius:var(--r-lg);background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);text-align:center;transition:transform .45s,box-shadow .45s,border-color .45s;overflow:hidden}
-.city::before{content:"";position:absolute;top:0;left:25%;right:25%;height:1px;background:linear-gradient(90deg,transparent,var(--gold-soft),transparent);opacity:0;transition:.45s}
 .city:hover{transform:translateY(-7px);box-shadow:var(--shadow-lg);border-color:rgba(236,207,160,.26)}
-.city:hover::before{opacity:.7}
 .city .city-name{font-family:var(--serif);font-size:28px;color:#fff;font-weight:500}
 .city .city-line{width:42px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:14px auto}
 .city p{color:var(--muted);font-size:14px;line-height:1.68}
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
-.contact-info h2{font-size:clamp(30px,4.1vw,46px);color:#faf3e6;margin:16px 0 14px;line-height:1.12;text-shadow:0 4px 22px rgba(0,0,0,.45)}
+.contact-info h2{font-size:clamp(30px,4.1vw,46px);color:#faf3e6;margin:16px 0 14px;line-height:1.12}
 .contact-info .kicker{color:var(--gold-soft);letter-spacing:5px;text-transform:uppercase;font-size:11px;font-weight:600}
 .contact-info>p{color:var(--muted);font-size:15.5px;margin-bottom:32px}
 .c-line{display:flex;align-items:flex-start;gap:20px;margin-bottom:24px;transition:transform .4s}
 .c-line:hover{transform:translateX(6px)}
-.c-ico{width:44px;height:44px;border:1px solid rgba(236,207,160,.35);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold-soft);background:radial-gradient(circle at 30% 30%,rgba(236,207,160,.15),rgba(212,175,106,.02));flex-shrink:0;box-shadow:0 0 18px rgba(212,175,106,.14);transition:transform .45s}
+.c-ico{width:44px;height:44px;border:1px solid rgba(236,207,160,.35);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold-soft);background:radial-gradient(circle at 30% 30%,rgba(236,207,160,.15),rgba(212,175,106,.02));flex-shrink:0;transition:transform .45s}
 .c-line:hover .c-ico{transform:scale(1.1)}
 .c-ico svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5}
 .c-line .lab{font-size:10.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
-.c-line .val{font-size:18px;font-weight:600;color:var(--text);overflow-wrap:break-word;word-break:break-word}
+.c-line .val{font-size:18px;font-weight:600;color:var(--text);word-break:break-word}
 .c-line a.val:hover{color:var(--gold-soft)}
 .call-block{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);padding:46px 36px;text-align:center;border-radius:var(--r-lg);box-shadow:var(--shadow-md);position:relative;overflow:hidden}
 .call-block::before{content:"";position:absolute;top:0;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,var(--gold-soft),transparent);opacity:.6}
 .call-block .cb-lab{font-size:12px;letter-spacing:4px;text-transform:uppercase;color:var(--gold-soft)}
-.call-block .cb-num{display:block;font-family:var(--sans);font-weight:800;font-size:clamp(27px,3.6vw,44px);color:#fff;margin:14px 0 18px;white-space:nowrap;transition:color .3s,text-shadow .3s;text-shadow:0 5px 22px rgba(0,0,0,.42)}
+.call-block .cb-num{display:block;font-weight:800;font-size:clamp(27px,3.6vw,44px);color:#fff;margin:14px 0 18px;white-space:nowrap;transition:color .3s;text-shadow:0 5px 22px rgba(0,0,0,.42)}
 .call-block .cb-num:hover{color:var(--gold-soft);text-shadow:0 0 30px rgba(236,207,160,.5)}
-.call-block .cb-hint{color:var(--muted);font-size:14px;line-height:1.82;overflow-wrap:break-word}
+.call-block .cb-hint{color:var(--muted);font-size:14px;line-height:1.82}
 .contact-actions{display:flex;flex-direction:column;gap:12px;margin-top:24px}
-.c-action{display:flex;align-items:center;justify-content:center;gap:11px;width:100%;min-height:52px;padding:15px 18px;border-radius:var(--r-sm);font-weight:700;font-size:14.5px;letter-spacing:.4px;transition:transform .4s,background .4s,filter .4s,box-shadow .4s;color:#fff}
+.c-action{display:flex;align-items:center;justify-content:center;gap:11px;width:100%;min-height:52px;padding:15px 18px;border-radius:var(--r-sm);font-weight:700;font-size:14.5px;transition:transform .4s,background .4s,filter .4s,box-shadow .4s;color:#fff}
 .c-action svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8}
 .c-action.c-call{background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120b;box-shadow:var(--shadow-gold)}
-.c-action.c-call:hover{filter:brightness(1.08);transform:translateY(-4px);box-shadow:0 22px 50px rgba(212,175,106,.42)}
+.c-action.c-call:hover{filter:brightness(1.08);transform:translateY(-4px)}
 .c-action.c-tg{background:rgba(64,169,242,.12);border:1px solid rgba(64,169,242,.38);color:#8fd0ff}
 .c-action.c-tg:hover{background:rgba(64,169,242,.24);transform:translateY(-4px)}
 .c-action.c-max{background:rgba(177,88,252,.12);border:1px solid rgba(177,88,252,.38);color:#e0b8ff}
 .c-action.c-max:hover{background:rgba(177,88,252,.24);transform:translateY(-4px)}
 .cta{text-align:center;padding:110px 0;position:relative}
 .cta h2{font-size:clamp(32px,4.6vw,52px);color:#faf3e6;font-weight:500;margin-bottom:16px;text-shadow:0 5px 26px rgba(0,0,0,.45)}
-.cta p{color:var(--muted);font-size:16.5px;max-width:630px;margin:0 auto 34px;overflow-wrap:break-word}
+.cta p{color:var(--muted);font-size:16.5px;max-width:630px;margin:0 auto 34px}
 footer{position:relative;background:linear-gradient(180deg,rgba(14,12,9,.4),rgba(10,8,6,.97));color:var(--muted);padding:52px 20px 60px;text-align:center;font-size:13px;border-top:1px solid rgba(255,255,255,.06)}
 footer::before{content:"";position:absolute;top:-1px;left:50%;transform:translateX(-50%);width:min(420px,72%);height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
 footer .flogo{font-family:var(--serif);font-size:28px;color:#fff;margin-bottom:8px;line-height:1.3}
-footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans);font-weight:500;letter-spacing:1px}
+footer .flogo span{color:var(--gold-soft);font-size:13px;font-weight:500;letter-spacing:1px}
 .social-row{display:flex;justify-content:center;gap:14px;margin:22px 0 18px;flex-wrap:wrap}
-.soc{display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;min-width:46px;min-height:46px;border-radius:50%;border:1px solid rgba(236,207,160,.32);color:var(--gold-soft);background:rgba(212,175,106,.06);transition:transform .35s,background .35s,box-shadow .35s}
+.soc{display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:50%;border:1px solid rgba(236,207,160,.32);color:var(--gold-soft);background:rgba(212,175,106,.06);transition:transform .35s,background .35s,box-shadow .35s}
 .soc svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.6}
 .soc:hover{background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120b;transform:translateY(-4px);box-shadow:var(--shadow-gold)}
-.cookie-bar{position:fixed;bottom:16px;left:50%;transform:translate(-50%,140%);z-index:400;background:rgba(14,12,9,.93);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.08);border-radius:var(--r-md);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;box-shadow:var(--shadow-lg);width:min(680px,calc(100vw - 32px));transition:transform .6s cubic-bezier(.22,.61,.36,1)}
+.cookie-bar{position:fixed;bottom:16px;left:50%;transform:translate(-50%,140%);z-index:400;background:rgba(14,12,9,.93);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.08);border-radius:var(--r-md);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;box-shadow:var(--shadow-lg);width:min(680px,calc(100vw - 32px));transition:transform .6s cubic-bezier(.22,.61,.36,1)}
 .cookie-bar.show{transform:translate(-50%,0)}
 .cookie-bar p{color:var(--muted);font-size:13px;max-width:720px;line-height:1.5}
 .cookie-bar .btn{flex-shrink:0;padding:12px 26px}
@@ -706,18 +660,18 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
 .lightbox.open{display:flex;animation:lbFade .3s ease}
 @keyframes lbFade{from{opacity:0}to{opacity:1}}
 .lb-stage{position:relative;width:100%;max-width:1180px;height:calc(100vh - 130px);display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:none}
-.lb-stage img{max-width:94%;max-height:100%;border-radius:var(--r-lg);border:1px solid rgba(236,207,160,.55);box-shadow:0 26px 90px rgba(0,0,0,.8);cursor:grab;transition:transform .18s ease-out;will-change:transform;user-select:none;-webkit-user-drag:none}
+.lb-stage img{max-width:94%;max-height:100%;border-radius:var(--r-lg);border:1px solid rgba(236,207,160,.55);box-shadow:0 26px 90px rgba(0,0,0,.8);cursor:grab;transition:transform .18s ease-out;user-select:none}
 .lb-bar{display:flex;align-items:center;justify-content:center;gap:20px}
 .lb-count{color:var(--muted);font-size:13px;min-width:70px;text-align:center}
 .lb-close{position:absolute;top:18px;right:24px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:28px;cursor:pointer;z-index:5;line-height:1;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:transform .3s,background .3s}
 .lb-close:hover{transform:rotate(90deg);background:rgba(236,207,160,.18)}
 .lb-nav{width:50px;height:50px;border-radius:50%;background:rgba(14,12,9,.6);border:1px solid rgba(236,207,160,.5);color:var(--gold-soft);font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .3s,transform .3s}
 .lb-nav:hover{background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120b;transform:scale(1.06)}
-.js .reveal{opacity:0;transform:translateY(26px);filter:blur(10px);transition:opacity .8s ease,transform .8s cubic-bezier(.22,.61,.36,1),filter .8s ease}
-.js .reveal.in{opacity:1;transform:none;filter:none}
+.js .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s cubic-bezier(.22,.61,.36,1)}
+.js .reveal.in{opacity:1;transform:none}
 @media(max-width:1024px){.stats{grid-template-columns:repeat(2,1fr);gap:30px}.svc-grid{grid-template-columns:repeat(2,1fr)}.guar-grid{grid-template-columns:repeat(2,1fr)}.panel{padding:132px 0}}
-@media(max-width:860px){.menu{position:fixed;top:auto;left:0;right:0;bottom:0;width:100%;max-height:82vh;background:linear-gradient(180deg,#16130e,#0b0907);flex-direction:column;justify-content:flex-start;gap:4px;padding:12px 24px calc(22px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .45s cubic-bezier(.22,.61,.36,1);z-index:205;box-shadow:0 -22px 54px rgba(0,0,0,.55);border-radius:26px 26px 0 0;overflow-y:auto;height:auto;border-top:1px solid rgba(236,207,160,.2)}.menu.open{transform:none}.sheet-handle{display:flex;justify-content:center;padding:4px 0 8px}.sheet-handle span{width:42px;height:4px;border-radius:99px;background:rgba(236,207,160,.35)}.menu a{font-size:19px;font-family:var(--serif);color:#fff;border-bottom:1px solid rgba(236,207,160,.12);padding:13px 6px;display:flex;align-items:center;min-height:48px}.menu a::after{display:none}.menu-call{display:block;margin-top:10px;padding-top:10px;border-top:1px solid rgba(236,207,160,.14)}.menu-call a{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:52px;background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120b;font-family:var(--sans);font-size:14.5px;font-weight:700;border:none;border-radius:var(--r-sm);padding:15px 18px;box-shadow:var(--shadow-gold)}.burger{display:block}.scrim{display:block}.about{grid-template-columns:1fr;gap:36px}.features{grid-template-columns:1fr}.steps{grid-template-columns:1fr;gap:20px}.contact-grid{grid-template-columns:1fr;gap:36px}.city-grid{grid-template-columns:1fr}.panel{padding:116px 0}.car-nav{display:none}.rev-card{width:86vw}.video-box{height:230px}}
-@media(max-width:520px){.logo .brand-ava{width:40px;height:40px}.logo .brand-txt .name{font-size:20px}.nav{height:64px}.panel{min-height:auto;padding:96px 0 56px}h1{font-size:31px}.sub{font-size:15px;margin:18px 0 26px}.btn-row{width:100%}.btn{width:100%;text-align:center}.car-slide{width:84vw}.car-slide img{height:205px}.rev-card{width:92vw;padding:17px}.rev-text{font-size:12.5px;line-height:1.56}.video-box{height:190px}.consult .phone{font-size:25px}.call-block .cb-num{font-size:22px}}
+@media(max-width:860px){.menu{position:fixed;top:auto;left:0;right:0;bottom:0;width:100%;max-height:82vh;background:linear-gradient(180deg,#16130e,#0b0907);flex-direction:column;gap:4px;padding:12px 24px 22px;transform:translateY(105%);transition:transform .45s;z-index:205;border-radius:26px 26px 0 0;overflow-y:auto;height:auto}.menu.open{transform:none}.sheet-handle{display:flex;justify-content:center;padding:4px 0 8px}.sheet-handle span{width:42px;height:4px;border-radius:99px;background:rgba(236,207,160,.35)}.menu a{font-size:19px;font-family:var(--serif);color:#fff;border-bottom:1px solid rgba(236,207,160,.12);padding:13px 6px;display:flex;align-items:center;min-height:48px}.menu a::after{display:none}.menu-call{display:block;margin-top:10px;padding-top:10px;border-top:1px solid rgba(236,207,160,.14)}.menu-call a{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:52px;background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120b;font-size:14.5px;font-weight:700;border:none;border-radius:var(--r-sm);padding:15px 18px}.burger{display:block}.scrim{display:block}.about{grid-template-columns:1fr;gap:36px}.features{grid-template-columns:1fr}.steps{grid-template-columns:1fr;gap:20px}.contact-grid{grid-template-columns:1fr;gap:36px}.city-grid{grid-template-columns:1fr}.panel{padding:116px 0}.car-nav{display:none}.rev-card{width:86vw}.video-box{height:230px}}
+@media(max-width:520px){.logo .brand-ava{width:40px;height:40px}.logo .brand-txt .name{font-size:20px}.nav{height:64px}.panel{min-height:auto;padding:96px 0 56px}h1{font-size:31px}.sub{font-size:15px;margin:18px 0 26px}.btn-row{width:100%}.btn{width:100%;text-align:center}.car-slide{width:84vw}.car-slide img{height:205px}.rev-card{width:92vw;padding:17px}.rev-text{font-size:12.5px}.video-box{height:190px}.consult .phone{font-size:25px}.call-block .cb-num{font-size:22px}}
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important;scroll-behavior:auto !important}}
 {{#if design.custom_css}}{{{design.custom_css|raw}}}{{/if}}
 </style>
@@ -732,7 +686,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
 <header id="header">
   <div class="wrap nav">
     <a href="#top" class="logo" id="logo">
-      <span class="brand-ava-w"><img class="brand-ava" src="{{brand.logo_url}}" width="46" height="46" alt="{{brand.name}}"></span>
+      <span class="brand-ava-w"><img class="brand-ava" referrerpolicy="no-referrer" src="{{brand.logo_url}}" width="46" height="46" alt="{{brand.name}}"></span>
       <span class="brand-txt"><span class="name">{{brand.name}}</span><span class="sub">{{brand.sub}}</span></span>
     </a>
     <button class="burger" id="burger" aria-label="Меню"><span></span><span></span><span></span></button>
@@ -746,7 +700,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
 </ul>
 <div class="scrim" id="scrim"></div>
 <section class="panel panel--hero" id="top" data-watermark="Мебель">
-  <div class="bg" style="background-image:url('{{hero.bg}}')"></div>
+  <div class="bg"><img class="bg-img" referrerpolicy="no-referrer" src="{{hero.bg}}" alt=""></div>
   <div class="hero-glow"></div>
   <div class="wrap"><div class="content">
     <span class="eyebrow">{{hero.eyebrow}}</span>
@@ -760,7 +714,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
   <div class="scroll-cue">Листайте<div class="line"></div></div>
 </section>
 <section class="panel panel--dark">
-  <div class="bg" style="background-image:url('{{stats.bg}}')"></div>
+  <div class="bg"><img class="bg-img" referrerpolicy="no-referrer" src="{{stats.bg}}" alt=""></div>
   <div class="wrap"><div class="content">
     <div class="stats">
       {{#each stats.items}}<div class="stat reveal"><div class="num" data-count="{{this.num}}"{{#if this.suffix}} data-suffix="{{this.suffix}}"{{/if}}{{#if this.decimal}} data-decimal="{{this.decimal}}"{{/if}}>0</div><div class="lbl">{{this.label}}</div></div>
@@ -769,11 +723,11 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
   </div></div>
 </section>
 <section class="panel" id="about">
-  <div class="bg" style="background-image:url('{{about.bg}}')"></div>
+  <div class="bg"><img class="bg-img" referrerpolicy="no-referrer" src="{{about.bg}}" alt=""></div>
   <div class="wrap"><div class="content">
     <div class="about">
       <div class="about-card reveal">
-        <div class="avatar"><img src="{{about.photo}}" width="130" height="130" loading="lazy" alt="{{about.name}}"></div>
+        <div class="avatar"><img referrerpolicy="no-referrer" src="{{about.photo}}" width="130" height="130" loading="lazy" alt="{{about.name}}"></div>
         <h3>{{about.name}}</h3>
         <div class="role">{{about.role}}</div>
         <div class="sep"></div>
@@ -793,7 +747,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
 </section>
 <div class="gold-divider"><i></i><b></b><i></i></div>
 <section class="panel panel--center panel--dark" id="consult">
-  <div class="bg" style="background-image:url('{{consult.bg}}')"></div>
+  <div class="bg"><img class="bg-img" referrerpolicy="no-referrer" src="{{consult.bg}}" alt=""></div>
   <div class="wrap"><div class="content consult">
     <span class="kicker reveal" style="color:var(--gold-soft);letter-spacing:6px;text-transform:uppercase;font-size:12px;font-weight:600">{{consult.kicker}}</span>
     <h2 class="k reveal">{{consult.title}}</h2>
@@ -802,7 +756,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
   </div></div>
 </section>
 <section class="panel panel--center panel--dark" id="works" data-watermark="Работы">
-  <div class="bg" style="background-image:url('{{works.bg}}')"></div>
+  <div class="bg"><img class="bg-img" referrerpolicy="no-referrer" src="{{works.bg}}" alt=""></div>
   <div class="wrap"><div class="content">
     <div class="sec-head reveal">
       <div class="kicker">{{works.kicker}}</div>
@@ -812,7 +766,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
     <div class="carousel reveal">
       <button class="car-nav car-prev" id="carPrev">❮</button>
       <div class="car-track" id="carTrack">
-        {{#each works.items}}<div class="car-slide"><img loading="lazy" src="{{this.url}}" alt="{{this.alt}}"></div>
+        {{#each works.items}}<div class="car-slide"><img loading="lazy" referrerpolicy="no-referrer" src="{{this.url}}" alt="{{this.alt}}"></div>
         {{/each}}
       </div>
       <button class="car-nav car-next" id="carNext">❯</button>
@@ -824,7 +778,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
 </section>
 <div class="lightbox" id="lightbox">
   <button class="lb-close" id="lbClose">×</button>
-  <div class="lb-stage" id="lbStage"><img id="lbImg" alt="Работа"></div>
+  <div class="lb-stage" id="lbStage"><img id="lbImg" alt="Работа" referrerpolicy="no-referrer"></div>
   <div class="lb-bar">
     <button class="lb-nav lb-prev" id="lbPrev">❮</button>
     <div class="lb-count" id="lbCount"></div>
@@ -832,7 +786,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
   </div>
 </div>
 <section class="panel panel--center" id="reviews" data-watermark="Отзывы">
-  <div class="bg" style="background-image:url('{{reviews.bg}}')"></div>
+  <div class="bg"><img class="bg-img" referrerpolicy="no-referrer" src="{{reviews.bg}}" alt=""></div>
   <div class="wrap"><div class="content">
     <div class="sec-head reveal">
       <div class="kicker">{{reviews.kicker}}</div>
@@ -844,12 +798,12 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
       <div class="car-track rev-track" id="revTrack">
         {{#each reviews.items}}<div class="rev-card">
           <div class="rev-head">
-            {{#if this.avatar}}<img class="rev-ava" loading="lazy" width="50" height="50" src="{{this.avatar}}" alt="Отзыв: {{this.name}}">{{/if}}
+            {{#if this.avatar}}<img class="rev-ava" loading="lazy" referrerpolicy="no-referrer" width="50" height="50" src="{{this.avatar}}" alt="Отзыв: {{this.name}}">{{/if}}
             <div><div class="rev-name">{{this.name}}</div><div class="rev-sub">{{this.sub}}</div></div>
             <div class="rev-stars">{{this.stars|stars}}</div>
           </div>
           {{#if this.video}}<div class="rev-video">
-            <div class="video-box" data-src="{{this.video}}"{{#if this.poster}} style="background-image:url('{{this.poster}}')"{{else}}{{#if reviews.video_poster}} style="background-image:url('{{reviews.video_poster}}')"{{/if}}{{/if}} role="button" aria-label="Смотреть видеоотзыв {{this.name}}">
+            <div class="video-box" data-src="{{this.video}}" role="button" aria-label="Смотреть видеоотзыв {{this.name}}">
               <span class="vb-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
             </div>
           </div>{{/if}}
@@ -866,7 +820,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
 </section>
 <div class="gold-divider"><i></i><b></b><i></i></div>
 <section class="panel panel--dark" id="services" data-watermark="Услуги">
-  <div class="bg" style="background-image:url('{{services.bg}}')"></div>
+  <div class="bg"><img class="bg-img" referrerpolicy="no-referrer" src="{{services.bg}}" alt=""></div>
   <div class="wrap"><div class="content">
     <div class="sec-head reveal">
       <div class="kicker">{{services.kicker}}</div>
@@ -880,7 +834,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
   </div></div>
 </section>
 <section class="panel" id="process">
-  <div class="bg" style="background-image:url('{{process.bg}}')"></div>
+  <div class="bg"><img class="bg-img" referrerpolicy="no-referrer" src="{{process.bg}}" alt=""></div>
   <div class="wrap"><div class="content">
     <div class="sec-head reveal">
       <div class="kicker">{{process.kicker}}</div>
@@ -893,7 +847,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
   </div></div>
 </section>
 <section class="panel panel--dark">
-  <div class="bg" style="background-image:url('{{guarantees.bg}}')"></div>
+  <div class="bg"><img class="bg-img" referrerpolicy="no-referrer" src="{{guarantees.bg}}" alt=""></div>
   <div class="wrap"><div class="content">
     <div class="sec-head reveal">
       <div class="kicker">{{guarantees.kicker}}</div>
@@ -906,7 +860,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
   </div></div>
 </section>
 <section class="panel panel--center panel--dark" id="cities">
-  <div class="bg" style="background-image:url('{{cities.bg}}')"></div>
+  <div class="bg"><img class="bg-img" referrerpolicy="no-referrer" src="{{cities.bg}}" alt=""></div>
   <div class="wrap"><div class="content">
     <div class="sec-head reveal">
       <div class="kicker">{{cities.kicker}}</div>
@@ -920,7 +874,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
   </div></div>
 </section>
 <section class="panel panel--center panel--dark">
-  <div class="bg" style="background-image:url('{{cta.bg}}')"></div>
+  <div class="bg"><img class="bg-img" referrerpolicy="no-referrer" src="{{cta.bg}}" alt=""></div>
   <div class="wrap"><div class="content cta">
     <h2 class="reveal shimmer">{{cta.title}}</h2>
     <p class="reveal">{{cta.text}}</p>
@@ -928,7 +882,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
   </div></div>
 </section>
 <section class="panel panel--dark" id="contacts">
-  <div class="bg" style="background-image:url('{{contacts.bg}}')"></div>
+  <div class="bg"><img class="bg-img" referrerpolicy="no-referrer" src="{{contacts.bg}}" alt=""></div>
   <div class="wrap"><div class="content">
     <div class="contact-grid">
       <div class="contact-info reveal">
@@ -1021,7 +975,7 @@ var lightbox=document.getElementById('lightbox'),lbStage=document.getElementById
 var lbItems=[].slice.call(document.querySelectorAll('#carTrack .car-slide img'));var lbIdx=0;
 var scale=1,tx=0,ty=0,startX=0,startY=0,startDist=0,startScale=1,moved=false;
 function lbApply(){lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';}
-function lbReset(){scale=1;tx=0;ty=0;lbApply();lbImg.style.transition='transform .25s ease';setTimeout(function(){lbImg.style.transition='transform .18s ease-out';},260);}
+function lbReset(){scale=1;tx=0;ty=0;lbApply();}
 function openLb(i){lbIdx=i;lbImg.src=lbItems[i].src;lbImg.alt=lbItems[i].alt;lbCount.textContent=(i+1)+' / '+lbItems.length;lbReset();lightbox.classList.add('open');document.body.style.overflow='hidden';}
 function closeLb(){lightbox.classList.remove('open');document.body.style.overflow='';}
 function lbStep(d){openLb((lbIdx+d+lbItems.length)%lbItems.length);}
@@ -1034,7 +988,7 @@ document.addEventListener('keydown',function(e){if(lightbox.classList.contains('
 var lastTap=0;
 lbStage.addEventListener('touchstart',function(e){if(e.touches.length===2){startDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);startScale=scale;moved=true;}else if(e.touches.length===1){startX=e.touches[0].clientX;startY=e.touches[0].clientY;moved=false;}var now=Date.now();if(now-lastTap<280){if(scale>1){lbReset();}else{scale=2;tx=0;ty=0;lbApply();}lastTap=0;}else{lastTap=now;}},{passive:true});
 lbStage.addEventListener('touchmove',function(e){if(e.touches.length===2){e.preventDefault();var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);scale=Math.min(4,Math.max(1,startScale*d/startDist));tx=0;ty=0;lbApply();}else if(e.touches.length===1&&scale>1){var dx=e.touches[0].clientX-startX,dy=e.touches[0].clientY-startY;tx+=dx;ty+=dy;startX=e.touches[0].clientX;startY=e.touches[0].clientY;lbApply();}},{passive:false});
-lbStage.addEventListener('touchend',function(e){if(e.touches.length===0&&scale===1&&!moved){var dx=e.changedTouches[0].clientX-startX;if(Math.abs(dx)>60){lbStep(dx<0?1:-1);}}if(e.touches.length===0&&scale<1)scale=1;},{passive:true});
+lbStage.addEventListener('touchend',function(e){if(e.touches.length===0&&scale===1&&!moved){var dx=e.changedTouches[0].clientX-startX;if(Math.abs(dx)>60){lbStep(dx<0?1:-1);}}},{passive:true});
 document.querySelectorAll('.video-box').forEach(function(box){box.addEventListener('click',function(){if(box.querySelector('iframe'))return;var iframe=document.createElement('iframe');iframe.src=box.dataset.src;iframe.setAttribute('allow','autoplay; encrypted-media; fullscreen; picture-in-picture');iframe.setAttribute('allowfullscreen','1');iframe.title='Видеоотзыв';box.innerHTML='';box.appendChild(iframe);});});
 var cookieBar=document.getElementById('cookieBar'),cookieOk=document.getElementById('cookieOk');
 if(!localStorage.getItem('cookiesAccepted')){setTimeout(function(){cookieBar.classList.add('show');},900);}
@@ -1055,7 +1009,6 @@ def _merge_deep(b, o):
         if k in r and isinstance(r[k], dict) and isinstance(v, dict): r[k] = _merge_deep(r[k], v)
         else: r[k] = _json_clone(v)
     return r
-
 def _migrate(raw):
     if not isinstance(raw, dict): return {}
     d = _json_clone(raw)
@@ -1075,7 +1028,6 @@ def _migrate(raw):
     if "stats" in d and isinstance(d["stats"], dict):
         d["stats"].setdefault("items", _json_clone(DEFAULT_DATA.get("stats", {}).get("items") or []))
     return d
-
 _ICON_KEYS = (("services", "items"), ("guarantees", "items"))
 def _normalize_context(data):
     ctx = _json_clone(data)
@@ -1085,11 +1037,9 @@ def _normalize_context(data):
             for it in items:
                 if not isinstance(it, dict): continue
                 icon = str(it.get("icon") or "")
-                if "<" in icon:
-                    it["icon_svg"] = icon; it["icon"] = ""
+                if "<" in icon: it["icon_svg"] = icon; it["icon"] = ""
     ctx["year"] = str(date.today().year); ctx["domain"] = _domain(ctx)
     return ctx
-
 def _domain(data=None):
     dom = DOMAIN
     if isinstance(data, dict):
@@ -1099,7 +1049,6 @@ def _domain(data=None):
     if "//" not in dom: dom = "https://" + dom
     sch, _, host = dom.partition("://")
     return sch + "://" + _punycode(host)
-
 def _host(data=None): return _domain(data).split("://", 1)[-1]
 def _punycode(h):
     try: return h.encode("idna").decode("ascii")
@@ -1282,7 +1231,7 @@ def _ai_ask(data, task, path, value):
     else: user += "Улучши текст: убери ошибки и воду, сделай живее, сохрани смысл:\n" + (value or "")
     return system, user
 
-# ============ КЭШ И СЕССИИ ============
+# ============ КЭШ / СЕССИИ ============
 _data_lock = threading.Lock(); _data_cache = None; _cache_ts = 0.0
 _db_state = {"read": None, "write": None, "last_error": ""}
 _auth_lock = threading.Lock(); _sessions = {}; _login_fails = {}
@@ -1295,7 +1244,6 @@ def _new_session():
             now = time.time()
             for k in [k for k,v in _sessions.items() if v < now]: _sessions.pop(k, None)
     return t
-
 def _check_session(token):
     if not token: return False
     with _auth_lock:
@@ -1303,11 +1251,9 @@ def _check_session(token):
         if not exp: return False
         if exp < time.time(): _sessions.pop(token, None); return False
     return True
-
 def _drop_session(token):
     if token:
         with _auth_lock: _sessions.pop(token, None)
-
 def _login_blocked(ip):
     with _auth_lock:
         rec = _login_fails.get(ip)
@@ -1315,7 +1261,6 @@ def _login_blocked(ip):
         cnt, until = rec
         if until and until < time.time(): _login_fails.pop(ip, None); return False
         return cnt >= 8
-
 def _login_note(ip, ok):
     with _auth_lock:
         if ok: _login_fails.pop(ip, None); return
@@ -1338,14 +1283,12 @@ def load_fresh():
         data = _merge_deep(DEFAULT_DATA, _migrate(raw)); print("[load] из БД: {} разделов".format(len(raw)), flush=True)
     with _data_lock: _data_cache = data; _cache_ts = time.time()
     return data
-
 def load_data():
     global _cache_ts
     now = time.time()
     with _data_lock:
         if _data_cache is not None and now - _cache_ts < CACHE_TTL: return _data_cache
     return load_fresh()
-
 def save_data(data):
     global _data_cache, _cache_ts
     ok = _save_to_supabase(data); _db_state["write"] = ok
@@ -1354,40 +1297,9 @@ def save_data(data):
             _data_cache = _merge_deep(DEFAULT_DATA, _migrate(data)); _cache_ts = time.time()
     return ok
 
-# ============ ПРОКСИ VK ============
-_img_cache = {}; _img_lock = threading.Lock()
-_VK_RE = re.compile(r'https://(?:sun\d+-\d+\.)?vkuserphoto\.ru/[^\s"\'\)<>]+')
-_PROT_RE = re.compile(r"\x00PROT(\d+)\x00")
-
-def _fetch_image(url):
-    now = time.time()
-    with _img_lock:
-        c = _img_cache.get(url)
-        if c and now - c[1] < IMG_TTL: return c[0], c[2]
-    try:
-        req = urllib.request.Request(url, headers={
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0 Safari/537.36",
-            "Referer": "https://vk.com/",
-            "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8"})
-        with urllib.request.urlopen(req, timeout=20) as resp:
-            data = resp.read(); ct = resp.headers.get("Content-Type", "image/jpeg")
-        if data:
-            with _img_lock:
-                if len(_img_cache) > 400: _img_cache.clear()
-                _img_cache[url] = (data, now, ct)
-            return data, ct
-    except Exception as e: print("[img] {} -> {}".format(url[:60], e), flush=True)
-    return None, None
-
-def _img_proxy_url(url): return "/img?u=" + base64.urlsafe_b64encode(url.encode("utf-8")).decode("ascii").rstrip("=")
-
+# ============ ПРОКСИ (отключён — браузер сам грузит VK) ============
 def _proxify_urls(html):
-    stash = []
-    def keep(m): stash.append(m.group(0)); return "\x00PROT%d\x00" % (len(stash)-1)
-    html = re.sub(r'<script type="application/ld\+json">.*?</script>', keep, html, flags=re.S)
-    html = re.sub(r'<meta property="og:image"[^>]*>', keep, html)
-    html = _VK_RE.sub(lambda m: _img_proxy_url(m.group(0)), html)
-    if stash: html = _PROT_RE.sub(lambda m: stash[int(m.group(1))], html)
+    """VK грузится напрямую браузером через referrerpolicy=no-referrer. Прокси не нужен."""
     return html
 
 # ============ РЕНДЕР ============
@@ -1401,20 +1313,19 @@ def _page_template():
         _page_cache["tpl"] = tpl
         print("[page] шаблон готов: {} байт".format(len(tpl)), flush=True)
         return tpl
-
 def render_site():
     data = load_data(); ctx = _normalize_context(data)
     try: html = render(_page_template(), ctx)
     except Exception as e:
         print("[render] ОШИБКА: {}".format(e), flush=True); html = _page_template()
-    return _proxify_urls(html)
+    return html
 
 def build_robots(data):
     dom, host = _domain(data), _host(data)
     s = data.get("seo") or {}
     custom = (s.get("robots") or "").strip()
     if custom: return custom.replace("{{domain}}", dom).replace("{{host}}", host) + "\n"
-    return "User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /img?\nClean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&yclid&gclid\n\nHost: {}\nSitemap: {}/sitemap.xml\n".format(host, dom)
+    return "User-agent: *\nAllow: /\nDisallow: /admin\nClean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&yclid&gclid\n\nHost: {}\nSitemap: {}/sitemap.xml\n".format(host, dom)
 
 def build_sitemap(data):
     dom = _domain(data); today = date.today().isoformat()
@@ -1459,11 +1370,18 @@ def _make_icons(data):
         _ic["png16"] = png(16); _ic["png32"] = png(32); _ic["png180"] = png(180); _ic["png192"] = png(192)
     except Exception as e: print("[favicon] {}".format(e), flush=True)
 
+def _fetch_favicon():
+    try:
+        req = urllib.request.Request(FAVICON_URL, headers={"User-Agent": "Mozilla/5.0", "Referer": "https://vk.com/"})
+        with urllib.request.urlopen(req, timeout=15) as r: return r.read()
+    except Exception as e:
+        print("[favicon] {}".format(e), flush=True); return None
+
 def get_favicon():
     now = time.time()
     with _fc_lock:
         if _fc["data"] is not None and now - _fc["ts"] < 3600: return _fc["data"]
-    data, _ct = _fetch_image(FAVICON_URL)
+    data = _fetch_favicon()
     if data:
         with _fc_lock: _fc["data"] = data; _fc["ts"] = now
         _make_icons(data)
@@ -1471,10 +1389,10 @@ def get_favicon():
 
 # ============ ADMIN SCHEMA ============
 def _svg_icon(_=None): return {"path": "icon", "label": "Иконка", "type": "textarea", "rows": 2, "mono": True,
-    "hint": "Только содержимое атрибута d у <path viewBox=\"0 0 24 24\">."}
+    "hint": "Содержимое d у <path viewBox=\"0 0 24 24\">."}
 
 ADMIN_SCHEMA = [
- {"id":"seo","group":"SEO и код","title":"SEO и мета","hint":"Заголовок и описание, OG, robots, sitemap.","fields":[
+ {"id":"seo","group":"SEO и код","title":"SEO и мета","fields":[
    {"path":"seo.title","label":"Title","type":"textarea","rows":2,"ai":"seo_title"},
    {"path":"seo.description","label":"Description","type":"textarea","rows":3,"ai":"seo_description"},
    {"path":"seo.keywords","label":"Keywords","type":"textarea","rows":2,"ai":"seo_keywords"},
@@ -1627,7 +1545,6 @@ ADMIN_SCHEMA = [
      {"act":"reload","label":"Отменить изменения","cls":"btn-red"}]},
    {"type":"info","text":"<div id=\"toolsOut\" class=\"info\">Нажмите «Проверить связи».</div>"}]}
 ]
-
 _SCHEMA_JSON = json.dumps(ADMIN_SCHEMA, ensure_ascii=False)
 
 ADMIN_LOGIN_HTML = """<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Вход — Кухни Островский</title><style>
@@ -1640,28 +1557,24 @@ input{width:100%;padding:14px 16px;background:rgba(0,0,0,.3);border:1px solid rg
 input:focus{outline:none;border-color:#d4af6a}
 button{width:100%;padding:15px;background:linear-gradient(135deg,#eccfa0,#d4af6a 55%,#a37c3f);color:#17120b;font-weight:700;border:none;border-radius:12px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;font-family:inherit}
 .err{background:rgba(220,60,60,.14);border:1px solid rgba(220,60,60,.4);color:#ff9a9a;padding:12px;border-radius:10px;font-size:13px;margin-bottom:18px;text-align:center}
-.hint{margin-top:18px;color:#6f6659;font-size:11.5px;text-align:center;line-height:1.5}
 </style></head><body>
 <form class="card" method="POST" action="/admin/login">
 <h1>Кухни Островский</h1><p class="sub">Панель управления сайтом</p>__ERROR__
-<label>Логин</label><input type="text" name="login" required autofocus autocomplete="username">
-<label>Пароль</label><input type="password" name="password" required autocomplete="current-password">
+<label>Логин</label><input type="text" name="login" required autofocus>
+<label>Пароль</label><input type="password" name="password" required>
 <button>Войти</button>
-<div class="hint">Логин и пароль задаются переменными ADMIN_LOGIN и ADMIN_PASSWORD.</div>
 </form></body></html>"""
 
 ADMIN_HTML = r"""<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Админка — Кухни Островский</title><style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0e0c09;color:#f5efe3;line-height:1.5}
-header{background:rgba(14,12,9,.96);border-bottom:1px solid rgba(236,207,160,.16);padding:12px 18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:20;backdrop-filter:blur(10px)}
-.brand{font-family:Georgia,serif;font-size:19px;color:#eccfa0;display:flex;align-items:center;gap:10px}.brand span{font-size:11px;opacity:.65;font-family:system-ui;letter-spacing:1px;text-transform:uppercase}
+body{font-family:system-ui;background:#0e0c09;color:#f5efe3;line-height:1.5}
+header{background:rgba(14,12,9,.96);border-bottom:1px solid rgba(236,207,160,.16);padding:12px 18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:20}
+.brand{font-family:Georgia,serif;font-size:19px;color:#eccfa0;display:flex;align-items:center;gap:10px}.brand span{font-size:11px;opacity:.65;letter-spacing:1px;text-transform:uppercase}
 .actions{display:flex;gap:8px;flex-wrap:wrap}
-.btn{padding:9px 15px;border-radius:9px;border:1px solid rgba(236,207,160,.16);background:rgba(255,255,255,.04);color:#f5efe3;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;font-family:inherit;display:inline-flex;align-items:center;gap:6px;transition:.2s}
+.btn{padding:9px 15px;border-radius:9px;border:1px solid rgba(236,207,160,.16);background:rgba(255,255,255,.04);color:#f5efe3;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;font-family:inherit;display:inline-flex;align-items:center;gap:6px}
 .btn:hover{border-color:#d4af6a;background:rgba(212,175,106,.1)}
 .btn-gold{background:linear-gradient(135deg,#eccfa0,#d4af6a 55%,#a37c3f);color:#17120b;border:none}
 .btn-red{background:rgba(220,60,60,.14);border-color:rgba(220,60,60,.35);color:#ff9a9a}
-.btn.pulse{box-shadow:0 0 0 0 rgba(236,207,160,.7);animation:pulse 1.6s infinite}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(236,207,160,.55)}70%{box-shadow:0 0 0 14px rgba(236,207,160,0)}100%{box-shadow:0 0 0 0 rgba(236,207,160,0)}}
 .layout{display:flex;min-height:calc(100vh - 58px)}
 nav.side{width:232px;background:rgba(0,0,0,.3);border-right:1px solid rgba(236,207,160,.16);padding:10px 0 40px;flex-shrink:0;overflow-y:auto;max-height:calc(100vh - 58px);position:sticky;top:58px}
 nav.side a{display:block;padding:10px 18px;color:#b9ad9a;font-size:13.5px;cursor:pointer;border-left:3px solid transparent}
@@ -1693,7 +1606,6 @@ p.hint{color:#b9ad9a;font-size:13px;margin-bottom:18px}
 .list-head strong{color:#fff;font-family:Georgia,serif;font-size:17px}
 .list-head .muted{color:#6f6659;font-size:12px}
 .info{background:rgba(212,175,106,.07);border:1px solid rgba(212,175,106,.22);border-radius:11px;padding:14px 16px;font-size:13px;color:#e0d6c4;margin-bottom:14px;white-space:pre-wrap}
-.info b{color:#eccfa0}
 .status{font-size:11.5px;padding:4px 10px;border-radius:7px;display:inline-block;font-weight:600}
 .status.ok{background:rgba(80,200,120,.15);color:#7ee0a0;border:1px solid rgba(80,200,120,.4)}
 .status.bad{background:rgba(220,60,60,.15);color:#ff9a9a;border:1px solid rgba(220,60,60,.4)}
@@ -1752,7 +1664,7 @@ function render(){
   bind();
   window.scrollTo(0,0);
 }
-function aiBtn(p,task){return '<button class="btn mini ai" data-ai="'+task+'" data-ai-path="'+p+'" title="Сгенерировать через AI">✨</button>'}
+function aiBtn(p,task){return '<button class="btn mini ai" data-ai="'+task+'" data-ai-path="'+p+'" title="AI">✨</button>'}
 function fieldHTML(f,base){
   var p=f.path?(base?base+'.'+f.path:f.path):base;
   if(f.type==='info')return '<div class="info">'+(f.text||'')+'</div>';
@@ -1766,8 +1678,8 @@ function fieldHTML(f,base){
     return '<div class="field"><label>'+esc(f.label)+'</label><div class="img-row">'
       +'<input type="text" data-path="'+p+'" value="'+esc(v)+'" placeholder="https://… или загрузите файл">'
       +'<label class="btn mini" title="Загрузить файл">📁<input type="file" accept="image/*" data-upload="'+p+'" hidden></label>'
-      +'<button class="btn mini" data-media="'+p+'" title="Выбрать из медиатеки">🗂</button></div>'
-      +'<div class="prev" data-prev="'+p+'">'+(v?'<img src="'+esc(v)+'" loading="lazy">':'')+'</div>'
+      +'<button class="btn mini" data-media="'+p+'" title="Медиатека">🗂</button></div>'
+      +'<div class="prev" data-prev="'+p+'">'+(v?'<img src="'+esc(v)+'" loading="lazy" referrerpolicy="no-referrer">':'')+'</div>'
       +(f.hint?'<div class="fhint">'+f.hint+'</div>':'')+'</div>';
   }
   if(f.type==='textarea')inp='<textarea data-path="'+p+'" rows="'+(f.rows||3)+'"'+(f.mono?' class="mono"':'')+' placeholder="'+esc(f.placeholder||'')+'">'+esc(v)+'</textarea>';
@@ -1800,7 +1712,7 @@ function bind(){
       var val=(el.type==='checkbox')?!!el.checked:el.value;
       setPath(DATA,p,val); setDirty(true);
       qa('[data-path="'+p+'"]').forEach(function(o){if(o!==el){if(o.type==='checkbox')o.checked=!!val;else o.value=val}});
-      var pv=q('[data-prev="'+p+'"]'); if(pv)pv.innerHTML=val?'<img src="'+esc(val)+'" loading="lazy">':'';
+      var pv=q('[data-prev="'+p+'"]'); if(pv)pv.innerHTML=val?'<img src="'+esc(val)+'" loading="lazy" referrerpolicy="no-referrer">':'';
     };
     el.addEventListener(el.tagName==='SELECT'||el.type==='checkbox'?'change':'input',handler);
   });
@@ -1815,7 +1727,7 @@ function bind(){
 function addItem(path,tpl){var arr=getPath(DATA,path); if(!Array.isArray(arr)){arr=[];setPath(DATA,path,arr)} var item; try{item=JSON.parse(tpl)}catch(e){item=tpl} arr.push(item); setDirty(true); render();}
 function delItem(path,i){if(!confirm('Удалить этот элемент?'))return;var arr=getPath(DATA,path);arr.splice(i,1);setDirty(true);render();}
 function moveItem(path,i,d){var arr=getPath(DATA,path),j=i+d;if(j<0||j>=arr.length)return;var x=arr[i];arr[i]=arr[j];arr[j]=x;setDirty(true);render();}
-function refreshField(p,val){qa('[data-path="'+p+'"]').forEach(function(o){o.value=val});var pv=q('[data-prev="'+p+'"]');if(pv)pv.innerHTML=val?'<img src="'+esc(val)+'" loading="lazy">':'';}
+function refreshField(p,val){qa('[data-path="'+p+'"]').forEach(function(o){o.value=val});var pv=q('[data-prev="'+p+'"]');if(pv)pv.innerHTML=val?'<img src="'+esc(val)+'" loading="lazy" referrerpolicy="no-referrer">':'';}
 function upload(inp){
   var p=inp.dataset.upload,f=inp.files[0]; if(!f)return;
   if(f.size>8*1024*1024){toast('Файл больше 8 МБ',true);return}
@@ -1836,11 +1748,11 @@ function runAI(b){
 }
 function openMedia(p){
   mediaTarget=p;
-  q('#mediaGrid').innerHTML='<p class="hint" style="padding:16px">Загружаю список…</p>';
+  q('#mediaGrid').innerHTML='<p class="hint" style="padding:16px">Загружаю…</p>';
   q('#modal').classList.add('open');
   api('/admin/api/media').then(function(j){
-    if(!j||!j.items||!j.items.length){q('#mediaGrid').innerHTML='<p class="hint" style="padding:16px">В хранилище пока нет файлов.</p>';return}
-    q('#mediaGrid').innerHTML=j.items.map(function(it){return '<button data-pick="'+esc(it.url)+'"><img src="'+esc(it.url)+'" loading="lazy"><div class="nm">'+esc(it.name)+'</div></button>';}).join('');
+    if(!j||!j.items||!j.items.length){q('#mediaGrid').innerHTML='<p class="hint" style="padding:16px">Нет файлов.</p>';return}
+    q('#mediaGrid').innerHTML=j.items.map(function(it){return '<button data-pick="'+esc(it.url)+'"><img src="'+esc(it.url)+'" loading="lazy" referrerpolicy="no-referrer"><div class="nm">'+esc(it.name)+'</div></button>';}).join('');
     qa('[data-pick]').forEach(function(b){b.addEventListener('click',function(){
       setPath(DATA,mediaTarget,b.dataset.pick);setDirty(true);refreshField(mediaTarget,b.dataset.pick);
       q('#modal').classList.remove('open');toast('Картинка выбрана');
@@ -1864,14 +1776,13 @@ function showStatus(){
     var html='<b>Состояние</b>\n'
       +row(j.db_read,'Чтение Supabase: '+(j.db_read?'OK':'ошибка'))
       +row(j.db_write!==false,'Запись Supabase: '+(j.db_write===false?'была ошибка':'OK'))
-      +row(j.storage,'Хранилище картинок: '+(j.storage?('бакет '+j.bucket):'недоступно'))
+      +row(j.storage,'Хранилище: '+(j.storage?('бакет '+j.bucket):'недоступно'))
       +row(j.ai.yandex||j.ai.gigachat,'AI: Yandex='+(j.ai.yandex?'✓':'✗')+', GigaChat='+(j.ai.gigachat?'✓':'✗'))
       +'\n<b>Контент</b>\n'
-      +'<div>Размер данных: '+size+' КБ · работ: '+(j.counts.works||0)+' · отзывов: '+(j.counts.reviews||0)+' · услуг: '+(j.counts.services||0)+'</div>'
+      +'<div>Размер: '+size+' КБ · работ: '+(j.counts.works||0)+' · отзывов: '+(j.counts.reviews||0)+' · услуг: '+(j.counts.services||0)+'</div>'
       +'<div>Домен: '+esc(j.domain)+' · страниц в sitemap: '+j.sitemap_urls+'</div>';
-    if(j.ai_error)html+='\n<div>AI: '+esc(j.ai_error)+'</div>';
     out(html);
-  }).catch(function(e){out('Ошибка проверки: '+esc(e.message))});
+  }).catch(function(e){out('Ошибка: '+esc(e.message))});
 }
 function aiSeo(){
   var tasks=[['seo.title','seo_title'],['seo.description','seo_description'],['seo.keywords','seo_keywords']];
@@ -1915,7 +1826,7 @@ q('#importFile').addEventListener('change',function(){
   var f=this.files[0]; if(!f)return;
   var r=new FileReader();
   r.onload=function(){
-    try{var obj=JSON.parse(r.result);if(!obj||typeof obj!=='object')throw new Error('не объект');DATA=obj;setDirty(true);render();toast('Бэкап загружен — нажмите «Сохранить»');}
+    try{var obj=JSON.parse(r.result);if(!obj||typeof obj!=='object')throw new Error('не объект');DATA=obj;setDirty(true);render();toast('Бэкап загружен — «Сохранить»');}
     catch(err){toast('Не разобрал JSON: '+err.message,true)}
   };
   r.readAsText(f,'utf-8'); this.value='';
@@ -1951,23 +1862,19 @@ def _parse_multipart(body, boundary):
 
 class Handler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
-    server_version = "OstrovskyCMS/4.0"
+    server_version = "OstrovskyCMS/5.0"
     _head_only = False
-
     def _tok(self):
         raw = self.headers.get("Cookie", "")
         if not raw: return None
         try:
-            c = SimpleCookie(); c.load(raw)
-            m = c.get("admin_session"); return m.value if m else None
+            c = SimpleCookie(); c.load(raw); m = c.get("admin_session"); return m.value if m else None
         except Exception: return None
-
     def _admin(self): return _check_session(self._tok())
     def _ip(self):
         fwd = self.headers.get("X-Forwarded-For", "")
         return (fwd.split(",")[0].strip() if fwd else self.client_address[0])
     def _is_https(self): return self.headers.get("X-Forwarded-Proto", "").lower() == "https"
-
     def _send(self, code, body, ctype="text/plain; charset=utf-8", cache="no-cache", gzip_ok=True):
         data = body.encode("utf-8") if isinstance(body, str) else body
         etag = '"' + hashlib.sha256(data).hexdigest()[:20] + '"'
@@ -1978,23 +1885,18 @@ class Handler(BaseHTTPRequestHandler):
             buf = io.BytesIO()
             with gzip.GzipFile(fileobj=buf, mode="wb", compresslevel=6) as gz: gz.write(data)
             data = buf.getvalue(); gzipped = True
-        self.send_response(code)
-        self.send_header("Content-Type", ctype)
+        self.send_response(code); self.send_header("Content-Type", ctype)
         if gzipped: self.send_header("Content-Encoding", "gzip"); self.send_header("Vary", "Accept-Encoding")
-        self.send_header("Content-Length", str(len(data)))
-        self.send_header("Cache-Control", cache)
-        self.send_header("ETag", etag)
+        self.send_header("Content-Length", str(len(data))); self.send_header("Cache-Control", cache); self.send_header("ETag", etag)
         self.send_header("X-Robots-Tag", "noindex" if self.path.startswith("/admin") else "all")
         self.end_headers()
         if not self._head_only:
             try: self.wfile.write(data)
             except Exception: pass
-
     def _redir(self, loc, cookie=None):
         self.send_response(302); self.send_header("Location", loc); self.send_header("Cache-Control", "no-cache")
         if cookie: self.send_header("Set-Cookie", cookie)
         self.send_header("Content-Length", "0"); self.end_headers()
-
     def _json(self, obj, code=200): self._send(code, json.dumps(obj, ensure_ascii=False), "application/json; charset=utf-8")
     def _body(self):
         try: n = int(self.headers.get("Content-Length", "0") or 0)
@@ -2005,12 +1907,9 @@ class Handler(BaseHTTPRequestHandler):
         c = "admin_session={}; Path=/; Max-Age={}; HttpOnly; SameSite=Lax".format(token, SESSION_TTL)
         if self._is_https(): c += "; Secure"
         return c
-
     def do_HEAD(self): self._head_only = True; self.do_GET()
-
     def do_GET(self):
         path = self.path.split("?", 1)[0]
-        if path == "/img": self._route_img(); return
         if path == "/healthz": self._send(200, "ok", "text/plain; charset=utf-8"); return
         if path == "/admin/login": self._send(200, ADMIN_LOGIN_HTML.replace("__ERROR__", ""), "text/html; charset=utf-8"); return
         if path == "/admin/logout": _drop_session(self._tok()); self._redir("/admin/login", "admin_session=; Path=/; Max-Age=0; HttpOnly"); return
@@ -2034,8 +1933,7 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/admin":
             if not self._admin(): self._redir("/admin/login"); return
             self._send(200, ADMIN_HTML, "text/html; charset=utf-8"); return
-        if path in ("/", "/index.html"):
-            self._send(200, render_site(), "text/html; charset=utf-8", "no-cache"); return
+        if path in ("/", "/index.html"): self._send(200, render_site(), "text/html; charset=utf-8", "no-cache"); return
         if path == "/robots.txt": self._send(200, build_robots(load_data()), "text/plain; charset=utf-8", "public, max-age=3600"); return
         if path == "/sitemap.xml": self._send(200, build_sitemap(load_data()), "application/xml; charset=utf-8", "public, max-age=3600"); return
         if path == "/manifest.webmanifest": self._send(200, build_manifest(load_data()), "application/manifest+json; charset=utf-8", "public, max-age=86400"); return
@@ -2043,17 +1941,14 @@ class Handler(BaseHTTPRequestHandler):
             self._route_favicon(path); return
         if self._serve_static(path): return
         self._send(404, build_404(load_data()), "text/html; charset=utf-8")
-
     def do_POST(self):
         path = self.path.split("?", 1)[0]
         if path == "/admin/login":
             ip = self._ip()
             if _login_blocked(ip):
                 self._send(200, ADMIN_LOGIN_HTML.replace("__ERROR__", '<div class="err">Слишком много попыток. Подождите 10 минут.</div>'), "text/html; charset=utf-8"); return
-            raw = self._body().decode("utf-8", "ignore")
-            p = parse_qs(raw)
-            login = (p.get("login") or [""])[0].strip()
-            pw = (p.get("password") or [""])[0]
+            raw = self._body().decode("utf-8", "ignore"); p = parse_qs(raw)
+            login = (p.get("login") or [""])[0].strip(); pw = (p.get("password") or [""])[0]
             if (hmac.compare_digest(login.encode("utf-8"), ADMIN_LOGIN_ENV.encode("utf-8"))
                     and hmac.compare_digest(pw.encode("utf-8"), ADMIN_PASSWORD_ENV.encode("utf-8"))):
                 _login_note(ip, True); self._redir("/admin", self._cookie(_new_session()))
@@ -2085,14 +1980,13 @@ class Handler(BaseHTTPRequestHandler):
             elif blob[:5] == b"<?xml" or blob[:4] == b"<svg": mime = "image/svg+xml"
             url = _storage_upload(fname, blob, mime)
             if url: self._json({"url": url, "storage": True, "bucket": BUCKET})
-            else: self._json({"url": "data:{};base64,{}".format(mime, base64.b64encode(blob).decode("ascii")), "storage": False, "warning": "Storage недоступен"})
+            else: self._json({"url": "data:{};base64,{}".format(mime, base64.b64encode(blob).decode("ascii")), "storage": False})
             return
         if path == "/admin/api/ai":
             if not self._admin(): self._json({"error": "no auth"}, 401); return
             try: req = json.loads(self._body().decode("utf-8") or "{}")
             except Exception: req = {}
-            task = str(req.get("task") or "improve")
-            value = str(req.get("value") or "")
+            task = str(req.get("task") or "improve"); value = str(req.get("value") or "")
             data = load_data()
             system, user = _ai_ask(data, task, req.get("path"), value)
             text, provider, err = _ai_generate(system, user, 700)
@@ -2100,22 +1994,6 @@ class Handler(BaseHTTPRequestHandler):
             else: self._json({"error": err or "AI недоступен"}, 200)
             return
         self._json({"error": "not found"}, 404)
-
-    def _route_img(self):
-        qs = parse_qs(self.path.split("?", 1)[1] if "?" in self.path else "")
-        u = (qs.get("u") or [""])[0]
-        if not u: self._send(404, "no url"); return
-        try:
-            pad = "=" * (-len(u) % 4)
-            url = base64.urlsafe_b64decode(u + pad).decode("utf-8")
-        except Exception: self._send(400, "bad"); return
-        host = urllib.parse.urlparse(url).hostname or ""
-        if not url.startswith("https://") or not host.endswith("vkuserphoto.ru"):
-            self._send(403, "forbidden"); return
-        blob, ct = _fetch_image(url)
-        if blob is None: self._redir(url); return
-        self._send(200, blob, ct, "public, max-age=604800", gzip_ok=False)
-
     def _route_favicon(self, path):
         if path == "/favicon.ico":
             d = get_favicon()
@@ -2127,7 +2005,6 @@ class Handler(BaseHTTPRequestHandler):
         if _ic.get(key) is None: get_favicon()
         if _ic.get(key): self._send(200, _ic[key], "image/png", "public, max-age=86400", gzip_ok=False)
         else: self._redir(FAVICON_URL)
-
     def _serve_static(self, path):
         rel = urllib.parse.unquote(path).lstrip("/")
         if not rel or rel.startswith(".") or ".." in rel.split("/"): return False
@@ -2141,7 +2018,6 @@ class Handler(BaseHTTPRequestHandler):
         except Exception: return False
         self._send(200, blob, MIME.get(ext, "application/octet-stream"), "public, max-age=86400", gzip_ok=False)
         return True
-
     def _status_payload(self):
         data = load_data(); counts = {}
         for key in ("works","reviews","services","process","guarantees","cities"):
@@ -2152,17 +2028,14 @@ class Handler(BaseHTTPRequestHandler):
                 "ai": {"yandex": bool(YANDEX_API_KEY and FOLDER_ID), "gigachat": bool(GIGACHAT_AUTH_KEY)},
                 "counts": counts, "size": len(json.dumps(data, ensure_ascii=False).encode("utf-8")),
                 "domain": _domain(data), "sitemap_urls": build_sitemap(data).count("<url>")}
-
     def log_message(self, fmt, *args):
         if os.environ.get("VERBOSE"): print("[http] " + (fmt % args), flush=True)
 
-# ============ ЗАПУСК ============
 def main():
-    print("BOOT: Кухни Островский CMS (single-file, full)", flush=True)
+    print("BOOT: Кухни Островский CMS (single-file v5)", flush=True)
     print("BOOT: PORT = {}".format(PORT), flush=True)
     print("BOOT: DOMAIN = {} ({})".format(_domain(), _host()), flush=True)
     print("BOOT: Supabase = {} / таблица {}".format(SUPABASE_URL or "НЕ ЗАДАН", DATA_TABLE), flush=True)
-    print("BOOT: Storage bucket = {}".format(BUCKET), flush=True)
     print("BOOT: AI = yandex:{} gigachat:{}".format(bool(YANDEX_API_KEY and FOLDER_ID), bool(GIGACHAT_AUTH_KEY)), flush=True)
     try: load_fresh()
     except Exception as e: print("BOOT: первичная загрузка не удалась: {}".format(e), flush=True)
