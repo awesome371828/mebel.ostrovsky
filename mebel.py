@@ -1989,6 +1989,112 @@ def get_favicon():
             return None
 
     return _favicon_cache["data"]
+import base64, hmac, secrets, threading, time, uuid
+from http.cookies import SimpleCookie
+from urllib.parse import parse_qs
+
+SUPABASE_URL = (os.environ.get("SUPABASE_URL") or "https://hliafkrpvmntpctmqwfu.supabase.co").rstrip("/")
+SUPABASE_ANON = os.environ.get("SUPABASE_ANON_KEY") or "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhsaWFma3Jwdm1udHBjdG1xd2Z1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyMDQ1NzYsImV4cCI6MjEwNjc4MDU3Nn0.yi57-Ty1iIfhnEh80_zvifhX1W_JX2qCl7QrARuJ2ns"
+SUPABASE_SERVICE = os.environ.get("SUPABASE_SERVICE_KEY") or "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhsaWFma3Jwdm1udHBjdG1xd2Z1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MTIwNDU3NiwiZXhwIjoyMTA2NzgwNTc2fQ.Yr4z9vx6kF9ZINNNUjUn43GYi-A2BmBfg8uyrOtmDWo"
+BUCKET = os.environ.get("SUPABASE_BUCKET", "site-images")
+DATA_TABLE = "site_content"
+DATA_ROW_ID = 1
+ADMIN_LOGIN_ENV = os.environ.get("ADMIN_LOGIN", "кухниост")
+ADMIN_PASSWORD_ENV = os.environ.get("ADMIN_PASSWORD", "романкух")
+SESSION_TTL = 604800
+MAX_UPLOAD = 8 * 1024 * 1024
+DATA_CACHE = {"data": None, "ts": 0.0}
+SESSIONS = {}
+SESSION_LOCK = threading.Lock()
+
+
+def _sb_headers():
+    key = SUPABASE_SERVICE or SUPABASE_ANON
+    return {"apikey": key, "Authorization": "Bearer " + key, "Content-Type": "application/json"}
+
+
+def _sb_read():
+    now = time.time()
+    if DATA_CACHE["data"] is not None and now - DATA_CACHE["ts"] < 15:
+        return DATA_CACHE["data"]
+    url = "{}/rest/v1/{}?id=eq.{}&select=data".format(SUPABASE_URL, DATA_TABLE, DATA_ROW_ID)
+    try:
+        req = urllib.request.Request(url, headers=_sb_headers())
+        with urllib.request.urlopen(req, timeout=10) as r:
+            js = json.loads(r.read().decode("utf-8"))
+        data = js[0]["data"] if js and js[0].get("data") else {}
+    except Exception as e:
+        print("[sb_read]", e, flush=True)
+        data = DATA_CACHE["data"] or {}
+    DATA_CACHE["data"] = data
+    DATA_CACHE["ts"] = now
+    return data
+
+
+def _sb_save(data):
+    url = "{}/rest/v1/{}".format(SUPABASE_URL, DATA_TABLE)
+    headers = _sb_headers()
+    headers["Prefer"] = "resolution=merge-duplicates,return=minimal"
+    payload = json.dumps([{"id": DATA_ROW_ID, "data": data}], ensure_ascii=False).encode("utf-8")
+    try:
+        req = urllib.request.Request(url, data=payload, headers=headers, method="POST")
+        with urllib.request.urlopen(req, timeout=20) as r:
+            ok = r.status in (200, 201, 204)
+        if ok:
+            DATA_CACHE["data"] = data
+            DATA_CACHE["ts"] = time.time()
+        return ok
+    except Exception as e:
+        print("[sb_save]", e, flush=True)
+        return False
+
+
+def _new_session():
+    t = secrets.token_urlsafe(32)
+    with SESSION_LOCK:
+        SESSIONS[t] = time.time() + SESSION_TTL
+    return t
+
+
+def _check_session(token):
+    if not token:
+        return False
+    with SESSION_LOCK:
+        exp = SESSIONS.get(token)
+        if not exp:
+            return False
+        if exp < time.time():
+            SESSIONS.pop(token, None)
+            return False
+    return True
+
+
+def _drop_session(token):
+    if token:
+        with SESSION_LOCK:
+            SESSIONS.pop(token, None)
+          
+def _apply_cms(html, data):
+    """Подставляет данные из админки в HTML по якорям id."""
+    if not isinstance(data, dict):
+        return html
+    get = lambda *keys: data
+    for k in ("seo", "brand", "hero", "about", "consult", "works", "reviews", "services", "process", "guarantees", "cities", "cta", "contacts", "footer", "cookie"):
+        v = data.get(k)
+        if not isinstance(v, dict):
+            continue
+        for field, value in v.items():
+            if field in ("items", "lines", "buttons", "socials", "features", "extra_urls"):
+                continue
+            if not isinstance(value, str) or not value:
+                continue
+            key = k + "." + field
+            esc = re.escape(value)
+            html = re.sub(r'(<title>)[^<]*(</title>)', r'\1' + value + r'\2', html, count=1) if key == "seo.title" else html
+    return html
+  
+ADMIN_LOGIN_HTML = open(os.path.join(ROOT, "admin_login.html")).read() if os.path.exists(os.path.join(ROOT, "admin_login.html")) else "<html><body>Login page not found</body></html>"
+ADMIN_HTML = open(os.path.join(ROOT, "admin.html")).read() if os.path.exists(os.path.join(ROOT, "admin.html")) else "<html><body>Admin page not found</body></html>"
 
 class Handler(BaseHTTPRequestHandler):
 
@@ -2080,75 +2186,124 @@ class Handler(BaseHTTPRequestHandler):
 
         self.end_headers()
 
-    def do_GET(self):
-
+     def do_GET(self):
         path = self.path.split("?")[0]
-
+        # --- АДМИНКА ---
+        if path == "/admin/login":
+            err = ""
+            self._send(200, ADMIN_LOGIN_HTML.replace("__ERROR__", err), "text/html; charset=utf-8")
+            return
+        if path == "/admin/logout":
+            tok = self._token()
+            _drop_session(tok)
+            self.send_response(302)
+            self.send_header("Location", "/admin/login")
+            self.send_header("Set-Cookie", "admin_session=; Path=/; Max-Age=0; HttpOnly")
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+            return
+        if path == "/admin/api/data":
+            if not _check_session(self._token()):
+                self._send(401, '{"error":"no auth"}', "application/json")
+                return
+            self._send(200, json.dumps(_sb_read(), ensure_ascii=False), "application/json; charset=utf-8")
+            return
+        if path == "/admin":
+            if not _check_session(self._token()):
+                self.send_response(302)
+                self.send_header("Location", "/admin/login")
+                self.send_header("Content-Length", "0")
+                self.end_headers()
+                return
+            self._send(200, ADMIN_HTML, "text/html; charset=utf-8")
+            return
+        # --- САЙТ ---
         if path in ("/", "/index.html"):
-
-            self._send(200, PAGE, "text/html; charset=utf-8", "no-cache")
-
+            data = _sb_read()
+            html = PAGE
+            if data:
+                try:
+                    html = _apply_cms(PAGE, data)
+                except Exception as e:
+                    print("[cms]", e, flush=True)
+            self._send(200, html, "text/html; charset=utf-8", "no-cache")
         elif path == "/robots.txt":
-
             self._send(200, ROBOTS, "text/plain; charset=utf-8", "public, max-age=86400")
-
         elif path == "/sitemap.xml":
-
             self._send(200, SITEMAP, "application/xml; charset=utf-8", "public, max-age=3600")
-
         elif path == "/favicon.ico":
-
             data = get_favicon()
-
             if not data:
-
                 self._redirect(FAVICON_URL)
-
             elif _icons_cache["ico"]:
-
                 self._send(200, _icons_cache["ico"], "image/x-icon", "public, max-age=86400", gzip_ok=False)
-
             else:
-
                 self._send(200, data, "image/x-icon", "public, max-age=86400", gzip_ok=False)
-
         elif path == "/favicon-16x16.png":
-
             if _icons_cache["png16"]:
-
                 self._send(200, _icons_cache["png16"], "image/png", "public, max-age=86400", gzip_ok=False)
-
             else:
-
                 self._redirect(FAVICON_URL)
-
         elif path == "/favicon-32x32.png":
-
             if _icons_cache["png32"]:
-
                 self._send(200, _icons_cache["png32"], "image/png", "public, max-age=86400", gzip_ok=False)
-
             else:
-
                 self._redirect(FAVICON_URL)
-
         elif path == "/apple-touch-icon.png":
-
             if _icons_cache["png180"]:
-
                 self._send(200, _icons_cache["png180"], "image/png", "public, max-age=86400", gzip_ok=False)
-
             else:
-
                 self._redirect(FAVICON_URL)
-
         elif path == "/manifest.webmanifest":
-
             self._send(200, MANIFEST, "application/manifest+json; charset=utf-8", "public, max-age=3600")
-
         else:
-
             self._send(404, PAGE_404, "text/html; charset=utf-8", "no-cache")
+
+    def do_POST(self):
+        path = self.path.split("?")[0]
+        if path == "/admin/login":
+            n = int(self.headers.get("Content-Length", "0") or 0)
+            body = self.rfile.read(n).decode("utf-8", "ignore") if n else ""
+            p = parse_qs(body)
+            login = (p.get("login") or [""])[0].strip()
+            pw = (p.get("password") or [""])[0]
+            if login == ADMIN_LOGIN_ENV and pw == ADMIN_PASSWORD_ENV:
+                tok = _new_session()
+                self.send_response(302)
+                self.send_header("Location", "/admin")
+                self.send_header("Set-Cookie", "admin_session={}; Path=/; Max-Age={}; HttpOnly; SameSite=Lax".format(tok, SESSION_TTL))
+                self.send_header("Content-Length", "0")
+                self.end_headers()
+                return
+            self._send(200, ADMIN_LOGIN_HTML.replace("__ERROR__", '<div class="err">Неверный логин или пароль</div>'), "text/html; charset=utf-8")
+            return
+        if path == "/admin/api/save":
+            if not _check_session(self._token()):
+                self._send(401, '{"error":"no auth"}', "application/json")
+                return
+            n = int(self.headers.get("Content-Length", "0") or 0)
+            body = self.rfile.read(n).decode("utf-8") if n else "{}"
+            try:
+                obj = json.loads(body)
+            except Exception:
+                self._send(400, '{"error":"bad json"}', "application/json")
+                return
+            ok = _sb_save(obj)
+            self._send(200, json.dumps({"ok": ok}), "application/json; charset=utf-8")
+            return
+        self._send(404, "not found", "text/plain")
+
+    def _token(self):
+        raw = self.headers.get("Cookie", "")
+        if not raw:
+            return None
+        try:
+            c = SimpleCookie()
+            c.load(raw)
+            m = c.get("admin_session")
+            return m.value if m else None
+        except Exception:
+            return None
 
     def log_message(self, *args):
 
