@@ -52,20 +52,16 @@ DOMAIN = os.environ.get("DOMAIN", "https://кухниостровский.рф")
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
 SUPABASE_URL = (os.environ.get("SUPABASE_URL") or "https://hliafkrpvmntpctmqwfu.supabase.co").rstrip("/")
-SUPABASE_ANON = os.environ.get("SUPABASE_ANON_KEY") or (
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhsaWFma3Jwdm1udHBjdG1xd2Z1Iiwicm9sZSI6ImFub24i"
-    "LCJpYXQiOjE3OTEyMDQ1NzYsImV4cCI6MjEwNjc4MDU3Nn0.yi57-Ty1iIfhnEh80_zvifhX1W_JX2qCl7QrARuJ2ns")
-SUPABASE_SERVICE = os.environ.get("SUPABASE_SERVICE_KEY") or (
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhsaWFma3Jwdm1udHBjdG1xd2Z1Iiwicm9sZSI6InNlcnZpY2Vfcm9s"
-    "ZSIsImlhdCI6MTc5MTIwNDU3NiwiZXhwIjoyMTA2NzgwNTc2fQ.Yr4z9vx6kF9ZINNNUjUn43GYi-A2BmBfg8uyrOtmDWo")
+SUPABASE_ANON = os.environ.get("SUPABASE_ANON_KEY", "").strip()
+SUPABASE_SERVICE = os.environ.get("SUPABASE_SERVICE_KEY", "").strip()
 BUCKET = os.environ.get("SUPABASE_BUCKET", "site-images")
 DATA_TABLE = os.environ.get("SUPABASE_TABLE", "site_content")
 EMPLOYEES_FILE = "employees.json"
 TWOFA_FILE = "admin_2fa.json"
 EMPLOYEE_ROLES = {"leader":"Руководитель","manager":"Менеджер","designer":"Дизайнер"}
 
-ADMIN_LOGIN_ENV = os.environ.get("ADMIN_LOGIN", "кухниост")
-ADMIN_PASSWORD_ENV = os.environ.get("ADMIN_PASSWORD", "романкух")
+ADMIN_LOGIN_ENV = os.environ.get("ADMIN_LOGIN", "").strip()
+ADMIN_PASSWORD_ENV = os.environ.get("ADMIN_PASSWORD", "").strip()
 
 YANDEX_API_KEY = os.environ.get("YANDEX_API_KEY", "")
 FOLDER_ID = os.environ.get("FOLDER_ID", "")
@@ -457,7 +453,6 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
       {'slug':'rostov-na-donu','name':'Ростов-на-Дону','title':'Кухни на заказ в Ростове-на-Дону — Кухни Островский','description':'Кухни и корпусная мебель на заказ в Ростове-на-Дону по индивидуальным размерам.','keywords':'кухни на заказ Ростов-на-Дону, кухни Ростов, мебель на заказ Ростов'},
       {'slug':'bataysk','name':'Батайск','title':'Кухни на заказ в Батайске — Кухни Островский','description':'Кухни на заказ в Батайске по индивидуальным размерам: проект, материалы, изготовление и монтаж.','keywords':'кухни на заказ Батайск, кухни Батайск, мебель на заказ Батайск'},
       {'slug':'azov','name':'Азов','title':'Кухни на заказ в Азове — Кухни Островский','description':'Кухни на заказ в Азове по индивидуальным размерам: проектирование, изготовление и монтаж.','keywords':'кухни на заказ Азов, кухни Азов, мебель на заказ Азов'}]},
-  'site_tools': {'catalog_title':'Каталог материалов','configurator_title':'Конфигуратор кухни','configurator_enabled':True}
 }
 
 PAGE = r"""<!DOCTYPE html>
@@ -1255,7 +1250,16 @@ html.no-anim .spark{display:none}
 .lead-person-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:28px}.site-lead-form label span{font-size:9px;letter-spacing:.16em;color:#9c917f}.site-lead-form input,.site-lead-form textarea{border-radius:0;border-width:0 0 1px 0;border-color:rgba(236,207,160,.18)!important;background:transparent!important;padding:13px 2px;box-shadow:none!important;transform:none!important}.site-lead-form input:focus,.site-lead-form textarea:focus{border-color:rgba(236,207,160,.58)!important;background:transparent!important;box-shadow:none!important}.site-lead-form textarea{min-height:76px;resize:vertical}.lead-message{margin-top:20px}.lead-photo{margin-top:20px;padding:14px 0;border-top:1px solid rgba(236,207,160,.11);border-bottom:1px solid rgba(236,207,160,.11)}.lead-photo input{border:0!important;padding:8px 0 2px;font-size:12px}.lead-photo em{font-style:normal;color:#6f675d;font-weight:400;letter-spacing:0}.lead-photo small{display:block;color:#6f675d;font:11px/1.4 var(--sans);margin-top:4px}.lead-submit{margin-top:24px;border-radius:2px;min-height:50px}.lead-note{text-align:left;margin-top:11px}.lead-result{text-align:left}
 @media(max-width:800px){.lead-shell{grid-template-columns:1fr;gap:34px;padding:0}.lead-copy{padding:0}.lead-copy h2{max-width:620px}.lead-copy p{max-width:560px}.lead-person-row{grid-template-columns:1fr}}
 @media(max-width:560px){.choice-grid{gap:7px}.choice{min-height:42px;padding:10px 13px}.lead-copy h2{font-size:clamp(39px,13vw,56px)}.lead-step-next{margin-top:23px}.lead-person-row{gap:6px}.lead-panel{padding-top:62px!important;padding-bottom:62px!important}}
-@media (hover:none),(pointer:coarse){.panel .bg,.orb,.grain{animation:none!important}.panel .bg{background-attachment:scroll!important}.svc:hover,.step:hover,.guar:hover,.city:hover,.rev-card:hover,.about-card:hover,.call-block:hover,.stat:hover{transform:none!important}.choice:hover{transform:none}}
+@media (hover:none),(pointer:coarse){
+  .panel .bg{background-attachment:scroll!important}
+  .svc:hover,.step:hover,.guar:hover,.city:hover,.rev-card:hover,.about-card:hover,.call-block:hover,.stat:hover{transform:none!important}
+  .choice:hover{transform:none}
+  .choice.is-selected{animation:choiceSettle .45s cubic-bezier(.16,1,.3,1)}
+  .lead-step,.lead-person-row,.lead-message,.lead-photo,.lead-submit{animation:mobileRise .65s cubic-bezier(.16,1,.3,1) both}
+  .lead-step-next{animation-delay:.06s}.lead-person-row{animation-delay:.1s}.lead-message{animation-delay:.14s}.lead-photo{animation-delay:.18s}.lead-submit{animation-delay:.22s}
+}
+@keyframes mobileRise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes choiceSettle{0%{transform:translateY(0) scale(.98)}65%{transform:translateY(-1px) scale(1.02)}100%{transform:translateY(-1px) scale(1)}}
 @media (prefers-reduced-motion:reduce){html,html *{scroll-behavior:auto!important}.js .reveal{opacity:1!important;transform:none!important;filter:none!important}.panel .bg,.orb,.grain{animation:none!important}.choice,.btn{transition:none!important}}
 @media(max-width:800px){.grain{opacity:.14}.panel{contain:paint}.panel--hero,.stats,.about,.services,.process,.guarantees,.cities,.consult,.lead-panel,.works,.reviews{content-visibility:auto;contain-intrinsic-size:720px}}
 /* ====== компактный разделитель и мягкие стыки секций ====== */
@@ -1296,8 +1300,13 @@ html.no-anim .spark{display:none}
 .btn-row{gap:14px}
 @media(max-width:520px){.btn{font-size:10.5px;letter-spacing:.06em;padding:13px 18px}}
 
-/* Форма заявки — часть дизайна, а не отдельный тяжёлый блок */
-.lead-panel{background:transparent!important}.lead-panel .lead-bg{opacity:.07!important;filter:none!important}.lead-shell{border:1px solid rgba(236,207,160,.12);background:linear-gradient(135deg,rgba(255,255,255,.025),rgba(255,255,255,.008));box-shadow:0 30px 90px -60px rgba(0,0,0,.9);border-radius:28px;padding:clamp(26px,4vw,52px)}.site-lead-form input,.site-lead-form textarea{background:rgba(255,255,255,.025)!important;border-color:rgba(236,207,160,.12)!important}.site-lead-form input:focus,.site-lead-form textarea:focus{background:rgba(255,255,255,.04)!important;border-color:rgba(236,207,160,.34)!important;box-shadow:0 0 0 3px rgba(236,207,160,.04)!important}
+/* Форма заявки — открытая редакционная композиция, без «карточного кирпича». */
+.lead-panel{background:transparent!important}.lead-panel .lead-bg{opacity:.045!important;filter:none!important}
+.lead-shell{position:relative;border:0!important;background:transparent!important;box-shadow:none!important;border-radius:0!important;padding:clamp(20px,3vw,42px) 0!important}
+.lead-shell::after{content:"";position:absolute;left:calc(28% + 8px);top:10%;bottom:10%;width:1px;background:linear-gradient(180deg,transparent,rgba(236,207,160,.16) 18%,rgba(236,207,160,.08) 82%,transparent);pointer-events:none}
+.site-lead-form{position:relative}.site-lead-form input,.site-lead-form textarea{background:rgba(255,255,255,.018)!important;border-color:rgba(236,207,160,.12)!important}.site-lead-form input:focus,.site-lead-form textarea:focus{background:rgba(255,255,255,.035)!important;border-color:rgba(236,207,160,.38)!important;box-shadow:0 0 0 3px rgba(236,207,160,.035)!important}
+.choice{will-change:transform}.choice.is-selected{transform:translateY(-1px)}
+@media(max-width:800px){.lead-shell::after{display:none}.lead-shell{padding:0!important}.lead-copy{padding-bottom:8px}}
 </style>
 <style id="customCss">{{{design.custom_css}}}</style>
 {{#if seo.metrika_id}}<script>(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js','ym');ym({{seo.metrika_id}},'init',{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});</script><noscript><div><img src="https://mc.yandex.ru/watch/{{seo.metrika_id}}" style="position:absolute;left:-9999px" alt=""></div></noscript>{{/if}}
@@ -4098,7 +4107,7 @@ mark.hit{background:rgba(212,175,106,.25);color:#fff;border-radius:3px;padding:0
 .lead-card,.audit-row{border:1px solid rgba(236,207,160,.12);background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.018));border-radius:15px;padding:15px;margin-bottom:10px;transition:.25s}
 .lead-card.unread{border-color:rgba(236,207,160,.38);box-shadow:0 0 0 1px rgba(236,207,160,.04) inset}
 .lead-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.lead-name{font-weight:700;color:#fff}.lead-date{font-size:11px;color:#756d61}
-.lead-phone{display:inline-flex;margin-top:8px;color:#ecd09c;font-weight:700;text-decoration:none}.lead-msg{margin-top:10px;color:#c7bdaf;font-size:13px;white-space:pre-wrap}.lead-actions{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap}
+.lead-phone{display:inline-flex;margin-top:8px;color:#ecd09c;font-weight:700;text-decoration:none}.lead-msg{margin-top:10px;color:#c7bdaf;font-size:13px;white-space:pre-wrap}.lead-actions{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap}.lead-manage{display:grid;grid-template-columns:180px minmax(180px,1fr);gap:8px;margin-top:12px}.lead-manage select,.lead-manage input{min-height:38px;border:1px solid rgba(236,207,160,.12);border-radius:9px;background:#111216;color:#e8dfd1;padding:8px 10px}.lead-photo-link{margin-top:10px;font-size:12px}.lead-photo-link a{color:#ecd09c;text-decoration:none}@media(max-width:620px){.lead-manage{grid-template-columns:1fr}}
 .audit-row{display:grid;grid-template-columns:145px 180px 1fr;gap:12px;color:#c7bdaf;font-size:12px}.audit-row b{color:#ecd09c}
 @media(max-width:700px){.dashboard{grid-template-columns:1fr 1fr}.audit-row{grid-template-columns:1fr}.lead-top{display:block}}
 @media(max-width:480px){.dashboard{grid-template-columns:1fr}}
@@ -4155,7 +4164,17 @@ function setPath(o,p,v){var a=p.split('.'),c=o;for(var i=0;i<a.length-1;i++){var
 function toast(m,bad){var t=q('#toast');t.textContent=m;t.classList.toggle('err',!!bad);t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show')},3000)}
 function setStatus(txt,cls){var el=q('#status');el.className='status '+(cls||'ok');el.textContent=txt}
 function setDirty(v){dirty=v;document.title=(v?'* ':'')+'Админка — Кухни Островский';var sb=q('#saveBtn');if(sb)sb.classList.toggle('pulse',v);updateBar();var act=q('nav.side a.active');if(act)act.classList.toggle('changed',tabChanged(SCHEMA.filter(function(t){return t.id===TAB})[0]||{}))}
-function api(url,opts){return fetch(url,Object.assign({credentials:'same-origin'},opts||{})).then(function(r){if(r.status===401){location.href='/admin/login';throw new Error('Нужно войти')}return r.json()})}
+function api(url,opts){
+  opts=Object.assign({credentials:'same-origin',cache:'no-store'},opts||{});
+  var ctl=typeof AbortController!=='undefined'?new AbortController():null;
+  var timer=ctl?setTimeout(function(){try{ctl.abort()}catch(e){}},10000):null;
+  if(ctl)opts.signal=ctl.signal;
+  return fetch(url,opts).then(function(r){
+    if(timer)clearTimeout(timer);
+    if(r.status===401){location.href='/admin/login';throw new Error('Нужно войти')}
+    return r.text().then(function(raw){var j={};try{j=JSON.parse(raw||'{}')}catch(e){throw new Error('Сервер вернул некорректный ответ ('+r.status+')')};if(!r.ok)throw new Error(j.error||j.message||('HTTP '+r.status));return j});
+  }).catch(function(e){if(timer)clearTimeout(timer);if(e&&e.name==='AbortError')throw new Error('Сервер админки не ответил за 10 секунд');throw e});
+}
 function normColor(v){v=String(v||'').trim();return /^#[0-9a-f]{6}$/i.test(v)?v:'#000000'}
 
 function stagger(html){
@@ -4213,7 +4232,12 @@ function renderLeadList(){
   var needle=String((q('#leadSearch')||{}).value||'').toLowerCase().trim(),filter=(q('#leadFilter')||{}).value||'all';
   var items=LEADS_CACHE.filter(function(it){if(filter==='new'&&it.read)return false;if(filter==='read'&&!it.read)return false;if(!needle)return true;return [it.name,it.phone,it.message,it.at].join(' ').toLowerCase().indexOf(needle)>=0;});
   if(!items.length){out.innerHTML='<div class="info empty-leads"><strong>'+ (LEADS_CACHE.length?'Ничего не найдено':'Пока заявок нет') +'</strong><span>'+ (LEADS_CACHE.length?'Измените поиск или фильтр.':'Когда посетитель заполнит форму, обращение появится здесь.') +'</span></div>';return;}
-  out.innerHTML=items.map(function(it){var cls=it.read?'':' unread',dt=esc(String(it.at||'').replace('T',' ')),name=esc(it.name||'Без имени'),phone=esc(it.phone||''),msg=esc(it.message||'Без комментария');return '<article class="lead-card'+cls+'"><div class="lead-top"><div><div class="lead-name">'+name+'</div><a class="lead-phone" href="tel:'+esc(it.phone||'')+'">'+phone+'</a></div><span class="lead-date">'+dt+'</span></div><div class="lead-msg">'+msg+'</div>+(it.photo_url?'<div><a href="'+esc(it.photo_url)+'" target="_blank">Фото помещения</a></div>':'')+<div class="lead-actions"><select data-lstatus="'+esc(it.id)+'"><option value="new">Новая</option><option value="in_work">В работе</option><option value="measurement">Замер</option><option value="calculation">Расчёт</option><option value="contract">Договор</option><option value="done">Завершена</option></select><input data-lresp="'+esc(it.id)+'" value="'+esc(it.responsible||'')+'" placeholder="Ответственный"><div class="lead-actions">'+(it.read?'':'<button class="btn mini" data-lead-read="'+esc(it.id)+'">Прочитано</button>')+'<a class="btn mini btn-gold" href="tel:'+esc(it.phone||'')+'">Позвонить</a><button class="btn mini" data-copy-phone="'+esc(it.phone||'')+'">Копировать номер</button></div></article>';}).join('');
+  out.innerHTML=items.map(function(it){
+    var cls=it.read?'':' unread',dt=esc(String(it.at||'').replace('T',' ')),name=esc(it.name||'Без имени'),phone=esc(it.phone||''),msg=esc(it.message||'Без комментария');
+    var photo=it.photo_url?'<div class="lead-photo-link"><a href="'+esc(it.photo_url)+'" target="_blank" rel="noopener">Фото помещения ↗</a></div>':'';
+    var actions='<div class="lead-actions">'+(it.read?'':'<button class="btn mini" data-lead-read="'+esc(it.id)+'">Прочитано</button>')+'<a class="btn mini btn-gold" href="tel:'+esc(phone)+'">Позвонить</a><button class="btn mini" data-copy-phone="'+esc(phone)+'">Копировать номер</button></div>';
+    return '<article class="lead-card'+cls+'"><div class="lead-top"><div><div class="lead-name">'+name+'</div><a class="lead-phone" href="tel:'+esc(phone)+'">'+phone+'</a></div><span class="lead-date">'+dt+'</span></div><div class="lead-msg">'+msg+'</div>'+photo+'<div class="lead-manage"><select data-lstatus="'+esc(it.id)+'"><option value="new">Новая</option><option value="in_work">В работе</option><option value="measurement">Замер</option><option value="calculation">Расчёт</option><option value="contract">Договор</option><option value="done">Завершена</option></select><input data-lresp="'+esc(it.id)+'" value="'+esc(it.responsible||'')+'" placeholder="Ответственный"></div>'+actions+'</article>';
+  }).join('');
   qa('[data-lstatus]').forEach(function(x){x.value=x.closest('.lead-card')?((LEADS_CACHE.filter(function(a){return a.id===x.dataset.lstatus})[0]||{}).status||'new'):'new';x.onchange=function(){api('/admin/api/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:x.dataset.lstatus,status:x.value})})}});qa('[data-lresp]').forEach(function(x){x.onchange=function(){api('/admin/api/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:x.dataset.lresp,responsible:x.value})})}});qa('[data-lead-read]').forEach(function(b){b.onclick=function(){api('/admin/api/leads/read',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:b.dataset.leadRead})}).then(loadLeads)}});
   qa('[data-copy-phone]').forEach(function(b){b.onclick=function(){var v=b.dataset.copyPhone||'';if(navigator.clipboard)navigator.clipboard.writeText(v).then(function(){toast('Номер скопирован')});else{var ta=document.createElement('textarea');ta.value=v;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();toast('Номер скопирован')}}});
 }
@@ -5235,7 +5259,7 @@ def main():
     print("BOOT: Storage bucket = {}".format(BUCKET), flush=True)
     print("BOOT: AI = yandex:{} gigachat:{}".format(bool(YANDEX_API_KEY and FOLDER_ID), bool(GIGACHAT_AUTH_KEY)), flush=True)
     if not os.environ.get("SUPABASE_SERVICE_KEY"):
-        print("BOOT: ВНИМАНИЕ! SUPABASE_SERVICE_KEY взята из кода — задайте её в переменных хостинга!", flush=True)
+        print("BOOT: ВНИМАНИЕ! SUPABASE_SERVICE_KEY не задана — задайте её в переменных хостинга!", flush=True)
     p = os.path.join(ROOT, "page.html")
     if os.path.exists(p):
         print("BOOT: page.html найден ({} байт)".format(os.path.getsize(p)), flush=True)
