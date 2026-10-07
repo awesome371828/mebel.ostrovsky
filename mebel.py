@@ -142,7 +142,7 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
  'lead_form': {'enabled': True, 'title': 'Оставить заявку', 'subtitle': 'Оставьте номер — свяжемся и обсудим задачу.', 'button': 'Отправить заявку',
                'kicker': 'Связаться', 'note': 'Контакт нужен только для связи по заявке.'},
  'animations': {'enabled': True, 'parallax': False, 'hover3d': False, 'sparks': False, 'scroll_reveal': True,
-                'text_reveal': True, 'loader': True, 'safe_mode': True, 'smooth_scroll': True, 'intensity': 'calm'},
+                'text_reveal': False, 'loader': False, 'safe_mode': True, 'smooth_scroll': True, 'intensity': 'calm'},
  'sections': {'stats': True, 'about': True, 'consult': True, 'lead_form': True, 'works': True, 'reviews': True,
               'services': True, 'process': True, 'guarantees': True, 'cities': True, 'cta': True,
               'contacts': True, 'footer': True, 'cookie': True},
@@ -170,7 +170,7 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
                    {'label': 'Контакты', 'href': '#contacts'}],
          'cta_label': 'Позвонить специалисту',
          'cta_href': 'tel:+79508465397'},
- 'hero': {'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w01.jpg',
+ 'hero': {'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w01.jpg', 'rotation_enabled': True, 'rotation_interval': 6500, 'rotation_images': ['https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w01.jpg','https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w04.jpg','https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w06.jpg'],
           'sub': 'Проектируем и изготавливаем кухни, шкафы, гардеробные и другую корпусную мебель в Ростове, Батайске и Азове — по '
                  'вашему проекту, от замера до монтажа.',
           'btn1': 'Получить консультацию',
@@ -1171,6 +1171,19 @@ img,svg,video,iframe{max-width:100%}
 .c-action.c-max:hover{background:rgba(177,88,252,.14);transform:translateY(-1px)}
 .cookie-bar .btn{padding:12px 26px;min-height:42px}
 
+.section-rail{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:150;display:flex;flex-direction:column;gap:10px;padding:10px 8px;border:1px solid rgba(236,207,160,.12);background:rgba(12,10,7,.45);border-radius:999px}.section-rail a{width:7px;height:7px;border-radius:50%;background:#756852;border:1px solid rgba(236,207,160,.35);transition:transform .25s,background .25s}.section-rail a:hover{transform:scale(1.5);background:#ecd09c}.section-rail a.active{background:#ecd09c;box-shadow:0 0 10px rgba(236,207,160,.35)}@media(max-width:900px){.section-rail{display:none}}
+@media(prefers-reduced-motion:reduce){.section-rail a,.project-card,.project-image img{transition:none!important}.panel--hero .bg::before{animation:none!important}}
+/* ====== Каталог проектов и заявка: лёгкий responsive UI ====== */
+.site-breadcrumbs{padding:0 0 12px;background:#0c0a07}.site-breadcrumbs .wrap{display:flex;gap:8px;color:#827767;font-size:11px}.site-breadcrumbs a:hover{color:#ecd09c}.site-breadcrumbs span:nth-child(2){color:#c69f5a}
+
+.project-catalog{position:relative;padding:110px 0;background:linear-gradient(180deg,#0c0a07,#110e0a 55%,#0c0a07);overflow:hidden}
+.catalog-head{display:flex;justify-content:space-between;gap:24px;align-items:end;margin-bottom:28px}.catalog-head h2{font-size:clamp(32px,4vw,52px);margin:8px 0}.catalog-head p{color:var(--muted);max-width:620px}
+.catalog-filters{display:grid;grid-template-columns:1.7fr repeat(5,minmax(130px,1fr));gap:9px;margin-bottom:22px}.catalog-search{display:flex;align-items:center;gap:9px;border:1px solid rgba(236,207,160,.16);background:rgba(255,255,255,.035);border-radius:12px;padding:0 12px}.catalog-search span{color:var(--gold-soft);font-size:18px}.catalog-search input,.catalog-filters select{width:100%;height:44px;border:0;outline:0;background:transparent;color:#eee6d9;font:500 12px Manrope,system-ui}.catalog-filters select{border:1px solid rgba(236,207,160,.16);border-radius:12px;padding:0 11px;background:#12100c}.catalog-reset{height:44px;border:1px solid rgba(236,207,160,.22);border-radius:12px;background:transparent;color:#d8c7ab;font-weight:700;cursor:pointer}.catalog-reset:hover{background:rgba(236,207,160,.07)}
+.project-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.project-card{border:1px solid rgba(236,207,160,.12);background:rgba(255,255,255,.025);border-radius:18px;overflow:hidden;transition:transform .35s ease,border-color .35s ease,opacity .35s ease}.project-card:hover{transform:translateY(-5px);border-color:rgba(236,207,160,.35)}.project-image{position:relative;width:100%;aspect-ratio:1.25;border:0;padding:0;background:#0d0b08;overflow:hidden}.project-image img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.16,1,.3,1)}.project-image span{position:absolute;left:12px;bottom:12px;padding:7px 10px;border-radius:999px;background:rgba(10,8,6,.78);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:11px;opacity:0;transform:translateY(6px);transition:.3s}.project-card:hover .project-image img{transform:scale(1.04)}.project-card:hover .project-image span{opacity:1;transform:none}.project-card-body{padding:13px 14px 15px}.project-card-body h3{font-size:20px;margin:8px 0 4px}.project-card-body p{color:#8f8577;font-size:12px;min-height:18px}.project-tags{display:flex;gap:6px;flex-wrap:wrap}.project-tags i{font-style:normal;color:#cbb996;border:1px solid rgba(236,207,160,.13);border-radius:999px;padding:4px 7px;font-size:10px}.catalog-empty{padding:50px;text-align:center;color:#9d9282;border:1px dashed rgba(236,207,160,.18);border-radius:16px}.project-detail{position:fixed;inset:0;z-index:5000;background:rgba(6,5,3,.82);display:none;align-items:center;justify-content:center;padding:20px}.project-detail.open{display:flex}.project-detail-card{width:min(1040px,96vw);max-height:90vh;overflow:auto;background:#13100c;border:1px solid rgba(236,207,160,.2);border-radius:20px;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);box-shadow:0 30px 90px -35px #000}.project-detail-card img{width:100%;height:100%;min-height:360px;object-fit:cover}.project-detail-info{padding:26px}.project-detail-info h3{font-size:34px;margin:8px 0 14px}.project-detail-info p,.project-detail-info li{color:#bcb1a0;line-height:1.65;font-size:13px}.project-detail-info ul{list-style:disc;padding-left:18px;margin:12px 0}.project-detail-close{float:right;border:1px solid rgba(255,255,255,.12);background:transparent;color:#fff;border-radius:10px;width:38px;height:38px}
+.lead-panel .lead-bg{background-image:linear-gradient(90deg,rgba(8,7,5,.94),rgba(8,7,5,.58),rgba(8,7,5,.8)),url('{{{works.items.3.url}}}')!important;background-position:center;background-size:cover}.lead-shell{display:grid;grid-template-columns:minmax(270px,.72fr) minmax(0,1.28fr);gap:44px;align-items:center}.lead-content{max-width:1040px;margin:0 auto}.lead-copy{text-align:left}.lead-copy .k{font-size:clamp(40px,5vw,68px);margin:10px 0 16px}.lead-copy p{color:#b9ad9a;max-width:420px;line-height:1.7}.lead-progress{display:flex;align-items:center;gap:8px;margin-bottom:20px}.lead-progress span{width:26px;height:26px;border:1px solid rgba(236,207,160,.2);border-radius:50%;display:grid;place-items:center;color:#817666;font-size:11px}.lead-progress span.active{background:#d4af6a;color:#1a1309;border-color:#d4af6a}.lead-progress i{height:1px;flex:1;background:rgba(236,207,160,.12)}.lead-step{display:flex;gap:11px;align-items:center;margin:0 0 13px}.lead-step-no{font-size:10px;color:#d8b875;letter-spacing:1px}.lead-step b{display:block;font-size:14px}.lead-step small{display:block;color:#766d61;font-size:11px;margin-top:2px}.choice-block{margin-bottom:14px}.choice-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#9f9485;margin-bottom:7px}.choice-grid.compact{display:flex;gap:7px;flex-wrap:wrap}.choice-grid.compact .choice{min-height:39px;padding:8px 13px;border-radius:999px;border:1px solid rgba(236,207,160,.16);background:rgba(255,255,255,.025);color:#cfc4b2;font-size:12px}.choice-grid.compact .choice:hover,.choice-grid.compact .choice.is-selected{border-color:rgba(236,207,160,.55);background:rgba(236,207,160,.09);color:#fff}.lead-option-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:14px 0}.lead-option-grid label,.lead-person-row label,.lead-wide,.lead-file{display:grid;gap:6px}.lead-option-grid label>span,.lead-person-row label>span,.lead-wide>span,.lead-file>span{color:#a79a89;font-size:10px;letter-spacing:1.1px;text-transform:uppercase}.lead-option-grid select,.lead-option-grid input,.lead-person-row input,.lead-wide input,.lead-wide textarea,.lead-file{border:1px solid rgba(236,207,160,.13);background:rgba(8,7,5,.5);color:#f0e9dd;border-radius:10px;min-height:42px;padding:9px 11px;outline:0}.lead-option-grid select,.lead-option-grid input,.lead-person-row input,.lead-wide input,.lead-wide textarea{width:100%}.lead-wide textarea{min-height:76px;resize:vertical}.lead-person-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:13px 0}.lead-files{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}.lead-file{min-height:92px;align-content:start}.lead-file input{font-size:11px;color:#b9ad9a}.lead-file small{color:#70685e;font-size:9px}.lead-option-grid select:focus,.lead-option-grid input:focus,.lead-person-row input:focus,.lead-wide textarea:focus{border-color:rgba(236,207,160,.45);box-shadow:0 0 0 3px rgba(236,207,160,.05)}.lead-submit{width:100%;margin-top:8px}.lead-note{color:#6f6659;font-size:10px;margin-top:8px}.lead-result{min-height:18px;margin-top:9px;color:#e8d3aa;font-size:12px}.lead-hp{position:absolute;left:-9999px}.lead-spinner{display:none;width:14px;height:14px;border:2px solid rgba(20,16,8,.25);border-top-color:#17120b;border-radius:50%;animation:spin .7s linear infinite}.lead-submit.loading .lead-spinner{display:inline-block}.lead-submit.loading .lead-submit-text{opacity:.7}.lead-submit.loading{pointer-events:none}@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:980px){.catalog-filters{grid-template-columns:repeat(3,1fr)}.project-grid{grid-template-columns:repeat(2,1fr)}.lead-shell{grid-template-columns:1fr;gap:28px}.lead-copy{text-align:center}.lead-copy p{margin-left:auto;margin-right:auto}.lead-files{grid-template-columns:1fr 1fr}.project-detail-card{grid-template-columns:1fr}.project-detail-card img{max-height:45vh}}
+@media(max-width:620px){.catalog-filters{grid-template-columns:1fr 1fr}.catalog-search{grid-column:1/-1}.project-grid{grid-template-columns:1fr}.lead-option-grid,.lead-person-row,.lead-files{grid-template-columns:1fr}.lead-panel{padding-top:95px;padding-bottom:95px}.lead-copy .k{font-size:42px}.project-detail{padding:8px}.project-detail-info{padding:18px}.project-detail-info h3{font-size:28px}}
+
 /* ====== золотые разделители (везде) ====== */
 .gold-divider{position:relative;display:flex;align-items:center;justify-content:center;gap:16px;padding:26px 0}
 .gold-divider i{position:relative;overflow:hidden;display:inline-block;width:clamp(70px,13vw,150px);height:1px;
@@ -1337,6 +1350,7 @@ html.no-anim .spark{display:none}
   {{/each}}{{#if nav.cta_label}}<li class="menu-call"><a href="{{nav.cta_href}}"><svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.4 2.1L8.1 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.6 2z"/></svg>{{nav.cta_label}}</a></li>{{/if}}
 </ul>
 <div class="scrim" id="scrim"></div>
+<nav class="section-rail" aria-label="Навигация по разделам"><a href="#top" aria-label="Главная"></a><a href="#about" aria-label="Специалист"></a><a href="#works" aria-label="Работы"></a><a href="#project-catalog" aria-label="Каталог проектов"></a><a href="#reviews" aria-label="Отзывы"></a><a href="#services" aria-label="Услуги"></a><a href="#contacts" aria-label="Контакты"></a></nav>
 
 <section class="panel panel--hero" id="top"{{#if hero.watermark}} data-watermark="{{hero.watermark}}"{{/if}}>
   <div class="bg" style="background-image:url('{{{hero.bg}}}')"></div>
@@ -1347,6 +1361,7 @@ html.no-anim .spark{display:none}
     <div class="btn-row">
       {{#if hero.btn1}}<a href="{{hero.btn1_href}}" class="btn btn-solid">{{hero.btn1}}</a>{{/if}}
       {{#if hero.btn2}}<a href="{{hero.btn2_href}}" class="btn btn-line">{{hero.btn2}}</a>{{/if}}
+      <a href="#lead" class="btn btn-line hero-calc">Рассчитать проект</a>
     </div>
   </div></div>
   {{#if hero.scroll_cue}}<div class="scroll-cue">{{hero.scroll_cue}}<div class="line"></div></div>{{/if}}
@@ -1392,6 +1407,7 @@ html.no-anim .spark{display:none}
   </div></div>
 </section>{{/if}}
 
+<div class="site-breadcrumbs"><div class="wrap"><a href="#top">Главная</a><span>›</span><span>Кухни и мебель на заказ</span></div></div>
 <div class="gold-divider"><i></i><b></b><i></i></div>
 
 {{#if sections.consult}}<section class="panel panel--center panel--dark" id="consult">
@@ -1416,30 +1432,38 @@ html.no-anim .spark{display:none}
         <div class="lead-accent"><i></i><b></b><i></i></div>
       </div>
       <form class="site-lead-form" id="siteLeadForm" autocomplete="on" novalidate>
-        <div class="lead-step"><span class="lead-step-no">01</span><div><b>Где нужна мебель?</b><small>Выберите город</small></div></div>
-        <div class="choice-grid choice-grid-city" role="group" aria-label="Город">
-          <button type="button" class="choice" data-choice-name="city" data-choice-value="Ростов-на-Дону">Ростов-на-Дону</button>
-          <button type="button" class="choice" data-choice-name="city" data-choice-value="Батайск">Батайск</button>
-          <button type="button" class="choice" data-choice-name="city" data-choice-value="Азов">Азов</button>
+        <div class="lead-progress"><span class="active">1</span><i></i><span>2</span><i></i><span>3</span></div>
+        <div class="lead-step"><span class="lead-step-no">01</span><div><b>Что проектируем?</b><small>Основные параметры проекта</small></div></div>
+        <div class="choice-block"><div class="choice-label">Город</div><div class="choice-grid compact" role="group">
+          <button type="button" class="choice" data-choice-name="city" data-choice-value="Ростов-на-Дону">Ростов-на-Дону</button><button type="button" class="choice" data-choice-name="city" data-choice-value="Батайск">Батайск</button><button type="button" class="choice" data-choice-name="city" data-choice-value="Азов">Азов</button>
+        </div></div><input type="hidden" name="city" value="">
+        <div class="choice-block"><div class="choice-label">Тип мебели</div><div class="choice-grid compact" role="group">
+          <button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Кухня">Кухня</button><button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Шкаф">Шкаф</button><button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Гардеробная">Гардеробная</button><button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Прихожая">Прихожая</button><button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Гостиная">Гостиная</button>
+        </div></div><input type="hidden" name="furniture_type" value="">
+        <div class="lead-option-grid">
+          <label><span>Стиль</span><select name="style"><option value="">Не выбрано</option><option>Современный</option><option>Классический</option><option>Минимализм</option><option>Неоклассика</option></select></label>
+          <label><span>Цвет</span><select name="color"><option value="">Не выбрано</option><option>Светлый</option><option>Тёмный</option><option>Дерево</option><option>Комбинированный</option></select></label>
+          <label><span>Форма</span><select name="shape"><option value="">Не выбрано</option><option>Прямая</option><option>Угловая</option><option>П-образная</option><option>С островом</option></select></label>
+          <label><span>Количество секций</span><input name="sections_count" type="number" min="1" max="50" placeholder="Например, 6"></label>
+          <label><span>Расположение техники</span><select name="appliances"><option value="">Не выбрано</option><option>Встроенная</option><option>Комбинированная</option><option>Отдельностоящая</option></select></label>
+          <label><span>Фасад</span><select name="facade"><option value="">Не выбрано</option><option>Матовый</option><option>Глянцевый</option><option>Дерево</option><option>Стекло</option></select></label>
+          <label><span>Столешница</span><select name="countertop"><option value="">Не выбрано</option><option>Камень</option><option>Компакт</option><option>ЛДСП</option><option>Дерево</option></select></label>
+          <label><span>Ручки</span><select name="handle"><option value="">Не выбрано</option><option>Профиль</option><option>Накладные</option><option>Без ручек</option></select></label>
         </div>
-        <input type="hidden" name="city" value="">
-        <div class="lead-step lead-step-next"><span class="lead-step-no">02</span><div><b>Что проектируем?</b><small>Выберите тип мебели</small></div></div>
-        <div class="choice-grid choice-grid-type" role="group" aria-label="Тип мебели">
-          <button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Кухня">Кухня</button>
-          <button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Шкаф">Шкаф</button>
-          <button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Гардеробная">Гардеробная</button>
-          <button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Прихожая">Прихожая</button>
-          <button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Гостиная">Гостиная</button>
-        </div>
-        <input type="hidden" name="furniture_type" value="">
+        <label class="lead-wide"><span>Дополнительные элементы</span><input name="additional" maxlength="500" placeholder="Например: подсветка, пенал, витрина"></label>
+        <div class="lead-step lead-step-next"><span class="lead-step-no">02</span><div><b>Расскажите о помещении</b><small>Можно приложить несколько файлов</small></div></div>
         <div class="lead-person-row">
           <label><span>Имя</span><input name="name" maxlength="120" placeholder="Как к вам обращаться"></label>
           <label><span>Телефон *</span><input name="phone" type="tel" maxlength="80" required inputmode="tel" placeholder="+7 (___) ___-__-__"></label>
         </div>
-        <label class="lead-wide lead-message"><span>Пара слов о задаче</span><textarea name="message" maxlength="1000" placeholder="Например: нужна угловая кухня, хочу обсудить планировку"></textarea></label>
-        <label class="lead-photo"><span>Фото помещения <em>по желанию</em></span><input name="photo" type="file" accept="image/jpeg,image/png,image/gif,image/webp"><small>JPG, PNG или WebP · до 8 МБ</small></label>
-        <div class="lead-hp" aria-hidden="true"><input name="website" tabindex="-1" autocomplete="off"></div>
-        <button class="btn btn-solid lead-submit" type="submit"><span class="lead-submit-text">{{lead_form.button}}</span><span class="lead-spinner" aria-hidden="true"></span></button>
+        <label class="lead-wide lead-message"><span>Пара слов о задаче</span><textarea name="message" maxlength="1000" placeholder="Например: хочу обсудить планировку и варианты хранения"></textarea></label>
+        <div class="lead-files">
+          <label class="lead-file"><span>Фото помещения</span><input name="room_photos" type="file" accept="image/jpeg,image/png,image/webp" multiple><small>Можно выбрать несколько фото · до 8 МБ каждое</small></label>
+          <label class="lead-file"><span>План помещения</span><input name="room_plan" type="file" accept="image/jpeg,image/png,image/webp,application/pdf"><small>Необязательно</small></label>
+          <label class="lead-file"><span>Чертёж</span><input name="drawing" type="file" accept="image/jpeg,image/png,image/webp,application/pdf"><small>Необязательно</small></label>
+        </div>
+        <div class="lead-step lead-step-next"><span class="lead-step-no">03</span><div><b>Проверка</b><small>Перед отправкой проверьте выбранные параметры</small></div></div>
+        <div class="lead-hp" aria-hidden="true"><input name="website" tabindex="-1" autocomplete="off"></div>        <button class="btn btn-solid lead-submit" type="submit"><span class="lead-submit-text">{{lead_form.button}}</span><span class="lead-spinner" aria-hidden="true"></span></button>
         <p class="lead-note">{{lead_form.note}}</p>
         <div class="lead-result" id="siteLeadResult" role="status" aria-live="polite"></div>
       </form>
@@ -1471,6 +1495,37 @@ html.no-anim .spark{display:none}
     {{#if works.more_label}}<p class="section-note">{{works.more_text}} <a href="{{works.more_href}}" target="_blank" rel="noopener">{{works.more_label}}</a></p>{{/if}}
   </div></div>
 </section>{{/if}}
+
+{{#if sections.works}}<section class="project-catalog" id="project-catalog">
+  <div class="wrap">
+    <div class="catalog-head reveal">
+      <div><div class="kicker">Каталог проектов</div><h2>Кухни и мебель по проектам</h2><p>Выберите параметры — список обновится без перезагрузки страницы.</p></div>
+    </div>
+    <div class="catalog-filters reveal" id="projectFilters">
+      <label class="catalog-search"><span>⌕</span><input id="projectSearch" type="search" placeholder="Поиск по проектам…" autocomplete="off"></label>
+      <select id="projectType"><option value="">Тип мебели</option><option>Кухня</option><option>Шкаф</option><option>Гардеробная</option><option>Прихожая</option><option>Гостиная</option></select>
+      <select id="projectStyle"><option value="">Стиль</option><option>Современный</option><option>Классический</option><option>Минимализм</option><option>Неоклассика</option></select>
+      <select id="projectMaterial"><option value="">Материал</option><option>МДФ</option><option>ЛДСП</option><option>Шпон</option><option>Массив</option></select>
+      <select id="projectShape"><option value="">Форма</option><option>Прямая</option><option>Угловая</option><option>П-образная</option><option>С островом</option></select>
+      <select id="projectArea"><option value="">Площадь</option><option value="small">до 8 м²</option><option value="medium">8–15 м²</option><option value="large">15+ м²</option></select>
+      <select id="projectLayout"><option value="">Планировка</option><option>Линейная</option><option>Угловая</option><option>П-образная</option><option>С островом</option></select>
+      <select id="projectIsland"><option value="">Остров</option><option>Да</option><option>Нет</option></select>
+      <select id="projectAppliances"><option value="">Техника</option><option>Встроенная</option><option>Комбинированная</option><option>Отдельностоящая</option></select>
+      <select id="projectFacade"><option value="">Фасад</option><option>Матовый</option><option>Глянцевый</option><option>Дерево</option><option>Стекло</option></select>
+      <select id="projectCountertop"><option value="">Столешница</option><option>Камень</option><option>Компакт</option><option>ЛДСП</option><option>Дерево</option></select>
+      <button type="button" class="catalog-reset" id="projectReset">Сбросить</button>
+    </div>
+    <div class="project-grid" id="projectGrid">
+      {{#each works.items}}<article class="project-card reveal" data-url="{{this.url}}" data-alt="{{this.alt}}" data-city="{{this.city}}" data-type="{{this.type}}" data-style="{{this.style}}" data-material="{{this.material}}" data-shape="{{this.shape}}" data-area="{{this.area}}" data-layout="{{this.layout}}" data-island="{{this.island}}" data-appliances="{{this.appliances}}" data-facade="{{this.facade}}" data-countertop="{{this.countertop}}" data-handle="{{this.handle}}" data-additional="{{this.additional}}" data-video="{{this.video}}" data-description="{{this.description}}" data-features="{{this.features}}" data-materials="{{this.materials}}" data-hardware="{{this.hardware}}">
+        <button type="button" class="project-image" aria-label="Открыть проект"><img loading="lazy" decoding="async" src="{{this.url}}" alt="{{this.alt}}"><span>Подробнее</span></button>
+        <div class="project-card-body"><div class="project-tags"><i>{{this.type}}</i><i>{{this.city}}</i></div><h3>{{this.alt}}</h3><p>{{this.style}}</p></div>
+      </article>{{/each}}
+    </div>
+    <div class="catalog-empty" id="projectEmpty" hidden>По выбранным параметрам проектов пока нет.</div>
+  </div>
+</section>{{/if}}
+
+<div class="project-detail" id="projectDetail" aria-hidden="true"><div class="project-detail-card"><div><img class="project-detail-photo" src="" alt=""></div><div class="project-detail-info"><button type="button" class="project-detail-close" aria-label="Закрыть">×</button><div class="project-detail-meta"></div><h3 class="project-detail-title">Проект</h3><p class="project-detail-desc"></p><ul class="project-detail-list"></ul><div class="project-detail-video"></div></div></div></div>
 
 <div class="lightbox" id="lightbox">
   <button class="lb-close" id="lbClose" aria-label="Закрыть">×</button>
@@ -1841,17 +1896,23 @@ try{
 const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYear();
 })();
 </script>
+<script id="siteRailScript">
+(function(){var links=[...document.querySelectorAll('.section-rail a')];if(!links.length)return;var ids=links.map(function(a){return (a.getAttribute('href')||'').slice(1)});function mark(){var y=window.scrollY+window.innerHeight*.42,active=ids[0];ids.forEach(function(id){var e=document.getElementById(id);if(e&&e.offsetTop<=y)active=id});links.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+active)})}window.addEventListener('scroll',mark,{passive:true});mark()})();
+</script>
 <script id="siteLeadScript">
 (function(){
-  var form=document.getElementById('siteLeadForm');if(!form)return;
+  // Каталог проектов: поиск и фильтры без перезагрузки.
+(function(){var grid=document.getElementById('projectGrid');if(!grid)return;var cards=[].slice.call(grid.querySelectorAll('.project-card'));var ids=['projectSearch','projectType','projectStyle','projectMaterial','projectShape','projectArea','projectLayout','projectIsland','projectAppliances','projectFacade','projectCountertop'];function val(id){var e=document.getElementById(id);return e?String(e.value||'').toLowerCase():''}function run(){var q=val('projectSearch'),count=0;cards.forEach(function(card){var d=card.dataset||{};var hay=[d.alt,d.city,d.type,d.style,d.material,d.shape,d.area,d.layout,d.island,d.appliances,d.facade,d.countertop,d.handle,d.additional].join(' ').toLowerCase();var ok=(!q||hay.indexOf(q)>=0);[['projectType','type'],['projectStyle','style'],['projectMaterial','material'],['projectShape','shape'],['projectArea','area'],['projectLayout','layout'],['projectIsland','island'],['projectAppliances','appliances'],['projectFacade','facade'],['projectCountertop','countertop']].forEach(function(x){var f=val(x[0]);if(f&&String(d[x[1]]||'').toLowerCase().indexOf(f)<0)ok=false});card.hidden=!ok;if(ok)count++});var empty=document.getElementById('projectEmpty');if(empty)empty.hidden=!!count}ids.forEach(function(id){var e=document.getElementById(id);if(e)e.addEventListener('input',run)});var reset=document.getElementById('projectReset');if(reset)reset.addEventListener('click',function(){ids.forEach(function(id){var e=document.getElementById(id);if(e)e.value=''});run()});cards.forEach(function(card){var b=card.querySelector('.project-image');if(b)b.addEventListener('click',function(){var d=card.dataset||{};var m=document.getElementById('projectDetail');if(!m)return;var img=m.querySelector('.project-detail-photo'),title=m.querySelector('.project-detail-title'),desc=m.querySelector('.project-detail-desc'),list=m.querySelector('.project-detail-list'),meta=m.querySelector('.project-detail-meta'),video=m.querySelector('.project-detail-video');if(img)img.src=d.url||'';if(title)title.textContent=d.alt||'Проект';if(desc)desc.textContent=d.description||'Описание проекта пока не заполнено.';if(meta)meta.textContent=[d.city,d.type,d.style,d.material,d.shape].filter(Boolean).join(' · ');if(list)list.innerHTML=[d.features,d.materials,d.hardware,d.appliances,d.countertop,d.handle,d.additional].filter(Boolean).map(function(x){return '<li>'+esc(x)+'</li>'}).join('');if(video){video.innerHTML=d.video?'<a class="btn btn-line" href="'+esc(d.video)+'" target="_blank" rel="noopener">Смотреть видео проекта</a>':''}m.classList.add('open');document.body.style.overflow='hidden'})});var modal=document.getElementById('projectDetail');if(modal){var close=function(){modal.classList.remove('open');document.body.style.overflow=''};var x=modal.querySelector('.project-detail-close');if(x)x.addEventListener('click',close);modal.addEventListener('click',function(e){if(e.target===modal)close()})}run()})();
+
+var form=document.getElementById('siteLeadForm');if(!form)return;
   var btn=form.querySelector('.lead-submit'),result=document.getElementById('siteLeadResult');
   function setResult(msg,bad){if(!result)return;result.textContent=msg||'';result.classList.toggle('error',!!bad)}
   form.querySelectorAll('[data-choice-name]').forEach(function(b){b.addEventListener('click',function(){var n=b.dataset.choiceName;form.querySelectorAll('[data-choice-name="'+n+'"]').forEach(function(x){x.classList.remove('is-selected');x.setAttribute('aria-pressed','false')});b.classList.add('is-selected');b.setAttribute('aria-pressed','true');var i=form.querySelector('[name="'+n+'"]');if(i)i.value=b.dataset.choiceValue||''})});
   form.addEventListener('submit',async function(e){e.preventDefault();setResult('');var fd=new FormData(form),phone=String(fd.get('phone')||'').trim();
     if(!String(fd.get('city')||'').trim()){setResult('Выберите город.',true);return}if(!String(fd.get('furniture_type')||'').trim()){setResult('Выберите тип мебели.',true);return}if(phone.replace(/\D/g,'').length<7){setResult('Укажите номер телефона.',true);form.querySelector('[name="phone"]').focus();return}if(String(fd.get('website')||''))return;
-    var photo=fd.get('photo'),photoUrl='';btn.classList.add('loading');btn.disabled=true;var old=btn.querySelector('.lead-submit-text');if(old)old.textContent='Отправляем…';
-    try{if(photo&&photo.size){var pfd=new FormData();pfd.append('file',photo);var pu=await fetch('/api/lead-upload',{method:'POST',body:pfd,credentials:'same-origin'});var uj=await pu.json();if(!pu.ok||!uj.ok)throw new Error(uj.error||'Не удалось загрузить фото');photoUrl=uj.url||''}
-      var body={name:String(fd.get('name')||'').trim(),phone:phone,message:String(fd.get('message')||'').trim(),website:'',page:location.href,city:String(fd.get('city')||''),furniture_type:String(fd.get('furniture_type')||''),photo_url:photoUrl,source:'site'};
+    btn.classList.add('loading');btn.disabled=true;var old=btn.querySelector('.lead-submit-text');if(old)old.textContent='Отправляем…';
+    try{var files=[];['room_photos','room_plan','drawing'].forEach(function(n){var el=form.elements[n];if(el&&el.files)for(var i=0;i<el.files.length;i++)files.push(el.files[i])});var uploaded=[];if(files.length){var pfd=new FormData();files.forEach(function(f){pfd.append('file',f,f.name)});var pu=await fetch('/api/lead-upload',{method:'POST',body:pfd,credentials:'same-origin'});var uj=await pu.json();if(!pu.ok||!uj.ok)throw new Error(uj.error||'Не удалось загрузить файлы');uploaded=Array.isArray(uj.urls)?uj.urls:(uj.url?[uj.url]:[])}
+      var body={name:String(fd.get('name')||'').trim(),phone:phone,message:String(fd.get('message')||'').trim(),website:'',page:location.href,city:String(fd.get('city')||''),furniture_type:String(fd.get('furniture_type')||''),photo_url:uploaded[0]||'',attachments:uploaded,source:'site',style:String(fd.get('style')||''),color:String(fd.get('color')||''),shape:String(fd.get('shape')||''),sections_count:String(fd.get('sections_count')||''),appliances:String(fd.get('appliances')||''),facade:String(fd.get('facade')||''),countertop:String(fd.get('countertop')||''),handle:String(fd.get('handle')||''),additional:String(fd.get('additional')||'')};
       var ctl=typeof AbortController!=='undefined'?new AbortController():null,timer=ctl?setTimeout(function(){try{ctl.abort()}catch(_){}},9000):null;var r=await fetch('/api/lead',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(body),signal:ctl?ctl.signal:undefined});if(timer)clearTimeout(timer);var raw=await r.text(),j={};try{j=JSON.parse(raw||'{}')}catch(_){}if(!r.ok||!j.ok)throw new Error(j.error||('Ошибка отправки ('+r.status+')'));
       form.reset();form.querySelectorAll('.choice').forEach(function(x){x.classList.remove('is-selected');x.setAttribute('aria-pressed','false')});setResult('Заявка отправлена. Спасибо! Мы свяжемся с вами.'+(j.portal?' Личный кабинет: '+j.portal:''));if(old)old.textContent='Заявка отправлена ✓';setTimeout(function(){if(old)old.textContent='Отправить заявку';btn.disabled=false;btn.classList.remove('loading')},2600);
     }catch(err){setResult(err&&err.name==='AbortError'?'Сервер отвечает слишком долго. Попробуйте ещё раз.':'Не удалось отправить заявку. Попробуйте ещё раз.',true);if(old)old.textContent='Отправить заявку';btn.disabled=false;btn.classList.remove('loading')}
@@ -1868,6 +1929,7 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
   var touch=('ontouchstart' in window)||(navigator.maxTouchPoints>0);
   var lowEnd=(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4)||((navigator.deviceMemory||99)<=4);
   var safe=CFG.safe!==false;
+  var heroCfg=window.__OST_HERO_ROTATION||null;if(heroCfg&&heroCfg.enabled&&heroCfg.images&&heroCfg.images.length>1){var hb=document.querySelector('.panel--hero .bg');if(hb){var hi=0;setInterval(function(){hi=(hi+1)%heroCfg.images.length;var u=heroCfg.images[hi],pre=new Image();pre.onload=function(){hb.style.backgroundImage='url(\"'+u.replace(/\"/g,'')+'\")'};pre.src=u},Math.max(3500,Number(heroCfg.interval)||6500))}}
   var reduced=OFF||prefersReduced||(!CFG.enabled&&!FORCE);
   var fine=!!CFG.hover3d&&!safe&&!touch&&!lowEnd;
   var parallax=!!CFG.parallax&&!safe&&!touch&&!lowEnd;
@@ -2520,6 +2582,32 @@ def _storage_public_url(name):
     return "{}/storage/v1/object/public/{}/{}".format(SUPABASE_URL, BUCKET, name)
 
 
+def _lead_upload_fast(filename, blob, mime):
+    """Быстрая загрузка вложения заявки. При недоступном Supabase не держит форму 45 секунд: сохраняет локальный резерв."""
+    ext=os.path.splitext(filename or "")[1].lower()
+    if ext not in (".jpg",".jpeg",".png",".webp",".gif",".pdf"):
+        ext={"image/png":".png","image/webp":".webp","image/gif":".gif","application/pdf":".pdf"}.get(mime,".jpg")
+    safe=re.sub(r"[^a-zA-Z0-9._-]","-",os.path.basename(filename or "file"))[-70:]
+    name="{}-{}-{}".format(date.today().isoformat(),uuid.uuid4().hex[:10],safe)
+    # Сначала пробуем Supabase напрямую с коротким таймаутом.
+    if SUPABASE_URL and (SUPABASE_SERVICE or SUPABASE_ANON):
+        try:
+            url="{}/storage/v1/object/{}/{}".format(SUPABASE_URL,BUCKET,name)
+            h=_sb_headers();h.update({"Content-Type":mime,"x-upsert":"true","Cache-Control":"max-age=31536000"})
+            st,js,body=_http("POST",url,headers=h,raw_body=blob,timeout=4)
+            if 200<=st<300:return _storage_public_url(name)
+        except Exception as e:print("[lead-storage] fast upload: {}".format(e),flush=True)
+    # Резерв: локально, чтобы заявка не терялась из-за временного падения Storage.
+    try:
+        root=os.path.join(ROOT,"lead_media");os.makedirs(root,exist_ok=True)
+        path=os.path.join(root,name)
+        with open(path,"wb") as f:f.write(blob)
+        return "/lead-media/"+urllib.parse.quote(name)
+    except Exception as e:
+        print("[lead-storage] local fallback: {}".format(e),flush=True)
+        return None
+
+
 def _storage_upload(filename, blob, mime):
     if not _bucket_ensure():
         return None
@@ -2663,6 +2751,10 @@ def _add_lead(name, phone, message, page, ip="", extra=None):
         "priority": extra.get("priority") or "normal", "source": extra.get("source") or "site",
         "city": extra.get("city") or "", "furniture_type": extra.get("furniture_type") or "",
         "notes": extra.get("notes") or "", "photo_url": extra.get("photo_url") or "",
+        "attachments": extra.get("attachments") or [], "style": extra.get("style") or "", "color": extra.get("color") or "",
+        "shape": extra.get("shape") or "", "sections_count": extra.get("sections_count") or "", "appliances": extra.get("appliances") or "",
+        "facade": extra.get("facade") or "", "countertop": extra.get("countertop") or "", "handle": extra.get("handle") or "",
+        "additional": extra.get("additional") or "",
         "repeat_client": bool(extra.get("repeat_client")), "client_no_answer": bool(extra.get("client_no_answer")),
     }
     with _leads_lock:
@@ -3317,7 +3409,7 @@ def render_site():
     anim_text = bool(anim.get("text_reveal", True))
     anim_safe = bool(anim.get("safe_mode", True))
     anim_mode = str(anim.get("intensity") or "full")
-    cfg = '<script>window.__OST_ANIM={enabled:' + str(anim_enabled).lower() + ',parallax:' + str(anim_parallax).lower() + ',hover3d:' + str(anim_hover).lower() + ',sparks:' + str(anim_sparks).lower() + ',scroll:' + str(anim_scroll).lower() + ',text:' + str(anim_text).lower() + ',safe:' + str(anim_safe).lower() + ',intensity:' + json.dumps(anim_mode, ensure_ascii=False) + '};</script>'
+    hero_cfg=data.get('hero') or {};hero_imgs=hero_cfg.get('rotation_images') or [];cfg = '<script>window.__OST_ANIM={enabled:' + str(anim_enabled).lower() + ',parallax:' + str(anim_parallax).lower() + ',hover3d:' + str(anim_hover).lower() + ',sparks:' + str(anim_sparks).lower() + ',scroll:' + str(anim_scroll).lower() + ',text:' + str(anim_text).lower() + ',safe:' + str(anim_safe).lower() + ',intensity:' + json.dumps(anim_mode, ensure_ascii=False) + '};window.__OST_HERO_ROTATION='+json.dumps({'enabled':bool(hero_cfg.get('rotation_enabled',True)),'interval':int(hero_cfg.get('rotation_interval') or 6500),'images':hero_imgs},ensure_ascii=False)+';</script>'
     html = html.replace("</head>", cfg + "</head>", 1)
     html = _proxify_urls(html)
     html = _inject_site_ui(html, data)
@@ -3627,7 +3719,7 @@ ADMIN_SCHEMA = [
      ]},
 
     {"id": "animations", "group": "Дизайн", "title": "Анимации", 
-     "hint": "Все анимации сайта собраны здесь. По умолчанию включён полный режим — появления, параллакс, hover-эффекты, искры и плавность.",
+     "hint": "Все анимации сайта собраны здесь. По умолчанию включён лёгкий режим — плавные появления, аккуратный hover и без тяжёлого параллакса.",
      "fields": [
          {"path": "animations.enabled", "label": "Анимации сайта", "type": "check", "chkLabel": "включены"},
          {"path": "animations.scroll_reveal", "label": "Появление блоков при прокрутке", "type": "check", "chkLabel": "включено"},
@@ -3677,6 +3769,9 @@ ADMIN_SCHEMA = [
         {"path": "hero.scroll_cue", "label": "Подпись «Листайте» внизу", "type": "text"},
         {"path": "hero.watermark", "label": "Фоновая надпись секции", "type": "text", "ai": "watermark"},
         {"path": "hero.bg", "label": "Фон", "type": "image"},
+        {"path": "hero.rotation_enabled", "label": "Смена фото героя", "type": "check", "chkLabel": "включена"},
+        {"path": "hero.rotation_interval", "label": "Интервал смены фото (мс)", "type": "text"},
+        {"path": "hero.rotation_images", "label": "Фотографии для смены", "type": "textarea", "rows": 4, "hint": "По одному URL на строку. Используйте только реальные фотографии."},
      ]},
 
     {"id": "stats", "group": "Контент", "title": "Цифры (счётчики)", "fields": [
@@ -3735,6 +3830,24 @@ ADMIN_SCHEMA = [
           "item": [
               {"path": "url", "label": "Картинка", "type": "image"},
               {"path": "alt", "label": "Alt (для SEO)", "type": "text"},
+              {"path": "city", "label": "Город", "type": "text"},
+              {"path": "type", "label": "Тип мебели", "type": "text"},
+              {"path": "style", "label": "Стиль", "type": "text"},
+              {"path": "material", "label": "Материал", "type": "text"},
+              {"path": "shape", "label": "Форма", "type": "text"},
+              {"path": "area", "label": "Площадь помещения", "type": "text"},
+              {"path": "layout", "label": "Планировка", "type": "text"},
+              {"path": "island", "label": "Остров", "type": "text"},
+              {"path": "appliances", "label": "Техника / расположение", "type": "textarea", "rows": 2},
+              {"path": "facade", "label": "Фасад", "type": "text"},
+              {"path": "countertop", "label": "Столешница", "type": "text"},
+              {"path": "handle", "label": "Ручки", "type": "text"},
+              {"path": "additional", "label": "Дополнительные элементы", "type": "textarea", "rows": 2},
+              {"path": "video", "label": "Видео проекта", "type": "text"},
+              {"path": "description", "label": "Описание проекта", "type": "textarea", "rows": 4},
+              {"path": "features", "label": "Особенности проекта", "type": "textarea", "rows": 3},
+              {"path": "materials", "label": "Использованные материалы", "type": "textarea", "rows": 3},
+              {"path": "hardware", "label": "Фурнитура", "type": "textarea", "rows": 3},
           ]},
      ]},
 
@@ -4113,6 +4226,11 @@ mark.hit{background:rgba(212,175,106,.25);color:#fff;border-radius:3px;padding:0
 @media(max-width:480px){.dashboard{grid-template-columns:1fr}}
 .side-head{display:flex;align-items:center;gap:8px;padding:7px 8px 12px;color:#8e9baa;font-size:10px;letter-spacing:1.5px}.side-collapse{width:29px;height:29px;border-radius:8px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.035);color:#9aa8b7;cursor:pointer}.overview-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:10px 0 20px}.overview-card{border:1px solid rgba(236,207,160,.12);border-radius:16px;padding:18px;background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.015));box-shadow:0 20px 50px -38px #000;animation:fadeUp .45s cubic-bezier(.16,1,.3,1) both}.overview-card span{display:block;color:#7e8997;font-size:10px;text-transform:uppercase;letter-spacing:1.4px}.overview-card b{display:block;margin-top:8px;color:#f5ecdf;font:600 23px/1 Georgia,serif}.overview-card small{display:block;margin-top:7px;color:#756e64;font-size:11px}.side-collapsed nav.side{width:68px}.side-collapsed nav.side .cap,.side-collapsed nav.side .nav-group,.side-collapsed nav.side .side-head b,.side-collapsed nav.side .side-search input{display:none}.side-collapsed nav.side a{justify-content:center}@media(max-width:820px){.overview-grid{grid-template-columns:1fr 1fr}}
 /* ====== Новая полировка CMS: единая визуальная система, без «кирпичей» ====== */
+.lead-meta-line{margin-top:8px;color:#9fb0bf;font-size:11px;line-height:1.55}.lead-files-admin{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}.lead-file-link{color:#ecd09c;font-size:11px}.lead-manage select{min-width:0}
+/* ====== Dashboard UI: dark-blue control room, лёгкая и быстрая ====== */
+body{background:#07111b!important;color:#e7edf4!important}body::before{background:radial-gradient(900px 520px at 80% -10%,rgba(54,98,137,.25),transparent 62%),linear-gradient(180deg,#07111b,#08131f 60%,#07101a)!important}body::after{opacity:.12!important;background-image:radial-gradient(rgba(170,200,225,.12) 1px,transparent 1px)!important}
+header{background:rgba(7,14,22,.92)!important;border-bottom:1px solid rgba(150,177,205,.13)!important;backdrop-filter:none!important}nav.side{background:linear-gradient(180deg,#13283d,#0d1d2d)!important;border-color:rgba(150,177,205,.16)!important;box-shadow:0 24px 70px -35px #000,inset 0 1px 0 rgba(255,255,255,.04)!important}main{max-width:1120px}.field,.overview-card,.info,.item,.lead-card,.audit-row{background:linear-gradient(145deg,rgba(25,43,59,.78),rgba(10,23,35,.72))!important;border-color:rgba(150,177,205,.13)!important;border-radius:16px}.field input,.field textarea,.field select,.lead-search,.lead-filter{background:#0b1723!important;border-color:rgba(150,177,205,.16)!important}.btn{border-color:rgba(150,177,205,.16);background:rgba(255,255,255,.035)}.btn:hover{background:rgba(110,160,200,.08)}.btn-gold{background:linear-gradient(180deg,#d8b677,#c9a260)!important;color:#14100a!important}.page-head h2,h2{color:#edf3f8!important}.hint{color:#8091a3!important}.nav-group{color:#6f8397!important}.live-pill{border-color:rgba(150,177,205,.16)!important;background:rgba(255,255,255,.035)!important}.dashboard .dash{background:linear-gradient(145deg,#14283a,#0d1d2d)!important;border-color:rgba(150,177,205,.16)!important}.dashboard,.overview-grid{gap:12px}
+
 .admin-shell{background:radial-gradient(900px 520px at 82% -10%,rgba(236,207,160,.08),transparent 60%),radial-gradient(700px 520px at -8% 60%,rgba(236,207,160,.045),transparent 60%),#0a0b0d!important}
 .admin-shell:before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(120deg,transparent 0 48%,rgba(255,255,255,.012) 50%,transparent 52%);opacity:.45}
 .page-head{border-bottom:1px solid rgba(236,207,160,.09);padding-bottom:18px;margin-bottom:22px}
@@ -4154,7 +4272,7 @@ document.addEventListener('click',function(e){
   var b=e.target.closest&&e.target.closest('#barSave,#barUndo');
   if(b){ if(b.id==='barSave')save(); else {var r=q('#reloadBtn');if(r)r.click();} }
 });
-var SCHEMA=__SCHEMA__, DATA=null, ORIG=null, TAB=(__SCHEMA__[0]||{}).id, dirty=false, mediaTarget=null, REV=0, SERVER_AT='', SEARCH='';
+var SCHEMA=__SCHEMA__, DATA=__FALLBACK_DATA__, ORIG=JSON.parse(JSON.stringify(__FALLBACK_DATA__)), TAB=(__SCHEMA__[0]||{}).id, dirty=false, mediaTarget=null, REV=(DATA._meta&&DATA._meta.rev)||0, SERVER_AT=(DATA._meta&&DATA._meta.at)||'', SEARCH='';
 
 function q(s){return document.querySelector(s)}
 function qa(s){return Array.prototype.slice.call(document.querySelectorAll(s))}
@@ -4230,19 +4348,24 @@ function renderLeads(){
 function renderLeadList(){
   var out=q('#leadsOut');if(!out)return;
   var needle=String((q('#leadSearch')||{}).value||'').toLowerCase().trim(),filter=(q('#leadFilter')||{}).value||'all';
-  var items=LEADS_CACHE.filter(function(it){if(filter==='new'&&it.read)return false;if(filter==='read'&&!it.read)return false;if(!needle)return true;return [it.name,it.phone,it.message,it.at].join(' ').toLowerCase().indexOf(needle)>=0;});
-  if(!items.length){out.innerHTML='<div class="info empty-leads"><strong>'+ (LEADS_CACHE.length?'Ничего не найдено':'Пока заявок нет') +'</strong><span>'+ (LEADS_CACHE.length?'Измените поиск или фильтр.':'Когда посетитель заполнит форму, обращение появится здесь.') +'</span></div>';return;}
+  var items=LEADS_CACHE.filter(function(it){if(filter==='new'&&it.read)return false;if(filter==='read'&&!it.read)return false;if(!needle)return true;return [it.name,it.phone,it.message,it.city,it.furniture_type,it.style,it.shape,it.at].join(' ').toLowerCase().indexOf(needle)>=0;});
+  if(!items.length){out.innerHTML='<div class="info empty-leads"><strong>'+(LEADS_CACHE.length?'Ничего не найдено':'Пока заявок нет')+'</strong><span>'+(LEADS_CACHE.length?'Измените поиск или фильтр.':'Когда посетитель заполнит форму, обращение появится здесь.')+'</span></div>';return;}
+  var responsibleOptions=(window.LEAD_RESPONSIBLES||[]).map(function(e){return '<option value="'+esc(e.login||e.name)+'">'+esc(e.name||e.login)+'</option>'}).join('');
   out.innerHTML=items.map(function(it){
     var cls=it.read?'':' unread',dt=esc(String(it.at||'').replace('T',' ')),name=esc(it.name||'Без имени'),phone=esc(it.phone||''),msg=esc(it.message||'Без комментария');
-    var photo=it.photo_url?'<div class="lead-photo-link"><a href="'+esc(it.photo_url)+'" target="_blank" rel="noopener">Фото помещения ↗</a></div>':'';
+    var files=(it.attachments||[]).map(function(u,i){return '<a class="lead-file-link" href="'+esc(u)+'" target="_blank" rel="noopener">Вложение '+(i+1)+' ↗</a>'}).join(' ');
+    var meta=[it.city,it.furniture_type,it.style,it.color,it.shape,it.sections_count?('секций: '+it.sections_count):'',it.appliances,it.facade,it.countertop,it.handle,it.additional].filter(Boolean).map(esc).join(' · ');
     var actions='<div class="lead-actions">'+(it.read?'':'<button class="btn mini" data-lead-read="'+esc(it.id)+'">Прочитано</button>')+'<a class="btn mini btn-gold" href="tel:'+esc(phone)+'">Позвонить</a><button class="btn mini" data-copy-phone="'+esc(phone)+'">Копировать номер</button></div>';
-    return '<article class="lead-card'+cls+'"><div class="lead-top"><div><div class="lead-name">'+name+'</div><a class="lead-phone" href="tel:'+esc(phone)+'">'+phone+'</a></div><span class="lead-date">'+dt+'</span></div><div class="lead-msg">'+msg+'</div>'+photo+'<div class="lead-manage"><select data-lstatus="'+esc(it.id)+'"><option value="new">Новая</option><option value="in_work">В работе</option><option value="measurement">Замер</option><option value="calculation">Расчёт</option><option value="contract">Договор</option><option value="done">Завершена</option></select><input data-lresp="'+esc(it.id)+'" value="'+esc(it.responsible||'')+'" placeholder="Ответственный"></div>'+actions+'</article>';
+    var opts='<select data-lresp="'+esc(it.id)+'"><option value="">Ответственный</option>'+responsibleOptions+'</select>';
+    return '<article class="lead-card'+cls+'"><div class="lead-top"><div><div class="lead-name">'+name+'</div><a class="lead-phone" href="tel:'+esc(phone)+'">'+phone+'</a></div><span class="lead-date">'+dt+'</span></div><div class="lead-meta-line">'+(meta||'Параметры не указаны')+'</div><div class="lead-msg">'+msg+'</div>'+(files?'<div class="lead-files-admin">'+files+'</div>':'')+'<div class="lead-manage"><select data-lstatus="'+esc(it.id)+'"><option value="new">Новая</option><option value="in_work">В работе</option><option value="measurement">Замер</option><option value="calculation">Расчёт</option><option value="contract">Договор</option><option value="done">Завершена</option></select>'+opts+'</div>'+actions+'</article>';
   }).join('');
-  qa('[data-lstatus]').forEach(function(x){x.value=x.closest('.lead-card')?((LEADS_CACHE.filter(function(a){return a.id===x.dataset.lstatus})[0]||{}).status||'new'):'new';x.onchange=function(){api('/admin/api/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:x.dataset.lstatus,status:x.value})})}});qa('[data-lresp]').forEach(function(x){x.onchange=function(){api('/admin/api/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:x.dataset.lresp,responsible:x.value})})}});qa('[data-lead-read]').forEach(function(b){b.onclick=function(){api('/admin/api/leads/read',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:b.dataset.leadRead})}).then(loadLeads)}});
+  qa('[data-lstatus]').forEach(function(x){x.value=((LEADS_CACHE.filter(function(a){return a.id===x.dataset.lstatus})[0]||{}).status||'new');x.onchange=function(){api('/admin/api/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:x.dataset.lstatus,status:x.value})})}});
+  qa('[data-lresp]').forEach(function(x){var it=LEADS_CACHE.filter(function(a){return a.id===x.dataset.lresp})[0]||{};x.value=it.responsible||'';x.onchange=function(){api('/admin/api/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:x.dataset.lresp,responsible:x.value})})}});
+  qa('[data-lead-read]').forEach(function(b){b.onclick=function(){api('/admin/api/leads/read',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:b.dataset.leadRead})}).then(loadLeads)}});
   qa('[data-copy-phone]').forEach(function(b){b.onclick=function(){var v=b.dataset.copyPhone||'';if(navigator.clipboard)navigator.clipboard.writeText(v).then(function(){toast('Номер скопирован')});else{var ta=document.createElement('textarea');ta.value=v;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();toast('Номер скопирован')}}});
 }
 function loadLeads(){
-  api('/admin/api/leads').then(function(j){LEADS_CACHE=Array.isArray(j.items)?j.items:[];var today=new Date().toISOString().slice(0,10);var total=q('#leadTotal'),un=q('#leadUnread'),td=q('#leadToday');if(total)total.textContent=LEADS_CACHE.length;if(un)un.textContent=j.unread||0;if(td)td.textContent=LEADS_CACHE.filter(function(x){return String(x.at||'').slice(0,10)===today}).length;var badge=q('#leadBadge');if(badge){badge.textContent=j.unread||0;badge.style.display=(j.unread||0)?'inline-flex':'none'}renderLeadList();}).catch(function(e){var out=q('#leadsOut');if(out)out.innerHTML='<div class="info status bad">Не удалось загрузить заявки: '+esc(e.message)+'</div>'});
+  api('/admin/api/leads').then(function(j){window.LEAD_RESPONSIBLES=Array.isArray(j.responsibles)?j.responsibles:[];LEADS_CACHE=Array.isArray(j.items)?j.items:[];var today=new Date().toISOString().slice(0,10);var total=q('#leadTotal'),un=q('#leadUnread'),td=q('#leadToday');if(total)total.textContent=LEADS_CACHE.length;if(un)un.textContent=j.unread||0;if(td)td.textContent=LEADS_CACHE.filter(function(x){return String(x.at||'').slice(0,10)===today}).length;var badge=q('#leadBadge');if(badge){badge.textContent=j.unread||0;badge.style.display=(j.unread||0)?'inline-flex':'none'}renderLeadList();}).catch(function(e){var out=q('#leadsOut');if(out)out.innerHTML='<div class="info status bad">Не удалось загрузить заявки: '+esc(e.message)+'</div>'});
 }
 function renderAudit(){
   q('#main').innerHTML='<h2>Журнал действий</h2><p class="hint">Кто и когда сохранял изменения в админке. Последние 300 записей.</p><div class="actions" style="margin-bottom:16px"><button class="btn btn-gold" id="refreshAudit">Обновить журнал</button></div><div id="auditOut"><div class="skel big"></div></div>';
@@ -4266,12 +4389,13 @@ function render(){
   SCHEMA.forEach(function(t){if(!groups[t.group]){groups[t.group]=[];order.push(t.group)}groups[t.group].push(t)});
   var nav='<div class="side-head"><button class="side-collapse" id="sideCollapse">☰</button><b>CMS</b></div><div class="side-search"><span class="ic">⌕</span><input id="search" type="search" placeholder="Поиск по всем полям…" value="'+esc(SEARCH)+'"></div>';
   nav+='<div class="nav-group">Рабочее</div><a data-tab="overview" class="'+(TAB==='overview'?'active':'')+'"><span class="nav-ico">⌂</span><span class="cap">Обзор</span></a>';
-  nav+='<div class="nav-group">Рабочее</div><a data-tab="leads" class="'+(TAB==='leads'?'active':'')+'"><span class="nav-ico">◉</span><span class="cap">Заявки</span><span id="leadBadge" class="status" style="display:none;padding:2px 7px;margin-left:auto;background:rgba(236,207,160,.15);color:#ecd09c;border:1px solid rgba(236,207,160,.25)">0</span></a>';
+  nav+='<a data-tab="leads" class="'+(TAB==='leads'?'active':'')+'"><span class="nav-ico">◉</span><span class="cap">Заявки</span><span id="leadBadge" class="status" style="display:none;padding:2px 7px;margin-left:auto;background:rgba(236,207,160,.15);color:#ecd09c;border:1px solid rgba(236,207,160,.25)">0</span></a>';
   nav+='<a data-tab="audit" class="'+(TAB==='audit'?'active':'')+'"><span class="nav-ico">◌</span><span class="cap">Журнал действий</span></a>';
    nav+='<a data-tab="employees" class="'+(TAB==='employees'?'active':'')+'"><span class="nav-ico">♙</span><span class="cap">Сотрудники</span></a>';
   order.forEach(function(g){
     nav+='<div class="nav-group">'+esc(g)+'</div>';
     groups[g].forEach(function(t){
+      if(['overview','leads','audit','employees'].indexOf(t.id)>=0)return;
       var cls=(t.id===TAB?' active':'')+(tabChanged(t)?' changed':'');
       var icons={seo:'⌁',code:'</>',design:'✦',animations:'✦',brand:'◈',hero:'⌂',stats:'◫',about:'◎',consult:'◌',works:'▧',reviews:'☆',services:'✣',process:'↝',guarantees:'◇',cities:'⌖',cta:'↗',contacts:'⌂',footer:'▤',cookie:'◍',lead_settings:'✉',guide:'?',media:'▦',history:'↶'};
       nav+='<a data-tab="'+t.id+'" class="'+(cls.trim()||'')+'"><span class="nav-ico">'+(icons[t.id]||'•')+'</span><span class="cap">'+esc(t.title)+'</span></a>';
@@ -4330,7 +4454,7 @@ function fieldHTML(f,base,rawLabel){
   }
   if(f.type==='textarea')inp='<textarea data-path="'+p+'" rows="'+(f.rows||3)+'"'+(f.mono?' class="mono"':'')+' placeholder="'+esc(f.placeholder||'')+'">'+esc(v)+'</textarea>'+(p.endsWith('.icon')?'<div class="fhint">Иконка SVG хранится отдельно. Если поле пустое — на сайте используется аккуратная базовая иконка.</div>':'');
   else if(f.type==='check')inp='<label class="chk"><input type="checkbox" data-path="'+p+'"'+(v?' checked':'')+'> '+(f.chkLabel||'включено')+'</label>';
-  else if(f.type==='select')inp='<select data-path="'+p+'">'+(f.options||[]).map(function(o){return '<option value="'+esc(o)+'"'+(String(v)===o?' selected':'')+'>'+esc(o)+'</option>'}).join('')+'</select>';
+  else if(f.type==='select')inp='<select data-path="'+p+'">'+(f.options||[]).map(function(o){var ov=(o&&typeof o==='object')?String(o.value==null?'':o.value):String(o==null?'':o), ol=(o&&typeof o==='object')?String(o.label==null?ov:o.label):String(o==null?'':o);return '<option value="'+esc(ov)+'"'+(String(v)===ov?' selected':'')+'>'+esc(ol)+'</option>'}).join('')+'</select>';
   else if(f.type==='color')inp='<div class="color-row"><input type="color" data-path="'+p+'" value="'+esc(normColor(v))+'"><input type="text" data-path="'+p+'" value="'+esc(v)+'"></div>';
   else inp='<input type="text" data-path="'+p+'" value="'+esc(v)+'" placeholder="'+esc(f.placeholder||'')+'">';
   return '<div class="field" data-field-wrap="'+p+'">'+(f.label?'<label>'+f.label+(f.ai?aiBtn(p,f.ai):'')+'</label>':'')+inp+(f.type==='textarea'?'<div class="char-count" data-char-for="'+p+'">'+String(v||'').length+'</div>':'')+(f.hint?'<div class="fhint">'+f.hint+'</div>':'')+'</div>';
@@ -4612,11 +4736,12 @@ document.addEventListener('keydown',function(e){
   if(e.key==='Escape')q('#modal').classList.remove('open');
 });
 window.addEventListener('beforeunload',function(e){if(dirty){e.preventDefault();e.returnValue=''}});
+render();setStatus('Подключение к CMS…','saving');
 load();
 setInterval(refreshLeadBadge,15000);
 </script></body></html>"""
 
-ADMIN_HTML = ADMIN_HTML.replace("__SCHEMA__", _SCHEMA_JSON)
+ADMIN_HTML = ADMIN_HTML.replace("__SCHEMA__", _SCHEMA_JSON).replace("__FALLBACK_DATA__", json.dumps(DEFAULT_DATA, ensure_ascii=False))
 
 STATIC_EXT = {".html", ".htm", ".txt", ".xml", ".svg", ".png", ".jpg", ".jpeg", ".webp", ".gif", ".ico",
               ".css", ".js", ".json", ".webmanifest", ".woff", ".woff2", ".pdf", ".mp4"}
@@ -4632,25 +4757,27 @@ MIME = {".html": "text/html; charset=utf-8", ".htm": "text/html; charset=utf-8",
 # ============================================================
 #  HTTP
 # ============================================================
+def _parse_multipart_files(body, boundary):
+    """Разбирает multipart и возвращает список (имя, bytes, content-type)."""
+    out=[]
+    if not body or not boundary:return out
+    for p in body.split(b"--"+boundary):
+        if b"Content-Disposition" not in p:continue
+        head,_,data=p.partition(b"\r\n\r\n")
+        if not data:continue
+        data=data.rstrip(b"\r\n")
+        if data.endswith(b"--"):data=data[:-2].rstrip(b"\r\n")
+        m=re.search(rb'filename="([^"]*)"',head)
+        if not m:continue
+        name=m.group(1).decode("utf-8","ignore")
+        cm=re.search(rb'Content-Type:\s*([^\r\n]+)',head,re.I)
+        mime=cm.group(1).decode("ascii","ignore").strip().lower() if cm else ""
+        if data:out.append((name,data,mime))
+    return out
+
 def _parse_multipart(body, boundary):
-    """Возвращает (имя_файла, данные) первого файла из multipart/form-data."""
-    if not body or not boundary:
-        return None, None
-    for p in body.split(b"--" + boundary):
-        if b"Content-Disposition" not in p:
-            continue
-        head, _, data = p.partition(b"\r\n\r\n")
-        if not data:
-            continue
-        data = data.rstrip(b"\r\n")
-        if data.endswith(b"--"):
-            data = data[:-2].rstrip(b"\r\n")
-        name = ""
-        m = re.search(rb'filename="([^"]*)"', head)
-        if m:
-            name = m.group(1).decode("utf-8", "ignore")
-        return name, data
-    return None, None
+    files=_parse_multipart_files(body,boundary)
+    return (files[0][0],files[0][1]) if files else (None,None)
 
 
 def _admin_user(h): return _session_identity(h._tok())
@@ -4660,7 +4787,7 @@ def _set_lead(lead_id,changes):
         items=_load_leads()
         for it in items:
             if str(it.get("id"))==str(lead_id):
-                for k in ("status","responsible","priority","source","city","furniture_type","notes","repeat_client","client_no_answer"):
+                for k in ("status","responsible","priority","source","city","furniture_type","notes","style","color","shape","sections_count","appliances","facade","countertop","handle","additional","repeat_client","client_no_answer"):
                     if k in changes:it[k]=changes[k]
                 _save_leads(items);return it
     return None
@@ -4803,7 +4930,8 @@ class Handler(BaseHTTPRequestHandler):
             if not self._admin():
                 self._json({"error": "no auth"}, 401)
                 return
-            self._json(load_data())
+            data = _prime_cache()
+            self._json(data)
             return
         if path == "/admin/api/export":
             if not self._admin():
@@ -4831,7 +4959,8 @@ class Handler(BaseHTTPRequestHandler):
                 self._json({"error": "no auth"}, 401)
                 return
             items = _get_leads()
-            self._json({"items":[{k:v for k,v in x.items() if k!="ip_hash"} for x in items],"unread":sum(1 for x in items if not x.get("read"))})
+            resp=[{"login":e.get("login"),"name":e.get("name") or e.get("login")} for e in _employees() if isinstance(e,dict) and not e.get("disabled")]
+            self._json({"items":[{k:v for k,v in x.items() if k!="ip_hash"} for x in items],"unread":sum(1 for x in items if not x.get("read")),"responsibles":resp})
             return
         if path == "/admin/api/leads/export":
             if not self._admin():
@@ -4947,6 +5076,13 @@ class Handler(BaseHTTPRequestHandler):
             self._route_favicon(path)
             return
 
+        if path.startswith("/lead-media/"):
+            name=urllib.parse.unquote(path.split("/lead-media/",1)[1]).replace("..","")
+            if not name or "/" in name or "\\" in name:
+                self._send(404,"not found","text/plain; charset=utf-8");return
+            fp=os.path.join(ROOT,"lead_media",name)
+            if os.path.isfile(fp):
+                ext=os.path.splitext(fp)[1].lower();self._send(200,open(fp,"rb").read(),MIME.get(ext,"application/octet-stream"),"private, max-age=3600",gzip_ok=False);return
         if self._serve_static(path):
             return
         self._send(404, build_404(load_data()), "text/html; charset=utf-8")
@@ -4956,21 +5092,29 @@ class Handler(BaseHTTPRequestHandler):
 
         if path == "/api/lead-upload":
             body=self._body()
-            if not body or len(body)>MAX_UPLOAD: self._json({"error":"Файл пустой или больше 8 МБ"},413); return
-            ctype=self.headers.get("Content-Type",""); blob=fname=None
+            if not body or len(body)>MAX_UPLOAD*4:self._json({"error":"Файлы пустые или общий размер больше 32 МБ"},413);return
+            ctype=self.headers.get("Content-Type",""); files=[]
             if "multipart/form-data" in ctype:
                 m=re.search(r"boundary=([^;]+)",ctype)
-                if m: fname,blob=_parse_multipart(body,m.group(1).strip().strip('"').encode())
-            if not blob:self._json({"error":"Нужен файл изображения"},400);return
-            mime="image/jpeg"
-            if blob[:8]==b"\x89PNG\r\n\x1a\n":mime="image/png"
-            elif blob[:6] in (b"GIF87a",b"GIF89a"):mime="image/gif"
-            elif blob[:4]==b"RIFF" and blob[8:12]==b"WEBP":mime="image/webp"
-            elif blob[:5]==b"<?xml" or blob[:4]==b"<svg":mime="image/svg+xml"
-            else:self._json({"error":"Разрешены только изображения JPG, PNG, GIF, WebP, SVG"},415);return
-            url=_storage_upload("lead-"+uuid.uuid4().hex[:12]+"-photo",blob,mime)
-            if not url:self._json({"error":"Хранилище фотографий временно недоступно"},503);return
-            self._json({"ok":True,"url":url});return
+                if m:files=_parse_multipart_files(body,m.group(1).strip().strip('"').encode())
+            if not files:self._json({"error":"Нужны файлы"},400);return
+            if len(files)>8:self._json({"error":"Можно прикрепить не более 8 файлов"},413);return
+            urls=[]
+            for fname,blob,declared in files:
+                if len(blob)>MAX_UPLOAD:self._json({"error":"Один файл больше 8 МБ: "+fname},413);return
+                mime=declared or ""
+                if blob[:8]==b"\x89PNG\r\n\x1a\n":mime="image/png"
+                elif blob[:2]==b"\xff\xd8":mime="image/jpeg"
+                elif blob[:6] in (b"GIF87a",b"GIF89a"):mime="image/gif"
+                elif blob[:4]==b"RIFF" and blob[8:12]==b"WEBP":mime="image/webp"
+                elif blob[:4]==b"%PDF":mime="application/pdf"
+                else:self._json({"error":"Разрешены JPG, PNG, WebP и PDF"},415);return
+                if mime not in ("image/jpeg","image/png","image/gif","image/webp","application/pdf"):
+                    self._json({"error":"Недопустимый тип файла: "+fname},415);return
+                url=_lead_upload_fast(fname,blob,mime)
+                if not url:self._json({"error":"Не удалось сохранить вложение"},503);return
+                urls.append(url)
+            self._json({"ok":True,"urls":urls,"url":urls[0] if urls else ""});return
 
         if path == "/api/lead":
             try:
@@ -4988,7 +5132,7 @@ class Handler(BaseHTTPRequestHandler):
             phone = re.sub(r"\s+", " ", str(req.get("phone") or "").strip())[:80]
             message = str(req.get("message") or "").strip()[:1000]
             page = str(req.get("page") or "/").strip()[:300]
-            extra={k:req.get(k) for k in ("city","furniture_type","photo_url","source")}
+            extra={k:req.get(k) for k in ("city","furniture_type","photo_url","attachments","source","style","color","shape","sections_count","appliances","facade","countertop","handle","additional")}
             digits = re.sub(r"\D", "", phone)
             if len(digits) < 7:
                 self._json({"error": "Укажите номер телефона"}, 400)
@@ -5224,16 +5368,14 @@ class Handler(BaseHTTPRequestHandler):
             counts[key] = len(items) if isinstance(items, list) else 0
         sm = build_sitemap(data)
         meta = _meta_of(data)
-        try:
-            backups = len(_storage_list_bucket(BACKUP_BUCKET, 200))
-        except Exception:
-            backups = 0
+        # Статус не должен ждать Supabase Storage: обзор админки обязан открываться мгновенно.
+        backups = 0
         return {
             "rev": meta["rev"], "at": meta["at"], "backups": backups,
             "db_read": bool(_db_state.get("read")),
             "db_write": _db_state.get("write"),
             "github": {"configured": bool(GITHUB_TOKEN and GITHUB_SYNC), "last_ok": _db_state.get("github")},
-            "storage": _bucket_ensure(),
+            "storage": bool(_bucket_state["ok"].get(BUCKET)) if _bucket_state["checked"].get(BUCKET) else None,
             "bucket": BUCKET,
             "ai": {"yandex": bool(YANDEX_API_KEY and FOLDER_ID), "gigachat": bool(GIGACHAT_AUTH_KEY)},
             "counts": counts,
