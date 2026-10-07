@@ -80,6 +80,15 @@ IMG_TIMEOUT = int(os.environ.get("IMG_TIMEOUT", "8"))
 IMG_PROXY = (os.environ.get("IMG_PROXY", "1") or "1").lower() not in ("0", "false", "no", "off")
 HTTP_TIMEOUT = 12
 
+# Необязательная синхронизация опубликованного CMS-снимка в GitHub.
+# Для записи нужен GitHub Personal Access Token в переменной окружения GITHUB_TOKEN.
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "").strip()
+GITHUB_REPO = os.environ.get("GITHUB_REPO", "awesome371828/mebel.ostrovsky").strip().strip("/")
+GITHUB_BRANCH = os.environ.get("GITHUB_BRANCH", "main").strip() or "main"
+GITHUB_FILE = os.environ.get("GITHUB_FILE", "mebel.py").strip().lstrip("/") or "mebel.py"
+GITHUB_SYNC = (os.environ.get("GITHUB_SYNC", "1") or "1").lower() not in ("0", "false", "no", "off")
+GITHUB_API = "https://api.github.com"
+
 # Favicon, вшитый прямо в файл: работает без интернета, без Pillow и без внешних ссылок
 FAVICON_ICO_B64 = "AAABAAQAEBAAAAAAIADjAQAARgAAACAgAAAAACAAZQQAACkCAAAwMAAAAAAgAH4HAACOBgAAQEAAAAAAIADeCgAADA4AAIlQTkcNChoKAAAADUlIRFIAAAAQAAAAEAgCAAAAkJFoNgAAAapJREFUeJyFUktuE0EQ7arqnokHz4INxDFmwyfhAJHYsAHlClyAY+QAWbFlmyOwZxEhcYCEA3gBxJHIIsLG005/qgt1bGdGVhRqVyo9vVfvPRAR1ZnbFQDUXQMbgP+O7i7M7L0DAEA0RDd0QmRUhy0DRAQAprM/Hz8dNc08Jh4Nhu9f77tFE5n1Vv1s/wBJbzL8bWa/Jj80aR/8w7rm4IJbcErOOY7xFoDtNwpFJCZ2IYTIKssRSWnj95bBaD0ajIgIEXcePTZVLUiRkyjsOpYZlkb5a3/67ezq59WHg3dvnz+181lKojgq4bsZYoznk/Oq6iGqwlCBBIhC2aZuJC1ARLIeouPPJ5eXv7XOp5RSUZSHu29qUy7NbAFFWYYQp9PZl5Ov4/G4LIqs0/vh8MmhainWSYskDt/PTr33WmtrrdYaAEMM29uDFy93JZclP7wCsF+AsLV2cnHR7/eD99lVJU3TvNrbA6WSUrp8AEhrgLOJQwjBOUeEc9soBb1yS0SqqqKbmlDRQ1OuADkhf70saZIUQ8jJGAOgEvNSD5UVAN7f1nxc/bu29h+TnvGpx7wl2wAAAABJRU5ErkJggolQTkcNChoKAAAADUlIRFIAAAAgAAAAIAgCAAAA/BjtowAABCxJREFUeJy9Vs9vG1UQfvN+7DqON4lJBJGIqqTiEIlUiAZOiRAXRIXgAOLIf8CfhBBSj4hzpR6QKEUCDghSikAlJKFA6TpNnDjxZn+8mUHvrZ3GyTp1EOVZ3vV6dud7M/N9MwvMLJ7mkk/Vu/gfAPQ5NhaD2WMBAP8ZADOfdgfn7MWBV1rgnCLneTbgRAglpZJy4BFmkBKkukAEzFwU+fVPP/753k9GGyZmcK67R8mrL73y5tLi3k4slRaCiZwRrZ1ZWHpu4cXKOE4DEJGUcn3z3ue3bjbGI7dZABaspDrsHh4cdDBPi7SrlGYW5DFskT/45bvpuRe0CUeKQAhhrQ3DmtaaiFkwgJBSaa2VUgDup1QaicDlh6XSDMBE/UTCkwEAAAnRpYAEuDyDi408r7hc/TP5i9L1yDpw97LfCQxsx7s6+VfPKZyh9BMAvAsofYFjCbigHG3BU9IX0xvLcAUMFWx1ipDwKE1AAiKWGVBSHibdLM+YkGwBjg6MROg/AhSPCFCKa6Y5c+31a4EJHKmUCowGAbnN5+fma83ZZ4Jx8GooKUCuTlKqailU0FQptR1v3/jsRjQxsb+3v7Ky8uEH77Rbf2sTFEXeju8DKGkMF3lZBMcGcEy4QIqSJPn1t/Wpyan2XvvS/KX9vd32bkspIwRLJwtQJqA8dRJhQWQJ1LCOUF0cKVUtDIMgCIPQmKDfbCQLgcwkBDmVgT+yI/LwVR0BMyEi+SMiNsYbODmpTOCdCwFSaYN5VjLW18JTbHQAVwxmh0EoBK/9vvPH/YeBMSfy4Pjqz0CI2pi3rpC+CAAcy1RK+dEn17+6fbvRiJCwdMzE4NThWFcURaMRvfbG27Wx+tl2N0QH1jKxVlorLaWMxsebU5ONKCLEsh59QnOPeHpoJqp18OzsrAARt+LO/n6n00mSpNXaPkrTHsDjL0glk27y8tWrUTRRSaSKgVP2wy9vffHtN19baxcXF4si39jYDMMQEaV0xCufAkdTV99333t/4fLlyrF2BoAZi5QJda3eJzGN8m7g+oeryenpdgqAbdpltOykIOM4XrtzZ3l5uRXHSZLMzT3/4927V5aWHj3aYaYomsiybGtra3V1tVYLXR/0+weldVA/jmVga+Rqa8vWqIMgL4qNjc16I0qz7ODwsDk9vb6+obR5GMd//vXAIn7/w1pJM6V03yMwFlik1RFQkXmboweALIo8TdOSK/V6HRGttUKIMAyZOcuyPM/r9bpSbtiVo+KYKXqs0WvmJwHc/M66J++TvmsCQJalu51271LATHPaj09wY64ccP0d+welB6gqMuYp2cxT3bcB0bMyUebbp/cBYfh4vg82CRBMKhiT/ReAKpqiZULn2pn6EOCU2+tFXlylaWBU+lc/0EaZ2jAW/Ys1OI19hk6az3s3HW35OT18/QMjX498WUYZ/gAAAABJRU5ErkJggolQTkcNChoKAAAADUlIRFIAAAAwAAAAMAgCAAAA2GBu0AAAB0VJREFUeJzVWVlvHEUQ7qrumdk1JiZ4HScGI0KEDQThIF4QEm+8cAleIv4HQuJvICIFFIlDCje8BQmQuBFWOB+AiAQcQcB2Ykder7O73p2ju1FV94zX8Wa92EYyvdbsHDtTX1d99VVNG6y1YjcNFLtsoNhlA8UuGyh22UDxfwZkN+x0PfzvARlj+BvyE8VO18Nug8SlL9ywqQ5ZawHIZJombsfmENyOFUIi0qX8URufiVL1g0YIofpBM/3dVx9+cipNU2fVkDlGCSARG83Gow89dt9NI0sLs4Vhy8O4L2uDgT233P1AWB7smM6/B2SsQcCZP3578ZXnpZQSpRUWBH3IBfQtEOVKfaXZbOh4MF6tSxUQVgHGMiaCb6yAenVRZ+nE/Y/AZhHu6SFrBYg/Lpw3xlw/uEfrjM+Sa4y1CEi2EQMVICJ5SyqUkgMGYC1Ya3JWhKWBxvLlLGkHUbm3kzYPrZRSABhD7ncwOWTCWC0AkN3gf8re43iyd0RxhQ4BZD91c3NAlrhAEaBcI1I7D5Bhmjv5IjdrrJDOg+42QsQbf31TW30BEjxTZ9Vtic2eCoSv0/vkFvalyz4+pvgWk9tRYQSXWJCHTqw5wQMl30DuI7fPecB3e8DbBmQpWmy2gys+Fs4F+SV/knCBc2qelZyYmyV8vyED3lIYKH+9HDK0NXzuyKW5+7G76OAyYuevHeEQCEBQUmrONR+anMsAIAEBKO15UNpxaA3daDhkLKd9FrzNAWmtkyRpx7Gx9MkJw6ERQiq12m5lWSasNlobSJ1lQ6nptIJuoz2BawLRY/o9oLu5zs1d+H3mTBCERaJJKQOlWPbIJ2mWjh+4+cZyFMctR+eidLjnu8y3QgyPT7KUb9VDxhgp5S8//Xz82PNDN9xgjEGA2srK0aNHn3r4wYW/zgdhRIYCkSyeX6BUJ/NBeVDHTS9STC3yliYC7h075GrLtpR6uVY79/tvleFhrTUgLler8xcvNq4s16qLQVRyRHYJ73hvjMladUCv4VzOKJyWILo2Zqse8r9QaqBcjqKS1hollkrlIAikVFIFSgVEcx90oq6wFlECSiRALujCghUIFtAJ6nYBCZZarbUx2nHctxRMWp/nxpA50aGADiXpEfcqHXK1XUDWVbH8yLnd4Sky32cAISNwvt7nd1mXdP1lfl8esq64WvKVy2elZMB/PGdjQToWSStCpUCRMlnqIr2SGk26tEMh4+ECBOjy2aQD+7CSQBC6EuG7DkEYNEgoD/s6lhc+pP4JwPeTW+0YPZRcU0jggBI4CsNjx0+cev/U0J4hR6w8ZEQZwg3UY/tCxk/QmS6VS2+89e7IyL6iSd8iIFEgKqo3QNxqNlZqAYLWJu+QRCdvrjKZZZnW6c40aIJN5apPPLDcSnPDqsB1zyR7TCLqa/lHHCyv0CCUoAZ3ZwAZrY011OEbEhWqpB4aNz3cXpi8i/GtW1F63QfB1bMgCLYFyJmcOnJvFIbV5apSCgAajUaSJHESN1ebURQS2qLV4S1RxPmT/SSsQMRqdenxJ57cu/dGqj+IWwTEamvvvOvwc8eOv/ryS0mSIOLy8vLo/gNhVJ6aOjI4eL3WupA71390iJYHlOlsYmLy6Wee3citLl7oHVdLvtYoydXWGi8k7iWV1VcwaXZwXBOQNVonbWsy3iVVU0ohIkhM4zgIQm2MREzTNAhDgUj1nCtXlmVhEGqtJbUoFlRJJy33HrfmHtYkaus2jO7zs0Zn7Saj4WxGDErR7OzszMzMF599Eaf69OlvVmq106e/WV1dnf56+uyZM7/+8nOtunTu7K+hkj/+8H0St3747tvGldp7b54UJrNZbNK2Tlo6adNfvJq1Gjpt9wtIJ+2OpQRhuYa34/iFF0+MjFQGh/ZWKsNvvf1OvV4fqhywwp587fXJw/dcqdc///zLDz78aGbmPKKcm5v/+ONP/56dZXJRj+uLB/2RXYKYxpsDcrzpFHjgZ2mtJycn5ucvxs2VgwcP1uv1qSNTWdJuNppjY2OXLs1LxMrw8KHbbpNKRuXS19PT4+M33zE5Gbfb67ns5ykEmjS+qknqwiFrsqzddO2NyDMIpapWl6IoWlxYqFQqxpilpaVDt0806iuXFy+P7h9duLSwb3S02WiMju77e3buwP79Z8+du/vw4T8vXLhpbKwbIN/7y7CMKuwNyGTt+vo1IEGVXNLLuVRKZ7TqIJVKk4S0TimRZX6LTHml0iwLSqWk1QrDME3TDWEo8FkZlDHoCYhKj2M0FE4qXr18LaP0oZWh+uyleZZu3xIpKQ+O31oIklOybtrTASi6rnM5qzsgl2UdvN74RDppjE7ZW50no3BtutcezG5SMVSl69bxtacOtZjd6y3mhl2741aJ1p6WL1N1mugBS5UGANW/UWqjXdecr/f4d/hC4DiG3bpTd6Zz9ciuIzSixCAClFdj/O//+WK7t/bXKGr9trBi66OfTnpt7LqV/H8AmuLxq++IOHwAAAAASUVORK5CYIKJUE5HDQoaCgAAAA1JSERSAAAAQAAAAEAIAgAAACUL5okAAAqlSURBVHic5VpdbFxHFZ6/+7PrtRPbuyRIwZZS2iQEEv4iFJKChEQrUppKhP8I+oqUCIknhHgACZ54AalPpeIJIQEBqiZqg6M0URIVqqRRU6moRK0Qju3ETlLba+z9u3dm0JkzM/eu3SS+Tlaq1bFlr3fvzJxv5vx85xxTrTVZz4ORdT4YWeeDkXU+GFnng5F1PhhZ54ORdT4YWeeDkQ8aAK21UqoXoug1cQJaaJrWmlJKCFFKrWYiY3TlEvY3bk/ssowLsqYhikp/6/bM317888TUNZSBaqL92VEYWhNKCaO00Wx8/5tPb4nI3M0pyrl9ShuptcYD0Mq8pzXlojq6Y3jLw+6JBw0Ad68vzP/qmV9OTU+WS2V8xwgDoht4BoODsri02G61JNGtxXkehCgsBcgGuoahzE9CSJqm9ZtTSsra6HZ/zw8WgGKMX3j17MT1a7WhWpKm9gaM1ISiasDGKBCjTAgBd0EJ44IxrhSl8ABD8eGbEWYQKK2FCLXW19+5MrzlYcZ5T1TI3EBdiCCVUmtrx05uovAGCEMAiiiitT9Go1zmwlDb3E8NrwAMmAHjSauZdlphqW/1irR6ALAcZyvOxugQ6L05ViON+4TlXZy5KAsBrwA1kPrXZpEC2l8UgDlXrTT4UJ2JahTAHS9KAZgoXIW7JeN7cyvZ6UaN8Cr8ERUexW7AmGBmfSC33dXeuPml3a/l+O1CBq25Nm2x2EuxHqpHADJBcSP0JwSVBzf2gMwnmT54d+V8jrEbMBRKKNiK9XLoDNyd0F4AsLZoxTOnbI+TgY+BL3zAXpSdBPOsn7V3aDBSq/t+yTWMYjbgeARs6YXLRWSnCA6VQ2EDrlUfY002kGkz2YJWayATxbgQCqc1kSCAcoIY959xGRTXm4SBnRm0X8fqH/W+dS1OqKAKefWwQhjP5wiCUWp3hIDImaQ7a2P0xv6zK9EajyB7p6cAcDDgaObIYXOUd7ndOUphQ5j5MhaASmRNlmolrXsz4uteu1HcxVFR1HH3uX/hTNZ7eTsXuBC+sHrkzcWGhcxaegIANuOMRXEchbFS0husCXCG/zCqFegJZfAjCEK4KwocgUIIz5wNHIAyXIMZKko0KB9bHjsebD4AxzN7e3phYZZzkZ+lgYoJzjD0+iOERwb6BwTRSqXLjrZrOrHRBS+sb3BzodxgtY9KqTjnL7xw/Pm/HBvYMKCUZ2CsXq8fOXL0S3s+NvWft8IodqKBtd6akkgztAYaEvVtSFuLjsmZoEEoOigFHAV07KE9XwYAlpI8OAA43n339tvvvD00NIy+xGRSbHZ2dm6+3m41lhZmk6jsGKolFGi4ygzGg2RpwRIN94A2h4EPKAJKWEikYgCEEHGpFMfWBrTWnPFSHHPOGOOcB1yAdhm17uKmjDNClTEOZoip5UOEEM0YWA7jVEkKV2Im0N65UUPlMK+HQ6Q+x3fkLMu3comV+dD/AV44x4tgYF636kRszQDghGzosazG/uGClXWOOBSkYXDuBM07d+72Doi9Jcym8+lEb8oqJnY5z2GpjjtIR4qRfBpP6mbZVMwJa7H5vABXxMiYTekFAFNHQAeUVUQcBkOzLbuhuSCcR+JoNtYviJEAseKjPonrlQ1k4iKHgeAFNgCqlKo0SdO2zRKNczTOkEpXR5FpmiadLAGjJmZbOqKVxGSvtwmNRWFIEKoQSCGlHNiy7aN9g0IE5okci3B1CgjkIpRpB3lUPjUjjmIoooOoZOH1AoA/HIg+jhJLqeIoPPb8iZMnXxoYGFASzx7SF8+WfD0PuaB/gDh3hLEiCIKf/fwXQ8PDqy8NFVUhQ3vQ6EwwghALG4dv/uvN06fGhoaGlJRZJoCc31twzv94VNQEY02ITGUYhT/+yU8LSVT0BtBtqnw2giQ/juJKpb+/v9+GCKAFNlPBdMe6T5eM2pSaZMiUVEEYQmraOwDG6jCPd4aYd0dKgSE6V4hYPUTPXSEUM0OBdMbrQIXM/KKBoOANGL7pzQ5TeOfFrS9XmOCb/MyTTFtCRciGT7sFSVe4yGD2Jg6EYSSVZIwB/YIjdAkh7o8uyScyvszr6/IuA/Y1XWKrSNZZxaVS/8CGngDAc3r8wBN9fX0LCwuOIVtRrNf3bkqDQiM2yOeNjaLzNZzTUg5DpCEOGNWTN2dmvvrkwUqlggTkAQNgjCmlHnlk269/88zIyAhwY9QeVyJEpmNrEEpaVC5IG6XKhLIpNHGOSpNABD84cvToD39UqLa+hg4NSJmm6eTEhCsF0lSmmzZt6rTb8/U6d40Mp/RZOPM0buWySqkNGzZWa7XVS1IQgNZKplqlRGupFOSPQdwdLNX9twyV0u/Rkrp/AEomqtOC+ocbhglJEQQ4VwRBp9UMw1gqmSRJXCq3m40ojmUKPlGEYbvZDMNIKZmmSRTFSZpqpcI4brdakPiHYafRoIxb35UVaIzWMW5S5DsCu8eZqbQj2w3QZsawxomcPiiVx8cnxsevzc7Nj/39lIj7L712eXz8Wlwqj506JaLyK//45/XpG/V6/eXTp4O4fOWNNyYmrkXl/ouXLtXn5zhn58+dC4Jg+sb1k8ePiyBQaQe+E/MtE5Um8GenJduNtLmkZbqWOACK02mZl10FD0iFRTAzM/3Wv69SSvbu3UspKZfLZ86ebTSbkxOTPCxVq7UTJ17UWu/fv5+J6OrVq7VqdfNHHrp48VKtVhscHHz99Sv7Hv3is8/+lgvxlScPknYrl8W7i6DImmTaXuJRmfGg2A2opO2LmcuNT4PZjY2N1Wof2v7xTzX/V9/5yU8PD1efe+53hw59LWnMb9u5u9lo3Lp1a/dnPkdIp1wun79w/q/H/jQ5ORnHkVKqVq3+8Q+/37V71/bt23TS7nY8+e1Qn6jsNLu6JKsBkNf7bi2khPLZudnDh787Pz935tRLcV9FyyQQYseO7Rurm3gQvvbqhWq1Ojo6cu7lMULCpaWlxx977PD3nt66dWtjqRmUKmfPnU+S9IkDB6anZ+h7F4JyzQ7MKNJOERWy2S369q51oaWXdEZGRj68efPI6OiZM2cgTYFeL/vOt7+VNheZEEmSPPXUQREEly9flklr965dlUqf7DT37Pns4OBGmbS/8fVDX3h0v5Ry377PyzS5ewKA7RMtJQkKeCGdNhdt3Tjz31nhDbqopr8blMtJowGWXS7LVktJqYkOSyXZ6WhNRBx1Gg3jhcANBXEkk1RJGfRV0maDaCKiMGm37yB2xl+xASRKlWVQ7+ZGZXtJyRSb7yubPphYYiKCOQpSAFMPhTd9wgXcSS+vtZhZlJBs+p0xuD8YE3GlgBdiIoT4lVWYVxbQTWfYbU8p5ULcuHnjv5PjwtdPDZdTUkVh9IltOznjyN78LHZH6ZcN0yQvGshkuwmmY33EnbqhXd1FYHhK5TIG20kFwy/Sgu/aC3iXElHfSnO/ZyTWgEEmy2bdZYJvGfsV8qStSBOG5npwiomIh5jvFwMAw4TGDpAVX6PK+2kshLr2U67bkrVcXVuw2zPacW/+w3jAoVpB75ON+r46/otDVofDd1EYWzVxXUBXA8spYb4ep5etkKuq22IpYyJkWK25fzrdm6FzELAA7PJV11m7y3g/ALiv8cH7pz/yPhv/B1KScYDJmsc3AAAAAElFTkSuQmCC"
 FAVICON_PNG180_B64 = "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9qce94Qnjtf3DZaGUVAwlcRELY2asgkwPwUpMzHMBYqKf0NTo6nZV4c45wCaFno8S/ia6Y9g7qq0djoGcexu+eaeXUcc9dbffeu+22599rN+6bYDG/3hikgzO/FADR7z2Mfs2LF65llnnXzq90xHI+c0sQ9AatNf3vm7b33LVZ+96uUvf+nPP+s5j3rUf3vJSy78xte+1F9eEbH0QfHe+6ra2H/LeG3v5v69owN7127b2zTj9bUDjTTldth42jfccONFF1703d/93S97+cummwcMX5m+1d3QNynzAEOmrT4u2F3pZgEE8x1GPu5U42iaogUAI0NAZjysBENRxldmmsnD4XxvZXVlaceRaDZPvffJ73rXO/fs2fP8X37edDrtD/pA01r6RH7pw3/1sbW1tcc/9ifRjHTPjfJrhjuO+LdPf+rNb37L+c867/se/ODJ5v5Xv/rXl5eXX3nxq5yvnPd2W4ZzzleVd86np1dV3vcHw6V+rw/nUuyMnK7VldUrPv43n7/6qt954xt3Hb27ntbMQkyDwaDX682Ur7OFyWy24cqPaKu+D7ensEIglwaQQ20cuSlqlprNaAqk5hPP+VvF3IpM8k9EXE8ne/Z8czqdsK/WDqyd/v0/9LZLLvnHK//x3Kc+de9t+5zvhWvTNE1vafUTn/i7Rz/qka973W+fe+459/2e75lsbnBuoACQ3mBww9evO++88x56xhnnnf+cyfpaPRkff9J9fuO1r7nssste99rXVoPl0EAOozMH1tZu/ubNKa3LpePmaHNtba2t/Me8tr526969z//VX7n/aaeNDuz3VRXygH379u0/sH8rvzpzujwLpWftkC2BIirvWJq0aeo7cKD+Fa94xZ3nOaZAYzvSWzCdsFWHidvSbwj6fNPxiJkf9vCH7dq5g4B6Mj7p3qeefv/73nDTnt3HHHPSKfeWehrKFuf9xvra17/x9Z8999xnPvOZUtfKHdJz9b3BZ//93yeT6Qte8KtHHX1MM51WlW/G4++63/12H33Urbfd9n2nnz5cGoay0zk32lg/6eSTf+gHH2Kt2DneXFs7/vjjf/AhD2ZzHMxuY3PzR3/0v577tHOnow2X+nVMtLa29oDTTn/AA05DU7eq0C200jELCTJjJrjEmsUahK6ri3va2TnfO5SNt2ayKfUkLTLYBqCDSujNeM7WzYgzkVVV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"
@@ -106,6 +115,9 @@ FAVICON_URL = "https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public
 # ============================================================
 #  ДЕФОЛТНЫЙ КОНТЕНТ (актуальная версия сайта; БД перекрывает эти значения)
 # ============================================================
+# <<<GITHUB_CMS_DATA_START>>>
+GITHUB_CMS_SNAPSHOT = {}
+# <<<GITHUB_CMS_DATA_END>>>
 # <<<DEFAULT_DATA_START>>>
 DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/logo/logo-512.jpg', 'title': 'Кухни Островский — кухни на заказ в Ростове, Батайске и Азове | Мебель под ключ',
          'keywords': 'кухни на заказ Ростов-на-Дону, кухни на заказ Ростов, кухни Ростов, кухни Батайск, кухни на заказ Батайск, кухни Азов, кухни на заказ Азов, кухонный гарнитур Ростов, мебель на заказ Ростов, корпусная мебель Ростов, шкафы на заказ Ростов, гардеробные на заказ Ростов, прихожие на заказ Ростов, кухонный гарнитур Батайск, мебель на заказ Батайск, корпусная мебель Батайск, шкафы на заказ Батайск, гардеробные Батайск, прихожие Батайск, кухонный гарнитур Азов, мебель на заказ Азов, корпусная мебель Азов, шкафы на заказ Азов, гардеробные Азов, прихожие Азов, кухня по индивидуальным размерам Ростов, кухня по проекту Ростов, угловая кухня Ростов, прямая кухня Ростов, П-образная кухня Ростов, кухня с островом Ростов, современная кухня Ростов, классическая кухня Ростов, кухни Ростовская область, мебель на заказ Ростовская область',
@@ -130,8 +142,8 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
  'code': {'head': '', 'body': ''},
  'lead_form': {'enabled': True, 'title': 'Оставить заявку', 'subtitle': 'Оставьте номер — свяжемся и обсудим задачу.', 'button': 'Отправить заявку',
                'kicker': 'Связаться', 'note': 'Контакт нужен только для связи по заявке.'},
- 'animations': {'enabled': True, 'parallax': True, 'hover3d': True, 'sparks': True, 'scroll_reveal': True,
-                'text_reveal': True, 'loader': True, 'intensity': 'full'},
+ 'animations': {'enabled': True, 'parallax': False, 'hover3d': False, 'sparks': False, 'scroll_reveal': True,
+                'text_reveal': True, 'loader': True, 'safe_mode': True, 'smooth_scroll': True, 'intensity': 'calm'},
  'sections': {'stats': True, 'about': True, 'consult': True, 'lead_form': True, 'works': True, 'reviews': True,
               'services': True, 'process': True, 'guarantees': True, 'cities': True, 'cta': True,
               'contacts': True, 'footer': True, 'cookie': True},
@@ -938,6 +950,7 @@ header.solid{background:{{design.bg}}eb}
 .menu.open li:nth-child(1){animation-delay:.02s}.menu.open li:nth-child(2){animation-delay:.06s}.menu.open li:nth-child(3){animation-delay:.1s}
 .menu.open li:nth-child(4){animation-delay:.14s}.menu.open li:nth-child(5){animation-delay:.18s}.menu.open li:nth-child(6){animation-delay:.22s}
 .menu.open li:nth-child(7){animation-delay:.26s}.menu.open li:nth-child(8){animation-delay:.3s}.menu.open li:nth-child(9){animation-delay:.34s}
+.ost-safe-anim .spark,.ost-safe-anim #cursorGlow{display:none!important}.ost-safe-anim .panel .bg{transform:none!important}.ost-safe-anim *{scroll-behavior:auto!important}.ost-safe-anim .svc,.ost-safe-anim .step,.ost-safe-anim .guar,.ost-safe-anim .city,.ost-safe-anim .rev-card,.ost-safe-anim .about-card,.ost-safe-anim .call-block,.ost-safe-anim .stat{transition:opacity .42s ease,transform .42s ease,box-shadow .42s ease,border-color .42s ease}
 /* ====== усиленные анимации ====== */
 @keyframes h2sweep{0%{background-position:180% 0}100%{background-position:-180% 0}}
 @keyframes starShine{0%{background-position:190% 0}100%{background-position:-190% 0}}
@@ -1589,9 +1602,13 @@ html.no-anim .spark{display:none}
 
 <script>
 (function(){
-const reduced=!(window.__OST_ANIM&&window.__OST_ANIM.enabled);
-const parallax=!!(window.__OST_ANIM&&window.__OST_ANIM.parallax);
-const fine=!!(window.__OST_ANIM&&window.__OST_ANIM.hover3d);
+const CFG0=window.__OST_ANIM||{enabled:true,parallax:false,hover3d:false,safe:true};
+const touch=('ontouchstart' in window)||(navigator.maxTouchPoints>0);
+const lowEnd=(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4)||((navigator.deviceMemory||99)<=4);
+const safe=CFG0.safe!==false;
+const reduced=!(CFG0.enabled);
+const parallax=!!CFG0.parallax&&!safe&&!touch&&!lowEnd;
+const fine=!!CFG0.hover3d&&!safe&&!touch&&!lowEnd;
 const progress=document.getElementById('progress');
 const header=document.getElementById('header');
 const burger=document.getElementById('burger'),menu=document.getElementById('menu'),scrim=document.getElementById('scrim');
@@ -1814,14 +1831,18 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
 <script id="beautyScript">
 (function(){
   var d=document;
-  var CFG=window.__OST_ANIM||{enabled:true,parallax:true,hover3d:true,sparks:true,scroll:true,text:true,intensity:'full'};
+  var CFG=window.__OST_ANIM||{enabled:true,parallax:false,hover3d:false,sparks:true,scroll:true,text:true,safe:true,intensity:'full'};
   var OFF=/[?&]anim=0/.test(location.search);
   var FORCE=/[?&]anim=1/.test(location.search);
-  var reduced=OFF||(!CFG.enabled&&!FORCE);
-  var fine=!!CFG.hover3d;
-  var parallax=!!CFG.parallax;
+  var prefersReduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var touch=('ontouchstart' in window)||(navigator.maxTouchPoints>0);
+  var lowEnd=(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4)||((navigator.deviceMemory||99)<=4);
+  var safe=CFG.safe!==false;
+  var reduced=OFF||prefersReduced||(!CFG.enabled&&!FORCE);
+  var fine=!!CFG.hover3d&&!safe&&!touch&&!lowEnd;
+  var parallax=!!CFG.parallax&&!safe&&!touch&&!lowEnd;
   if(reduced)d.documentElement.classList.add('no-anim');
-  d.documentElement.classList.add('ost-anim-'+(CFG.intensity||'full'));
+  d.documentElement.classList.add('ost-anim-'+(CFG.intensity||'calm'));if(CFG.safe)d.documentElement.classList.add('ost-safe-anim');
   function all(sel,root){return Array.prototype.slice.call((root||d).querySelectorAll(sel));}
 
   /* 1. Заголовок героя — появление по словам */
@@ -2527,24 +2548,33 @@ def _private_json_get(filename, default):
     with _private_cache_lock:
         if filename in _private_cache:
             return _json_clone(_private_cache[filename])
-    try:
-        blob = _storage_get(BACKUP_BUCKET, filename, timeout=3)
-        if not blob:
-            return _json_clone(default)
-        obj = json.loads(blob.decode("utf-8"))
-        with _private_cache_lock:
-            _private_cache[filename] = _json_clone(obj)
-        try:
-            tmp = path + ".tmp"
-            with open(tmp, "w", encoding="utf-8") as f:
-                json.dump(obj, f, ensure_ascii=False, indent=1)
-            os.replace(tmp, path)
-        except Exception:
-            pass
-        return obj
-    except Exception as e:
-        print("[private-json] cloud read {}: {}".format(filename, e), flush=True)
-        return _json_clone(default)
+    # Никогда не заставляем страницу ждать облако. Если локальной копии нет,
+    # отдаём default мгновенно, а Storage подтягиваем в фоне.
+    with _private_cache_lock:
+        key = "__loading__" + filename
+        if not _private_cache.get(key):
+            _private_cache[key] = True
+            def preload():
+                try:
+                    blob = _storage_get(BACKUP_BUCKET, filename, timeout=4)
+                    if blob:
+                        obj = json.loads(blob.decode("utf-8"))
+                        with _private_cache_lock:
+                            _private_cache[filename] = _json_clone(obj)
+                        try:
+                            tmp = path + ".tmp"
+                            with open(tmp, "w", encoding="utf-8") as f:
+                                json.dump(obj, f, ensure_ascii=False, indent=1)
+                            os.replace(tmp, path)
+                        except Exception:
+                            pass
+                except Exception as e:
+                    print("[private-json] cloud preload {}: {}".format(filename, e), flush=True)
+                finally:
+                    with _private_cache_lock:
+                        _private_cache.pop(key, None)
+            threading.Thread(target=preload, name="private-json-preload", daemon=True).start()
+    return _json_clone(default)
 
 
 def _private_cloud_put_async(filename, blob):
@@ -2865,12 +2895,14 @@ def load_fresh():
                 _cache_ts = time.time()
                 print("[load] БД недоступна — отдаю кэш", flush=True)
                 return _data_cache
-            _data_cache = _json_clone(DEFAULT_DATA)
+            base_defaults = _merge_deep(DEFAULT_DATA, GITHUB_CMS_SNAPSHOT if isinstance(GITHUB_CMS_SNAPSHOT, dict) else {})
+            _data_cache = _json_clone(base_defaults)
             _cache_ts = time.time()
             print("[load] БД недоступна — дефолтный контент", flush=True)
             return _data_cache
         if raw is None:
-            data = _json_clone(DEFAULT_DATA)
+            base_defaults = _merge_deep(DEFAULT_DATA, GITHUB_CMS_SNAPSHOT if isinstance(GITHUB_CMS_SNAPSHOT, dict) else {})
+            data = _json_clone(base_defaults)
             print("[load] строка в БД пустая — дефолтный контент", flush=True)
         else:
             data = _merge_deep(DEFAULT_DATA, _migrate(raw))
@@ -2949,6 +2981,53 @@ def _backup_save(data, rev, keep=40):
         return None
 
 
+def _github_sync_snapshot_async(data):
+    """Асинхронно обновляет CMS-снимок внутри mebel.py в GitHub.
+    Supabase остаётся основной рабочей базой; GitHub получает резервный снимок
+    между специальными маркерами. Нужен GITHUB_TOKEN с Contents: write.
+    """
+    if not (GITHUB_SYNC and GITHUB_TOKEN and GITHUB_REPO and GITHUB_FILE):
+        return False
+    payload = _json_clone(data)
+    def worker():
+        try:
+            api_url = "{}/repos/{}/contents/{}".format(GITHUB_API, GITHUB_REPO, urllib.parse.quote(GITHUB_FILE, safe="/"))
+            headers = {"Authorization": "Bearer " + GITHUB_TOKEN, "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "Ostrovsky-CMS/1.0"}
+            req = urllib.request.Request(api_url + "?ref=" + urllib.parse.quote(GITHUB_BRANCH), headers=headers)
+            with urllib.request.urlopen(req, timeout=15) as r:
+                remote = json.loads(r.read().decode("utf-8"))
+            sha = remote.get("sha")
+            raw = base64.b64decode((remote.get("content") or "").replace("\n", "")).decode("utf-8")
+            start, end = "# <<<GITHUB_CMS_DATA_START>>>", "# <<<GITHUB_CMS_DATA_END>>>"
+            a, b = raw.find(start), raw.find(end)
+            snapshot = json.dumps(payload, ensure_ascii=False, sort_keys=True, indent=1)
+            block = start + "\nGITHUB_CMS_SNAPSHOT = " + snapshot + "\n" + end
+            if a < 0 or b < 0 or b <= a:
+                # Первая синхронизация со старой версией файла: вставляем маркеры
+                # перед DEFAULT_DATA_START, после чего следующие сохранения обновляют только снимок.
+                anchor = raw.find("# <<<DEFAULT_DATA_START>>>")
+                if anchor < 0:
+                    raise RuntimeError("в mebel.py не найдено место для CMS-снимка")
+                new_raw = raw[:anchor] + block + "\n" + raw[anchor:]
+            else:
+                new_raw = raw[:a] + block + raw[b + len(end):]
+            da, db = new_raw.find("# <<<DEFAULT_DATA_START>>>"), new_raw.find("# <<<DEFAULT_DATA_END>>>")
+            if da >= 0 and db > da:
+                ds = da + len("# <<<DEFAULT_DATA_START>>>")
+                new_raw = new_raw[:ds] + "\nDEFAULT_DATA = " + repr(payload) + "\n" + new_raw[db:]
+            body = json.dumps({"message": "cms: sync content from admin rev {}".format(_meta_of(payload)["rev"]), "content": base64.b64encode(new_raw.encode("utf-8")).decode("ascii"), "branch": GITHUB_BRANCH, "sha": sha}).encode("utf-8")
+            put = urllib.request.Request(api_url, data=body, headers={**headers, "Content-Type":"application/json"}, method="PUT")
+            with urllib.request.urlopen(put, timeout=20) as r:
+                result = json.loads(r.read().decode("utf-8") or "{}")
+            _db_state["github"] = True
+            print("[github] CMS snapshot synced: {}".format(result.get("content", {}).get("html_url", "ok")), flush=True)
+        except Exception as e:
+            _db_state["github"] = False
+            print("[github] sync error: {}".format(e), flush=True)
+    threading.Thread(target=worker, name="github-cms-sync", daemon=True).start()
+    return True
+
+
 def save_versioned(data, client_rev=None, force=False, who=""):
     """Сохранение с защитой от перезаписи чужого снимка (другая вкладка/устройство)."""
     global _data_cache, _cache_ts
@@ -2971,6 +3050,7 @@ def save_versioned(data, client_rev=None, force=False, who=""):
     if not ok:
         return {"ok": False, "error": "запись в Supabase не прошла (проверьте SUPABASE_SERVICE_KEY на хостинге)"}
     _audit("Сохранение контента", who, "rev {} → {}".format(cur_rev, cur_rev + 1))
+    github_queued = _github_sync_snapshot_async(new)
     verified = False
     check, ok_read = _fetch_from_supabase(timeout=10)
     if ok_read and isinstance(check, dict):
@@ -2982,7 +3062,7 @@ def save_versioned(data, client_rev=None, force=False, who=""):
         _data_cache = stored
         _cache_ts = time.time()
         _bump_data_sig()
-    return {"ok": True, "rev": cur_rev + 1, "verified": bool(verified), "backup": backup}
+    return {"ok": True, "rev": cur_rev + 1, "verified": bool(verified), "backup": backup, "github_sync": "queued" if github_queued else "not_configured"}
 
 
 # ============================================================
@@ -3093,7 +3173,7 @@ def _inject_site_ui(html, data):
     logo = _escape(str(seo.get("favicon_url") or brand.get("logo_url") or "/favicon-192x192.png"))
     if loader_enabled and 'id="ostSiteLoader"' not in html:
         loader = """<style id="ostLoaderStyles">
-#ostSiteLoader{position:fixed;inset:0;z-index:100000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:radial-gradient(circle at 50% 42%,rgba(236,207,160,.16),transparent 27%),radial-gradient(circle at 20% 80%,rgba(163,124,63,.15),transparent 35%),linear-gradient(135deg,#100d09,#070605 58%,#161007);transition:opacity .5s cubic-bezier(.22,.61,.36,1),visibility .5s ease}
+html{scrollbar-gutter:stable;overscroll-behavior-x:none}body{overflow-x:clip}img{content-visibility:auto}#ostSiteLoader{position:fixed;inset:0;z-index:100000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:radial-gradient(circle at 50% 42%,rgba(236,207,160,.16),transparent 27%),radial-gradient(circle at 20% 80%,rgba(163,124,63,.15),transparent 35%),linear-gradient(135deg,#100d09,#070605 58%,#161007);transition:opacity .5s cubic-bezier(.22,.61,.36,1),visibility .5s ease}
 #ostSiteLoader img{width:76px;height:76px;object-fit:cover;border-radius:22px;border:1px solid rgba(236,207,160,.35);box-shadow:0 0 45px rgba(236,207,160,.18),0 18px 45px -25px #000;animation:loaderLogoPop .9s cubic-bezier(.34,1.56,.64,1) both}
 .ostLoaderName{font:600 23px/1 Georgia,serif;letter-spacing:.8px;color:#f8efe0;animation:loaderTextIn .7s ease .12s both}.ostLoaderLine{width:80px;height:1px;background:linear-gradient(90deg,transparent,#ecd09c,transparent);opacity:.7;animation:loaderLine 1s ease .25s both}
 #ostSiteLoader.done{opacity:0;visibility:hidden;pointer-events:none}
@@ -3128,8 +3208,9 @@ def render_site():
     anim_sparks = bool(anim.get("sparks", True))
     anim_scroll = bool(anim.get("scroll_reveal", True))
     anim_text = bool(anim.get("text_reveal", True))
+    anim_safe = bool(anim.get("safe_mode", True))
     anim_mode = str(anim.get("intensity") or "full")
-    cfg = '<script>window.__OST_ANIM={enabled:' + str(anim_enabled).lower() + ',parallax:' + str(anim_parallax).lower() + ',hover3d:' + str(anim_hover).lower() + ',sparks:' + str(anim_sparks).lower() + ',scroll:' + str(anim_scroll).lower() + ',text:' + str(anim_text).lower() + ',intensity:' + json.dumps(anim_mode, ensure_ascii=False) + '};</script>'
+    cfg = '<script>window.__OST_ANIM={enabled:' + str(anim_enabled).lower() + ',parallax:' + str(anim_parallax).lower() + ',hover3d:' + str(anim_hover).lower() + ',sparks:' + str(anim_sparks).lower() + ',scroll:' + str(anim_scroll).lower() + ',text:' + str(anim_text).lower() + ',safe:' + str(anim_safe).lower() + ',intensity:' + json.dumps(anim_mode, ensure_ascii=False) + '};</script>'
     html = html.replace("</head>", cfg + "</head>", 1)
     html = _proxify_urls(html)
     html = _inject_site_ui(html, data)
@@ -3365,6 +3446,7 @@ def _svg_icon(_unused=None):
 
 
 ADMIN_SCHEMA = [
+    {"id":"overview","group":"Рабочее","title":"Обзор","hint":"Состояние сайта, заявки, версия, сохранение и GitHub.","fields":[{"type":"buttons","buttons":[{"act":"open","label":"Открыть сайт","cls":"btn-gold"},{"act":"preview-mobile","label":"Телефон"},{"act":"status","label":"Проверить сайт"},{"act":"export","label":"Экспорт"}]},{"type":"info","text":"<b>Центр управления:</b> здесь можно быстро проверить сайт и состояние CMS."}]},
     {"id": "seo", "group": "SEO и код", "title": "SEO и мета", "hint": "Заголовок и описание страницы, Open Graph, robots, sitemap.",
      "fields": [
          {"path": "seo.title", "label": "Title", "type": "textarea", "rows": 2, "ai": "seo_title"},
@@ -3447,6 +3529,8 @@ ADMIN_SCHEMA = [
          {"path": "animations.hover3d", "label": "3D-наклон карточек и фото", "type": "check", "chkLabel": "включено"},
          {"path": "animations.sparks", "label": "Искры при клике", "type": "check", "chkLabel": "включено"},
          {"path": "animations.loader", "label": "Короткая заставка при первом входе", "type": "check", "chkLabel": "включена"},
+         {"path": "animations.safe_mode", "label": "Безопасные анимации для всех устройств", "type": "check", "chkLabel": "включено", "hint": "Оставляет плавные появления и hover, но убирает тяжёлые эффекты на слабых устройствах."},
+         {"path": "animations.smooth_scroll", "label": "Плавная прокрутка", "type": "check", "chkLabel": "включена"},
          {"path": "animations.intensity", "label": "Интенсивность", "type": "select", "options": [
              {"value": "calm", "label": "Спокойная"},
              {"value": "full", "label": "Полная"},
@@ -3724,7 +3808,8 @@ ADMIN_SCHEMA = [
          {"type": "info", "text": "<b>7. SEO</b>\nTitle и Description должны описывать реальные услуги и города. Не вставляйте огромные списки слов в видимый текст сайта — поисковику важнее полезный контент."},
          {"type": "info", "text": "<b>8. Что нельзя выдумывать</b>\nНе добавляйте от себя цены, сроки, гарантию, бесплатные услуги, материалы или города. Если факт неизвестен — сначала спросите Романа."},
          {"type": "info", "text": "<b>9. Проверка сайта</b>\nПосле крупных изменений нажмите «Открыть сайт», проверьте телефон, кнопки, фото и мобильную версию. На телефоне меню и форма должны оставаться удобными."},
-         {"type": "info", "text": "<b>10. Правило перед публикацией</b>\nСначала проверить → потом сохранить → потом открыть сайт в новой вкладке → затем ещё раз проверить на телефоне."}
+         {"type": "info", "text": "<b>10. Правило перед публикацией</b>\nСначала проверить → потом сохранить → потом открыть сайт в новой вкладке → затем ещё раз проверить на телефоне."},
+         {"type": "info", "text": "<b>11. GitHub</b>\nПосле сохранения CMS может автоматически отправлять снимок контента в репозиторий GitHub. Для этого на хостинге должен быть задан GITHUB_TOKEN с правом Contents: write. Сам токен в админке не хранится и посетителям не показывается."}
      ]},
 
     {"id": "tools", "group": "Инструменты", "title": "Инструменты и связь",
@@ -3735,6 +3820,7 @@ ADMIN_SCHEMA = [
              {"act": "ai-seo", "label": "Сгенерировать SEO через AI", "cls": ""},
              {"act": "export", "label": "Скачать бэкап (JSON)", "cls": ""},
              {"act": "import", "label": "Загрузить бэкап", "cls": ""},
+             {"act": "preview", "label": "Предпросмотр", "cls": ""},
              {"act": "open", "label": "Открыть сайт", "cls": ""},
              {"act": "reload", "label": "Отменить изменения", "cls": "btn-red"},
          ]},
@@ -3834,12 +3920,13 @@ main{flex:1;min-width:0;max-width:1080px;padding:24px clamp(16px,3vw,30px) 150px
 .page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:18px}.eyebrow-admin{display:inline-flex;align-items:center;gap:7px;color:#738193;font-size:10px;letter-spacing:2px;font-weight:800}.live-pill{display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid rgba(236,207,160,.12);background:rgba(255,255,255,.025);border-radius:999px;color:#9e9588;font-size:11px}.live-pill i{width:7px;height:7px;border-radius:50%;background:#7bd69c;box-shadow:0 0 0 0 rgba(123,214,156,.5);animation:softPulse 2s infinite}.empty-leads{display:flex;flex-direction:column;gap:5px;align-items:center;justify-content:center;min-height:180px;text-align:center}.empty-leads strong{font-size:16px;color:#eee4d5}.empty-leads span{font-size:12px;color:#776f63}
 h2{font-family:Georgia,serif;font-size:24px;color:#fff;margin-bottom:6px}
 p.hint{color:var(--mut);font-size:13px;margin-bottom:18px}
-.field{margin-bottom:15px;animation:fadeUp .5s cubic-bezier(.16,1,.3,1) both;animation-delay:var(--d,0s)}
+.field{margin-bottom:15px;position:relative;animation:fadeUp .5s cubic-bezier(.16,1,.3,1) both;animation-delay:var(--d,0s)}
 .field>label{display:flex;align-items:center;gap:8px;color:var(--gs);font-size:11px;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:6px;font-weight:600}
 .field input,.field textarea,.field select{width:100%;padding:10px 13px;background:rgba(0,0,0,.38);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#fff;font-size:14px;font-family:inherit;transition:border-color .35s,box-shadow .35s,background .35s}
 .field textarea{resize:vertical;min-height:64px;line-height:1.55}
 .field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:rgba(212,175,106,.55);box-shadow:0 0 0 3px rgba(212,175,106,.09);background:rgba(0,0,0,.5)}
 .field .mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
+.changed-field{animation:fieldFlash .8s ease both}.char-count{position:absolute;right:2px;bottom:3px;color:#6f6659;font-size:10px;pointer-events:none}@keyframes fieldFlash{0%{box-shadow:0 0 0 0 rgba(236,207,160,0)}35%{box-shadow:0 0 0 3px rgba(236,207,160,.12)}100%{box-shadow:none}}
 .fhint{color:#6f6659;font-size:11.5px;margin-top:5px}
 .img-row{display:flex;gap:6px;align-items:stretch}
 .img-row input{flex:1}
@@ -3882,6 +3969,7 @@ p.hint{color:var(--mut);font-size:13px;margin-bottom:18px}
 .skel.w40{width:40%}.skel.w70{width:70%}.skel.big{height:42px}
 .srctab{color:#6f6659;font-size:11px}
 mark.hit{background:rgba(212,175,106,.25);color:#fff;border-radius:3px;padding:0 2px}
+.lead-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.lead-search{flex:1;min-width:180px;padding:10px 12px;border-radius:9px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.35);color:#fff}.lead-filter{padding:10px 12px;border-radius:9px;border:1px solid rgba(255,255,255,.1);background:#111;color:#eee}.lead-card.unread{border-color:rgba(236,207,160,.34);box-shadow:0 14px 34px -28px rgba(236,207,160,.5)}.lead-name{font-size:16px;font-weight:700;color:#f5efe3}.lead-phone{color:#ecd09c;text-decoration:none;font-weight:600}.lead-date{font-size:11px;color:#776f63}.lead-msg{margin-top:10px;color:#c7beaf;white-space:pre-wrap}.lead-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.preview-frame{width:100%;height:72vh;border:1px solid rgba(236,207,160,.16);background:#080706;border-radius:14px}.device-switch{display:flex;gap:7px;flex-wrap:wrap}.device-switch .active{background:rgba(212,175,106,.16);color:#fff;border-color:rgba(212,175,106,.4)}
 @media(max-width:820px){
  .layout{flex-direction:column}
  nav.side{width:100%;max-height:none;position:static;display:flex;flex-wrap:wrap;gap:6px;padding:8px;border-right:none;border-bottom:1px solid var(--bd);overflow:visible}
@@ -3909,6 +3997,7 @@ mark.hit{background:rgba(212,175,106,.25);color:#fff;border-radius:3px;padding:0
 .audit-row{display:grid;grid-template-columns:145px 180px 1fr;gap:12px;color:#c7bdaf;font-size:12px}.audit-row b{color:#ecd09c}
 @media(max-width:700px){.dashboard{grid-template-columns:1fr 1fr}.audit-row{grid-template-columns:1fr}.lead-top{display:block}}
 @media(max-width:480px){.dashboard{grid-template-columns:1fr}}
+.side-head{display:flex;align-items:center;gap:8px;padding:7px 8px 12px;color:#8e9baa;font-size:10px;letter-spacing:1.5px}.side-collapse{width:29px;height:29px;border-radius:8px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.035);color:#9aa8b7;cursor:pointer}.overview-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:10px 0 20px}.overview-card{border:1px solid rgba(236,207,160,.12);border-radius:16px;padding:18px;background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.015));box-shadow:0 20px 50px -38px #000;animation:fadeUp .45s cubic-bezier(.16,1,.3,1) both}.overview-card span{display:block;color:#7e8997;font-size:10px;text-transform:uppercase;letter-spacing:1.4px}.overview-card b{display:block;margin-top:8px;color:#f5ecdf;font:600 23px/1 Georgia,serif}.overview-card small{display:block;margin-top:7px;color:#756e64;font-size:11px}.side-collapsed nav.side{width:68px}.side-collapsed nav.side .cap,.side-collapsed nav.side .nav-group,.side-collapsed nav.side .side-head b,.side-collapsed nav.side .side-search input{display:none}.side-collapsed nav.side a{justify-content:center}@media(max-width:820px){.overview-grid{grid-template-columns:1fr 1fr}}
 </style></head><body>
 <header>
 <div class="brand"><span class="mark"></span>Кухни Островский<span>CMS</span><span class="status" id="status">Загрузка…</span><span class="status" id="revInfo" style="background:rgba(255,255,255,.05);color:#a2988a;border:1px solid rgba(255,255,255,.08)">rev —</span></div>
@@ -3995,25 +4084,25 @@ function searchHTML(){
   });
   return h;
 }
+var LEADS_CACHE=[];
 function renderLeads(){
-  q('#main').innerHTML='<div class="page-head"><div><span class="eyebrow-admin">ВХОДЯЩИЕ</span><h2>Заявки</h2><p class="hint">Новые обращения с формы сайта. Они сохраняются автоматически и сразу появляются здесь.</p></div><div class="live-pill"><i></i> Форма онлайн</div></div><div class="dashboard"><div class="dash"><b id="leadTotal">0</b><span>всего заявок</span></div><div class="dash"><b id="leadUnread">0</b><span>новых</span></div><div class="dash"><b>∞</b><span>принимаем обращения</span></div></div><div class="actions" style="margin-bottom:16px"><button class="btn btn-gold" id="refreshLeads">Обновить</button><button class="btn" id="readAllLeads">Отметить всё прочитанным</button></div><div id="leadsOut"><div class="info empty-leads"><strong>Проверяем заявки…</strong><span>Это займёт совсем немного времени.</span></div></div>';
-  q('#refreshLeads').onclick=loadLeads;
-  q('#readAllLeads').onclick=function(){api('/admin/api/leads/read',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}).then(loadLeads)};
+  q('#main').innerHTML='<div class="page-head"><div><span class="eyebrow-admin">ВХОДЯЩИЕ</span><h2>Заявки</h2><p class="hint">Все обращения с формы сайта. Список открывается из локального кэша сразу, а облачная копия догружается в фоне.</p></div><div class="live-pill"><i></i> Форма онлайн</div></div><div class="dashboard"><div class="dash"><b id="leadTotal">0</b><span>всего заявок</span></div><div class="dash"><b id="leadUnread">0</b><span>новых</span></div><div class="dash"><b id="leadToday">0</b><span>сегодня</span></div></div><div class="lead-toolbar"><input id="leadSearch" class="lead-search" placeholder="Поиск по имени, телефону или сообщению…"><select id="leadFilter" class="lead-filter"><option value="all">Все</option><option value="new">Новые</option><option value="read">Прочитанные</option></select><button class="btn btn-gold" id="refreshLeads">Обновить</button><button class="btn" id="exportLeads">Экспорт CSV</button><button class="btn" id="readAllLeads">Отметить всё прочитанным</button></div><div id="leadsOut"><div class="empty-leads info"><strong>Загружаем список…</strong><span>Если заявок нет — это состояние покажется автоматически.</span></div></div>';
+  q('#refreshLeads').onclick=loadLeads;q('#readAllLeads').onclick=function(){api('/admin/api/leads/read',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}).then(loadLeads)};
+  q('#exportLeads').onclick=function(){location.href='/admin/api/leads/export'};
+  q('#leadSearch').oninput=renderLeadList;q('#leadFilter').onchange=renderLeadList;
   loadLeads();
 }
+function renderLeadList(){
+  var out=q('#leadsOut');if(!out)return;
+  var needle=String((q('#leadSearch')||{}).value||'').toLowerCase().trim(),filter=(q('#leadFilter')||{}).value||'all';
+  var items=LEADS_CACHE.filter(function(it){if(filter==='new'&&it.read)return false;if(filter==='read'&&!it.read)return false;if(!needle)return true;return [it.name,it.phone,it.message,it.at].join(' ').toLowerCase().indexOf(needle)>=0;});
+  if(!items.length){out.innerHTML='<div class="info empty-leads"><strong>'+ (LEADS_CACHE.length?'Ничего не найдено':'Пока заявок нет') +'</strong><span>'+ (LEADS_CACHE.length?'Измените поиск или фильтр.':'Когда посетитель заполнит форму, обращение появится здесь.') +'</span></div>';return;}
+  out.innerHTML=items.map(function(it){var cls=it.read?'':' unread',dt=esc(String(it.at||'').replace('T',' ')),name=esc(it.name||'Без имени'),phone=esc(it.phone||''),msg=esc(it.message||'Без комментария');return '<article class="lead-card'+cls+'"><div class="lead-top"><div><div class="lead-name">'+name+'</div><a class="lead-phone" href="tel:'+esc(it.phone||'')+'">'+phone+'</a></div><span class="lead-date">'+dt+'</span></div><div class="lead-msg">'+msg+'</div><div class="lead-actions">'+(it.read?'':'<button class="btn mini" data-lead-read="'+esc(it.id)+'">Прочитано</button>')+'<a class="btn mini btn-gold" href="tel:'+esc(it.phone||'')+'">Позвонить</a><button class="btn mini" data-copy-phone="'+esc(it.phone||'')+'">Копировать номер</button></div></article>';}).join('');
+  qa('[data-lead-read]').forEach(function(b){b.onclick=function(){api('/admin/api/leads/read',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:b.dataset.leadRead})}).then(loadLeads)}});
+  qa('[data-copy-phone]').forEach(function(b){b.onclick=function(){var v=b.dataset.copyPhone||'';if(navigator.clipboard)navigator.clipboard.writeText(v).then(function(){toast('Номер скопирован')});else{var ta=document.createElement('textarea');ta.value=v;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();toast('Номер скопирован')}}});
+}
 function loadLeads(){
-  var out=q('#leadsOut');if(out)out.innerHTML='<div class="skel big"></div><div class="skel"></div>';
-  api('/admin/api/leads').then(function(j){
-    var items=Array.isArray(j.items)?j.items:[];
-    var total=q('#leadTotal'),un=q('#leadUnread');if(total)total.textContent=items.length;if(un)un.textContent=j.unread||0;
-    var badge=q('#leadBadge');if(badge){badge.textContent=j.unread||0;badge.style.display=(j.unread||0)?'inline-flex':'none'}
-    if(!items.length){if(out)out.innerHTML='<div class="info"><b>Пока заявок нет.</b><br>Когда посетитель заполнит форму на сайте, обращение появится здесь.</div>';return}
-    if(out)out.innerHTML=items.map(function(it){
-      var cls=it.read?'':' unread',dt=esc(String(it.at||'').replace('T',' ')),name=esc(it.name||'Без имени'),phone=esc(it.phone||''),msg=esc(it.message||'Без комментария');
-      return '<article class="lead-card'+cls+'"><div class="lead-top"><div><div class="lead-name">'+name+'</div><a class="lead-phone" href="tel:'+esc(it.phone||'')+'">'+phone+'</a></div><span class="lead-date">'+dt+'</span></div><div class="lead-msg">'+msg+'</div><div class="lead-actions">'+(it.read?'':'<button class="btn mini" data-lead-read="'+esc(it.id)+'">Прочитано</button>')+'<a class="btn mini btn-gold" href="tel:'+esc(it.phone||'')+'">Позвонить</a></div></article>';
-    }).join('');
-    qa('[data-lead-read]').forEach(function(b){b.onclick=function(){api('/admin/api/leads/read',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:b.dataset.leadRead})}).then(loadLeads)}});
-  }).catch(function(e){if(out)out.innerHTML='<div class="info">'+esc(e.message)+'</div>'});
+  api('/admin/api/leads').then(function(j){LEADS_CACHE=Array.isArray(j.items)?j.items:[];var today=new Date().toISOString().slice(0,10);var total=q('#leadTotal'),un=q('#leadUnread'),td=q('#leadToday');if(total)total.textContent=LEADS_CACHE.length;if(un)un.textContent=j.unread||0;if(td)td.textContent=LEADS_CACHE.filter(function(x){return String(x.at||'').slice(0,10)===today}).length;var badge=q('#leadBadge');if(badge){badge.textContent=j.unread||0;badge.style.display=(j.unread||0)?'inline-flex':'none'}renderLeadList();}).catch(function(e){var out=q('#leadsOut');if(out)out.innerHTML='<div class="info status bad">Не удалось загрузить заявки: '+esc(e.message)+'</div>'});
 }
 function renderAudit(){
   q('#main').innerHTML='<h2>Журнал действий</h2><p class="hint">Кто и когда сохранял изменения в админке. Последние 300 записей.</p><div class="actions" style="margin-bottom:16px"><button class="btn btn-gold" id="refreshAudit">Обновить журнал</button></div><div id="auditOut"><div class="skel big"></div></div>';
@@ -4030,10 +4119,12 @@ function refreshLeadBadge(){
   api('/admin/api/leads').then(function(j){var b=q('#leadBadge');if(!b)return;b.textContent=j.unread||0;b.style.display=(j.unread||0)?'inline-flex':'none'}).catch(function(){});
 }
 
+function renderOverview(){q('#main').innerHTML='<div class="page-head"><div><span class="eyebrow-admin">ЦЕНТР УПРАВЛЕНИЯ</span><h2>Обзор</h2><p class="hint">Сайт, заявки, версия, сохранение и GitHub.</p></div><div class="live-pill"><i></i> Система</div></div><div class="overview-grid"><article class="overview-card"><span>Сайт</span><b id="ovSite">…</b><small>сервер / база</small></article><article class="overview-card"><span>Заявки</span><b id="ovLeads">…</b><small>новые / всего</small></article><article class="overview-card"><span>Версия</span><b>rev '+REV+'</b><small>последняя публикация</small></article><article class="overview-card"><span>Сохранение</span><b>'+(dirty?'ВНИМАНИЕ':'ГОТОВО')+'</b><small>'+(dirty?'есть изменения':'всё сохранено')+'</small></article><article class="overview-card"><span>GitHub</span><b id="ovGit">…</b><small>mebel.py</small></article><article class="overview-card"><span>Анимации</span><b>'+(((DATA.animations||{}).safe_mode)?'SAFE':'FULL')+'</b><small>режим плавности</small></article></div><div class="actions"><button class="btn btn-gold" id="ovOpen">Открыть сайт</button><button class="btn" id="ovPreview">Предпросмотр</button><button class="btn" id="ovCheck">Проверить</button><button class="btn" id="ovLead">Заявки</button></div><div id="ovOut" class="info">Проверяем…</div>';q('#ovOpen').onclick=function(){window.open('/','_blank')};q('#ovPreview').onclick=function(){window.open('/?preview=1','_blank')};q('#ovCheck').onclick=function(){showStatus()};q('#ovLead').onclick=function(){TAB='leads';render()};api('/admin/api/status').then(function(j){q('#ovSite').textContent=j.db_read?'Онлайн':'Ошибка';q('#ovGit').textContent=j.github&&j.github.configured?(j.github.last_ok===false?'Ошибка':'Подключён'):'Не настроен';q('#ovOut').innerHTML='<b>Готово.</b> Supabase: '+(j.db_read?'OK':'ошибка')+' · Storage: '+(j.storage?'OK':'ошибка')+' · GitHub: '+(j.github&&j.github.configured?'подключён':'не настроен')}).catch(function(e){q('#ovOut').textContent=e.message});api('/admin/api/leads').then(function(j){q('#ovLeads').textContent=(j.unread||0)+' / '+((j.items||[]).length)}).catch(function(){})}
 function render(){
   var groups={},order=[];
   SCHEMA.forEach(function(t){if(!groups[t.group]){groups[t.group]=[];order.push(t.group)}groups[t.group].push(t)});
-  var nav='<div class="side-search"><span class="ic">⌕</span><input id="search" type="search" placeholder="Поиск по всем полям…" value="'+esc(SEARCH)+'"></div>';
+  var nav='<div class="side-head"><button class="side-collapse" id="sideCollapse">☰</button><b>CMS</b></div><div class="side-search"><span class="ic">⌕</span><input id="search" type="search" placeholder="Поиск по всем полям…" value="'+esc(SEARCH)+'"></div>';
+  nav+='<div class="nav-group">Рабочее</div><a data-tab="overview" class="'+(TAB==='overview'?'active':'')+'"><span class="nav-ico">⌂</span><span class="cap">Обзор</span></a>';
   nav+='<div class="nav-group">Рабочее</div><a data-tab="leads" class="'+(TAB==='leads'?'active':'')+'"><span class="nav-ico">◉</span><span class="cap">Заявки</span><span id="leadBadge" class="status" style="display:none;padding:2px 7px;margin-left:auto;background:rgba(236,207,160,.15);color:#ecd09c;border:1px solid rgba(236,207,160,.25)">0</span></a>';
   nav+='<a data-tab="audit" class="'+(TAB==='audit'?'active':'')+'"><span class="nav-ico">◌</span><span class="cap">Журнал действий</span></a>';
   order.forEach(function(g){
@@ -4053,6 +4144,7 @@ function render(){
     updateBar();refreshLeadBadge();
     return;
   }
+  if(TAB==='overview'){renderOverview();updateBar();refreshLeadBadge();return}
   if(TAB==='leads'){renderLeads();updateBar();refreshLeadBadge();return}
   if(TAB==='audit'){renderAudit();updateBar();refreshLeadBadge();return}
   var tab=SCHEMA.filter(function(t){return t.id===TAB})[0]||SCHEMA[0];
@@ -4064,7 +4156,7 @@ function render(){
   var act=q('nav.side a.active');
   if(act&&act.scrollIntoView)try{act.scrollIntoView({block:'nearest'})}catch(e){}
   updateBar();
-  window.scrollTo(0,0);
+  if(!document.querySelector('.field:focus'))window.scrollTo(0,0);
 }
 function updateBar(){
   var b=q('#savebar');if(b)b.classList.toggle('show',dirty);
@@ -4098,7 +4190,7 @@ function fieldHTML(f,base,rawLabel){
   else if(f.type==='select')inp='<select data-path="'+p+'">'+(f.options||[]).map(function(o){return '<option value="'+esc(o)+'"'+(String(v)===o?' selected':'')+'>'+esc(o)+'</option>'}).join('')+'</select>';
   else if(f.type==='color')inp='<div class="color-row"><input type="color" data-path="'+p+'" value="'+esc(normColor(v))+'"><input type="text" data-path="'+p+'" value="'+esc(v)+'"></div>';
   else inp='<input type="text" data-path="'+p+'" value="'+esc(v)+'" placeholder="'+esc(f.placeholder||'')+'">';
-  return '<div class="field">'+(f.label?'<label>'+f.label+(f.ai?aiBtn(p,f.ai):'')+'</label>':'')+inp+(f.hint?'<div class="fhint">'+f.hint+'</div>':'')+'</div>';
+  return '<div class="field" data-field-wrap="'+p+'">'+(f.label?'<label>'+f.label+(f.ai?aiBtn(p,f.ai):'')+'</label>':'')+inp+(f.type==='textarea'?'<div class="char-count" data-char-for="'+p+'">'+String(v||'').length+'</div>':'')+(f.hint?'<div class="fhint">'+f.hint+'</div>':'')+'</div>';
 }
 
 function listHTML(l){
@@ -4106,7 +4198,7 @@ function listHTML(l){
   var h='<div class="list-head"><strong>'+esc(l.label)+' ('+arr.length+')</strong><span class="muted">стрелки — порядок</span></div>';
   arr.forEach(function(item,i){
     var t=l.titleField?String(getPath(item,l.titleField)||''):'';
-    h+='<div class="item"><div class="item-head"><strong>#'+(i+1)+(t?' · '+esc(t):'')+'</strong><div class="item-tools">'
+    h+='<div class="item" draggable="true" data-drag-path="'+esc(l.path)+'" data-drag-index="'+i+'"><div class="item-head"><strong><span class="drag-handle">⠿</span>#'+(i+1)+(t?' · '+esc(t):'')+'</strong><div class="item-tools">'
       +'<button class="btn mini" data-mv="'+l.path+'" data-i="'+i+'" data-d="-1">&#8593;</button>'
       +'<button class="btn mini" data-mv="'+l.path+'" data-i="'+i+'" data-d="1">&#8595;</button>'
       +'<button class="btn btn-red mini" data-del="'+l.path+'" data-i="'+i+'">Удалить</button></div></div>';
@@ -4124,6 +4216,8 @@ function bind(){
       var p=el.dataset.path;
       var val=(el.type==='checkbox')?!!el.checked:el.value;
       setPath(DATA,p,val); setDirty(true);
+      var fw=q('[data-field-wrap="'+p+'"]');if(fw)fw.classList.add('changed-field');
+      var cc=q('[data-char-for="'+p+'"]');if(cc)cc.textContent=String(val||'').length;
       qa('[data-path="'+p+'"]').forEach(function(o){if(o!==el){if(o.type==='checkbox')o.checked=!!val;else o.value=val}});
       var pv=q('[data-prev="'+p+'"]'); if(pv)pv.innerHTML=val?'<img src="'+esc(val)+'" loading="lazy">':'';
     });
@@ -4135,6 +4229,7 @@ function bind(){
   qa('[data-mv]').forEach(function(b){b.addEventListener('click',function(){moveItem(b.dataset.mv,+b.dataset.i,+b.dataset.d)})});
   qa('[data-add]').forEach(function(b){b.addEventListener('click',function(){addItem(b.dataset.add,b.dataset.tpl)})});
   qa('[data-act]').forEach(function(b){b.addEventListener('click',function(){doAction(b.dataset.act)})});
+  qa('[data-drag-path]').forEach(function(el){el.addEventListener('dragstart',function(e){e.dataTransfer.setData('text/plain',el.dataset.dragPath+'|'+el.dataset.dragIndex)});el.addEventListener('dragover',function(e){e.preventDefault();el.classList.add('drag-over')});el.addEventListener('dragleave',function(){el.classList.remove('drag-over')});el.addEventListener('drop',function(e){e.preventDefault();el.classList.remove('drag-over');var a=e.dataTransfer.getData('text/plain').split('|'),arr=getPath(DATA,a[0]),from=+a[1],to=+el.dataset.dragIndex;if(!arr||a[0]!==el.dataset.dragPath||from===to)return;var x=arr.splice(from,1)[0];arr.splice(to,0,x);setDirty(true);render()})});
 }
 
 function addItem(path,tpl){
@@ -4223,8 +4318,16 @@ function aiSeo(){
   })();
 }
 
+function openSitePreview(device){
+  var w=device==='mobile'?390:(device==='tablet'?768:'100%');
+  var h='<div class="page-head"><div><span class="eyebrow-admin">ПРЕДПРОСМОТР</span><h2>Проверка сайта</h2><p class="hint">Открывается текущая опубликованная версия сайта.</p></div><div class="device-switch"><button class="btn '+(device==='desktop'?'active':'')+'" data-preview-device="desktop">ПК</button><button class="btn '+(device==='tablet'?'active':'')+'" data-preview-device="tablet">Планшет</button><button class="btn '+(device==='mobile'?'active':'')+'" data-preview-device="mobile">Телефон</button><button class="btn btn-gold" data-preview-open>Открыть в новой вкладке</button></div></div><div style="display:flex;justify-content:center"><iframe class="preview-frame" style="max-width:'+w+'" src="/" title="Предпросмотр сайта"></iframe></div>';
+  q('#main').innerHTML=h;qa('[data-preview-device]').forEach(function(b){b.onclick=function(){openSitePreview(b.dataset.previewDevice)}});q('[data-preview-open]').onclick=function(){window.open('/','_blank')};updateBar();
+}
 function doAction(act){
+  if(act==='preview'){openSitePreview('desktop');return}
   if(act==='open'){window.open('/','_blank');return}
+  if(act==='preview'){window.open('/?preview=1','_blank');return}
+  if(act==='preview-mobile'){window.open('/?preview=mobile','_blank');return}
   if(act==='reload'){if(!confirm('Отменить несохранённые изменения?'))return;load();return}
   if(act==='export'){location.href='/admin/api/export';return}
   if(act==='import'){q('#importFile').click();return}
@@ -4242,9 +4345,9 @@ function save(force){
     .then(function(r){return r.json()})
     .then(function(j){
       if(j&&j.ok){
-        REV=j.rev||REV+1; setDirty(false);
+        REV=j.rev||REV+1; setDirty(false); clearDraft();
         setStatus('Сохранено · rev '+REV,'ok');
-        toast(j.verified?('Сохранено и проверено в базе (rev '+REV+')'):('Сохранено (rev '+REV+')'));
+        toast((j.verified?('Сохранено и проверено в базе (rev '+REV+')'):('Сохранено (rev '+REV+')'))+(j.github_sync==='queued'?' · GitHub синхронизируется…':''));
       }else if(j&&j.conflict){
         setStatus('Конфликт версий','bad');
         var msg='В базе уже версия rev '+j.server_rev+(j.server_at?(' от '+j.server_at):'')+', а у вас открыт снимок rev '+j.client_rev+'.\n\n'
@@ -4259,11 +4362,15 @@ function save(force){
     }).catch(function(e){setStatus('Ошибка','bad');toast('Ошибка: '+e.message,true)});
 }
 
+var DRAFT_KEY='ostrovsky_admin_draft_v3';
+function saveDraft(){if(!DATA||!dirty)return;try{localStorage.setItem(DRAFT_KEY,JSON.stringify({rev:REV,at:Date.now(),data:DATA}))}catch(e){}}
+function clearDraft(){try{localStorage.removeItem(DRAFT_KEY)}catch(e){}}
+function maybeRestoreDraft(){try{var x=JSON.parse(localStorage.getItem(DRAFT_KEY)||'null');if(!x||!x.data)return false;if(Date.now()-Number(x.at||0)>7*86400000){clearDraft();return false}if(confirm('Найден черновик админки от '+new Date(x.at).toLocaleString()+'. Восстановить его?')){DATA=x.data;setDirty(true);toast('Черновик восстановлен');return true}clearDraft()}catch(e){}return false}
 function load(){
   api('/admin/api/data').then(function(j){
     if(!j||typeof j!=='object'){throw new Error('пустой ответ')}
     DATA=j; ORIG=JSON.parse(JSON.stringify(j)); REV=(j._meta&&j._meta.rev)||0; SERVER_AT=(j._meta&&j._meta.at)||'';
-    setDirty(false);render();setStatus('Готово · rev '+REV,'ok');
+    setDirty(false);render();setStatus('Готово · rev '+REV,'ok'); maybeRestoreDraft();
   }).catch(function(e){
     setStatus('Ошибка загрузки','bad');
     q('#main').innerHTML='<h2>Не удалось загрузить данные</h2><p class="hint">'+esc(e.message)+'</p><p class="hint">Проверьте SUPABASE_URL и SUPABASE_SERVICE_KEY на хостинге, затем обновите страницу.</p>';
@@ -4283,6 +4390,7 @@ function checkRemote(){
   }).catch(function(){});
 }
 window.addEventListener('focus',checkRemote);
+if(window.setInterval)window.setInterval(saveDraft,1500);
 document.addEventListener('visibilitychange',function(){if(!document.hidden)checkRemote();});
 
 /* история версий */
@@ -4313,6 +4421,7 @@ function restore(name){
 }
 
 document.addEventListener('click',function(e){
+  if(e.target.closest&&e.target.closest('#sideCollapse')){document.documentElement.classList.toggle('side-collapsed');return}
   var tab=e.target.closest('nav.side a[data-tab]');
   if(tab){TAB=tab.dataset.tab;render();return}
   if(e.target.closest('#saveBtn')){save();return}
@@ -4537,6 +4646,17 @@ class Handler(BaseHTTPRequestHandler):
                 return
             items = _get_leads()
             self._json({"items": items, "unread": sum(1 for x in items if not x.get("read"))})
+            return
+        if path == "/admin/api/leads/export":
+            if not self._admin():
+                self._json({"error": "no auth"}, 401)
+                return
+            items = _get_leads()
+            lines = ["id,date,name,phone,message,page,read"]
+            for x in items:
+                vals = [x.get("id",""),x.get("at",""),x.get("name",""),x.get("phone",""),x.get("message",""),x.get("page",""),"1" if x.get("read") else "0"]
+                lines.append(",".join('"'+str(v).replace('"','""')+'"' for v in vals))
+            self._send(200, "\ufeff" + "\n".join(lines), "text/csv; charset=utf-8", "no-cache")
             return
         if path == "/admin/api/audit":
             if not self._admin():
@@ -4828,6 +4948,7 @@ class Handler(BaseHTTPRequestHandler):
             "rev": meta["rev"], "at": meta["at"], "backups": backups,
             "db_read": bool(_db_state.get("read")),
             "db_write": _db_state.get("write"),
+            "github": {"configured": bool(GITHUB_TOKEN and GITHUB_SYNC), "last_ok": _db_state.get("github")},
             "storage": _bucket_ensure(),
             "bucket": BUCKET,
             "ai": {"yandex": bool(YANDEX_API_KEY and FOLDER_ID), "gigachat": bool(GIGACHAT_AUTH_KEY)},
