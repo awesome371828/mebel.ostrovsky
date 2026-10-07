@@ -883,7 +883,7 @@ header.solid{background:{{design.bg}}eb}
 @keyframes lineGrow{from{transform:scaleX(0);opacity:0}to{transform:scaleX(1);opacity:.75}}
 
 /* появление по скроллу */
-.js .rv{opacity:0;transform:translateY(36px);filter:blur(12px);transition:opacity .95s cubic-bezier(.22,.61,.36,1),transform .95s cubic-bezier(.22,.61,.36,1),filter .95s cubic-bezier(.22,.61,.36,1)}
+.js .rv{opacity:0;transform:translateY(36px);filter:none;transition:opacity .72s cubic-bezier(.22,.61,.36,1),transform .95s cubic-bezier(.22,.61,.36,1),filter .72s cubic-bezier(.22,.61,.36,1)}
 .js .rv.rv-right{transform:translateX(42px)}
 .js .rv.rv-zoom{transform:scale(.92)}
 .js .rv.in{opacity:1;transform:none;filter:none}
@@ -892,7 +892,7 @@ header.solid{background:{{design.bg}}eb}
 .svc,.step,.guar,.city,.rev-card,.about-card,.call-block,.stat{position:relative;transition:transform .55s cubic-bezier(.22,.61,.36,1),box-shadow .55s,border-color .55s,background .55s}
 .js .svc.reveal.in:hover,.js .step.reveal.in:hover,.js .guar.reveal.in:hover,.js .city.reveal.in:hover,
 .js .rev-card.reveal.in:hover,.js .stat.reveal.in:hover,.js .about-card.reveal.in:hover,.js .call-block.reveal.in:hover,
-.svc:hover,.step:hover,.guar:hover,.city:hover,.rev-card:hover,.about-card:hover,.call-block:hover,.stat:hover{transform:translateY(-10px);border-color:rgba(236,207,160,.36);box-shadow:0 32px 74px rgba(0,0,0,.55),0 0 46px rgba(212,175,106,.16)}
+.svc:hover,.step:hover,.guar:hover,.city:hover,.rev-card:hover,.about-card:hover,.call-block:hover,.stat:hover{transform:translateY(-5px);border-color:rgba(236,207,160,.26);box-shadow:0 20px 50px rgba(0,0,0,.42),0 0 28px rgba(212,175,106,.09)}
 .svc::after,.step::after,.guar::after,.city::after,.rev-card::after,.stat::after,.about-card::after,.call-block::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;background:linear-gradient(115deg,transparent 34%,rgba(236,207,160,.12) 50%,transparent 66%);background-size:260% 100%;background-position:160% 0;transition:opacity .45s}
 .svc:hover::after,.step:hover::after,.guar:hover::after,.city:hover::after,.rev-card:hover::after,.stat:hover::after,.about-card:hover::after,.call-block:hover::after{opacity:1;animation:sweepX 1.7s ease-in-out}
 .svc svg,.guar .ico,.c-ico,.step .n{animation:floatY 5.2s ease-in-out infinite}
@@ -977,8 +977,6 @@ footer .flogo{background:linear-gradient(100deg,#fff 20%,var(--gold-soft) 55%,#f
 .svc h3,.step h3,.guar h3{transition:text-shadow .4s}
 .svc:hover h3,.step:hover h3,.guar:hover h3{text-shadow:0 0 22px rgba(236,207,160,.5)}
 /* ====== плавность и полировка ====== */
-@keyframes bodyIn{from{opacity:0}to{opacity:1}}
-body{animation:bodyIn .9s ease both}
 .js .rv{transition:opacity 1.15s cubic-bezier(.16,1,.3,1),transform 1.15s cubic-bezier(.16,1,.3,1),filter 1.15s cubic-bezier(.16,1,.3,1)}
 .js .reveal{transition:opacity 1.15s cubic-bezier(.16,1,.3,1),transform 1.15s cubic-bezier(.16,1,.3,1),filter 1.15s cubic-bezier(.16,1,.3,1)}
 .rev-ava-w{position:relative;display:inline-flex;width:50px;height:50px;flex-shrink:0}
@@ -1276,6 +1274,9 @@ html.no-anim .spark{display:none}
 .cookie-bar .btn{padding:11px 22px;min-height:40px}
 .btn-row{gap:14px}
 @media(max-width:520px){.btn{font-size:10.5px;letter-spacing:.06em;padding:13px 18px}}
+
+/* Форма заявки — часть дизайна, а не отдельный тяжёлый блок */
+.lead-panel{background:transparent!important}.lead-panel .lead-bg{opacity:.07!important;filter:none!important}.lead-shell{border:1px solid rgba(236,207,160,.12);background:linear-gradient(135deg,rgba(255,255,255,.025),rgba(255,255,255,.008));box-shadow:0 30px 90px -60px rgba(0,0,0,.9);border-radius:28px;padding:clamp(26px,4vw,52px)}.site-lead-form input,.site-lead-form textarea{background:rgba(255,255,255,.025)!important;border-color:rgba(236,207,160,.12)!important}.site-lead-form input:focus,.site-lead-form textarea:focus{background:rgba(255,255,255,.04)!important;border-color:rgba(236,207,160,.34)!important;box-shadow:0 0 0 3px rgba(236,207,160,.04)!important}
 </style>
 <style id="customCss">{{{design.custom_css}}}</style>
 {{#if seo.metrika_id}}<script>(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js','ym');ym({{seo.metrika_id}},'init',{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});</script><noscript><div><img src="https://mc.yandex.ru/watch/{{seo.metrika_id}}" style="position:absolute;left:-9999px" alt=""></div></noscript>{{/if}}
@@ -2017,6 +2018,14 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
     });
   }
   console.log('%cКухни Островский · сборка 2026-10-07-v10 · анимации включены'+(reduced?' (у вас в системе отключена анимация — принудительно: добавьте ?anim=1 к адресу)':''),'color:#d4af6a');
+})();
+
+/* CMS UX: лёгкая предзагрузка ближайших фото + share/copy */
+(function(){
+  var imgs=Array.prototype.slice.call(document.querySelectorAll('.car-slide img,.rev-photo img'));
+  if('requestIdleCallback' in window){requestIdleCallback(function(){imgs.slice(0,4).forEach(function(im){if(im.currentSrc){var x=new Image();x.src=im.currentSrc}})},{timeout:1200})}
+  window.ostCopy=function(text){if(!text)return; if(navigator.clipboard){navigator.clipboard.writeText(text).then(function(){if(window.showToast)showToast('Скопировано')}).catch(function(){})}};
+  window.ostShare=function(url,title){if(navigator.share){navigator.share({title:title||document.title,url:url}).catch(function(){})}else if(navigator.clipboard){navigator.clipboard.writeText(url).then(function(){if(window.showToast)showToast('Ссылка скопирована')})}};
 })();
 </script>
 {{{code.body}}}
@@ -3446,7 +3455,7 @@ def _svg_icon(_unused=None):
 
 
 ADMIN_SCHEMA = [
-    {"id":"overview","group":"Рабочее","title":"Обзор","hint":"Состояние сайта, заявки, версия, сохранение и GitHub.","fields":[{"type":"buttons","buttons":[{"act":"open","label":"Открыть сайт","cls":"btn-gold"},{"act":"preview-mobile","label":"Телефон"},{"act":"status","label":"Проверить сайт"},{"act":"export","label":"Экспорт"}]},{"type":"info","text":"<b>Центр управления:</b> здесь можно быстро проверить сайт и состояние CMS."}]},
+    {"id":"overview","group":"Рабочее","title":"Обзор","hint":"Центр управления сайтом. Здесь нет второго редактора — только единая панель состояния.","fields":[]},
     {"id": "seo", "group": "SEO и код", "title": "SEO и мета", "hint": "Заголовок и описание страницы, Open Graph, robots, sitemap.",
      "fields": [
          {"path": "seo.title", "label": "Title", "type": "textarea", "rows": 2, "ai": "seo_title"},
@@ -3812,6 +3821,10 @@ ADMIN_SCHEMA = [
          {"type": "info", "text": "<b>11. GitHub</b>\nПосле сохранения CMS может автоматически отправлять снимок контента в репозиторий GitHub. Для этого на хостинге должен быть задан GITHUB_TOKEN с правом Contents: write. Сам токен в админке не хранится и посетителям не показывается."}
      ]},
 
+    {"id": "diagnostics", "group": "Инструменты", "title": "Диагностика",
+     "hint": "Одна кнопка проверяет CMS, рендер, Storage, заявки и скорость ответа.",
+     "fields": [{"type":"buttons","buttons":[{"act":"diagnostics","label":"Полная диагностика","cls":"btn-gold"}]},{"type":"info","text":"<div id=\"diagnosticsOut\" class=\"info\">Диагностика запускается вручную и ничего не меняет.</div>"}]},
+
     {"id": "tools", "group": "Инструменты", "title": "Инструменты и связь",
      "hint": "Проверка связей, бэкап контента, генерация текстов через AI.",
      "fields": [
@@ -3998,6 +4011,17 @@ mark.hit{background:rgba(212,175,106,.25);color:#fff;border-radius:3px;padding:0
 @media(max-width:700px){.dashboard{grid-template-columns:1fr 1fr}.audit-row{grid-template-columns:1fr}.lead-top{display:block}}
 @media(max-width:480px){.dashboard{grid-template-columns:1fr}}
 .side-head{display:flex;align-items:center;gap:8px;padding:7px 8px 12px;color:#8e9baa;font-size:10px;letter-spacing:1.5px}.side-collapse{width:29px;height:29px;border-radius:8px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.035);color:#9aa8b7;cursor:pointer}.overview-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:10px 0 20px}.overview-card{border:1px solid rgba(236,207,160,.12);border-radius:16px;padding:18px;background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.015));box-shadow:0 20px 50px -38px #000;animation:fadeUp .45s cubic-bezier(.16,1,.3,1) both}.overview-card span{display:block;color:#7e8997;font-size:10px;text-transform:uppercase;letter-spacing:1.4px}.overview-card b{display:block;margin-top:8px;color:#f5ecdf;font:600 23px/1 Georgia,serif}.overview-card small{display:block;margin-top:7px;color:#756e64;font-size:11px}.side-collapsed nav.side{width:68px}.side-collapsed nav.side .cap,.side-collapsed nav.side .nav-group,.side-collapsed nav.side .side-head b,.side-collapsed nav.side .side-search input{display:none}.side-collapsed nav.side a{justify-content:center}@media(max-width:820px){.overview-grid{grid-template-columns:1fr 1fr}}
+/* ====== Новая полировка CMS: единая визуальная система, без «кирпичей» ====== */
+.admin-shell{background:radial-gradient(900px 520px at 82% -10%,rgba(236,207,160,.08),transparent 60%),radial-gradient(700px 520px at -8% 60%,rgba(236,207,160,.045),transparent 60%),#0a0b0d!important}
+.admin-shell:before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(120deg,transparent 0 48%,rgba(255,255,255,.012) 50%,transparent 52%);opacity:.45}
+.page-head{border-bottom:1px solid rgba(236,207,160,.09);padding-bottom:18px;margin-bottom:22px}
+.field,.overview-card,.info,.item,.lead-card,.audit-row{backdrop-filter:none!important;background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.012))!important}
+.field:focus-within{border-color:rgba(236,207,160,.32)!important;box-shadow:0 0 0 3px rgba(236,207,160,.045),0 18px 50px -35px #000}
+.drop-ready{border-color:rgba(236,207,160,.7)!important;background:rgba(236,207,160,.055)!important;transform:translateY(-1px)}
+.diag-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;color:#f3eadc}.diag-head span{font-size:11px;color:#7f8a97}.diag-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.055)}.diag-row>b{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px}.diag-row.ok>b{background:rgba(100,190,130,.12);color:#8ee0a6}.diag-row.bad>b{background:rgba(255,190,80,.12);color:#ffd27c}.diag-row span{display:grid;gap:2px}.diag-row small{color:#77818d;font-size:11px}.diag-spin{opacity:.75}
+.saveBtn.pulse{box-shadow:0 0 0 4px rgba(236,207,160,.08),0 10px 35px -18px rgba(236,207,160,.55)}
+@media(max-width:820px){.admin-shell{background:#0a0b0d!important}.page-head{padding-bottom:14px}.field,.overview-card,.info,.item,.lead-card,.audit-row{border-radius:14px}}
+
 </style></head><body>
 <header>
 <div class="brand"><span class="mark"></span>Кухни Островский<span>CMS</span><span class="status" id="status">Загрузка…</span><span class="status" id="revInfo" style="background:rgba(255,255,255,.05);color:#a2988a;border:1px solid rgba(255,255,255,.08)">rev —</span></div>
@@ -4119,7 +4143,7 @@ function refreshLeadBadge(){
   api('/admin/api/leads').then(function(j){var b=q('#leadBadge');if(!b)return;b.textContent=j.unread||0;b.style.display=(j.unread||0)?'inline-flex':'none'}).catch(function(){});
 }
 
-function renderOverview(){q('#main').innerHTML='<div class="page-head"><div><span class="eyebrow-admin">ЦЕНТР УПРАВЛЕНИЯ</span><h2>Обзор</h2><p class="hint">Сайт, заявки, версия, сохранение и GitHub.</p></div><div class="live-pill"><i></i> Система</div></div><div class="overview-grid"><article class="overview-card"><span>Сайт</span><b id="ovSite">…</b><small>сервер / база</small></article><article class="overview-card"><span>Заявки</span><b id="ovLeads">…</b><small>новые / всего</small></article><article class="overview-card"><span>Версия</span><b>rev '+REV+'</b><small>последняя публикация</small></article><article class="overview-card"><span>Сохранение</span><b>'+(dirty?'ВНИМАНИЕ':'ГОТОВО')+'</b><small>'+(dirty?'есть изменения':'всё сохранено')+'</small></article><article class="overview-card"><span>GitHub</span><b id="ovGit">…</b><small>mebel.py</small></article><article class="overview-card"><span>Анимации</span><b>'+(((DATA.animations||{}).safe_mode)?'SAFE':'FULL')+'</b><small>режим плавности</small></article></div><div class="actions"><button class="btn btn-gold" id="ovOpen">Открыть сайт</button><button class="btn" id="ovPreview">Предпросмотр</button><button class="btn" id="ovCheck">Проверить</button><button class="btn" id="ovLead">Заявки</button></div><div id="ovOut" class="info">Проверяем…</div>';q('#ovOpen').onclick=function(){window.open('/','_blank')};q('#ovPreview').onclick=function(){window.open('/?preview=1','_blank')};q('#ovCheck').onclick=function(){showStatus()};q('#ovLead').onclick=function(){TAB='leads';render()};api('/admin/api/status').then(function(j){q('#ovSite').textContent=j.db_read?'Онлайн':'Ошибка';q('#ovGit').textContent=j.github&&j.github.configured?(j.github.last_ok===false?'Ошибка':'Подключён'):'Не настроен';q('#ovOut').innerHTML='<b>Готово.</b> Supabase: '+(j.db_read?'OK':'ошибка')+' · Storage: '+(j.storage?'OK':'ошибка')+' · GitHub: '+(j.github&&j.github.configured?'подключён':'не настроен')}).catch(function(e){q('#ovOut').textContent=e.message});api('/admin/api/leads').then(function(j){q('#ovLeads').textContent=(j.unread||0)+' / '+((j.items||[]).length)}).catch(function(){})}
+function renderOverview(){q('#main').innerHTML='<div class="page-head"><div><span class="eyebrow-admin">ЦЕНТР УПРАВЛЕНИЯ</span><h2>Обзор</h2><p class="hint">Сайт, заявки, версия, сохранение и GitHub.</p></div><div class="live-pill"><i></i> Система</div></div><div class="overview-grid"><article class="overview-card"><span>Сайт</span><b id="ovSite">…</b><small>сервер / база</small></article><article class="overview-card"><span>Заявки</span><b id="ovLeads">…</b><small>новые / всего</small></article><article class="overview-card"><span>Версия</span><b>rev '+REV+'</b><small>последняя публикация</small></article><article class="overview-card"><span>Сохранение</span><b>'+(dirty?'ВНИМАНИЕ':'ГОТОВО')+'</b><small>'+(dirty?'есть изменения':'всё сохранено')+'</small></article><article class="overview-card"><span>GitHub</span><b id="ovGit">…</b><small>mebel.py</small></article><article class="overview-card"><span>Анимации</span><b>'+(((DATA.animations||{}).safe_mode)?'SAFE':'FULL')+'</b><small>режим плавности</small></article></div><div class="actions"><button class="btn btn-gold" id="ovOpen">Открыть сайт</button><button class="btn" id="ovPreview">Предпросмотр</button><button class="btn" id="ovCheck">Проверить</button><button class="btn" id="ovDiag">Диагностика</button><button class="btn" id="ovLead">Заявки</button></div><div id="ovOut" class="info">Проверяем…</div>';q('#ovOpen').onclick=function(){window.open('/','_blank')};q('#ovPreview').onclick=function(){window.open('/?preview=1','_blank')};q('#ovCheck').onclick=function(){showStatus()};q('#ovDiag').onclick=function(){TAB='diagnostics';render()};q('#ovLead').onclick=function(){TAB='leads';render()};api('/admin/api/status').then(function(j){q('#ovSite').textContent=j.db_read?'Онлайн':'Ошибка';q('#ovGit').textContent=j.github&&j.github.configured?(j.github.last_ok===false?'Ошибка':'Подключён'):'Не настроен';q('#ovOut').innerHTML='<b>Готово.</b> Supabase: '+(j.db_read?'OK':'ошибка')+' · Storage: '+(j.storage?'OK':'ошибка')+' · GitHub: '+(j.github&&j.github.configured?'подключён':'не настроен')}).catch(function(e){q('#ovOut').textContent=e.message});api('/admin/api/leads').then(function(j){q('#ovLeads').textContent=(j.unread||0)+' / '+((j.items||[]).length)}).catch(function(){})}
 function render(){
   var groups={},order=[];
   SCHEMA.forEach(function(t){if(!groups[t.group]){groups[t.group]=[];order.push(t.group)}groups[t.group].push(t)});
@@ -4229,6 +4253,14 @@ function bind(){
   qa('[data-mv]').forEach(function(b){b.addEventListener('click',function(){moveItem(b.dataset.mv,+b.dataset.i,+b.dataset.d)})});
   qa('[data-add]').forEach(function(b){b.addEventListener('click',function(){addItem(b.dataset.add,b.dataset.tpl)})});
   qa('[data-act]').forEach(function(b){b.addEventListener('click',function(){doAction(b.dataset.act)})});
+  /* Drag & Drop фотографий: можно бросить файл прямо на поле загрузки. */
+  qa('[data-upload]').forEach(function(inp){
+    var wrap=inp.closest('.field'); if(!wrap)return;
+    ['dragenter','dragover'].forEach(function(ev){wrap.addEventListener(ev,function(e){e.preventDefault();wrap.classList.add('drop-ready')})});
+    ['dragleave','drop'].forEach(function(ev){wrap.addEventListener(ev,function(e){e.preventDefault();if(ev==='dragleave'&&e.relatedTarget&&wrap.contains(e.relatedTarget))return;wrap.classList.remove('drop-ready')})});
+    wrap.addEventListener('drop',function(e){var files=e.dataTransfer&&e.dataTransfer.files;if(!files||!files.length)return;try{var dt=new DataTransfer();dt.items.add(files[0]);inp.files=dt.files;inp.dispatchEvent(new Event('change',{bubbles:true}))}catch(err){toast('Не удалось принять файл. Нажмите «Файл».',true)}});
+  });
+
   qa('[data-drag-path]').forEach(function(el){el.addEventListener('dragstart',function(e){e.dataTransfer.setData('text/plain',el.dataset.dragPath+'|'+el.dataset.dragIndex)});el.addEventListener('dragover',function(e){e.preventDefault();el.classList.add('drag-over')});el.addEventListener('dragleave',function(){el.classList.remove('drag-over')});el.addEventListener('drop',function(e){e.preventDefault();el.classList.remove('drag-over');var a=e.dataTransfer.getData('text/plain').split('|'),arr=getPath(DATA,a[0]),from=+a[1],to=+el.dataset.dragIndex;if(!arr||a[0]!==el.dataset.dragPath||from===to)return;var x=arr.splice(from,1)[0];arr.splice(to,0,x);setDirty(true);render()})});
 }
 
@@ -4318,6 +4350,15 @@ function aiSeo(){
   })();
 }
 
+function runDiagnostics(){
+  var out=q('#diagnosticsOut');
+  if(out)out.innerHTML='<span class="diag-spin">Проверяем…</span>';
+  api('/admin/api/diagnostics').then(function(j){
+    var a=(j.checks||[]).map(function(x){return '<div class="diag-row '+(x.ok?'ok':'bad')+'"><b>'+(x.ok?'✓':'!')+'</b><span><strong>'+esc(x.name)+'</strong><small>'+esc(x.detail)+'</small></span></div>'}).join('');
+    if(out)out.innerHTML='<div class="diag-head"><b>'+(j.ok?'Система в порядке':'Найдены проблемы')+'</b><span>'+esc(String(j.ms||0))+' мс</span></div>'+a;
+  }).catch(function(e){if(out)out.textContent='Диагностика недоступна: '+e.message});
+}
+
 function openSitePreview(device){
   var w=device==='mobile'?390:(device==='tablet'?768:'100%');
   var h='<div class="page-head"><div><span class="eyebrow-admin">ПРЕДПРОСМОТР</span><h2>Проверка сайта</h2><p class="hint">Открывается текущая опубликованная версия сайта.</p></div><div class="device-switch"><button class="btn '+(device==='desktop'?'active':'')+'" data-preview-device="desktop">ПК</button><button class="btn '+(device==='tablet'?'active':'')+'" data-preview-device="tablet">Планшет</button><button class="btn '+(device==='mobile'?'active':'')+'" data-preview-device="mobile">Телефон</button><button class="btn btn-gold" data-preview-open>Открыть в новой вкладке</button></div></div><div style="display:flex;justify-content:center"><iframe class="preview-frame" style="max-width:'+w+'" src="/" title="Предпросмотр сайта"></iframe></div>';
@@ -4332,35 +4373,41 @@ function doAction(act){
   if(act==='export'){location.href='/admin/api/export';return}
   if(act==='import'){q('#importFile').click();return}
   if(act==='status'){showStatus();return}
+  if(act==='diagnostics'){runDiagnostics();return}
   if(act==='history'){loadBackups();return}
   if(act==='ai-seo'){aiSeo();return}
 }
 
 function save(force){
+  if(window.__ostSaving)return;
   if(!DATA){toast('Данные ещё не загрузились',true);return}
-  if(!force && dirty && !confirm('Проверили изменения?\n\nПосле сохранения они появятся на сайте.\nЕсли всё верно — нажмите «ОК».'))return;
-  setStatus(force?'Перезапись...':'Сохранение...','saving');
+  window.__ostSaving=true; setStatus(force?'Перезапись...':'Сохранение...','saving');
   fetch('/admin/api/save',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({data:DATA,rev:REV,force:!!force})})
     .then(function(r){return r.json()})
     .then(function(j){
       if(j&&j.ok){
-        REV=j.rev||REV+1; setDirty(false); clearDraft();
+        REV=j.rev||REV+1; setDirty(false); clearDraft(); window.__ostSaving=false;
         setStatus('Сохранено · rev '+REV,'ok');
         toast((j.verified?('Сохранено и проверено в базе (rev '+REV+')'):('Сохранено (rev '+REV+')'))+(j.github_sync==='queued'?' · GitHub синхронизируется…':''));
-      }else if(j&&j.conflict){
+      }else if(j&&j.conflict){ window.__ostSaving=false;
         setStatus('Конфликт версий','bad');
         var msg='В базе уже версия rev '+j.server_rev+(j.server_at?(' от '+j.server_at):'')+', а у вас открыт снимок rev '+j.client_rev+'.\n\n'
           +'Такое бывает, если админка открыта в двух вкладках/окнах или на двух устройствах.\n\n'
           +'OK — перезаписать базу тем, что сейчас в этой вкладке.\n'
           +'Отмена — загрузить свежие данные из базы (несохранённые правки этой вкладки пропадут).';
         if(confirm(msg)){save(true);}else{load();}
-      }else{
+      }else{ window.__ostSaving=false;
         setStatus('Не сохранилось','bad');
         toast('Ошибка записи: '+((j&&(j.error||j.message))||'проверьте SUPABASE_SERVICE_KEY на хостинге'),true);
       }
-    }).catch(function(e){setStatus('Ошибка','bad');toast('Ошибка: '+e.message,true)});
+    }).catch(function(e){window.__ostSaving=false;setStatus('Ошибка','bad');toast('Ошибка: '+e.message,true)});
 }
+
+document.addEventListener('keydown',function(e){
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();save(false)}
+});
+
 
 var DRAFT_KEY='ostrovsky_admin_draft_v3';
 function saveDraft(){if(!DATA||!dirty)return;try{localStorage.setItem(DRAFT_KEY,JSON.stringify({rev:REV,at:Date.now(),data:DATA}))}catch(e){}}
@@ -4686,6 +4733,36 @@ class Handler(BaseHTTPRequestHandler):
                 meta = it.get("metadata") if isinstance(it.get("metadata"), dict) else {}
                 out.append({"name": it.get("name"), "size": meta.get("size"), "at": it.get("created_at")})
             self._json({"items": out, "bucket": BACKUP_BUCKET})
+            return
+        if path == "/admin/api/diagnostics":
+            if not self._admin():
+                self._json({"error": "no auth"}, 401)
+                return
+            started = time.perf_counter()
+            checks = []
+            try:
+                d = load_fresh()
+                checks.append({"name":"Контент","ok":isinstance(d, dict) and bool(d),"detail":"данные CMS загружены" if isinstance(d, dict) and d else "пустые данные"})
+            except Exception as e:
+                checks.append({"name":"Контент","ok":False,"detail":str(e)})
+            try:
+                body = render_site()
+                checks.append({"name":"Рендер сайта","ok":bool(body and len(body)>500),"detail":"HTML {} КБ".format(round(len(body)/1024,1))})
+            except Exception as e:
+                checks.append({"name":"Рендер сайта","ok":False,"detail":str(e)})
+            try:
+                st = _storage_list()
+                checks.append({"name":"Storage","ok":True,"detail":"{} файлов".format(len(st or []))})
+            except Exception as e:
+                checks.append({"name":"Storage","ok":False,"detail":str(e)})
+            try:
+                leads = _get_leads()
+                checks.append({"name":"Заявки","ok":True,"detail":"{} всего / {} новых".format(len(leads),sum(1 for x in leads if not x.get("read")))})
+            except Exception as e:
+                checks.append({"name":"Заявки","ok":False,"detail":str(e)})
+            elapsed = round((time.perf_counter()-started)*1000)
+            checks.append({"name":"Скорость диагностики","ok":elapsed < 1500,"detail":"{} мс".format(elapsed)})
+            self._json({"ok":all(x.get("ok") for x in checks),"checks":checks,"ms":elapsed})
             return
         if path == "/admin/api/status":
             if not self._admin():
