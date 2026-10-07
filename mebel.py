@@ -60,6 +60,9 @@ SUPABASE_SERVICE = os.environ.get("SUPABASE_SERVICE_KEY") or (
     "ZSIsImlhdCI6MTc5MTIwNDU3NiwiZXhwIjoyMTA2NzgwNTc2fQ.Yr4z9vx6kF9ZINNNUjUn43GYi-A2BmBfg8uyrOtmDWo")
 BUCKET = os.environ.get("SUPABASE_BUCKET", "site-images")
 DATA_TABLE = os.environ.get("SUPABASE_TABLE", "site_content")
+EMPLOYEES_FILE = "employees.json"
+TWOFA_FILE = "admin_2fa.json"
+EMPLOYEE_ROLES = {"leader":"Руководитель","manager":"Менеджер","designer":"Дизайнер"}
 
 ADMIN_LOGIN_ENV = os.environ.get("ADMIN_LOGIN", "кухниост")
 ADMIN_PASSWORD_ENV = os.environ.get("ADMIN_PASSWORD", "романкух")
@@ -449,8 +452,13 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
  'page404': {'title': 'Такой страницы нет',
              'text': 'Возможно, ссылка устарела или адрес введён с ошибкой. Вернитесь на главную — там вас ждут наши работы, отзывы и '
                      'контакты.',
-             'button': 'На главную'}}
-# <<<DEFAULT_DATA_END>>>
+              'button': 'На главную'},
+  'local_seo': {'enabled': True, 'cities': [
+      {'slug':'rostov-na-donu','name':'Ростов-на-Дону','title':'Кухни на заказ в Ростове-на-Дону — Кухни Островский','description':'Кухни и корпусная мебель на заказ в Ростове-на-Дону по индивидуальным размерам.','keywords':'кухни на заказ Ростов-на-Дону, кухни Ростов, мебель на заказ Ростов'},
+      {'slug':'bataysk','name':'Батайск','title':'Кухни на заказ в Батайске — Кухни Островский','description':'Кухни на заказ в Батайске по индивидуальным размерам: проект, материалы, изготовление и монтаж.','keywords':'кухни на заказ Батайск, кухни Батайск, мебель на заказ Батайск'},
+      {'slug':'azov','name':'Азов','title':'Кухни на заказ в Азове — Кухни Островский','description':'Кухни на заказ в Азове по индивидуальным размерам: проектирование, изготовление и монтаж.','keywords':'кухни на заказ Азов, кухни Азов, мебель на заказ Азов'}]},
+  'site_tools': {'catalog_title':'Каталог материалов','configurator_title':'Конфигуратор кухни','configurator_enabled':True}
+}
 
 PAGE = r"""<!DOCTYPE html>
 <html lang="ru" class="js" data-build="2026-10-07-v10">
@@ -854,6 +862,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
 @media(max-width:520px){.logo .brand-ava{width:40px;height:40px}.logo .brand-txt .name{font-size:20px}.logo .brand-txt .sub{font-size:9.5px;max-width:54vw;letter-spacing:1.2px}.nav{height:64px}.panel{min-height:auto;padding:96px 0 56px}h1{font-size:31px}.sub{font-size:15px;margin:18px 0 26px}.btn-row{width:100%}.btn{width:100%;text-align:center;padding:14px 20px;font-size:12px}.stat .num{font-size:44px}.sec-head{margin-bottom:38px}.sec-head h2::before,.sec-head h2::after{display:none}.scroll-cue{display:none}.car-slide{width:84vw}.car-slide img{height:205px}.rev-card{width:92vw;padding:17px}.rev-head{gap:10px}.rev-ava{width:44px;height:44px}.rev-name{font-size:13.5px}.rev-sub{font-size:10px}.rev-stars{font-size:12.5px;display:block;margin:6px 0 0}.rev-text{font-size:12.5px;line-height:1.56}.video-box{height:190px}.consult .phone{font-size:25px}.call-block .cb-num{font-size:22px}.menu{padding:10px 20px calc(18px + env(safe-area-inset-bottom))}.lb-nav{width:44px;height:44px;min-width:44px;min-height:44px;font-size:22px}.lb-close{width:44px;height:44px;min-width:44px;min-height:44px}.cookie-bar{bottom:10px;padding:14px 16px}.city{padding:28px 22px}.contact-info>p{margin-bottom:24px}}
 @media(max-width:380px){.car-slide{width:88vw}.car-slide img{height:190px}.rev-card{width:94vw;padding:14px}.rev-text{font-size:12px}.video-box{height:170px}.btn{font-size:11px}}
 
+.local-seo-panel{min-height:auto;padding:80px 0}.local-seo-copy{max-width:820px;margin:18px auto;color:#bdb2a0}.site-tools{min-height:auto;padding:80px 0}.tools-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.configurator{max-width:760px;margin:28px auto 0;padding:24px;border:1px solid rgba(236,207,160,.16);border-radius:16px;text-align:left}.config-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}.config-row label{display:flex;flex-direction:column;gap:6px;color:#bdb2a0}.config-row select,.config-row input{padding:11px;background:#12100c;color:#fff;border:1px solid rgba(236,207,160,.2);border-radius:8px}.mobile-contact{display:none}.floating-contact{position:fixed;right:16px;bottom:16px;z-index:9998}.floating-contact button{width:50px;height:50px;border-radius:50%;border:1px solid rgba(236,207,160,.35);background:#d4af6a;color:#17120b}.exit-offer{display:none;position:fixed;right:16px;bottom:78px;z-index:9997;gap:10px;padding:14px;border-radius:12px;background:#17130d;border:1px solid rgba(236,207,160,.2)}.exit-offer.show{display:flex;align-items:center}.exit-offer span{color:#eee}.exit-offer button{border:0;background:none;color:#bdb2a0;font-size:20px}@media(max-width:800px){.tools-grid{grid-template-columns:1fr 1fr}.mobile-contact{display:flex;position:fixed;left:8px;right:8px;bottom:8px;z-index:9999;gap:8px}.mobile-contact a,.mobile-contact button{flex:1;padding:11px;border-radius:9px;text-align:center;background:#17130d;color:#fff;border:1px solid rgba(236,207,160,.25)}.mobile-contact a{background:#d4af6a;color:#17120b}.floating-contact{bottom:72px}.exit-offer{left:10px;right:10px;bottom:72px}.config-row{grid-template-columns:1fr}}@media(max-width:520px){.tools-grid{grid-template-columns:1fr}}
 </style>
 <style id="designVars">
 :root{--bg:{{design.bg}};--gold:{{design.gold}};--gold-soft:{{design.gold_soft}};--gold-deep:{{design.gold_deep}};--text:{{design.text}};--muted:{{design.muted}};--r-lg:{{design.radius}};--r-md:{{design.radius}};--r-sm:{{design.radius}}}
@@ -1321,6 +1330,7 @@ html.no-anim .spark{display:none}
   </div></div>
   {{#if hero.scroll_cue}}<div class="scroll-cue">{{hero.scroll_cue}}<div class="line"></div></div>{{/if}}
 </section>
+{{#if local_seo_current}}<section class="panel panel--center local-seo-panel"><div class="wrap"><div class="content"><div class="kicker">{{local_seo_current.name}}</div><h2>{{local_seo_current.title}}</h2><p class="sub">{{local_seo_current.description}}</p><p class="local-seo-copy">Кухни на заказ, корпусная мебель и решения по индивидуальным размерам для жителей {{local_seo_current.name}}. Оставьте заявку на сайте, чтобы обсудить задачу.</p></div></div></section>{{/if}}
 
 <div class="gold-divider"><i></i><b></b><i></i></div>
 
@@ -1388,7 +1398,7 @@ html.no-anim .spark{display:none}
         <div class="lead-fields">
           <label><span>Имя</span><input name="name" maxlength="120" placeholder="Как к вам обращаться"></label>
           <label><span>Телефон *</span><input name="phone" type="tel" maxlength="80" required inputmode="tel" placeholder="+7 (___) ___-__-__"></label>
-          <label class="lead-wide"><span>Что нужно сделать</span><textarea name="message" maxlength="1000" placeholder="Например: нужна кухня по размерам"></textarea></label>
+          <label><span>Город</span><select name="city"><option value="">Выберите город</option><option>Ростов-на-Дону</option><option>Батайск</option><option>Азов</option></select></label><label><span>Тип мебели</span><select name="furniture_type"><option value="">Выберите</option><option>Кухня</option><option>Шкаф</option><option>Гардеробная</option><option>Прихожая</option><option>Гостиная</option></select></label><label class="lead-wide"><span>Что нужно сделать</span><textarea name="message" maxlength="1000" placeholder="Например: нужна кухня по размерам"></textarea></label><label class="lead-wide"><span>Фото помещения</span><input name="photo" type="file" accept="image/jpeg,image/png,image/gif,image/webp"></label>
         </div>
         <div class="lead-hp" aria-hidden="true"><input name="website" tabindex="-1" autocomplete="off"></div>
         <button class="btn btn-solid lead-submit" type="submit"><span class="lead-submit-text">{{lead_form.button}}</span><span class="lead-spinner" aria-hidden="true"></span></button>
@@ -1399,9 +1409,9 @@ html.no-anim .spark{display:none}
   </div></div>
 </section>
 {{/if}}{{/if}}
-
+<section class="panel panel--center site-tools"><div class="wrap"><div class="content"><div class="sec-head"><div class="kicker">Полезные инструменты</div><h2>{{site_tools.catalog_title}}</h2></div><div class="tools-grid"><button class="btn btn-line" data-tool="catalog">Запросить каталог материалов</button><button class="btn btn-line" data-tool="designer">Консультация дизайнера</button><button class="btn btn-line" data-tool="question">Быстрый вопрос</button><button class="btn btn-solid" data-tool="callback">Обратный звонок</button></div>{{#if site_tools.configurator_enabled}}<div class="configurator"><div class="kicker">Конфигуратор</div><h3>{{site_tools.configurator_title}}</h3><div class="config-row"><label>Форма кухни<select id="cfgShape"><option>Прямая</option><option>Угловая</option><option>П-образная</option></select></label><label>Количество секций<input id="cfgSections" type="number" min="1" max="30" value="6"></label></div><button class="btn btn-solid" id="cfgApply">Сформировать заявку</button><div id="cfgResult"></div></div>{{/if}}</div></div></section>
+<div class="mobile-contact"><a href="tel:{{brand.phone_raw}}">Позвонить</a><button data-tool="callback">Обратный звонок</button></div><div class="floating-contact"><button data-tool="question">?</button></div><div class="exit-offer" id="exitOffer"><span>Остался вопрос? Можно оставить заявку без звонка.</span><button class="btn btn-solid" data-tool="question">Задать вопрос</button><button id="exitClose">×</button></div>
 <div class="gold-divider"><i></i><b></b><i></i></div>
-
 {{#if sections.works}}<section class="panel panel--center panel--dark" id="works"{{#if works.watermark}} data-watermark="{{works.watermark}}"{{/if}}>
   <div class="bg" style="background-image:url('{{{works.bg}}}')"></div>
   <div class="wrap"><div class="content">
@@ -1807,7 +1817,7 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
     var fd=new FormData(form);
     var phone=String(fd.get('phone')||'').trim();
     if(phone.replace(/\D/g,'').length<7){setResult('Укажите номер телефона.',true);form.querySelector('[name="phone"]').focus();return;}
-    var body={name:String(fd.get('name')||'').trim(),phone:phone,message:String(fd.get('message')||'').trim(),website:String(fd.get('website')||''),page:location.href};
+    var photo=fd.get('photo'),photoUrl=''; if(photo&&photo.size){var pfd=new FormData();pfd.append('file',photo);var ur=await fetch('/api/lead-upload',{method:'POST',body:pfd,credentials:'same-origin'});var uj=await ur.json();if(!ur.ok||!uj.ok)throw new Error(uj.error||'Не удалось загрузить фото');photoUrl=uj.url||'';} var body={name:String(fd.get('name')||'').trim(),phone:phone,message:String(fd.get('message')||'').trim(),website:String(fd.get('website')||''),page:location.href,city:String(fd.get('city')||''),furniture_type:String(fd.get('furniture_type')||''),photo_url:photoUrl,source:'site'};
     btn.classList.add('loading');btn.disabled=true;
     var old=btn.querySelector('.lead-submit-text');if(old)old.textContent='Отправляем…';
     try{
@@ -1818,7 +1828,7 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
       var raw=await r.text(), j={};
       try{j=JSON.parse(raw||'{}')}catch(_){}
       if(!r.ok||!j.ok)throw new Error(j.error||('Ошибка отправки ('+r.status+')'));
-      form.reset();setResult('Заявка отправлена. Спасибо! Мы свяжемся с вами.');
+      form.reset();setResult('Заявка отправлена. Спасибо! Мы свяжемся с вами.'+(j.portal?' Открыть личный кабинет: '+j.portal:''));
       if(old)old.textContent='Заявка отправлена ✓';
       setTimeout(function(){if(old)old.textContent='Отправить заявку';btn.disabled=false;btn.classList.remove('loading')},2600);
     }catch(err){
@@ -1829,7 +1839,7 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
   });
 })();
 </script>
-<script id="beautyScript">
+<script id="ostToolsScript">(function(){function lead(k){var f=document.getElementById('siteLeadForm');if(!f)return;var m=f.querySelector('[name="message"]');var t={catalog:'Хочу получить каталог материалов.',designer:'Хочу консультацию дизайнера.',question:'Хочу задать быстрый вопрос.',callback:'Прошу перезвонить мне.'};if(m)m.value=t[k]||'';f.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){var n=f.querySelector('[name="phone"]');if(n)n.focus()},350)}document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-tool]');if(b){e.preventDefault();lead(b.dataset.tool)}});var c=document.getElementById('cfgApply');if(c)c.onclick=function(){var r=document.getElementById('cfgResult');r.textContent='Выбрано: '+document.getElementById('cfgShape').value+', секций: '+document.getElementById('cfgSections').value+'.';lead('question')};var x=document.getElementById('exitOffer');document.addEventListener('mouseout',function(e){if(x&&!x.classList.contains('show')&&!e.relatedTarget&&e.clientY<8)x.classList.add('show')});var q=document.getElementById('exitClose');if(q)q.onclick=function(){x.classList.remove('show')};})();</script>\n<script id="beautyScript">
 (function(){
   var d=document;
   var CFG=window.__OST_ANIM||{enabled:true,parallax:false,hover3d:false,sparks:true,scroll:true,text:true,safe:true,intensity:'full'};
@@ -2622,13 +2632,19 @@ def _save_leads(items):
     return _private_json_put(LEADS_FILE, items[-500:])
 
 
-def _add_lead(name, phone, message, page, ip=""):
+def _add_lead(name, phone, message, page, ip="", extra=None):
     now = time.strftime("%Y-%m-%dT%H:%M:%S")
     ip_hash = hashlib.sha256((ip + "::" + (_session_secret().hex()[:16])).encode("utf-8")).hexdigest()[:16] if ip else ""
+    extra = extra if isinstance(extra, dict) else {}
     item = {
-        "id": uuid.uuid4().hex[:12], "at": now, "name": name[:120],
+        "id": uuid.uuid4().hex[:12], "client_token": secrets.token_urlsafe(18), "at": now, "name": name[:120],
         "phone": phone[:80], "message": message[:1000], "page": page[:300],
         "ip_hash": ip_hash, "read": False,
+        "status": extra.get("status") or "new", "responsible": extra.get("responsible") or "",
+        "priority": extra.get("priority") or "normal", "source": extra.get("source") or "site",
+        "city": extra.get("city") or "", "furniture_type": extra.get("furniture_type") or "",
+        "notes": extra.get("notes") or "", "photo_url": extra.get("photo_url") or "",
+        "repeat_client": bool(extra.get("repeat_client")), "client_no_answer": bool(extra.get("client_no_answer")),
     }
     with _leads_lock:
         items = _load_leads()
@@ -2675,6 +2691,59 @@ def _get_audit():
     return items if isinstance(items, list) else []
 
 
+# ============================================================
+#  СОТРУДНИКИ, РОЛИ И 2FA
+# ============================================================
+def _employees():
+    x=_private_json_get(EMPLOYEES_FILE,[]); return x if isinstance(x,list) else []
+def _save_employees(x): return _private_json_put(EMPLOYEES_FILE,x[-200:])
+def _hash_password(password,salt=None):
+    salt=salt or secrets.token_hex(16); return salt+"$"+hashlib.pbkdf2_hmac("sha256",str(password).encode(),salt.encode(),180000).hex()
+def _verify_password(password,stored):
+    try:
+        salt,dig=str(stored).split("$",1); cur=hashlib.pbkdf2_hmac("sha256",str(password).encode(),salt.encode(),180000).hex(); return hmac.compare_digest(cur,dig)
+    except Exception:return False
+def _b32_secret(): return base64.b32encode(secrets.token_bytes(20)).decode().rstrip("=")
+def _totp(secret,counter=None):
+    counter=int(time.time())//30 if counter is None else counter; raw=base64.b32decode(secret+"="*(-len(secret)%8),casefold=True); d=hmac.new(raw,int(counter).to_bytes(8,"big"),hashlib.sha1).digest(); o=d[-1]&15; n=((d[o]&127)<<24)|(d[o+1]<<16)|(d[o+2]<<8)|d[o+3]; return str(n%1000000).zfill(6)
+def _totp_ok(secret,code):
+    code=re.sub(r"\D","",str(code or "")); c=int(time.time())//30; return len(code)==6 and bool(secret) and any(hmac.compare_digest(_totp(secret,c+i),code) for i in (-1,0,1))
+def _twofa():
+    x=_private_json_get(TWOFA_FILE,{}); return x if isinstance(x,dict) else {}
+def _save_twofa(x): return _private_json_put(TWOFA_FILE,x)
+def _ensure_leader_2fa():
+    x=_twofa()
+    if not x.get("leader_secret"): x={"leader_secret":_b32_secret(),"leader_enabled":False}; _save_twofa(x)
+    return x
+def _auth_user(login,password,code=""):
+    if hmac.compare_digest(str(login),str(ADMIN_LOGIN_ENV)) and hmac.compare_digest(str(password),str(ADMIN_PASSWORD_ENV)):
+        x=_ensure_leader_2fa()
+        if x.get("leader_enabled") and not _totp_ok(x.get("leader_secret"),code): return None,"Требуется код 2FA"
+        return {"login":ADMIN_LOGIN_ENV,"role":"leader","name":"Руководитель","permissions":["*"]},None
+    for e in _employees():
+        if isinstance(e,dict) and str(e.get("login"))==str(login) and _verify_password(password,e.get("password_hash","")):
+            if e.get("disabled"): return None,"Учётная запись отключена"
+            if e.get("twofa_enabled") and not _totp_ok(e.get("twofa_secret"),code): return None,"Требуется код 2FA"
+            return {"login":e.get("login"),"role":e.get("role","manager"),"name":e.get("name") or login,"permissions":e.get("permissions") or []},None
+    return None,"Неверный логин или пароль"
+def _can(u,p): return bool(u and (u.get("role")=="leader" or p in (u.get("permissions") or []) or "*" in (u.get("permissions") or [])))
+
+def _session_identity(token):
+    if not token or "." not in token:return None
+    body,_,sig=token.rpartition(".")
+    try:
+        payload=base64.urlsafe_b64decode(body+"="*(-len(body)%4)).decode(); good=hmac.new(_session_secret(),payload.encode(),hashlib.sha256).hexdigest()[:32]
+        if not hmac.compare_digest(good,sig):return None
+        a=payload.split("|")
+        if len(a)==2: login,role,exp=ADMIN_LOGIN_ENV,"leader",int(a[1])
+        else: login,role,exp=a[0],a[1],int(a[2])
+        if exp<=time.time():return None
+        if login==ADMIN_LOGIN_ENV:return {"login":login,"role":"leader","name":"Руководитель","permissions":["*"]}
+        for e in _employees():
+            if isinstance(e,dict) and e.get("login")==login and not e.get("disabled"):
+                return {"login":login,"role":e.get("role",role),"name":e.get("name") or login,"permissions":e.get("permissions") or []}
+    except Exception:pass
+    return None
 # ============================================================
 #  AI (YandexGPT / GigaChat)
 # ============================================================
@@ -2839,31 +2908,10 @@ def _session_secret():
     return hashlib.sha256(raw.encode("utf-8")).digest()
 
 
-def _new_session():
-    """Сессия без хранения на сервере: подписанная метка со сроком годности."""
-    exp = int(time.time()) + SESSION_TTL
-    payload = "{}|{}".format(int(time.time()), exp)
-    sig = hmac.new(_session_secret(), payload.encode("utf-8"), hashlib.sha256).hexdigest()[:32]
-    return base64.urlsafe_b64encode(payload.encode("utf-8")).decode("ascii").rstrip("=") + "." + sig
+def _new_session(user=None):
+    user=user or {"login":ADMIN_LOGIN_ENV,"role":"leader"}; exp=int(time.time())+SESSION_TTL; payload="{}|{}|{}".format(str(user.get("login") or ADMIN_LOGIN_ENV).replace("|",""),str(user.get("role") or "manager").replace("|",""),exp); sig=hmac.new(_session_secret(),payload.encode(),hashlib.sha256).hexdigest()[:32]; return base64.urlsafe_b64encode(payload.encode()).decode().rstrip("=")+"."+sig
 
-
-def _check_session(token):
-    if not token or "." not in token:
-        return False
-    body, _, sig = token.rpartition(".")
-    try:
-        payload = base64.urlsafe_b64decode(body + "=" * (-len(body) % 4)).decode("utf-8")
-    except Exception:
-        return False
-    good = hmac.new(_session_secret(), payload.encode("utf-8"), hashlib.sha256).hexdigest()[:32]
-    if not hmac.compare_digest(good, sig):
-        return False
-    try:
-        exp = int(payload.split("|")[1])
-    except Exception:
-        return False
-    return exp > time.time()
-
+def _check_session(token): return _session_identity(token) is not None
 
 def _drop_session(token):
     """Подписанную метку на сервере не храним — выход просто стирает cookie."""
@@ -3152,7 +3200,7 @@ def _page_template():
     удобно править разметку отдельным файлом."""
     p = os.path.join(ROOT, "page.html")
     try:
-        if os.path.isfile(p):
+        if os.environ.get("USE_EXTERNAL_PAGE","0").lower() in ("1","true","yes","on") and os.path.isfile(p):
             with open(p, "r", encoding="utf-8") as f:
                 ext = f.read()
             if "{{hero." in ext or "{{seo." in ext:
@@ -3194,6 +3242,14 @@ html{scrollbar-gutter:stable;overscroll-behavior-x:none}body{overflow-x:clip}img
         html = html.replace("</body>", '<div id="ostSiteLoader"><img src="' + logo + '" alt=""><div class="ostLoaderName">' + name + '</div><div class="ostLoaderLine"></div></div><script>(function(){var l=document.getElementById("ostSiteLoader");if(!l)return;var seen=false;try{seen=sessionStorage.getItem("ostLoaderSeen")==="1"}catch(e){}if(seen){l.remove();return}try{sessionStorage.setItem("ostLoaderSeen","1")}catch(e){}window.addEventListener("load",function(){setTimeout(function(){l.classList.add("done");setTimeout(function(){l.remove()},560)},260)});setTimeout(function(){l.classList.add("done")},1400)})();</script></body>', 1)
     return html
 
+
+def _local_city(data,slug):
+    return next((x for x in ((data.get("local_seo") or {}).get("cities") or []) if isinstance(x,dict) and x.get("slug")==slug),None)
+def render_city_page(slug):
+    data=_json_clone(load_data());c=_local_city(data,slug)
+    if not c:return None
+    dom=_domain(data).rstrip("/");url=dom+"/"+slug+"/";seo=data.setdefault("seo",{});seo.update({"title":c["title"],"description":c["description"],"keywords":c["keywords"],"canonical":url,"og_title":c["title"],"og_description":c["description"]});data["local_seo_current"]=c;data["hero"]["sub"]="Кухни на заказ и корпусная мебель в {} — по индивидуальным размерам и задаче клиента.".format(c["name"])
+    ctx=_normalize_context(data);html=render(_page_template(),ctx);html=_proxify_urls(html);return _inject_site_ui(html,data)
 
 def render_site():
     """Готовый HTML кэшируется до смены данных — страница отдаётся мгновенно."""
@@ -3805,6 +3861,8 @@ ADMIN_SCHEMA = [
          {"path": "lead_form.note", "label": "Подпись под кнопкой", "type": "text"},
      ]},
 
+    {"id":"local_seo","group":"SEO и код","title":"SEO-страницы городов","hint":"Отдельные индексируемые страницы Ростова-на-Дону, Батайска и Азова.","fields":[{"type":"info","text":"Страницы: /rostov-na-donu/ · /bataysk/ · /azov/. Для запроса «кухни на заказ Батайск» используется отдельная Title, Description и текст страницы."}]},
+
     {"id": "guide", "group": "Помощь", "title": "Инструкция для админов",
      "hint": "Подробный порядок работы с сайтом. Если сомневаетесь — сначала сохраните копию.",
      "fields": [
@@ -3870,6 +3928,7 @@ button{width:100%;padding:15px;background:linear-gradient(135deg,#eccfa0,#d4af6a
 <h1>Кухни Островский</h1><p class="sub">Панель управления сайтом</p>__ERROR__
 <label>Логин</label><input type="text" name="login" required autofocus autocomplete="username">
 <label>Пароль</label><input type="password" name="password" required autocomplete="current-password">
+<label>Код 2FA (если включён)</label><input type="text" name="code" inputmode="numeric" maxlength="6" autocomplete="one-time-code">
 <button>Войти</button>
 <div class="hint">Логин и пароль задаются переменными ADMIN_LOGIN и ADMIN_PASSWORD на хостинге.</div>
 </form></body></html>"""
@@ -4121,8 +4180,8 @@ function renderLeadList(){
   var needle=String((q('#leadSearch')||{}).value||'').toLowerCase().trim(),filter=(q('#leadFilter')||{}).value||'all';
   var items=LEADS_CACHE.filter(function(it){if(filter==='new'&&it.read)return false;if(filter==='read'&&!it.read)return false;if(!needle)return true;return [it.name,it.phone,it.message,it.at].join(' ').toLowerCase().indexOf(needle)>=0;});
   if(!items.length){out.innerHTML='<div class="info empty-leads"><strong>'+ (LEADS_CACHE.length?'Ничего не найдено':'Пока заявок нет') +'</strong><span>'+ (LEADS_CACHE.length?'Измените поиск или фильтр.':'Когда посетитель заполнит форму, обращение появится здесь.') +'</span></div>';return;}
-  out.innerHTML=items.map(function(it){var cls=it.read?'':' unread',dt=esc(String(it.at||'').replace('T',' ')),name=esc(it.name||'Без имени'),phone=esc(it.phone||''),msg=esc(it.message||'Без комментария');return '<article class="lead-card'+cls+'"><div class="lead-top"><div><div class="lead-name">'+name+'</div><a class="lead-phone" href="tel:'+esc(it.phone||'')+'">'+phone+'</a></div><span class="lead-date">'+dt+'</span></div><div class="lead-msg">'+msg+'</div><div class="lead-actions">'+(it.read?'':'<button class="btn mini" data-lead-read="'+esc(it.id)+'">Прочитано</button>')+'<a class="btn mini btn-gold" href="tel:'+esc(it.phone||'')+'">Позвонить</a><button class="btn mini" data-copy-phone="'+esc(it.phone||'')+'">Копировать номер</button></div></article>';}).join('');
-  qa('[data-lead-read]').forEach(function(b){b.onclick=function(){api('/admin/api/leads/read',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:b.dataset.leadRead})}).then(loadLeads)}});
+  out.innerHTML=items.map(function(it){var cls=it.read?'':' unread',dt=esc(String(it.at||'').replace('T',' ')),name=esc(it.name||'Без имени'),phone=esc(it.phone||''),msg=esc(it.message||'Без комментария');return '<article class="lead-card'+cls+'"><div class="lead-top"><div><div class="lead-name">'+name+'</div><a class="lead-phone" href="tel:'+esc(it.phone||'')+'">'+phone+'</a></div><span class="lead-date">'+dt+'</span></div><div class="lead-msg">'+msg+'</div>+(it.photo_url?'<div><a href="'+esc(it.photo_url)+'" target="_blank">Фото помещения</a></div>':'')+<div class="lead-actions"><select data-lstatus="'+esc(it.id)+'"><option value="new">Новая</option><option value="in_work">В работе</option><option value="measurement">Замер</option><option value="calculation">Расчёт</option><option value="contract">Договор</option><option value="done">Завершена</option></select><input data-lresp="'+esc(it.id)+'" value="'+esc(it.responsible||'')+'" placeholder="Ответственный"><div class="lead-actions">'+(it.read?'':'<button class="btn mini" data-lead-read="'+esc(it.id)+'">Прочитано</button>')+'<a class="btn mini btn-gold" href="tel:'+esc(it.phone||'')+'">Позвонить</a><button class="btn mini" data-copy-phone="'+esc(it.phone||'')+'">Копировать номер</button></div></article>';}).join('');
+  qa('[data-lstatus]').forEach(function(x){x.value=x.closest('.lead-card')?((LEADS_CACHE.filter(function(a){return a.id===x.dataset.lstatus})[0]||{}).status||'new'):'new';x.onchange=function(){api('/admin/api/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:x.dataset.lstatus,status:x.value})})}});qa('[data-lresp]').forEach(function(x){x.onchange=function(){api('/admin/api/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:x.dataset.lresp,responsible:x.value})})}});qa('[data-lead-read]').forEach(function(b){b.onclick=function(){api('/admin/api/leads/read',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:b.dataset.leadRead})}).then(loadLeads)}});
   qa('[data-copy-phone]').forEach(function(b){b.onclick=function(){var v=b.dataset.copyPhone||'';if(navigator.clipboard)navigator.clipboard.writeText(v).then(function(){toast('Номер скопирован')});else{var ta=document.createElement('textarea');ta.value=v;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();toast('Номер скопирован')}}});
 }
 function loadLeads(){
@@ -4144,6 +4203,7 @@ function refreshLeadBadge(){
 }
 
 function renderOverview(){q('#main').innerHTML='<div class="page-head"><div><span class="eyebrow-admin">ЦЕНТР УПРАВЛЕНИЯ</span><h2>Обзор</h2><p class="hint">Сайт, заявки, версия, сохранение и GitHub.</p></div><div class="live-pill"><i></i> Система</div></div><div class="overview-grid"><article class="overview-card"><span>Сайт</span><b id="ovSite">…</b><small>сервер / база</small></article><article class="overview-card"><span>Заявки</span><b id="ovLeads">…</b><small>новые / всего</small></article><article class="overview-card"><span>Версия</span><b>rev '+REV+'</b><small>последняя публикация</small></article><article class="overview-card"><span>Сохранение</span><b>'+(dirty?'ВНИМАНИЕ':'ГОТОВО')+'</b><small>'+(dirty?'есть изменения':'всё сохранено')+'</small></article><article class="overview-card"><span>GitHub</span><b id="ovGit">…</b><small>mebel.py</small></article><article class="overview-card"><span>Анимации</span><b>'+(((DATA.animations||{}).safe_mode)?'SAFE':'FULL')+'</b><small>режим плавности</small></article></div><div class="actions"><button class="btn btn-gold" id="ovOpen">Открыть сайт</button><button class="btn" id="ovPreview">Предпросмотр</button><button class="btn" id="ovCheck">Проверить</button><button class="btn" id="ovDiag">Диагностика</button><button class="btn" id="ovLead">Заявки</button></div><div id="ovOut" class="info">Проверяем…</div>';q('#ovOpen').onclick=function(){window.open('/','_blank')};q('#ovPreview').onclick=function(){window.open('/?preview=1','_blank')};q('#ovCheck').onclick=function(){showStatus()};q('#ovDiag').onclick=function(){TAB='diagnostics';render()};q('#ovLead').onclick=function(){TAB='leads';render()};api('/admin/api/status').then(function(j){q('#ovSite').textContent=j.db_read?'Онлайн':'Ошибка';q('#ovGit').textContent=j.github&&j.github.configured?(j.github.last_ok===false?'Ошибка':'Подключён'):'Не настроен';q('#ovOut').innerHTML='<b>Готово.</b> Supabase: '+(j.db_read?'OK':'ошибка')+' · Storage: '+(j.storage?'OK':'ошибка')+' · GitHub: '+(j.github&&j.github.configured?'подключён':'не настроен')}).catch(function(e){q('#ovOut').textContent=e.message});api('/admin/api/leads').then(function(j){q('#ovLeads').textContent=(j.unread||0)+' / '+((j.items||[]).length)}).catch(function(){})}
+function renderEmployees(){q('#main').innerHTML='<h2>Сотрудники и роли</h2><p class="hint">Только руководитель создаёт логины, пароли и права.</p><button class="btn btn-gold" id="leader2fa">Настроить 2FA руководителя</button><div class="item"><div class="field"><label>Логин</label><input id="eLogin"></div><div class="field"><label>Имя</label><input id="eName"></div><div class="field"><label>Роль</label><select id="eRole"><option value="manager">Менеджер</option><option value="designer">Дизайнер</option></select></div><div class="field"><label>Пароль</label><input id="ePass" type="password"></div><button class="btn btn-gold" id="eCreate">Создать сотрудника</button></div><div id="eList"></div>';api('/admin/api/employees').then(function(j){q('#eList').innerHTML=(j.items||[]).map(function(e){return '<div class="item"><b>'+esc(e.name||e.login)+'</b> · '+esc(e.role_title||e.role)+' · '+(e.disabled?'отключён':'активен')+'<div class="hint">Логин: '+esc(e.login)+' · 2FA: '+(e.twofa_enabled?'включён':'выключен')+'</div><button class="btn mini" data-e2fa="'+esc(e.id)+'">Выдать 2FA</button><button class="btn mini btn-red" data-ed="'+esc(e.id)+'">'+(e.disabled?'Включить':'Отключить')+'</button></div>'}).join('');qa('[data-e2fa]').forEach(function(b){b.onclick=function(){api('/admin/api/employees',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'setup_2fa',id:b.dataset.e2fa})}).then(function(x){alert('Секрет 2FA: '+x.secret)})}});qa('[data-ed]').forEach(function(b){b.onclick=function(){api('/admin/api/employees',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'update',id:b.dataset.ed,disabled:b.textContent.indexOf('Отключить')>=0})}).then(renderEmployees)}});});q('#leader2fa').onclick=function(){api('/admin/api/2fa').then(function(x){var code=prompt('Секрет 2FA руководителя: '+x.secret+'\nВведите код из приложения, чтобы включить 2FA:');if(code)api('/admin/api/2fa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'toggle',enabled:true,code:code})}).then(function(){toast('2FA включён')})})};q('#eCreate').onclick=function(){api('/admin/api/employees',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'create',login:q('#eLogin').value,name:q('#eName').value,role:q('#eRole').value,password:q('#ePass').value,permissions:['content_edit','leads_manage']})}).then(function(x){if(x.ok){toast('Сотрудник создан');renderEmployees()}else toast(x.error||'Ошибка',true)})}}
 function render(){
   var groups={},order=[];
   SCHEMA.forEach(function(t){if(!groups[t.group]){groups[t.group]=[];order.push(t.group)}groups[t.group].push(t)});
@@ -4151,6 +4211,7 @@ function render(){
   nav+='<div class="nav-group">Рабочее</div><a data-tab="overview" class="'+(TAB==='overview'?'active':'')+'"><span class="nav-ico">⌂</span><span class="cap">Обзор</span></a>';
   nav+='<div class="nav-group">Рабочее</div><a data-tab="leads" class="'+(TAB==='leads'?'active':'')+'"><span class="nav-ico">◉</span><span class="cap">Заявки</span><span id="leadBadge" class="status" style="display:none;padding:2px 7px;margin-left:auto;background:rgba(236,207,160,.15);color:#ecd09c;border:1px solid rgba(236,207,160,.25)">0</span></a>';
   nav+='<a data-tab="audit" class="'+(TAB==='audit'?'active':'')+'"><span class="nav-ico">◌</span><span class="cap">Журнал действий</span></a>';
+   nav+='<a data-tab="employees" class="'+(TAB==='employees'?'active':'')+'"><span class="nav-ico">♙</span><span class="cap">Сотрудники</span></a>';
   order.forEach(function(g){
     nav+='<div class="nav-group">'+esc(g)+'</div>';
     groups[g].forEach(function(t){
@@ -4171,6 +4232,7 @@ function render(){
   if(TAB==='overview'){renderOverview();updateBar();refreshLeadBadge();return}
   if(TAB==='leads'){renderLeads();updateBar();refreshLeadBadge();return}
   if(TAB==='audit'){renderAudit();updateBar();refreshLeadBadge();return}
+   if(TAB==='employees'){renderEmployees();updateBar();refreshLeadBadge();return}
   var tab=SCHEMA.filter(function(t){return t.id===TAB})[0]||SCHEMA[0];
   var h='<h2>'+esc(tab.title)+'</h2>'+(tab.hint?'<p class="hint">'+tab.hint+'</p>':'');
   (tab.fields||[]).forEach(function(f){h+=fieldHTML(f,'')});
@@ -4534,6 +4596,18 @@ def _parse_multipart(body, boundary):
     return None, None
 
 
+def _admin_user(h): return _session_identity(h._tok())
+def _employee_public(e): return {"id":e.get("id"),"login":e.get("login"),"name":e.get("name"),"role":e.get("role"),"role_title":EMPLOYEE_ROLES.get(e.get("role"),"Сотрудник"),"permissions":e.get("permissions") or [],"disabled":bool(e.get("disabled")),"twofa_enabled":bool(e.get("twofa_enabled"))}
+def _set_lead(lead_id,changes):
+    with _leads_lock:
+        items=_load_leads()
+        for it in items:
+            if str(it.get("id"))==str(lead_id):
+                for k in ("status","responsible","priority","source","city","furniture_type","notes","repeat_client","client_no_answer"):
+                    if k in changes:it[k]=changes[k]
+                _save_leads(items);return it
+    return None
+
 class Handler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
     server_version = "OstrovskyCMS/2.0"
@@ -4656,6 +4730,14 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/admin/login":
             self._send(200, ADMIN_LOGIN_HTML.replace("__ERROR__", ""), "text/html; charset=utf-8")
             return
+        if path.startswith("/client/"):
+            token=path.split("/client/",1)[1].strip("/")
+            lead=next((x for x in _get_leads() if x.get("client_token")==token),None)
+            if not lead:
+                self._send(404,build_404(load_data()),"text/html; charset=utf-8");return
+            status={"new":"Новая","in_work":"В работе","measurement":"Замер","calculation":"Расчёт","contract":"Договор","done":"Завершена"}.get(lead.get("status"),"В работе")
+            html="""<!doctype html><html lang='ru'><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Статус заказа — Кухни Островский</title><style>body{font-family:system-ui;background:#0d0b08;color:#f5efe3;margin:0;padding:30px}.card{max-width:760px;margin:40px auto;padding:30px;border:1px solid #5d4a2b;border-radius:18px;background:#17130d}h1{font-family:Georgia,serif}.status{font-size:28px;color:#ecd09c;margin:20px 0}.muted{color:#b9ad9a}</style><div class='card'><h1>Личный кабинет клиента</h1><p class='muted'>Кухни Островский</p><div class='status'>"""+_escape(status)+"</div><p>Заявка: "+_escape(lead.get("id"))+"</p><p>Город: "+_escape(lead.get("city") or "—")+"</p><p>Тип мебели: "+_escape(lead.get("furniture_type") or "—")+"</p><p>Сообщение: "+_escape(lead.get("message") or "—")+"</p>"+("<p><a style='color:#ecd09c' href='"+_escape(lead.get("photo_url"))+"' target='_blank'>Фото помещения</a></p>" if lead.get("photo_url") else "")+"<p class='muted'>Когда статус заявки изменится, обновите эту страницу.</p></div></html>"
+            self._send(200,html,"text/html; charset=utf-8","no-cache");return
         if path == "/admin/logout":
             _drop_session(self._tok())
             self._redir("/admin/login", "admin_session=; Path=/; Max-Age=0; HttpOnly")
@@ -4692,7 +4774,7 @@ class Handler(BaseHTTPRequestHandler):
                 self._json({"error": "no auth"}, 401)
                 return
             items = _get_leads()
-            self._json({"items": items, "unread": sum(1 for x in items if not x.get("read"))})
+            self._json({"items":[{k:v for k,v in x.items() if k!="ip_hash"} for x in items],"unread":sum(1 for x in items if not x.get("read"))})
             return
         if path == "/admin/api/leads/export":
             if not self._admin():
@@ -4770,6 +4852,14 @@ class Handler(BaseHTTPRequestHandler):
                 return
             self._json(self._status_payload())
             return
+        if path == "/admin/api/employees":
+            u=_admin_user(self)
+            if not _can(u,"employees_manage"):self._json({"error":"нет прав"},403);return
+            self._json({"items":[_employee_public(e) for e in _employees()]});return
+        if path == "/admin/api/2fa":
+            u=_admin_user(self)
+            if not _can(u,"employees_manage"):self._json({"error":"нет прав"},403);return
+            x=_ensure_leader_2fa();self._json({"leader_enabled":bool(x.get("leader_enabled")),"secret":x.get("leader_secret")});return
         if path == "/admin":
             if not self._admin():
                 self._redir("/admin/login")
@@ -4783,6 +4873,9 @@ class Handler(BaseHTTPRequestHandler):
                 html = re.sub(r'<div class="cookie-bar" id="cookieBar">.*?</div>\s*', "", html, count=1, flags=re.S)
             self._send(200, html, "text/html; charset=utf-8", "no-cache")
             return
+        if path.rstrip("/") in ("/rostov-na-donu","/bataysk","/azov"):
+            html=render_city_page(path.strip("/"));
+            if html:self._send(200,html,"text/html; charset=utf-8","no-cache");return
         if path == "/robots.txt":
             self._send(200, build_robots(load_data()), "text/plain; charset=utf-8", "public, max-age=3600")
             return
@@ -4804,6 +4897,24 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         path = self.path.split("?", 1)[0]
 
+        if path == "/api/lead-upload":
+            body=self._body()
+            if not body or len(body)>MAX_UPLOAD: self._json({"error":"Файл пустой или больше 8 МБ"},413); return
+            ctype=self.headers.get("Content-Type",""); blob=fname=None
+            if "multipart/form-data" in ctype:
+                m=re.search(r"boundary=([^;]+)",ctype)
+                if m: fname,blob=_parse_multipart(body,m.group(1).strip().strip('"').encode())
+            if not blob:self._json({"error":"Нужен файл изображения"},400);return
+            mime="image/jpeg"
+            if blob[:8]==b"\x89PNG\r\n\x1a\n":mime="image/png"
+            elif blob[:6] in (b"GIF87a",b"GIF89a"):mime="image/gif"
+            elif blob[:4]==b"RIFF" and blob[8:12]==b"WEBP":mime="image/webp"
+            elif blob[:5]==b"<?xml" or blob[:4]==b"<svg":mime="image/svg+xml"
+            else:self._json({"error":"Разрешены только изображения JPG, PNG, GIF, WebP, SVG"},415);return
+            url=_storage_upload("lead-"+uuid.uuid4().hex[:12]+"-photo",blob,mime)
+            if not url:self._json({"error":"Хранилище фотографий временно недоступно"},503);return
+            self._json({"ok":True,"url":url});return
+
         if path == "/api/lead":
             try:
                 req = json.loads(self._body().decode("utf-8") or "{}")
@@ -4820,15 +4931,16 @@ class Handler(BaseHTTPRequestHandler):
             phone = re.sub(r"\s+", " ", str(req.get("phone") or "").strip())[:80]
             message = str(req.get("message") or "").strip()[:1000]
             page = str(req.get("page") or "/").strip()[:300]
+            extra={k:req.get(k) for k in ("city","furniture_type","photo_url","source")}
             digits = re.sub(r"\D", "", phone)
             if len(digits) < 7:
                 self._json({"error": "Укажите номер телефона"}, 400)
                 return
-            lead = _add_lead(name, phone, message, page, self._ip())
+            lead = _add_lead(name, phone, message, page, self._ip(), extra)
             if not lead:
                 self._json({"error": "Хранилище заявок временно недоступно"}, 503)
                 return
-            self._json({"ok": True, "id": lead["id"]})
+            self._json({"ok": True, "id": lead["id"], "portal": _domain(load_data()).rstrip("/") + "/client/" + lead["client_token"]})
             return
 
         if path == "/admin/login":
@@ -4838,22 +4950,60 @@ class Handler(BaseHTTPRequestHandler):
                            "text/html; charset=utf-8")
                 return
             p = parse_qs(self._body().decode("utf-8", "ignore"))
-            login = (p.get("login") or [""])[0].strip()
-            pw = (p.get("password") or [""])[0]
-            if (hmac.compare_digest(login.encode("utf-8"), ADMIN_LOGIN_ENV.encode("utf-8"))
-                    and hmac.compare_digest(pw.encode("utf-8"), ADMIN_PASSWORD_ENV.encode("utf-8"))):
-                _login_note(ip, True)
-                self._redir("/admin", self._cookie(_new_session()))
+            login = (p.get("login") or [""])[0].strip(); pw=(p.get("password") or [""])[0]; code=(p.get("code") or [""])[0].strip()
+            user,err=_auth_user(login,pw,code)
+            if user:
+                _login_note(ip,True); _audit("Вход",login,user.get("role")); self._redir("/admin",self._cookie(_new_session(user)))
             else:
-                _login_note(ip, False)
-                self._send(200, ADMIN_LOGIN_HTML.replace("__ERROR__", '<div class="err">Неверный логин или пароль</div>'),
-                           "text/html; charset=utf-8")
+                _login_note(ip,False); self._send(200,ADMIN_LOGIN_HTML.replace("__ERROR__",'<div class="err">'+_escape(err)+'</div>'),"text/html; charset=utf-8")
             return
 
+        if path == "/admin/api/employees":
+            u=_admin_user(self)
+            if not _can(u,"employees_manage"):self._json({"error":"нет прав"},403);return
+            try:req=json.loads(self._body().decode() or "{}")
+            except Exception:req={}
+            action=req.get("action");items=_employees()
+            if action=="create":
+                login=str(req.get("login") or "").strip();pw=str(req.get("password") or "");role=str(req.get("role") or "manager");name=str(req.get("name") or login).strip()
+                if not re.match(r"^[A-Za-zА-Яа-я0-9_.-]{3,80}$",login) or len(pw)<6 or role not in ("manager","designer") or any(str(e.get("login"))==login for e in items):self._json({"error":"Проверьте логин, пароль минимум 6 символов и роль"},400);return
+                allowed={"content_edit","leads_manage","projects_manage","analytics_view","media_manage"};perms=[x for x in (req.get("permissions") or []) if x in allowed]
+                e={"id":uuid.uuid4().hex[:10],"login":login,"name":name,"role":role,"password_hash":_hash_password(pw),"permissions":perms,"disabled":False,"twofa_enabled":False,"twofa_secret":""};items.append(e);_save_employees(items);_audit("Создан сотрудник",u.get("login"),login);self._json({"ok":True});return
+            if action=="update":
+                e=next((x for x in items if str(x.get("id"))==str(req.get("id"))),None)
+                if not e:self._json({"error":"сотрудник не найден"},404);return
+                if "disabled" in req:e["disabled"]=bool(req["disabled"])
+                if req.get("password"):e["password_hash"]=_hash_password(req["password"])
+                if req.get("role") in ("manager","designer"):e["role"]=req["role"]
+                if isinstance(req.get("permissions"),list):e["permissions"]=[x for x in req["permissions"] if x in {"content_edit","leads_manage","projects_manage","analytics_view","media_manage"}]
+                _save_employees(items);self._json({"ok":True});return
+            if action=="setup_2fa":
+                e=next((x for x in items if str(x.get("id"))==str(req.get("id"))),None)
+                if not e:self._json({"error":"сотрудник не найден"},404);return
+                e["twofa_secret"]=_b32_secret();e["twofa_enabled"]=True;_save_employees(items);self._json({"ok":True,"secret":e["twofa_secret"],"login":e["login"],"enabled":True});return
+            self._json({"error":"неизвестное действие"},400);return
+        if path == "/admin/api/2fa":
+            u=_admin_user(self)
+            if not _can(u,"employees_manage"):self._json({"error":"нет прав"},403);return
+            try:req=json.loads(self._body().decode() or "{}")
+            except Exception:req={}
+            x=_ensure_leader_2fa()
+            if req.get("action")=="toggle":
+                if req.get("enabled") and not _totp_ok(x.get("leader_secret"),req.get("code")): self._json({"error":"Неверный код 2FA"},400);return
+                x["leader_enabled"]=bool(req.get("enabled"));_save_twofa(x)
+            if req.get("action")=="regenerate":x["leader_secret"]=_b32_secret();x["leader_enabled"]=False;_save_twofa(x)
+            self._json({"ok":True,"leader_enabled":bool(x.get("leader_enabled")),"secret":x.get("leader_secret")});return
+        if path == "/admin/api/leads/update":
+            u=_admin_user(self)
+            if not _can(u,"leads_manage"):self._json({"error":"нет прав"},403);return
+            try:req=json.loads(self._body().decode() or "{}")
+            except Exception:req={}
+            x=_set_lead(req.get("id"),req)
+            if not x:self._json({"error":"заявка не найдена"},404);return
+            self._json({"ok":True,"item":x});return
         if path == "/admin/api/save":
-            if not self._admin():
-                self._json({"error": "no auth"}, 401)
-                return
+            if not _can(_admin_user(self),"content_edit"):
+                self._json({"error":"нет прав"},403);return
             try:
                 body = json.loads(self._body().decode("utf-8") or "{}")
             except Exception:
