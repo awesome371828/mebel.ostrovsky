@@ -139,9 +139,9 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
          'robots': '',
          'extra_urls': []},
  'code': {'head': '', 'body': ''},
- 'lead_form': {'enabled': True, 'title': 'Оставить заявку', 'subtitle': 'Оставьте номер — свяжемся и обсудим задачу.', 'button': 'Отправить заявку',
-               'kicker': 'Связаться', 'note': 'Контакт нужен только для связи по заявке.'},
- 'animations': {'enabled': True, 'parallax': False, 'hover3d': False, 'sparks': False, 'scroll_reveal': True,
+ 'lead_form': {'enabled': True, 'title': 'Оставить заявку', 'subtitle': 'Оставьте фамилию, имя и номер — напишите, какую мебель хотите.', 'button': 'Отправить заявку',
+               'kicker': 'Связаться', 'note': 'Контакт нужен только для связи по заявке.', 'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w04.jpg'},
+ 'animations': {'enabled': True, 'parallax': False, 'hover3d': True, 'sparks': False, 'scroll_reveal': True,
                 'text_reveal': False, 'loader': False, 'safe_mode': True, 'smooth_scroll': True, 'intensity': 'calm'},
  'sections': {'stats': True, 'about': True, 'consult': True, 'lead_form': True, 'works': True, 'reviews': True,
               'services': True, 'process': True, 'guarantees': True, 'cities': True, 'cta': True,
@@ -167,10 +167,10 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
                    {'label': 'Услуги', 'href': '#services'},
                    {'label': 'Как работаем', 'href': '#process'},
                    {'label': 'Города', 'href': '#cities'},
-                   {'label': 'Контакты', 'href': '#contacts'}],
+                   {'label': 'Контакты', 'href': '#contacts'}, {'label': 'Заявка', 'href': '#lead'}],
          'cta_label': 'Позвонить специалисту',
          'cta_href': 'tel:+79508465397'},
- 'hero': {'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w01.jpg', 'rotation_enabled': True, 'rotation_interval': 6500, 'rotation_images': ['https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w01.jpg','https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w04.jpg','https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w06.jpg'],
+ 'hero': {'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w01.jpg', 'rotation_enabled': False, 'rotation_interval': 6500, 'rotation_images': ['https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w01.jpg','https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w04.jpg','https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w06.jpg'],
           'sub': 'Проектируем и изготавливаем кухни, шкафы, гардеробные и другую корпусную мебель в Ростове, Батайске и Азове — по '
                  'вашему проекту, от замера до монтажа.',
           'btn1': 'Получить консультацию',
@@ -651,7 +651,7 @@ header.solid{background:rgba(14,12,9,.92);box-shadow:0 12px 44px rgba(0,0,0,.45)
 .panel{position:relative;min-height:100vh;display:flex;align-items:center;padding:150px 0;overflow:hidden}
 .panel .bg{position:absolute;inset:-14% 0;z-index:0;background-size:cover;background-position:center;will-change:transform;transform:translateZ(0)}
 .panel .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(to right,rgba(10,8,6,.94) 22%,rgba(10,8,6,.6) 58%,rgba(10,8,6,.75))}
-.panel--hero .bg::before{content:"";position:absolute;inset:-8%;background-image:inherit;background-size:cover;background-position:center;animation:kenburns 22s ease-in-out infinite alternate;will-change:transform}
+.panel--hero .bg::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,8,6,.12),transparent 45%,rgba(10,8,6,.2));pointer-events:none}
 @keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.1)}}
 .panel--hero .bg::after{z-index:1}
 .panel .content{position:relative;z-index:2;width:100%;will-change:transform;transform:translateZ(0)}
@@ -1321,6 +1321,17 @@ html.no-anim .spark{display:none}
 .choice{will-change:transform}.choice.is-selected{transform:translateY(-1px)}
 @media(max-width:800px){.lead-shell::after{display:none}.lead-shell{padding:0!important}.lead-copy{padding-bottom:8px}}
 </style>
+<style id="ostLuxuryEnhancements">
+.panel .bg{background-size:cover;background-position:center center;background-repeat:no-repeat;transform:none!important}
+.panel .bg::before{transform:none!important}
+.lead-panel .lead-bg{opacity:.34!important;filter:saturate(.9) contrast(1.04);background-position:center!important}
+.lead-panel .lead-bg::after{background:linear-gradient(90deg,rgba(8,7,5,.94) 0%,rgba(8,7,5,.68) 48%,rgba(8,7,5,.72) 100%)!important}
+.lead-simple-form{max-width:560px;margin-left:auto;padding:30px;border:1px solid rgba(236,207,160,.18);border-radius:22px;background:linear-gradient(145deg,rgba(18,15,11,.86),rgba(8,8,7,.74));box-shadow:0 28px 80px -46px #000,inset 0 1px 0 rgba(255,255,255,.055);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
+.lead-simple-kicker{display:grid;grid-template-columns:36px 1fr;column-gap:10px;align-items:center;margin-bottom:22px}.lead-simple-kicker span{grid-row:span 2;color:var(--gold);font-size:11px;letter-spacing:.18em}.lead-simple-kicker b{font-size:18px;font-weight:600}.lead-simple-kicker small{color:#887d6e;font-size:11px}.lead-simple-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.lead-simple-form label{display:block;margin-bottom:14px}.lead-simple-form label>span{display:block;margin:0 0 7px;color:#b7aa97;font-size:10px;letter-spacing:.14em;text-transform:uppercase}.lead-simple-form input,.lead-simple-form textarea{width:100%;border:1px solid rgba(236,207,160,.14);background:rgba(255,255,255,.035);color:#f7f0e4;border-radius:11px;padding:13px 14px;outline:none;transition:border-color .25s,box-shadow .25s,background .25s;font:500 13px/1.4 var(--sans)}.lead-simple-form textarea{min-height:116px;resize:vertical}.lead-simple-form input:focus,.lead-simple-form textarea:focus{border-color:rgba(236,207,160,.48);background:rgba(255,255,255,.055);box-shadow:0 0 0 3px rgba(236,207,160,.055)}.lead-simple-choice{margin:5px 0 17px}.lead-simple-choice>span{display:block;color:#8e8374;font-size:10px;letter-spacing:.08em;margin-bottom:9px}.lead-simple-choice .choice-grid{gap:6px}.lead-simple-choice .choice{min-height:35px;padding:8px 11px;font-size:11px}.lead-simple-city{color:#71685c;font-size:10px;line-height:1.5;margin:-2px 0 16px}.lead-simple-form .lead-submit{margin-top:4px;min-height:49px}.lead-simple-form .lead-note{font-size:9px}.lead-result.error{color:#e99b9b}.lead-result{line-height:1.5}
+@media(hover:hover) and (pointer:fine){.ost-depth{transform-style:preserve-3d;transition:transform .45s cubic-bezier(.16,1,.3,1),box-shadow .45s,border-color .45s}.ost-depth:hover{transform:perspective(900px) rotateX(1.5deg) rotateY(-1.5deg) translateY(-4px);box-shadow:0 22px 55px -34px #000;border-color:rgba(236,207,160,.28)!important}}
+@media(max-width:600px){.lead-simple-form{padding:21px;border-radius:18px}.lead-simple-grid{grid-template-columns:1fr}.lead-simple-kicker{margin-bottom:17px}.lead-simple-kicker b{font-size:16px}}
+@media(prefers-reduced-motion:reduce){.ost-depth{transition:none!important;transform:none!important}}
+</style>
 <style id="customCss">{{{design.custom_css}}}</style>
 {{#if seo.metrika_id}}<script>(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js','ym');ym({{seo.metrika_id}},'init',{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});</script><noscript><div><img src="https://mc.yandex.ru/watch/{{seo.metrika_id}}" style="position:absolute;left:-9999px" alt=""></div></noscript>{{/if}}
 {{{code.head}}}
@@ -1422,7 +1433,7 @@ html.no-anim .spark{display:none}
 
 {{#if sections.lead_form}}{{#if lead_form.enabled}}
 <section class="panel panel--center panel--dark lead-panel" id="lead">
-  <div class="bg lead-bg" style="background-image:url('{{{consult.bg}}}')"></div>
+  <div class="bg lead-bg" style="background-image:url('{{{lead_form.bg}}}')"></div>
   <div class="wrap"><div class="content lead-content">
     <div class="lead-shell reveal">
       <div class="lead-copy">
@@ -1431,41 +1442,22 @@ html.no-anim .spark{display:none}
         <p>{{lead_form.subtitle}}</p>
         <div class="lead-accent"><i></i><b></b><i></i></div>
       </div>
-      <form class="site-lead-form" id="siteLeadForm" autocomplete="on" novalidate>
-        <div class="lead-progress"><span class="active">1</span><i></i><span>2</span><i></i><span>3</span></div>
-        <div class="lead-step"><span class="lead-step-no">01</span><div><b>Что проектируем?</b><small>Основные параметры проекта</small></div></div>
-        <div class="choice-block"><div class="choice-label">Город</div><div class="choice-grid compact" role="group">
-          <button type="button" class="choice" data-choice-name="city" data-choice-value="Ростов-на-Дону">Ростов-на-Дону</button><button type="button" class="choice" data-choice-name="city" data-choice-value="Батайск">Батайск</button><button type="button" class="choice" data-choice-name="city" data-choice-value="Азов">Азов</button>
-        </div></div><input type="hidden" name="city" value="">
-        <div class="choice-block"><div class="choice-label">Тип мебели</div><div class="choice-grid compact" role="group">
+      <form class="site-lead-form lead-simple-form" id="siteLeadForm" autocomplete="on" novalidate>
+        <div class="lead-simple-kicker"><span>01</span><b>Оставьте контакты</b><small>Мы свяжемся и обсудим вашу задачу</small></div>
+        <div class="lead-simple-grid">
+          <label><span>Фамилия</span><input name="surname" maxlength="80" autocomplete="family-name" placeholder="Ваша фамилия"></label>
+          <label><span>Имя</span><input name="name" maxlength="80" autocomplete="given-name" placeholder="Ваше имя"></label>
+        </div>
+        <label class="lead-wide"><span>Номер телефона *</span><input name="phone" type="tel" maxlength="40" required inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__"></label>
+        <label class="lead-wide"><span>Что хотите?</span><textarea name="message" maxlength="700" required placeholder="Например: хочу кухню в современном стиле, светлую, с большим количеством хранения"></textarea></label>
+        <div class="lead-simple-choice"><span>Если удобно, выберите тип мебели</span><div class="choice-grid compact" role="group">
           <button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Кухня">Кухня</button><button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Шкаф">Шкаф</button><button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Гардеробная">Гардеробная</button><button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Прихожая">Прихожая</button><button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Гостиная">Гостиная</button>
-        </div></div><input type="hidden" name="furniture_type" value="">
-        <div class="lead-option-grid">
-          <label><span>Стиль</span><select name="style"><option value="">Не выбрано</option><option>Современный</option><option>Классический</option><option>Минимализм</option><option>Неоклассика</option></select></label>
-          <label><span>Цвет</span><select name="color"><option value="">Не выбрано</option><option>Светлый</option><option>Тёмный</option><option>Дерево</option><option>Комбинированный</option></select></label>
-          <label><span>Форма</span><select name="shape"><option value="">Не выбрано</option><option>Прямая</option><option>Угловая</option><option>П-образная</option><option>С островом</option></select></label>
-          <label><span>Количество секций</span><input name="sections_count" type="number" min="1" max="50" placeholder="Например, 6"></label>
-          <label><span>Расположение техники</span><select name="appliances"><option value="">Не выбрано</option><option>Встроенная</option><option>Комбинированная</option><option>Отдельностоящая</option></select></label>
-          <label><span>Фасад</span><select name="facade"><option value="">Не выбрано</option><option>Матовый</option><option>Глянцевый</option><option>Дерево</option><option>Стекло</option></select></label>
-          <label><span>Столешница</span><select name="countertop"><option value="">Не выбрано</option><option>Камень</option><option>Компакт</option><option>ЛДСП</option><option>Дерево</option></select></label>
-          <label><span>Ручки</span><select name="handle"><option value="">Не выбрано</option><option>Профиль</option><option>Накладные</option><option>Без ручек</option></select></label>
-        </div>
-        <label class="lead-wide"><span>Дополнительные элементы</span><input name="additional" maxlength="500" placeholder="Например: подсветка, пенал, витрина"></label>
-        <div class="lead-step lead-step-next"><span class="lead-step-no">02</span><div><b>Расскажите о помещении</b><small>Можно приложить несколько файлов</small></div></div>
-        <div class="lead-person-row">
-          <label><span>Имя</span><input name="name" maxlength="120" placeholder="Как к вам обращаться"></label>
-          <label><span>Телефон *</span><input name="phone" type="tel" maxlength="80" required inputmode="tel" placeholder="+7 (___) ___-__-__"></label>
-        </div>
-        <label class="lead-wide lead-message"><span>Пара слов о задаче</span><textarea name="message" maxlength="1000" placeholder="Например: хочу обсудить планировку и варианты хранения"></textarea></label>
-        <div class="lead-files">
-          <label class="lead-file"><span>Фото помещения</span><input name="room_photos" type="file" accept="image/jpeg,image/png,image/webp" multiple><small>Можно выбрать несколько фото · до 8 МБ каждое</small></label>
-          <label class="lead-file"><span>План помещения</span><input name="room_plan" type="file" accept="image/jpeg,image/png,image/webp,application/pdf"><small>Необязательно</small></label>
-          <label class="lead-file"><span>Чертёж</span><input name="drawing" type="file" accept="image/jpeg,image/png,image/webp,application/pdf"><small>Необязательно</small></label>
-        </div>
-        <div class="lead-step lead-step-next"><span class="lead-step-no">03</span><div><b>Проверка</b><small>Перед отправкой проверьте выбранные параметры</small></div></div>
-        <div class="lead-hp" aria-hidden="true"><input name="website" tabindex="-1" autocomplete="off"></div>        <button class="btn btn-solid lead-submit" type="submit"><span class="lead-submit-text">{{lead_form.button}}</span><span class="lead-spinner" aria-hidden="true"></span></button>
-        <p class="lead-note">{{lead_form.note}}</p>
-        <div class="lead-result" id="siteLeadResult" role="status" aria-live="polite"></div>
+        </div></div>
+        <input type="hidden" name="furniture_type" value=""><input type="hidden" name="city" value="">
+        <div class="lead-simple-city">Город можно указать прямо в сообщении — например: «Кухня в Батайске».</div>
+        <div class="lead-hp" aria-hidden="true"><input name="website" tabindex="-1" autocomplete="off"></div>
+        <button class="btn btn-solid lead-submit" type="submit"><span class="lead-submit-text">{{lead_form.button}}</span><span class="lead-spinner" aria-hidden="true"></span></button>
+        <p class="lead-note">{{lead_form.note}}</p><div class="lead-result" id="siteLeadResult" role="status" aria-live="polite"></div>
       </form>
     </div>
   </div></div>
@@ -1908,15 +1900,13 @@ var form=document.getElementById('siteLeadForm');if(!form)return;
   var btn=form.querySelector('.lead-submit'),result=document.getElementById('siteLeadResult');
   function setResult(msg,bad){if(!result)return;result.textContent=msg||'';result.classList.toggle('error',!!bad)}
   form.querySelectorAll('[data-choice-name]').forEach(function(b){b.addEventListener('click',function(){var n=b.dataset.choiceName;form.querySelectorAll('[data-choice-name="'+n+'"]').forEach(function(x){x.classList.remove('is-selected');x.setAttribute('aria-pressed','false')});b.classList.add('is-selected');b.setAttribute('aria-pressed','true');var i=form.querySelector('[name="'+n+'"]');if(i)i.value=b.dataset.choiceValue||''})});
-  form.addEventListener('submit',async function(e){e.preventDefault();setResult('');var fd=new FormData(form),phone=String(fd.get('phone')||'').trim();
-    if(!String(fd.get('city')||'').trim()){setResult('Выберите город.',true);return}if(!String(fd.get('furniture_type')||'').trim()){setResult('Выберите тип мебели.',true);return}if(phone.replace(/\D/g,'').length<7){setResult('Укажите номер телефона.',true);form.querySelector('[name="phone"]').focus();return}if(String(fd.get('website')||''))return;
+  form.addEventListener('submit',async function(e){e.preventDefault();setResult('');var fd=new FormData(form),phone=String(fd.get('phone')||'').trim(),name=String(fd.get('name')||'').trim(),message=String(fd.get('message')||'').trim();
+    if(!name){setResult('Укажите имя.',true);form.querySelector('[name="name"]').focus();return}if(phone.replace(/\D/g,'').length<7){setResult('Укажите номер телефона.',true);form.querySelector('[name="phone"]').focus();return}if(!message){setResult('Напишите, какую мебель вы хотите.',true);form.querySelector('[name="message"]').focus();return}if(String(fd.get('website')||''))return;
     btn.classList.add('loading');btn.disabled=true;var old=btn.querySelector('.lead-submit-text');if(old)old.textContent='Отправляем…';
-    try{var files=[];['room_photos','room_plan','drawing'].forEach(function(n){var el=form.elements[n];if(el&&el.files)for(var i=0;i<el.files.length;i++)files.push(el.files[i])});var uploaded=[];if(files.length){var pfd=new FormData();files.forEach(function(f){pfd.append('file',f,f.name)});var pu=await fetch('/api/lead-upload',{method:'POST',body:pfd,credentials:'same-origin'});var uj=await pu.json();if(!pu.ok||!uj.ok)throw new Error(uj.error||'Не удалось загрузить файлы');uploaded=Array.isArray(uj.urls)?uj.urls:(uj.url?[uj.url]:[])}
-      var body={name:String(fd.get('name')||'').trim(),phone:phone,message:String(fd.get('message')||'').trim(),website:'',page:location.href,city:String(fd.get('city')||''),furniture_type:String(fd.get('furniture_type')||''),photo_url:uploaded[0]||'',attachments:uploaded,source:'site',style:String(fd.get('style')||''),color:String(fd.get('color')||''),shape:String(fd.get('shape')||''),sections_count:String(fd.get('sections_count')||''),appliances:String(fd.get('appliances')||''),facade:String(fd.get('facade')||''),countertop:String(fd.get('countertop')||''),handle:String(fd.get('handle')||''),additional:String(fd.get('additional')||'')};
+    try{var body={surname:String(fd.get('surname')||'').trim(),name:name,phone:phone,message:message,website:'',page:location.href,city:String(fd.get('city')||''),furniture_type:String(fd.get('furniture_type')||''),source:'site'};
       var ctl=typeof AbortController!=='undefined'?new AbortController():null,timer=ctl?setTimeout(function(){try{ctl.abort()}catch(_){}},9000):null;var r=await fetch('/api/lead',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(body),signal:ctl?ctl.signal:undefined});if(timer)clearTimeout(timer);var raw=await r.text(),j={};try{j=JSON.parse(raw||'{}')}catch(_){}if(!r.ok||!j.ok)throw new Error(j.error||('Ошибка отправки ('+r.status+')'));
-      form.reset();form.querySelectorAll('.choice').forEach(function(x){x.classList.remove('is-selected');x.setAttribute('aria-pressed','false')});setResult('Заявка отправлена. Спасибо! Мы свяжемся с вами.'+(j.portal?' Личный кабинет: '+j.portal:''));if(old)old.textContent='Заявка отправлена ✓';setTimeout(function(){if(old)old.textContent='Отправить заявку';btn.disabled=false;btn.classList.remove('loading')},2600);
-    }catch(err){setResult(err&&err.name==='AbortError'?'Сервер отвечает слишком долго. Попробуйте ещё раз.':'Не удалось отправить заявку. Попробуйте ещё раз.',true);if(old)old.textContent='Отправить заявку';btn.disabled=false;btn.classList.remove('loading')}
-  });
+      form.reset();form.querySelectorAll('.choice').forEach(function(x){x.classList.remove('is-selected');x.setAttribute('aria-pressed','false')});setResult('Заявка отправлена. Спасибо! Мы свяжемся с вами.');if(old)old.textContent='Заявка отправлена ✓';setTimeout(function(){if(old)old.textContent='Отправить заявку';btn.disabled=false;btn.classList.remove('loading')},2600);
+    }catch(err){setResult(err&&err.name==='AbortError'?'Сервер отвечает слишком долго. Попробуйте ещё раз.':(err&&err.message?err.message:'Не удалось отправить заявку. Попробуйте ещё раз.'),true);if(old)old.textContent='Отправить заявку';btn.disabled=false;btn.classList.remove('loading')} });
 })();
 </script>
 <script id="beautyScript">
@@ -1929,13 +1919,14 @@ var form=document.getElementById('siteLeadForm');if(!form)return;
   var touch=('ontouchstart' in window)||(navigator.maxTouchPoints>0);
   var lowEnd=(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4)||((navigator.deviceMemory||99)<=4);
   var safe=CFG.safe!==false;
-  var heroCfg=window.__OST_HERO_ROTATION||null;if(heroCfg&&heroCfg.enabled&&heroCfg.images&&heroCfg.images.length>1){var hb=document.querySelector('.panel--hero .bg');if(hb){var hi=0;setInterval(function(){hi=(hi+1)%heroCfg.images.length;var u=heroCfg.images[hi],pre=new Image();pre.onload=function(){hb.style.backgroundImage='url(\"'+u.replace(/\"/g,'')+'\")'};pre.src=u},Math.max(3500,Number(heroCfg.interval)||6500))}}
+  var heroCfg=window.__OST_HERO_ROTATION||null;/* Статичный фон первого экрана — без автоматической смены фото. */
   var reduced=OFF||prefersReduced||(!CFG.enabled&&!FORCE);
   var fine=!!CFG.hover3d&&!safe&&!touch&&!lowEnd;
   var parallax=!!CFG.parallax&&!safe&&!touch&&!lowEnd;
   if(reduced)d.documentElement.classList.add('no-anim');
   d.documentElement.classList.add('ost-anim-'+(CFG.intensity||'calm'));if(CFG.safe)d.documentElement.classList.add('ost-safe-anim');
   function all(sel,root){return Array.prototype.slice.call((root||d).querySelectorAll(sel));}
+  if(!reduced&&CFG.hover3d){all('.project-card,.svc,.guar,.city,.rev-card,.about-card,.stat,.call-block').forEach(function(el){el.classList.add('ost-depth')})}
 
   /* 1. Заголовок героя — появление по словам */
   var h1=d.getElementById('heroTitle');
@@ -2347,6 +2338,14 @@ def _migrate(raw):
             hero["eyebrow"] = "Мебель и кухни на заказ"
         hero.setdefault("btn1_href", "#consult")
         hero.setdefault("btn2_href", "#works")
+        hero["rotation_enabled"] = False
+
+    nav = d.get("nav")
+    if isinstance(nav, dict):
+        items = nav.get("items") if isinstance(nav.get("items"), list) else []
+        if not any(isinstance(x, dict) and x.get("href") == "#lead" for x in items):
+            items.append({"label": "Заявка", "href": "#lead"})
+        nav["items"] = items
 
     contacts = d.get("contacts")
     if isinstance(contacts, dict) and "lines" not in contacts:
@@ -3409,7 +3408,7 @@ def render_site():
     anim_text = bool(anim.get("text_reveal", True))
     anim_safe = bool(anim.get("safe_mode", True))
     anim_mode = str(anim.get("intensity") or "full")
-    hero_cfg=data.get('hero') or {};hero_imgs=hero_cfg.get('rotation_images') or [];cfg = '<script>window.__OST_ANIM={enabled:' + str(anim_enabled).lower() + ',parallax:' + str(anim_parallax).lower() + ',hover3d:' + str(anim_hover).lower() + ',sparks:' + str(anim_sparks).lower() + ',scroll:' + str(anim_scroll).lower() + ',text:' + str(anim_text).lower() + ',safe:' + str(anim_safe).lower() + ',intensity:' + json.dumps(anim_mode, ensure_ascii=False) + '};window.__OST_HERO_ROTATION='+json.dumps({'enabled':bool(hero_cfg.get('rotation_enabled',True)),'interval':int(hero_cfg.get('rotation_interval') or 6500),'images':hero_imgs},ensure_ascii=False)+';</script>'
+    hero_cfg=data.get('hero') or {};hero_imgs=hero_cfg.get('rotation_images') or [];cfg = '<script>window.__OST_ANIM={enabled:' + str(anim_enabled).lower() + ',parallax:' + str(anim_parallax).lower() + ',hover3d:' + str(anim_hover).lower() + ',sparks:' + str(anim_sparks).lower() + ',scroll:' + str(anim_scroll).lower() + ',text:' + str(anim_text).lower() + ',safe:' + str(anim_safe).lower() + ',intensity:' + json.dumps(anim_mode, ensure_ascii=False) + '};window.__OST_HERO_ROTATION='+json.dumps({'enabled':False,'interval':int(hero_cfg.get('rotation_interval') or 6500),'images':hero_imgs},ensure_ascii=False)+';</script>'
     html = html.replace("</head>", cfg + "</head>", 1)
     html = _proxify_urls(html)
     html = _inject_site_ui(html, data)
@@ -4014,6 +4013,7 @@ ADMIN_SCHEMA = [
          {"path": "lead_form.subtitle", "label": "Подзаголовок", "type": "textarea", "rows": 2},
          {"path": "lead_form.button", "label": "Текст кнопки", "type": "text"},
          {"path": "lead_form.note", "label": "Подпись под кнопкой", "type": "text"},
+         {"path": "lead_form.bg", "label": "Фон блока заявки", "type": "image", "hint": "Одна фотография из работ. Не меняется автоматически."},
      ]},
 
     {"id":"local_seo","group":"SEO и код","title":"SEO-страницы городов","hint":"Отдельные индексируемые страницы Ростова-на-Дону, Батайска и Азова.","fields":[{"type":"info","text":"Страницы: /rostov-na-donu/ · /bataysk/ · /azov/. Для запроса «кухни на заказ Батайск» используется отдельная Title, Description и текст страницы."}]},
@@ -4108,6 +4108,7 @@ header{position:sticky;top:0;z-index:30;display:flex;justify-content:space-betwe
 .btn:hover{border-color:rgba(212,175,106,.5);background:rgba(212,175,106,.08);transform:translateY(-1px)}
 .btn:active{transform:translateY(0)}
 .btn:disabled{opacity:.5;cursor:default;transform:none}
+@media(hover:hover) and (pointer:fine){.overview-card,.dash,.lead-card,.item,.info,.diag-row,.field,.preview-frame{transition:transform .32s cubic-bezier(.16,1,.3,1),box-shadow .32s,border-color .32s,background .32s}.overview-card:hover,.dash:hover,.lead-card:hover,.item:hover{transform:translateY(-2px);box-shadow:0 18px 45px -32px #000;border-color:rgba(236,207,160,.24)}.btn:hover{transform:translateY(-1px) translateZ(0)}}
 .btn-gold{background:linear-gradient(180deg,#d8b677,#c9a260);color:#14100a;border-color:rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 8px 20px -14px rgba(0,0,0,.85)}
 .btn-gold:hover{background:linear-gradient(180deg,#e0bf82,#d0aa68);box-shadow:inset 0 1px 0 rgba(255,255,255,.36),0 12px 24px -15px rgba(0,0,0,.9)}
 .btn-red{background:rgba(220,70,70,.09);border-color:rgba(220,70,70,.28);color:#ff9d9d}
@@ -4220,7 +4221,7 @@ mark.hit{background:rgba(212,175,106,.25);color:#fff;border-radius:3px;padding:0
 .lead-card,.audit-row{border:1px solid rgba(236,207,160,.12);background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.018));border-radius:15px;padding:15px;margin-bottom:10px;transition:.25s}
 .lead-card.unread{border-color:rgba(236,207,160,.38);box-shadow:0 0 0 1px rgba(236,207,160,.04) inset}
 .lead-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.lead-name{font-weight:700;color:#fff}.lead-date{font-size:11px;color:#756d61}
-.lead-phone{display:inline-flex;margin-top:8px;color:#ecd09c;font-weight:700;text-decoration:none}.lead-msg{margin-top:10px;color:#c7bdaf;font-size:13px;white-space:pre-wrap}.lead-actions{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap}.lead-manage{display:grid;grid-template-columns:180px minmax(180px,1fr);gap:8px;margin-top:12px}.lead-manage select,.lead-manage input{min-height:38px;border:1px solid rgba(236,207,160,.12);border-radius:9px;background:#111216;color:#e8dfd1;padding:8px 10px}.lead-photo-link{margin-top:10px;font-size:12px}.lead-photo-link a{color:#ecd09c;text-decoration:none}@media(max-width:620px){.lead-manage{grid-template-columns:1fr}}
+.lead-phone{display:inline-flex;margin-top:8px;color:#ecd09c;font-weight:700;text-decoration:none}.lead-msg{margin-top:10px;color:#c7bdaf;font-size:13px;white-space:pre-wrap}.lead-actions{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap}.lead-manage{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}.lead-note-edit{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-top:8px}.lead-note-edit input{min-width:0;min-height:36px;border:1px solid rgba(236,207,160,.12);border-radius:9px;background:#111216;color:#e8dfd1;padding:8px 10px}.lead-note-edit input:focus{outline:none;border-color:rgba(236,207,160,.4)}.lead-manage select,.lead-manage input{min-height:38px;border:1px solid rgba(236,207,160,.12);border-radius:9px;background:#111216;color:#e8dfd1;padding:8px 10px}.lead-photo-link{margin-top:10px;font-size:12px}.lead-photo-link a{color:#ecd09c;text-decoration:none}@media(max-width:620px){.lead-manage,.lead-note-edit{grid-template-columns:1fr}}
 .audit-row{display:grid;grid-template-columns:145px 180px 1fr;gap:12px;color:#c7bdaf;font-size:12px}.audit-row b{color:#ecd09c}
 @media(max-width:700px){.dashboard{grid-template-columns:1fr 1fr}.audit-row{grid-template-columns:1fr}.lead-top{display:block}}
 @media(max-width:480px){.dashboard{grid-template-columns:1fr}}
@@ -4339,16 +4340,16 @@ function searchHTML(){
 }
 var LEADS_CACHE=[];
 function renderLeads(){
-  q('#main').innerHTML='<div class="page-head"><div><span class="eyebrow-admin">ВХОДЯЩИЕ</span><h2>Заявки</h2><p class="hint">Все обращения с формы сайта. Список открывается из локального кэша сразу, а облачная копия догружается в фоне.</p></div><div class="live-pill"><i></i> Форма онлайн</div></div><div class="dashboard"><div class="dash"><b id="leadTotal">0</b><span>всего заявок</span></div><div class="dash"><b id="leadUnread">0</b><span>новых</span></div><div class="dash"><b id="leadToday">0</b><span>сегодня</span></div></div><div class="lead-toolbar"><input id="leadSearch" class="lead-search" placeholder="Поиск по имени, телефону или сообщению…"><select id="leadFilter" class="lead-filter"><option value="all">Все</option><option value="new">Новые</option><option value="read">Прочитанные</option></select><button class="btn btn-gold" id="refreshLeads">Обновить</button><button class="btn" id="exportLeads">Экспорт CSV</button><button class="btn" id="readAllLeads">Отметить всё прочитанным</button></div><div id="leadsOut"><div class="empty-leads info"><strong>Загружаем список…</strong><span>Если заявок нет — это состояние покажется автоматически.</span></div></div>';
+  q('#main').innerHTML='<div class="page-head"><div><span class="eyebrow-admin">ВХОДЯЩИЕ · CRM</span><h2>Заявки</h2><p class="hint">Быстрый поиск, статусы, ответственные, приоритеты и заметки — всё в одной карточке.</p></div><div class="live-pill"><i></i> Форма онлайн</div></div><div class="dashboard"><div class="dash"><b id="leadTotal">0</b><span>всего заявок</span></div><div class="dash"><b id="leadUnread">0</b><span>новых</span></div><div class="dash"><b id="leadToday">0</b><span>сегодня</span></div><div class="dash"><b id="leadWork">0</b><span>в работе</span></div></div><div class="lead-toolbar"><input id="leadSearch" class="lead-search" placeholder="Поиск: имя, телефон, задача, город…"><select id="leadFilter" class="lead-filter"><option value="all">Все</option><option value="new">Новые</option><option value="read">Прочитанные</option></select><select id="leadStatusFilter" class="lead-filter"><option value="all">Все статусы</option><option value="new">Новая</option><option value="in_work">В работе</option><option value="measurement">Замер</option><option value="calculation">Расчёт</option><option value="contract">Договор</option><option value="done">Завершена</option></select><button class="btn btn-gold" id="refreshLeads">Обновить</button><button class="btn" id="exportLeads">Экспорт CSV</button><button class="btn" id="readAllLeads">Отметить всё прочитанным</button></div><div id="leadsOut"><div class="empty-leads info"><strong>Загружаем список…</strong><span>Если заявок нет — это состояние покажется автоматически.</span></div></div>';
   q('#refreshLeads').onclick=loadLeads;q('#readAllLeads').onclick=function(){api('/admin/api/leads/read',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}).then(loadLeads)};
   q('#exportLeads').onclick=function(){location.href='/admin/api/leads/export'};
-  q('#leadSearch').oninput=renderLeadList;q('#leadFilter').onchange=renderLeadList;
+  q('#leadSearch').oninput=renderLeadList;q('#leadFilter').onchange=renderLeadList;q('#leadStatusFilter').onchange=renderLeadList;
   loadLeads();
 }
 function renderLeadList(){
   var out=q('#leadsOut');if(!out)return;
-  var needle=String((q('#leadSearch')||{}).value||'').toLowerCase().trim(),filter=(q('#leadFilter')||{}).value||'all';
-  var items=LEADS_CACHE.filter(function(it){if(filter==='new'&&it.read)return false;if(filter==='read'&&!it.read)return false;if(!needle)return true;return [it.name,it.phone,it.message,it.city,it.furniture_type,it.style,it.shape,it.at].join(' ').toLowerCase().indexOf(needle)>=0;});
+  var needle=String((q('#leadSearch')||{}).value||'').toLowerCase().trim(),filter=(q('#leadFilter')||{}).value||'all',statusFilter=(q('#leadStatusFilter')||{}).value||'all';
+  var items=LEADS_CACHE.filter(function(it){if(filter==='new'&&it.read)return false;if(filter==='read'&&!it.read)return false;if(statusFilter!=='all'&&String(it.status||'new')!==statusFilter)return false;if(!needle)return true;return [it.name,it.phone,it.message,it.city,it.furniture_type,it.style,it.shape,it.at].join(' ').toLowerCase().indexOf(needle)>=0;});
   if(!items.length){out.innerHTML='<div class="info empty-leads"><strong>'+(LEADS_CACHE.length?'Ничего не найдено':'Пока заявок нет')+'</strong><span>'+(LEADS_CACHE.length?'Измените поиск или фильтр.':'Когда посетитель заполнит форму, обращение появится здесь.')+'</span></div>';return;}
   var responsibleOptions=(window.LEAD_RESPONSIBLES||[]).map(function(e){return '<option value="'+esc(e.login||e.name)+'">'+esc(e.name||e.login)+'</option>'}).join('');
   out.innerHTML=items.map(function(it){
@@ -4356,16 +4357,18 @@ function renderLeadList(){
     var files=(it.attachments||[]).map(function(u,i){return '<a class="lead-file-link" href="'+esc(u)+'" target="_blank" rel="noopener">Вложение '+(i+1)+' ↗</a>'}).join(' ');
     var meta=[it.city,it.furniture_type,it.style,it.color,it.shape,it.sections_count?('секций: '+it.sections_count):'',it.appliances,it.facade,it.countertop,it.handle,it.additional].filter(Boolean).map(esc).join(' · ');
     var actions='<div class="lead-actions">'+(it.read?'':'<button class="btn mini" data-lead-read="'+esc(it.id)+'">Прочитано</button>')+'<a class="btn mini btn-gold" href="tel:'+esc(phone)+'">Позвонить</a><button class="btn mini" data-copy-phone="'+esc(phone)+'">Копировать номер</button></div>';
-    var opts='<select data-lresp="'+esc(it.id)+'"><option value="">Ответственный</option>'+responsibleOptions+'</select>';
-    return '<article class="lead-card'+cls+'"><div class="lead-top"><div><div class="lead-name">'+name+'</div><a class="lead-phone" href="tel:'+esc(phone)+'">'+phone+'</a></div><span class="lead-date">'+dt+'</span></div><div class="lead-meta-line">'+(meta||'Параметры не указаны')+'</div><div class="lead-msg">'+msg+'</div>'+(files?'<div class="lead-files-admin">'+files+'</div>':'')+'<div class="lead-manage"><select data-lstatus="'+esc(it.id)+'"><option value="new">Новая</option><option value="in_work">В работе</option><option value="measurement">Замер</option><option value="calculation">Расчёт</option><option value="contract">Договор</option><option value="done">Завершена</option></select>'+opts+'</div>'+actions+'</article>';
+    var opts='<select data-lresp="'+esc(it.id)+'"><option value="">Ответственный</option>'+responsibleOptions+'</select>';var pri='<select data-lpriority="'+esc(it.id)+'"><option value="normal">Обычный приоритет</option><option value="high">Высокий приоритет</option><option value="low">Низкий приоритет</option></select>';
+    return '<article class="lead-card'+cls+'"><div class="lead-top"><div><div class="lead-name">'+name+'</div><a class="lead-phone" href="tel:'+esc(phone)+'">'+phone+'</a></div><span class="lead-date">'+dt+'</span></div><div class="lead-meta-line">'+(meta||'Параметры не указаны')+'</div><div class="lead-msg">'+msg+'</div>'+(files?'<div class="lead-files-admin">'+files+'</div>':'')+'<div class="lead-manage"><select data-lstatus="'+esc(it.id)+'"><option value="new">Новая</option><option value="in_work">В работе</option><option value="measurement">Замер</option><option value="calculation">Расчёт</option><option value="contract">Договор</option><option value="done">Завершена</option></select>'+opts+pri+'</div><div class="lead-note-edit"><input data-lnote="'+esc(it.id)+'" value="'+esc(it.notes||'')+'" placeholder="Внутренняя заметка…"><button class="btn mini" data-save-note="'+esc(it.id)+'">Сохранить заметку</button></div>'+actions+'</article>';
   }).join('');
   qa('[data-lstatus]').forEach(function(x){x.value=((LEADS_CACHE.filter(function(a){return a.id===x.dataset.lstatus})[0]||{}).status||'new');x.onchange=function(){api('/admin/api/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:x.dataset.lstatus,status:x.value})})}});
   qa('[data-lresp]').forEach(function(x){var it=LEADS_CACHE.filter(function(a){return a.id===x.dataset.lresp})[0]||{};x.value=it.responsible||'';x.onchange=function(){api('/admin/api/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:x.dataset.lresp,responsible:x.value})})}});
+  qa('[data-lpriority]').forEach(function(x){var it=LEADS_CACHE.filter(function(a){return a.id===x.dataset.lpriority})[0]||{};x.value=it.priority||'normal';x.onchange=function(){api('/admin/api/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:x.dataset.lpriority,priority:x.value})})}});
+  qa('[data-save-note]').forEach(function(b){b.onclick=function(){var i=q('[data-lnote=\"'+b.dataset.saveNote+'\"]');api('/admin/api/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:b.dataset.saveNote,notes:i?i.value:''})}).then(function(){toast('Заметка сохранена')})}});
   qa('[data-lead-read]').forEach(function(b){b.onclick=function(){api('/admin/api/leads/read',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:b.dataset.leadRead})}).then(loadLeads)}});
   qa('[data-copy-phone]').forEach(function(b){b.onclick=function(){var v=b.dataset.copyPhone||'';if(navigator.clipboard)navigator.clipboard.writeText(v).then(function(){toast('Номер скопирован')});else{var ta=document.createElement('textarea');ta.value=v;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();toast('Номер скопирован')}}});
 }
 function loadLeads(){
-  api('/admin/api/leads').then(function(j){window.LEAD_RESPONSIBLES=Array.isArray(j.responsibles)?j.responsibles:[];LEADS_CACHE=Array.isArray(j.items)?j.items:[];var today=new Date().toISOString().slice(0,10);var total=q('#leadTotal'),un=q('#leadUnread'),td=q('#leadToday');if(total)total.textContent=LEADS_CACHE.length;if(un)un.textContent=j.unread||0;if(td)td.textContent=LEADS_CACHE.filter(function(x){return String(x.at||'').slice(0,10)===today}).length;var badge=q('#leadBadge');if(badge){badge.textContent=j.unread||0;badge.style.display=(j.unread||0)?'inline-flex':'none'}renderLeadList();}).catch(function(e){var out=q('#leadsOut');if(out)out.innerHTML='<div class="info status bad">Не удалось загрузить заявки: '+esc(e.message)+'</div>'});
+  api('/admin/api/leads').then(function(j){window.LEAD_RESPONSIBLES=Array.isArray(j.responsibles)?j.responsibles:[];LEADS_CACHE=Array.isArray(j.items)?j.items:[];var today=new Date().toISOString().slice(0,10);var total=q('#leadTotal'),un=q('#leadUnread'),td=q('#leadToday'),work=q('#leadWork');if(total)total.textContent=LEADS_CACHE.length;if(un)un.textContent=j.unread||0;if(work)work.textContent=LEADS_CACHE.filter(function(x){return String(x.status||'new')==='in_work'}).length;if(td)td.textContent=LEADS_CACHE.filter(function(x){return String(x.at||'').slice(0,10)===today}).length;var badge=q('#leadBadge');if(badge){badge.textContent=j.unread||0;badge.style.display=(j.unread||0)?'inline-flex':'none'}renderLeadList();}).catch(function(e){var out=q('#leadsOut');if(out)out.innerHTML='<div class="info status bad">Не удалось загрузить заявки: '+esc(e.message)+'</div>'});
 }
 function renderAudit(){
   q('#main').innerHTML='<h2>Журнал действий</h2><p class="hint">Кто и когда сохранял изменения в админке. Последние 300 записей.</p><div class="actions" style="margin-bottom:16px"><button class="btn btn-gold" id="refreshAudit">Обновить журнал</button></div><div id="auditOut"><div class="skel big"></div></div>';
@@ -4443,7 +4446,7 @@ function fieldHTML(f,base,rawLabel){
     (f.buttons||[]).forEach(function(x){b+='<button class="btn '+(x.cls||'')+'" data-act="'+x.act+'">'+esc(x.label)+'</button>'});
     return b+'</div>';
   }
-  var v=getPath(DATA,p),inp;
+  var v=getPath(DATA,p),inp; if(f.type==='select' && v && typeof v==='object'){v=String(v.value==null?(v.label||''):v.value)}
   if(f.type==='image'){
     return '<div class="field"><label>'+LBL+'</label><div class="img-row">'
       +'<input type="text" data-path="'+p+'" value="'+esc(v)+'" placeholder="https://... или загрузите файл">'
@@ -5128,14 +5131,22 @@ class Handler(BaseHTTPRequestHandler):
             if str(req.get("website") or "").strip():
                 self._json({"ok": True})
                 return
-            name = re.sub(r"\s+", " ", str(req.get("name") or "").strip())[:120]
+            surname = re.sub(r"\s+", " ", str(req.get("surname") or "").strip())[:80]
+            first_name = re.sub(r"\s+", " ", str(req.get("name") or "").strip())[:80]
+            name = (surname + " " + first_name).strip()[:120]
             phone = re.sub(r"\s+", " ", str(req.get("phone") or "").strip())[:80]
             message = str(req.get("message") or "").strip()[:1000]
             page = str(req.get("page") or "/").strip()[:300]
-            extra={k:req.get(k) for k in ("city","furniture_type","photo_url","attachments","source","style","color","shape","sections_count","appliances","facade","countertop","handle","additional")}
+            extra={k:req.get(k) for k in ("city","furniture_type","source")}
             digits = re.sub(r"\D", "", phone)
+            if not first_name:
+                self._json({"error": "Укажите имя"}, 400)
+                return
             if len(digits) < 7:
                 self._json({"error": "Укажите номер телефона"}, 400)
+                return
+            if not message:
+                self._json({"error": "Напишите, какую мебель вы хотите"}, 400)
                 return
             lead = _add_lead(name, phone, message, page, self._ip(), extra)
             if not lead:
