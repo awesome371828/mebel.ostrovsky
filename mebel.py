@@ -862,7 +862,7 @@ footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans)
 @media(max-width:520px){.logo .brand-ava{width:40px;height:40px}.logo .brand-txt .name{font-size:20px}.logo .brand-txt .sub{font-size:9.5px;max-width:54vw;letter-spacing:1.2px}.nav{height:64px}.panel{min-height:auto;padding:96px 0 56px}h1{font-size:31px}.sub{font-size:15px;margin:18px 0 26px}.btn-row{width:100%}.btn{width:100%;text-align:center;padding:14px 20px;font-size:12px}.stat .num{font-size:44px}.sec-head{margin-bottom:38px}.sec-head h2::before,.sec-head h2::after{display:none}.scroll-cue{display:none}.car-slide{width:84vw}.car-slide img{height:205px}.rev-card{width:92vw;padding:17px}.rev-head{gap:10px}.rev-ava{width:44px;height:44px}.rev-name{font-size:13.5px}.rev-sub{font-size:10px}.rev-stars{font-size:12.5px;display:block;margin:6px 0 0}.rev-text{font-size:12.5px;line-height:1.56}.video-box{height:190px}.consult .phone{font-size:25px}.call-block .cb-num{font-size:22px}.menu{padding:10px 20px calc(18px + env(safe-area-inset-bottom))}.lb-nav{width:44px;height:44px;min-width:44px;min-height:44px;font-size:22px}.lb-close{width:44px;height:44px;min-width:44px;min-height:44px}.cookie-bar{bottom:10px;padding:14px 16px}.city{padding:28px 22px}.contact-info>p{margin-bottom:24px}}
 @media(max-width:380px){.car-slide{width:88vw}.car-slide img{height:190px}.rev-card{width:94vw;padding:14px}.rev-text{font-size:12px}.video-box{height:170px}.btn{font-size:11px}}
 
-.local-seo-panel{min-height:auto;padding:80px 0}.local-seo-copy{max-width:820px;margin:18px auto;color:#bdb2a0}.site-tools{min-height:auto;padding:80px 0}.tools-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.configurator{max-width:760px;margin:28px auto 0;padding:24px;border:1px solid rgba(236,207,160,.16);border-radius:16px;text-align:left}.config-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}.config-row label{display:flex;flex-direction:column;gap:6px;color:#bdb2a0}.config-row select,.config-row input{padding:11px;background:#12100c;color:#fff;border:1px solid rgba(236,207,160,.2);border-radius:8px}.mobile-contact{display:none}.floating-contact{position:fixed;right:16px;bottom:16px;z-index:9998}.floating-contact button{width:50px;height:50px;border-radius:50%;border:1px solid rgba(236,207,160,.35);background:#d4af6a;color:#17120b}.exit-offer{display:none;position:fixed;right:16px;bottom:78px;z-index:9997;gap:10px;padding:14px;border-radius:12px;background:#17130d;border:1px solid rgba(236,207,160,.2)}.exit-offer.show{display:flex;align-items:center}.exit-offer span{color:#eee}.exit-offer button{border:0;background:none;color:#bdb2a0;font-size:20px}@media(max-width:800px){.tools-grid{grid-template-columns:1fr 1fr}.mobile-contact{display:flex;position:fixed;left:8px;right:8px;bottom:8px;z-index:9999;gap:8px}.mobile-contact a,.mobile-contact button{flex:1;padding:11px;border-radius:9px;text-align:center;background:#17130d;color:#fff;border:1px solid rgba(236,207,160,.25)}.mobile-contact a{background:#d4af6a;color:#17120b}.floating-contact{bottom:72px}.exit-offer{left:10px;right:10px;bottom:72px}.config-row{grid-template-columns:1fr}}@media(max-width:520px){.tools-grid{grid-template-columns:1fr}}
+.local-seo-panel{min-height:auto;padding:80px 0}.local-seo-copy{max-width:820px;margin:18px auto;color:#bdb2a0}
 </style>
 <style id="designVars">
 :root{--bg:{{design.bg}};--gold:{{design.gold}};--gold-soft:{{design.gold_soft}};--gold-deep:{{design.gold_deep}};--text:{{design.text}};--muted:{{design.muted}};--r-lg:{{design.radius}};--r-md:{{design.radius}};--r-sm:{{design.radius}}}
@@ -1246,6 +1246,18 @@ html.no-anim .spark{display:none}
 @keyframes spinLead{to{transform:rotate(360deg)}}
 @media(max-width:800px){.lead-shell{grid-template-columns:1fr;gap:26px}.lead-copy p{max-width:none}}
 @media(max-width:560px){.lead-shell{padding:20px;border-radius:22px}.site-lead-form{padding:16px}.lead-fields{grid-template-columns:1fr}.lead-wide{grid-column:auto}.lead-panel{padding-top:65px;padding-bottom:65px}}
+/* ====== Редизайн формы: лёгкая редакционная композиция ====== */
+.lead-panel{padding-top:clamp(74px,8vw,112px)!important;padding-bottom:clamp(74px,8vw,112px)!important}
+.lead-shell{width:min(1120px,100%);grid-template-columns:minmax(280px,.72fr) minmax(0,1.28fr);gap:clamp(36px,7vw,110px);padding:clamp(20px,2.5vw,34px) 0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
+.lead-shell::before{display:none}.lead-copy{padding:10px 0 0 2px}.lead-copy h2{font-size:clamp(42px,5vw,68px);line-height:.98;letter-spacing:-.03em;font-weight:500;max-width:520px}.lead-copy p{font-size:16px;max-width:360px;line-height:1.8}.lead-copy .kicker{letter-spacing:.28em}
+.site-lead-form{padding:0;border:0;border-radius:0;background:transparent;backdrop-filter:none}.lead-step{display:flex;align-items:center;gap:14px;margin:0 0 13px}.lead-step-next{margin-top:28px}.lead-step-no{font:600 10px/1 var(--sans);letter-spacing:.14em;color:var(--gold-soft);opacity:.8}.lead-step b{display:block;font:600 14px/1.2 var(--sans);color:#f5ecdd}.lead-step small{display:block;margin-top:4px;color:#7f766a;font:12px/1.4 var(--sans)}
+.choice-grid{display:flex;flex-wrap:wrap;gap:8px}.choice{appearance:none;border:1px solid rgba(236,207,160,.17);background:rgba(255,255,255,.018);color:#cfc4b2;min-height:44px;padding:11px 15px;border-radius:999px;font:500 12px/1 var(--sans);letter-spacing:.02em;cursor:pointer;transition:color .28s,border-color .28s,background .28s,transform .28s}.choice:hover{border-color:rgba(236,207,160,.38);color:#fff;transform:translateY(-1px)}.choice.is-selected{background:rgba(214,177,105,.12);border-color:rgba(236,207,160,.62);color:#f6e8cc;box-shadow:0 8px 22px -18px rgba(236,207,160,.55)}
+.lead-person-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:28px}.site-lead-form label span{font-size:9px;letter-spacing:.16em;color:#9c917f}.site-lead-form input,.site-lead-form textarea{border-radius:0;border-width:0 0 1px 0;border-color:rgba(236,207,160,.18)!important;background:transparent!important;padding:13px 2px;box-shadow:none!important;transform:none!important}.site-lead-form input:focus,.site-lead-form textarea:focus{border-color:rgba(236,207,160,.58)!important;background:transparent!important;box-shadow:none!important}.site-lead-form textarea{min-height:76px;resize:vertical}.lead-message{margin-top:20px}.lead-photo{margin-top:20px;padding:14px 0;border-top:1px solid rgba(236,207,160,.11);border-bottom:1px solid rgba(236,207,160,.11)}.lead-photo input{border:0!important;padding:8px 0 2px;font-size:12px}.lead-photo em{font-style:normal;color:#6f675d;font-weight:400;letter-spacing:0}.lead-photo small{display:block;color:#6f675d;font:11px/1.4 var(--sans);margin-top:4px}.lead-submit{margin-top:24px;border-radius:2px;min-height:50px}.lead-note{text-align:left;margin-top:11px}.lead-result{text-align:left}
+@media(max-width:800px){.lead-shell{grid-template-columns:1fr;gap:34px;padding:0}.lead-copy{padding:0}.lead-copy h2{max-width:620px}.lead-copy p{max-width:560px}.lead-person-row{grid-template-columns:1fr}}
+@media(max-width:560px){.choice-grid{gap:7px}.choice{min-height:42px;padding:10px 13px}.lead-copy h2{font-size:clamp(39px,13vw,56px)}.lead-step-next{margin-top:23px}.lead-person-row{gap:6px}.lead-panel{padding-top:62px!important;padding-bottom:62px!important}}
+@media (hover:none),(pointer:coarse){.panel .bg,.orb,.grain{animation:none!important}.panel .bg{background-attachment:scroll!important}.svc:hover,.step:hover,.guar:hover,.city:hover,.rev-card:hover,.about-card:hover,.call-block:hover,.stat:hover{transform:none!important}.choice:hover{transform:none}}
+@media (prefers-reduced-motion:reduce){html,html *{scroll-behavior:auto!important}.js .reveal{opacity:1!important;transform:none!important;filter:none!important}.panel .bg,.orb,.grain{animation:none!important}.choice,.btn{transition:none!important}}
+@media(max-width:800px){.grain{opacity:.14}.panel{contain:paint}.panel--hero,.stats,.about,.services,.process,.guarantees,.cities,.consult,.lead-panel,.works,.reviews{content-visibility:auto;contain-intrinsic-size:720px}}
 /* ====== компактный разделитель и мягкие стыки секций ====== */
 .panel + .panel{margin-top:0}
 .gold-divider{position:relative;z-index:3;display:flex;align-items:center;justify-content:center;gap:9px;
@@ -1395,11 +1407,28 @@ html.no-anim .spark{display:none}
         <div class="lead-accent"><i></i><b></b><i></i></div>
       </div>
       <form class="site-lead-form" id="siteLeadForm" autocomplete="on" novalidate>
-        <div class="lead-fields">
+        <div class="lead-step"><span class="lead-step-no">01</span><div><b>Где нужна мебель?</b><small>Выберите город</small></div></div>
+        <div class="choice-grid choice-grid-city" role="group" aria-label="Город">
+          <button type="button" class="choice" data-choice-name="city" data-choice-value="Ростов-на-Дону">Ростов-на-Дону</button>
+          <button type="button" class="choice" data-choice-name="city" data-choice-value="Батайск">Батайск</button>
+          <button type="button" class="choice" data-choice-name="city" data-choice-value="Азов">Азов</button>
+        </div>
+        <input type="hidden" name="city" value="">
+        <div class="lead-step lead-step-next"><span class="lead-step-no">02</span><div><b>Что проектируем?</b><small>Выберите тип мебели</small></div></div>
+        <div class="choice-grid choice-grid-type" role="group" aria-label="Тип мебели">
+          <button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Кухня">Кухня</button>
+          <button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Шкаф">Шкаф</button>
+          <button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Гардеробная">Гардеробная</button>
+          <button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Прихожая">Прихожая</button>
+          <button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Гостиная">Гостиная</button>
+        </div>
+        <input type="hidden" name="furniture_type" value="">
+        <div class="lead-person-row">
           <label><span>Имя</span><input name="name" maxlength="120" placeholder="Как к вам обращаться"></label>
           <label><span>Телефон *</span><input name="phone" type="tel" maxlength="80" required inputmode="tel" placeholder="+7 (___) ___-__-__"></label>
-          <label><span>Город</span><select name="city"><option value="">Выберите город</option><option>Ростов-на-Дону</option><option>Батайск</option><option>Азов</option></select></label><label><span>Тип мебели</span><select name="furniture_type"><option value="">Выберите</option><option>Кухня</option><option>Шкаф</option><option>Гардеробная</option><option>Прихожая</option><option>Гостиная</option></select></label><label class="lead-wide"><span>Что нужно сделать</span><textarea name="message" maxlength="1000" placeholder="Например: нужна кухня по размерам"></textarea></label><label class="lead-wide"><span>Фото помещения</span><input name="photo" type="file" accept="image/jpeg,image/png,image/gif,image/webp"></label>
         </div>
+        <label class="lead-wide lead-message"><span>Пара слов о задаче</span><textarea name="message" maxlength="1000" placeholder="Например: нужна угловая кухня, хочу обсудить планировку"></textarea></label>
+        <label class="lead-photo"><span>Фото помещения <em>по желанию</em></span><input name="photo" type="file" accept="image/jpeg,image/png,image/gif,image/webp"><small>JPG, PNG или WebP · до 8 МБ</small></label>
         <div class="lead-hp" aria-hidden="true"><input name="website" tabindex="-1" autocomplete="off"></div>
         <button class="btn btn-solid lead-submit" type="submit"><span class="lead-submit-text">{{lead_form.button}}</span><span class="lead-spinner" aria-hidden="true"></span></button>
         <p class="lead-note">{{lead_form.note}}</p>
@@ -1409,8 +1438,6 @@ html.no-anim .spark{display:none}
   </div></div>
 </section>
 {{/if}}{{/if}}
-<section class="panel panel--center site-tools"><div class="wrap"><div class="content"><div class="sec-head"><div class="kicker">Полезные инструменты</div><h2>{{site_tools.catalog_title}}</h2></div><div class="tools-grid"><button class="btn btn-line" data-tool="catalog">Запросить каталог материалов</button><button class="btn btn-line" data-tool="designer">Консультация дизайнера</button><button class="btn btn-line" data-tool="question">Быстрый вопрос</button><button class="btn btn-solid" data-tool="callback">Обратный звонок</button></div>{{#if site_tools.configurator_enabled}}<div class="configurator"><div class="kicker">Конфигуратор</div><h3>{{site_tools.configurator_title}}</h3><div class="config-row"><label>Форма кухни<select id="cfgShape"><option>Прямая</option><option>Угловая</option><option>П-образная</option></select></label><label>Количество секций<input id="cfgSections" type="number" min="1" max="30" value="6"></label></div><button class="btn btn-solid" id="cfgApply">Сформировать заявку</button><div id="cfgResult"></div></div>{{/if}}</div></div></section>
-<div class="mobile-contact"><a href="tel:{{brand.phone_raw}}">Позвонить</a><button data-tool="callback">Обратный звонок</button></div><div class="floating-contact"><button data-tool="question">?</button></div><div class="exit-offer" id="exitOffer"><span>Остался вопрос? Можно оставить заявку без звонка.</span><button class="btn btn-solid" data-tool="question">Задать вопрос</button><button id="exitClose">×</button></div>
 <div class="gold-divider"><i></i><b></b><i></i></div>
 {{#if sections.works}}<section class="panel panel--center panel--dark" id="works"{{#if works.watermark}} data-watermark="{{works.watermark}}"{{/if}}>
   <div class="bg" style="background-image:url('{{{works.bg}}}')"></div>
@@ -1807,39 +1834,22 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
 </script>
 <script id="siteLeadScript">
 (function(){
-  var form=document.getElementById('siteLeadForm');
-  if(!form)return;
-  var btn=form.querySelector('.lead-submit'), result=document.getElementById('siteLeadResult');
-  function setResult(msg,bad){if(!result)return;result.textContent=msg||'';result.classList.toggle('error',!!bad);}
-  form.addEventListener('submit',async function(e){
-    e.preventDefault();
-    setResult('');
-    var fd=new FormData(form);
-    var phone=String(fd.get('phone')||'').trim();
-    if(phone.replace(/\D/g,'').length<7){setResult('Укажите номер телефона.',true);form.querySelector('[name="phone"]').focus();return;}
-    var photo=fd.get('photo'),photoUrl=''; if(photo&&photo.size){var pfd=new FormData();pfd.append('file',photo);var ur=await fetch('/api/lead-upload',{method:'POST',body:pfd,credentials:'same-origin'});var uj=await ur.json();if(!ur.ok||!uj.ok)throw new Error(uj.error||'Не удалось загрузить фото');photoUrl=uj.url||'';} var body={name:String(fd.get('name')||'').trim(),phone:phone,message:String(fd.get('message')||'').trim(),website:String(fd.get('website')||''),page:location.href,city:String(fd.get('city')||''),furniture_type:String(fd.get('furniture_type')||''),photo_url:photoUrl,source:'site'};
-    btn.classList.add('loading');btn.disabled=true;
-    var old=btn.querySelector('.lead-submit-text');if(old)old.textContent='Отправляем…';
-    try{
-      var ctl=typeof AbortController!=='undefined'?new AbortController():null;
-      var timer=ctl?setTimeout(function(){try{ctl.abort()}catch(_){}},9000):null;
-      var r=await fetch('/api/lead',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(body),signal:ctl?ctl.signal:undefined});
-      if(timer)clearTimeout(timer);
-      var raw=await r.text(), j={};
-      try{j=JSON.parse(raw||'{}')}catch(_){}
-      if(!r.ok||!j.ok)throw new Error(j.error||('Ошибка отправки ('+r.status+')'));
-      form.reset();setResult('Заявка отправлена. Спасибо! Мы свяжемся с вами.'+(j.portal?' Открыть личный кабинет: '+j.portal:''));
-      if(old)old.textContent='Заявка отправлена ✓';
-      setTimeout(function(){if(old)old.textContent='Отправить заявку';btn.disabled=false;btn.classList.remove('loading')},2600);
-    }catch(err){
-      setResult(err&&err.name==='AbortError'?'Сервер отвечает слишком долго. Попробуйте ещё раз или позвоните нам.':'Не удалось отправить заявку. Попробуйте ещё раз.',true);
-      if(old)old.textContent='Отправить заявку';
-      btn.disabled=false;btn.classList.remove('loading');
-    }
+  var form=document.getElementById('siteLeadForm');if(!form)return;
+  var btn=form.querySelector('.lead-submit'),result=document.getElementById('siteLeadResult');
+  function setResult(msg,bad){if(!result)return;result.textContent=msg||'';result.classList.toggle('error',!!bad)}
+  form.querySelectorAll('[data-choice-name]').forEach(function(b){b.addEventListener('click',function(){var n=b.dataset.choiceName;form.querySelectorAll('[data-choice-name="'+n+'"]').forEach(function(x){x.classList.remove('is-selected');x.setAttribute('aria-pressed','false')});b.classList.add('is-selected');b.setAttribute('aria-pressed','true');var i=form.querySelector('[name="'+n+'"]');if(i)i.value=b.dataset.choiceValue||''})});
+  form.addEventListener('submit',async function(e){e.preventDefault();setResult('');var fd=new FormData(form),phone=String(fd.get('phone')||'').trim();
+    if(!String(fd.get('city')||'').trim()){setResult('Выберите город.',true);return}if(!String(fd.get('furniture_type')||'').trim()){setResult('Выберите тип мебели.',true);return}if(phone.replace(/\D/g,'').length<7){setResult('Укажите номер телефона.',true);form.querySelector('[name="phone"]').focus();return}if(String(fd.get('website')||''))return;
+    var photo=fd.get('photo'),photoUrl='';btn.classList.add('loading');btn.disabled=true;var old=btn.querySelector('.lead-submit-text');if(old)old.textContent='Отправляем…';
+    try{if(photo&&photo.size){var pfd=new FormData();pfd.append('file',photo);var pu=await fetch('/api/lead-upload',{method:'POST',body:pfd,credentials:'same-origin'});var uj=await pu.json();if(!pu.ok||!uj.ok)throw new Error(uj.error||'Не удалось загрузить фото');photoUrl=uj.url||''}
+      var body={name:String(fd.get('name')||'').trim(),phone:phone,message:String(fd.get('message')||'').trim(),website:'',page:location.href,city:String(fd.get('city')||''),furniture_type:String(fd.get('furniture_type')||''),photo_url:photoUrl,source:'site'};
+      var ctl=typeof AbortController!=='undefined'?new AbortController():null,timer=ctl?setTimeout(function(){try{ctl.abort()}catch(_){}},9000):null;var r=await fetch('/api/lead',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(body),signal:ctl?ctl.signal:undefined});if(timer)clearTimeout(timer);var raw=await r.text(),j={};try{j=JSON.parse(raw||'{}')}catch(_){}if(!r.ok||!j.ok)throw new Error(j.error||('Ошибка отправки ('+r.status+')'));
+      form.reset();form.querySelectorAll('.choice').forEach(function(x){x.classList.remove('is-selected');x.setAttribute('aria-pressed','false')});setResult('Заявка отправлена. Спасибо! Мы свяжемся с вами.'+(j.portal?' Личный кабинет: '+j.portal:''));if(old)old.textContent='Заявка отправлена ✓';setTimeout(function(){if(old)old.textContent='Отправить заявку';btn.disabled=false;btn.classList.remove('loading')},2600);
+    }catch(err){setResult(err&&err.name==='AbortError'?'Сервер отвечает слишком долго. Попробуйте ещё раз.':'Не удалось отправить заявку. Попробуйте ещё раз.',true);if(old)old.textContent='Отправить заявку';btn.disabled=false;btn.classList.remove('loading')}
   });
 })();
 </script>
-<script id="ostToolsScript">(function(){function lead(k){var f=document.getElementById('siteLeadForm');if(!f)return;var m=f.querySelector('[name="message"]');var t={catalog:'Хочу получить каталог материалов.',designer:'Хочу консультацию дизайнера.',question:'Хочу задать быстрый вопрос.',callback:'Прошу перезвонить мне.'};if(m)m.value=t[k]||'';f.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){var n=f.querySelector('[name="phone"]');if(n)n.focus()},350)}document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-tool]');if(b){e.preventDefault();lead(b.dataset.tool)}});var c=document.getElementById('cfgApply');if(c)c.onclick=function(){var r=document.getElementById('cfgResult');r.textContent='Выбрано: '+document.getElementById('cfgShape').value+', секций: '+document.getElementById('cfgSections').value+'.';lead('question')};var x=document.getElementById('exitOffer');document.addEventListener('mouseout',function(e){if(x&&!x.classList.contains('show')&&!e.relatedTarget&&e.clientY<8)x.classList.add('show')});var q=document.getElementById('exitClose');if(q)q.onclick=function(){x.classList.remove('show')};})();</script>\n<script id="beautyScript">
+<script id="beautyScript">
 (function(){
   var d=document;
   var CFG=window.__OST_ANIM||{enabled:true,parallax:false,hover3d:false,sparks:true,scroll:true,text:true,safe:true,intensity:'full'};
@@ -2401,7 +2411,7 @@ def _sb_headers():
     return {"apikey": key, "Authorization": "Bearer " + key}
 
 
-def _fetch_from_supabase(timeout=8):
+def _fetch_from_supabase(timeout=3):
     """Возвращает (data|None, ok). ok=False — сеть/ошибка, кэш не трогаем."""
     if not SUPABASE_URL:
         return None, False
@@ -2426,7 +2436,7 @@ def _save_to_supabase(data):
     url = "{}/rest/v1/{}".format(SUPABASE_URL, DATA_TABLE)
     headers = {"apikey": key, "Authorization": "Bearer " + key,
                "Prefer": "resolution=merge-duplicates,return=minimal"}
-    st, js, body = _http("POST", url, payload=[{"id": DATA_ROW_ID, "data": data}], headers=headers, timeout=25)
+    st, js, body = _http("POST", url, payload=[{"id": DATA_ROW_ID, "data": data}], headers=headers, timeout=7)
     if 200 <= st < 300:
         print("[save] OK: записано в Supabase ({} КБ)".format(len(json.dumps(data, ensure_ascii=False)) // 1024), flush=True)
         return True
@@ -2716,7 +2726,7 @@ def _ensure_leader_2fa():
     if not x.get("leader_secret"): x={"leader_secret":_b32_secret(),"leader_enabled":False}; _save_twofa(x)
     return x
 def _auth_user(login,password,code=""):
-    if hmac.compare_digest(str(login),str(ADMIN_LOGIN_ENV)) and hmac.compare_digest(str(password),str(ADMIN_PASSWORD_ENV)):
+    if hmac.compare_digest(str(login).encode("utf-8"),str(ADMIN_LOGIN_ENV).encode("utf-8")) and hmac.compare_digest(str(password).encode("utf-8"),str(ADMIN_PASSWORD_ENV).encode("utf-8")):
         x=_ensure_leader_2fa()
         if x.get("leader_enabled") and not _totp_ok(x.get("leader_secret"),code): return None,"Требуется код 2FA"
         return {"login":ADMIN_LOGIN_ENV,"role":"leader","name":"Руководитель","permissions":["*"]},None
@@ -2962,8 +2972,14 @@ def load_fresh():
             data = _json_clone(base_defaults)
             print("[load] строка в БД пустая — дефолтный контент", flush=True)
         else:
-            data = _merge_deep(DEFAULT_DATA, _migrate(raw))
-            print("[load] из БД: {} разделов".format(len(raw)), flush=True)
+            db_data = _merge_deep(DEFAULT_DATA, _migrate(raw))
+            embedded = _merge_deep(DEFAULT_DATA, GITHUB_CMS_SNAPSHOT if isinstance(GITHUB_CMS_SNAPSHOT, dict) else {})
+            # После редеплоя GitHub-снимок может быть новее базы (например, если
+            # Supabase временно не отвечал во время сохранения из админки).
+            db_rev = _meta_of(db_data)["rev"]
+            embedded_rev = _meta_of(embedded)["rev"]
+            data = embedded if embedded_rev > db_rev else db_data
+            print("[load] из БД: {} разделов · rev db={} github={}".format(len(raw), db_rev, embedded_rev), flush=True)
         _data_cache = data
         _cache_ts = time.time()
         _bump_data_sig()
@@ -2983,14 +2999,23 @@ def _bg_refresh():
         _refreshing[0] = False
 
 
+def _prime_cache():
+    global _data_cache, _cache_ts
+    with _data_lock:
+        if _data_cache is None:
+            base = _merge_deep(DEFAULT_DATA, GITHUB_CMS_SNAPSHOT if isinstance(GITHUB_CMS_SNAPSHOT, dict) else {})
+            _data_cache = _json_clone(base); _cache_ts = time.time(); _bump_data_sig()
+        return _data_cache
+
+
 def load_data():
-    """Отдаёт кэш МГНОВЕННО; если он устарел — обновляет в фоне (страница не ждёт Supabase)."""
+    """Отдаёт локальный снимок мгновенно; Supabase обновляет его в фоне."""
     global _cache_ts
     with _data_lock:
         cached = _data_cache
         fresh = cached is not None and (time.time() - _cache_ts < CACHE_TTL)
     if cached is None:
-        return load_fresh()
+        cached = _prime_cache(); fresh = False
     if not fresh and not _refreshing[0]:
         with _refresh_lock:
             if not _refreshing[0]:
@@ -3088,7 +3113,7 @@ def _github_sync_snapshot_async(data):
 def save_versioned(data, client_rev=None, force=False, who=""):
     """Сохранение с защитой от перезаписи чужого снимка (другая вкладка/устройство)."""
     global _data_cache, _cache_ts
-    current = load_fresh()
+    current = load_data()
     cur_rev = _meta_of(current)["rev"]
     try:
         client_rev = cur_rev if client_rev is None else int(client_rev)
@@ -3098,18 +3123,26 @@ def save_versioned(data, client_rev=None, force=False, who=""):
         return {"ok": False, "conflict": True, "server_rev": cur_rev, "client_rev": client_rev,
                 "server_at": _meta_of(current)["at"],
                 "message": "База уже обновлена (rev {}), у вас снимок rev {}.".format(cur_rev, client_rev)}
-    backup = _backup_save(current, cur_rev)
+    backup = "queued"
+    try:
+        threading.Thread(target=_backup_save, args=(current, cur_rev), name="cms-backup", daemon=True).start()
+    except Exception:
+        backup = None
     new = _json_clone(data)
     new.pop("_meta", None)
     new["_meta"] = {"rev": cur_rev + 1, "at": time.strftime("%Y-%m-%dT%H:%M:%S"), "by": who[:60]}
+    with _data_lock:
+        _data_cache = _merge_deep(DEFAULT_DATA, _migrate(new)); _cache_ts = time.time(); _bump_data_sig()
     ok = _save_to_supabase(new)
     _db_state["write"] = ok
-    if not ok:
-        return {"ok": False, "error": "запись в Supabase не прошла (проверьте SUPABASE_SERVICE_KEY на хостинге)"}
     _audit("Сохранение контента", who, "rev {} → {}".format(cur_rev, cur_rev + 1))
     github_queued = _github_sync_snapshot_async(new)
+    if not ok:
+        return {"ok": True, "rev": cur_rev + 1, "verified": False, "backup": backup,
+                "github_sync": "queued" if github_queued else "not_configured",
+                "warning": "Supabase временно недоступен; изменения применены на текущем сервере и отправлены на GitHub."}
     verified = False
-    check, ok_read = _fetch_from_supabase(timeout=10)
+    check, ok_read = _fetch_from_supabase(timeout=4)
     if ok_read and isinstance(check, dict):
         stored = _merge_deep(DEFAULT_DATA, _migrate(check))
         verified = (_meta_of(check)["rev"] == cur_rev + 1)
@@ -4451,7 +4484,7 @@ function save(force){
       if(j&&j.ok){
         REV=j.rev||REV+1; setDirty(false); clearDraft(); window.__ostSaving=false;
         setStatus('Сохранено · rev '+REV,'ok');
-        toast((j.verified?('Сохранено и проверено в базе (rev '+REV+')'):('Сохранено (rev '+REV+')'))+(j.github_sync==='queued'?' · GitHub синхронизируется…':''));
+        toast((j.warning?j.warning+' ': '')+(j.verified?('Сохранено и проверено в базе (rev '+REV+')'):('Сохранено (rev '+REV+')'))+(j.github_sync==='queued'?' · GitHub синхронизируется…':''),!!j.warning);
       }else if(j&&j.conflict){ window.__ostSaving=false;
         setStatus('Конфликт версий','bad');
         var msg='В базе уже версия rev '+j.server_rev+(j.server_at?(' от '+j.server_at):'')+', а у вас открыт снимок rev '+j.client_rev+'.\n\n'
@@ -4499,7 +4532,7 @@ function checkRemote(){
   }).catch(function(){});
 }
 window.addEventListener('focus',checkRemote);
-if(window.setInterval)window.setInterval(saveDraft,1500);
+if(window.setInterval){window.setInterval(saveDraft,1500);window.setInterval(function(){if(!dirty)checkRemote()},4000);}
 document.addEventListener('visibilitychange',function(){if(!document.hidden)checkRemote();});
 
 /* история версий */
@@ -4746,13 +4779,13 @@ class Handler(BaseHTTPRequestHandler):
             if not self._admin():
                 self._json({"error": "no auth"}, 401)
                 return
-            self._json(load_fresh())
+            self._json(load_data())
             return
         if path == "/admin/api/export":
             if not self._admin():
                 self._json({"error": "no auth"}, 401)
                 return
-            blob = json.dumps(load_fresh(), ensure_ascii=False, indent=1).encode("utf-8")
+            blob = json.dumps(load_data(), ensure_ascii=False, indent=1).encode("utf-8")
             self.send_response(200)
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_header("Content-Disposition",
@@ -4823,7 +4856,7 @@ class Handler(BaseHTTPRequestHandler):
             started = time.perf_counter()
             checks = []
             try:
-                d = load_fresh()
+                d = load_data()
                 checks.append({"name":"Контент","ok":isinstance(d, dict) and bool(d),"detail":"данные CMS загружены" if isinstance(d, dict) and d else "пустые данные"})
             except Exception as e:
                 checks.append({"name":"Контент","ok":False,"detail":str(e)})
@@ -5208,10 +5241,9 @@ def main():
         print("BOOT: page.html найден ({} байт)".format(os.path.getsize(p)), flush=True)
     else:
         print("BOOT: ВНИМАНИЕ! page.html НЕ НАЙДЕН в {}".format(ROOT), flush=True)
-    try:
-        load_fresh()
-    except Exception as e:
-        print("BOOT: первичная загрузка не удалась: {}".format(e), flush=True)
+    _prime_cache()
+    print("BOOT: локальный кэш готов — сервер стартует без ожидания Supabase", flush=True)
+    threading.Thread(target=_bg_refresh, name="supabase-bootstrap", daemon=True).start()
     ThreadingHTTPServer(("0.0.0.0", PORT), Handler).serve_forever()
 
 
