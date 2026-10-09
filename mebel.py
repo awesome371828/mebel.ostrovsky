@@ -1413,20 +1413,6 @@ html.no-anim .spark{display:none}
 <div class="site-breadcrumbs"><div class="wrap"><a href="#top">Главная</a><span>›</span><span>Кухни и мебель на заказ</span></div></div>
 <div class="gold-divider"><i></i><b></b><i></i></div>
 
-{{#if sections.consult}}<section class="panel panel--center panel--dark" id="consult">
-  <div class="bg" style="background-image:url('{{{consult.bg}}}')"></div>
-  <div class="wrap"><div class="content consult">
-    <span class="kicker reveal" style="color:var(--gold-soft);letter-spacing:6px;text-transform:uppercase;font-size:12px;font-weight:600">{{consult.kicker}}</span>
-    <h2 class="k reveal">{{consult.title}}</h2>
-    <a href="tel:{{consult.phone_raw}}" class="phone reveal">{{consult.phone}}</a>
-    <p class="reveal">{{{consult.text|html}}}</p>
-    <div class="consult-messengers reveal" aria-label="Написать нам">
-      {{#if brand.telegram}}<a href="{{brand.telegram}}" target="_blank" rel="noopener noreferrer">Написать в Telegram ↗</a>{{/if}}
-      {{#if brand.max}}<a href="{{brand.max}}" target="_blank" rel="noopener noreferrer">Написать в MAX ↗</a>{{/if}}
-    </div>
-  </div></div>
-</section>{{/if}}
-
 {{#if sections.lead_form}}{{#if lead_form.enabled}}
 <section class="panel panel--center panel--dark lead-panel" id="lead">
   <div class="bg lead-bg" style="background-image:url('{{{lead_form.bg}}}')"></div>
@@ -1464,6 +1450,20 @@ html.no-anim .spark{display:none}
 </section>
 {{/if}}{{/if}}
 <div class="gold-divider"><i></i><b></b><i></i></div>
+{{#if sections.consult}}<section class="panel panel--center panel--dark" id="consult">
+  <div class="bg" style="background-image:url('{{{consult.bg}}}')"></div>
+  <div class="wrap"><div class="content consult">
+    <span class="kicker reveal" style="color:var(--gold-soft);letter-spacing:6px;text-transform:uppercase;font-size:12px;font-weight:600">{{consult.kicker}}</span>
+    <h2 class="k reveal">{{consult.title}}</h2>
+    <a href="tel:{{consult.phone_raw}}" class="phone reveal">{{consult.phone}}</a>
+    <p class="reveal">Позвоните или напишите нам в {{#if brand.telegram}}<a class="consult-inline-link" href="{{brand.telegram}}" target="_blank" rel="noopener noreferrer">Telegram</a>{{else}}Telegram{{/if}}{{#if brand.max}} или <a class="consult-inline-link" href="{{brand.max}}" target="_blank" rel="noopener noreferrer">MAX</a>{{/if}} — расскажем про кухни и мебель, всё обсудим и договоримся о бесплатном замере.</p>
+    <div class="consult-messengers reveal" aria-label="Написать нам">
+      {{#if brand.telegram}}<a href="{{brand.telegram}}" target="_blank" rel="noopener noreferrer">Написать в Telegram ↗</a>{{/if}}
+      {{#if brand.max}}<a href="{{brand.max}}" target="_blank" rel="noopener noreferrer">Написать в MAX ↗</a>{{/if}}
+    </div>
+  </div></div>
+</section>{{/if}}
+
 {{#if sections.works}}<section class="panel panel--center panel--dark" id="works"{{#if works.watermark}} data-watermark="{{works.watermark}}"{{/if}}>
   <div class="bg" style="background-image:url('{{{works.bg}}}')"></div>
   <div class="wrap"><div class="content">
@@ -4095,6 +4095,17 @@ header{position:sticky;top:0;z-index:30;display:flex;justify-content:space-betwe
 .btn-gold:hover{background:linear-gradient(180deg,#e0bf82,#d0aa68);box-shadow:inset 0 1px 0 rgba(255,255,255,.36),0 12px 24px -15px rgba(0,0,0,.9)}
 .btn-red{background:rgba(220,70,70,.09);border-color:rgba(220,70,70,.28);color:#ff9d9d}
 .btn-red:hover{background:rgba(220,70,70,.16);border-color:rgba(220,70,70,.45)}
+/* Soft dimensional controls: restrained highlights, depth and tactile press feedback. */
+.btn{position:relative;transition:transform .18s ease,box-shadow .18s ease,background .18s ease;border-radius:11px;box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 3px 0 rgba(0,0,0,.2),0 8px 18px -14px rgba(0,0,0,.85)}
+.btn:hover{transform:translateY(-2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 4px 0 rgba(0,0,0,.2),0 12px 24px -15px rgba(0,0,0,.9)}
+.btn:active{transform:translateY(1px);box-shadow:inset 0 2px 5px rgba(0,0,0,.2),0 1px 0 rgba(0,0,0,.18)}
+.btn-gold{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 0 #98743e,0 10px 22px -14px rgba(0,0,0,.85)}
+.btn-gold:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.42),0 4px 0 #98743e,0 13px 25px -14px rgba(0,0,0,.9)}
+.consult-inline-link{color:var(--gold-soft);text-decoration:underline;text-decoration-color:rgba(236,207,160,.45);text-underline-offset:4px;font-weight:700;transition:color .2s ease}
+.consult-inline-link:hover{color:#fff}
+.lead-delete{border-color:rgba(255,115,115,.28)!important;color:#ffb1b1!important;background:linear-gradient(180deg,rgba(150,38,38,.24),rgba(90,18,18,.18))!important}
+.lead-delete:hover{background:linear-gradient(180deg,rgba(180,48,48,.34),rgba(100,18,18,.25))!important}
+
 .btn.pulse{animation:softPulse 2s ease-in-out infinite}
 .layout{display:flex;gap:10px;min-height:calc(100vh - 56px);align-items:flex-start}
 nav.side{width:254px;flex-shrink:0;position:sticky;top:56px;max-height:calc(100vh - 56px);overflow-y:auto;padding:12px 0 40px;background:rgba(0,0,0,.26);border-right:1px solid var(--bd);scrollbar-width:thin}
@@ -4265,8 +4276,8 @@ function setPath(o,p,v){var a=p.split('.'),c=o;for(var i=0;i<a.length-1;i++){var
 function toast(m,bad){var t=q('#toast');t.textContent=m;t.classList.toggle('err',!!bad);t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show')},3000)}
 function setStatus(txt,cls){var el=q('#status');el.className='status '+(cls||'ok');el.textContent=txt}
 function setDirty(v){dirty=v;document.title=(v?'* ':'')+'Админка — Кухни Островский';var sb=q('#saveBtn');if(sb)sb.classList.toggle('pulse',v);updateBar();var act=q('nav.side a.active');if(act)act.classList.toggle('changed',tabChanged(SCHEMA.filter(function(t){return t.id===TAB})[0]||{}))}
-function api(url,opts){
-  opts=Object.assign({credentials:'same-origin',cache:'no-store'},opts||{});
+function api(url,options){
+  var opts=Object.assign({credentials:'same-origin',cache:'no-store'},options||{});
   var ctl=typeof AbortController!=='undefined'?new AbortController():null;
   var timer=ctl?setTimeout(function(){try{ctl.abort()}catch(e){}},10000):null;
   if(ctl)opts.signal=ctl.signal;
@@ -4322,7 +4333,7 @@ function searchHTML(){
 }
 var LEADS_CACHE=[];
 function renderLeads(){
-  q('#main').innerHTML='<div class="page-head"><div><span class="eyebrow-admin">ВХОДЯЩИЕ · CRM</span><h2>Заявки</h2><p class="hint">Быстрый поиск, статусы, ответственные, приоритеты и заметки — всё в одной карточке.</p></div><div class="live-pill"><i></i> Форма онлайн</div></div><div class="dashboard"><div class="dash"><b id="leadTotal">0</b><span>всего заявок</span></div><div class="dash"><b id="leadUnread">0</b><span>новых</span></div><div class="dash"><b id="leadToday">0</b><span>сегодня</span></div><div class="dash"><b id="leadWork">0</b><span>в работе</span></div></div><div class="lead-toolbar"><input id="leadSearch" class="lead-search" placeholder="Поиск: имя, телефон, задача, город…"><select id="leadFilter" class="lead-filter"><option value="all">Все</option><option value="new">Новые</option><option value="read">Прочитанные</option></select><select id="leadStatusFilter" class="lead-filter"><option value="all">Все статусы</option><option value="new">Новая</option><option value="in_work">В работе</option><option value="measurement">Замер</option><option value="calculation">Расчёт</option><option value="contract">Договор</option><option value="done">Завершена</option></select><button class="btn btn-gold" id="refreshLeads">Обновить</button><button class="btn" id="exportLeads">Экспорт CSV</button><button class="btn" id="readAllLeads">Отметить всё прочитанным</button></div><div id="leadsOut"><div class="empty-leads info"><strong>Загружаем список…</strong><span>Если заявок нет — это состояние покажется автоматически.</span></div></div>';
+  q('#main').innerHTML='<div class="page-head"><div><span class="eyebrow-admin">ВХОДЯЩИЕ · CRM</span><h2>Заявки</h2><p class="hint">Поиск, контакт клиента, удобный способ связи, статус и заметки — всё в одной карточке.</p></div><div class="live-pill"><i></i> Форма онлайн</div></div><div class="dashboard"><div class="dash"><b id="leadTotal">0</b><span>всего заявок</span></div><div class="dash"><b id="leadUnread">0</b><span>новых</span></div><div class="dash"><b id="leadToday">0</b><span>сегодня</span></div><div class="dash"><b id="leadWork">0</b><span>в работе</span></div></div><div class="lead-toolbar"><input id="leadSearch" class="lead-search" placeholder="Поиск: имя, телефон, задача, город…"><select id="leadFilter" class="lead-filter"><option value="all">Все</option><option value="new">Новые</option><option value="read">Прочитанные</option></select><select id="leadStatusFilter" class="lead-filter"><option value="all">Все статусы</option><option value="new">Новая</option><option value="in_work">В работе</option><option value="measurement">Замер</option><option value="calculation">Расчёт</option><option value="contract">Договор</option><option value="done">Завершена</option></select><button class="btn btn-gold" id="refreshLeads">Обновить</button><button class="btn" id="exportLeads">Экспорт CSV</button><button class="btn" id="readAllLeads">Отметить всё прочитанным</button></div><div id="leadsOut"><div class="empty-leads info"><strong>Загружаем список…</strong><span>Если заявок нет — это состояние покажется автоматически.</span></div></div>';
   q('#refreshLeads').onclick=loadLeads;q('#readAllLeads').onclick=function(){api('/admin/api/leads/read',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}).then(loadLeads)};
   q('#exportLeads').onclick=function(){location.href='/admin/api/leads/export'};
   q('#leadSearch').oninput=renderLeadList;q('#leadFilter').onchange=renderLeadList;q('#leadStatusFilter').onchange=renderLeadList;
@@ -4338,12 +4349,13 @@ function renderLeadList(){
     var cls=it.read?'':' unread',dt=esc(String(it.at||'').replace('T',' ')),name=esc(it.name||'Без имени'),phone=esc(it.phone||''),msg=esc(it.message||'Без комментария');
     var files=(it.attachments||[]).map(function(u,i){return '<a class="lead-file-link" href="'+esc(u)+'" target="_blank" rel="noopener">Вложение '+(i+1)+' ↗</a>'}).join(' ');
     var meta=[it.city,it.furniture_type,it.contact_method?('Связь: '+it.contact_method):'',it.style,it.color,it.shape,it.sections_count?('секций: '+it.sections_count):'',it.appliances,it.facade,it.countertop,it.handle,it.additional].filter(Boolean).map(esc).join(' · ');
-    var actions='<div class="lead-actions">'+(it.read?'':'<button class="btn mini" data-lead-read="'+esc(it.id)+'">Прочитано</button>')+'<a class="btn mini btn-gold" href="tel:'+esc(phone)+'">Позвонить</a><button class="btn mini" data-copy-phone="'+esc(phone)+'">Копировать номер</button></div>';
+    var actions='<div class="lead-actions">'+(it.read?'':'<button class="btn mini" data-lead-read="'+esc(it.id)+'">Прочитано</button>')+'<a class="btn mini btn-gold" href="tel:'+esc(phone)+'">Позвонить</a><button class="btn mini" data-copy-phone="'+esc(phone)+'">Копировать номер</button><button class="btn mini lead-delete" data-delete-lead="'+esc(it.id)+'">Удалить навсегда</button></div>';
     
     return '<article class="lead-card'+cls+'"><div class="lead-top"><div><div class="lead-name">'+name+'</div><a class="lead-phone" href="tel:'+esc(phone)+'">'+phone+'</a></div><span class="lead-date">'+dt+'</span></div><div class="lead-meta-line">'+(meta||'Параметры не указаны')+'</div><div class="lead-msg">'+msg+'</div>'+(files?'<div class="lead-files-admin">'+files+'</div>':'')+'<div class="lead-manage"><label class="lead-status-label">Статус заявки<select data-lstatus="'+esc(it.id)+'"><option value="new">Новая</option><option value="in_work">В работе</option><option value="measurement">Замер</option><option value="calculation">Расчёт</option><option value="contract">Договор</option><option value="done">Завершена</option></select></label></div><div class="lead-note-edit"><input data-lnote="'+esc(it.id)+'" value="'+esc(it.notes||'')+'" placeholder="Внутренняя заметка…"><button class="btn mini" data-save-note="'+esc(it.id)+'">Сохранить заметку</button></div>'+actions+'</article>';
   }).join('');
-  qa('[data-lstatus]').forEach(function(x){x.value=((LEADS_CACHE.filter(function(a){return a.id===x.dataset.lstatus})[0]||{}).status||'new');x.onchange=function(){api('/admin/api/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:x.dataset.lstatus,status:x.value})})}});
-  qa('[data-save-note]').forEach(function(b){b.onclick=function(){var i=q('[data-lnote=\"'+b.dataset.saveNote+'\"]');api('/admin/api/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:b.dataset.saveNote,notes:i?i.value:''})}).then(function(){toast('Заметка сохранена')})}});
+  qa('[data-lstatus]').forEach(function(x){x.value=((LEADS_CACHE.filter(function(a){return a.id===x.dataset.lstatus})[0]||{}).status||'new');x.onchange=function(){var row=LEADS_CACHE.filter(function(a){return a.id===x.dataset.lstatus})[0]||{},prev=row.status||'new';x.disabled=true;api('/admin/api/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:x.dataset.lstatus,status:x.value})}).then(function(){toast('Статус сохранён');loadLeads()}).catch(function(e){x.value=prev;toast('Не удалось сохранить статус: '+e.message,true)}).finally(function(){x.disabled=false})}});
+  qa('[data-save-note]').forEach(function(b){b.onclick=function(){var i=q('[data-lnote="'+b.dataset.saveNote+'"]');b.disabled=true;api('/admin/api/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:b.dataset.saveNote,notes:i?i.value:''})}).then(function(){toast('Заметка сохранена');loadLeads()}).catch(function(e){toast('Не удалось сохранить заметку: '+e.message,true)}).finally(function(){b.disabled=false})}});
+  qa('[data-delete-lead]').forEach(function(b){b.onclick=function(){var id=b.dataset.deleteLead;if(!id||!confirm('Удалить заявку навсегда? Это действие нельзя отменить.'))return;b.disabled=true;b.textContent='Удаляем…';api('/admin/api/leads/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})}).then(function(){LEADS_CACHE=LEADS_CACHE.filter(function(it){return String(it.id)!==String(id)});toast('Заявка удалена');loadLeads()}).catch(function(e){toast('Не удалось удалить заявку: '+e.message,true);b.disabled=false;b.textContent='Удалить навсегда'})}});
   qa('[data-lead-read]').forEach(function(b){b.onclick=function(){api('/admin/api/leads/read',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:b.dataset.leadRead})}).then(loadLeads)}});
   qa('[data-copy-phone]').forEach(function(b){b.onclick=function(){var v=b.dataset.copyPhone||'';if(navigator.clipboard)navigator.clipboard.writeText(v).then(function(){toast('Номер скопирован')});else{var ta=document.createElement('textarea');ta.value=v;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();toast('Номер скопирован')}}});
 }
@@ -4775,6 +4787,17 @@ def _set_lead(lead_id,changes):
                 _save_leads(items);return it
     return None
 
+def _delete_lead(lead_id):
+    """Permanently remove one lead from private storage."""
+    with _leads_lock:
+        items=_load_leads()
+        kept=[it for it in items if str(it.get("id")) != str(lead_id)]
+        if len(kept)==len(items):
+            return False
+        if not _save_leads(kept):
+            return None
+    return True
+
 class Handler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
     server_version = "OstrovskyCMS/2.0"
@@ -5185,6 +5208,23 @@ class Handler(BaseHTTPRequestHandler):
                 x["leader_enabled"]=bool(req.get("enabled"));_save_twofa(x)
             if req.get("action")=="regenerate":x["leader_secret"]=_b32_secret();x["leader_enabled"]=False;_save_twofa(x)
             self._json({"ok":True,"leader_enabled":bool(x.get("leader_enabled")),"secret":x.get("leader_secret")});return
+        if path == "/admin/api/leads/delete":
+            u=_admin_user(self)
+            if not _can(u,"leads_manage"):
+                self._json({"error":"нет прав"},403);return
+            try:req=json.loads(self._body().decode("utf-8") or "{}")
+            except Exception:req={}
+            lead_id=str(req.get("id") or "").strip()
+            if not lead_id:
+                self._json({"error":"не указан номер заявки"},400);return
+            deleted=_delete_lead(lead_id)
+            if deleted is None:
+                self._json({"error":"не удалось сохранить удаление в хранилище"},503);return
+            if not deleted:
+                self._json({"error":"заявка не найдена"},404);return
+            _audit("Заявка удалена",u.get("login","администратор"),lead_id)
+            self._json({"ok":True,"deleted":lead_id});return
+
         if path == "/admin/api/leads/update":
             u=_admin_user(self)
             if not _can(u,"leads_manage"):self._json({"error":"нет прав"},403);return
