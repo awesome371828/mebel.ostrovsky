@@ -1318,7 +1318,8 @@ html.no-anim .spark{display:none}
 .lead-panel .lead-bg{opacity:.34!important;filter:saturate(.9) contrast(1.04);background-position:center!important}
 .lead-panel .lead-bg::after{background:linear-gradient(90deg,rgba(8,7,5,.94) 0%,rgba(8,7,5,.68) 48%,rgba(8,7,5,.72) 100%)!important}
 .lead-simple-form{max-width:560px;margin-left:auto;padding:30px;border:1px solid rgba(236,207,160,.18);border-radius:22px;background:linear-gradient(145deg,rgba(18,15,11,.86),rgba(8,8,7,.74));box-shadow:0 28px 80px -46px #000,inset 0 1px 0 rgba(255,255,255,.055);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
-.lead-simple-kicker{display:grid;grid-template-columns:36px 1fr;column-gap:10px;align-items:center;margin-bottom:22px}.lead-simple-kicker span{grid-row:span 2;color:var(--gold);font-size:11px;letter-spacing:.18em}.lead-simple-kicker b{font-size:18px;font-weight:600}.lead-simple-kicker small{color:#887d6e;font-size:11px}.lead-simple-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.lead-simple-form label{display:block;margin-bottom:14px}.lead-simple-form label>span{display:block;margin:0 0 7px;color:#b7aa97;font-size:10px;letter-spacing:.14em;text-transform:uppercase}.lead-simple-form input,.lead-simple-form textarea{width:100%;border:1px solid rgba(236,207,160,.14);background:rgba(255,255,255,.035);color:#f7f0e4;border-radius:11px;padding:13px 14px;outline:none;transition:border-color .25s,box-shadow .25s,background .25s;font:500 13px/1.4 var(--sans)}.lead-simple-form textarea{min-height:116px;resize:vertical}.lead-simple-form input:focus,.lead-simple-form textarea:focus{border-color:rgba(236,207,160,.48);background:rgba(255,255,255,.055);box-shadow:0 0 0 3px rgba(236,207,160,.055)}.lead-simple-choice{margin:5px 0 17px}.lead-simple-choice>span{display:block;color:#8e8374;font-size:10px;letter-spacing:.08em;margin-bottom:9px}.lead-simple-choice .choice-grid{gap:6px}.lead-simple-choice .choice{min-height:35px;padding:8px 11px;font-size:11px}.lead-simple-city{color:#71685c;font-size:10px;line-height:1.5;margin:-2px 0 16px}.lead-simple-form .lead-submit{margin-top:4px;min-height:49px}.lead-simple-form .lead-note{font-size:9px}.lead-result.error{color:#e99b9b}.lead-result{line-height:1.5}
+.consult-messengers{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:20px}.consult-messengers a{display:inline-flex;align-items:center;gap:6px;padding:10px 15px;border:1px solid rgba(236,207,160,.25);border-radius:999px;color:#ecd09c;text-decoration:none;font-size:12px;transition:transform .25s,border-color .25s,background .25s}.consult-messengers a:hover{transform:translateY(-2px);border-color:rgba(236,207,160,.55);background:rgba(236,207,160,.07)}@media(prefers-reduced-motion:reduce){.consult-messengers a{transition:none}}
+.lead-simple-kicker{display:grid;grid-template-columns:36px 1fr;column-gap:10px;align-items:center;margin-bottom:22px}.lead-simple-kicker span{grid-row:span 2;color:var(--gold);font-size:11px;letter-spacing:.18em}.lead-simple-kicker b{font-size:18px;font-weight:600}.lead-simple-kicker small{color:#887d6e;font-size:11px}.lead-simple-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.lead-simple-form label{display:block;margin-bottom:14px}.lead-simple-form label>span{display:block;margin:0 0 7px;color:#b7aa97;font-size:10px;letter-spacing:.14em;text-transform:uppercase}.lead-simple-form input,.lead-simple-form textarea,.lead-simple-form select{width:100%;border:1px solid rgba(236,207,160,.14);background:rgba(255,255,255,.035);color:#f7f0e4;border-radius:11px;padding:13px 14px;outline:none;transition:border-color .25s,box-shadow .25s,background .25s;font:500 13px/1.4 var(--sans)}.lead-simple-form textarea{min-height:104px;resize:vertical}.lead-simple-form select{appearance:none;min-height:45px;color:#f7f0e4;background-color:#17140f}.lead-simple-form select option{background:#17140f;color:#f7f0e4}.lead-contact-choice{margin-top:4px}.lead-simple-form input:focus,.lead-simple-form textarea:focus,.lead-simple-form select:focus{border-color:rgba(236,207,160,.48);background:rgba(255,255,255,.055);box-shadow:0 0 0 3px rgba(236,207,160,.055)}.lead-simple-choice{margin:5px 0 17px}.lead-simple-choice>span{display:block;color:#8e8374;font-size:10px;letter-spacing:.08em;margin-bottom:9px}.lead-simple-choice .choice-grid{gap:6px}.lead-simple-choice .choice{min-height:35px;padding:8px 11px;font-size:11px}.lead-simple-city{color:#71685c;font-size:10px;line-height:1.5;margin:-2px 0 16px}.lead-simple-form .lead-submit{margin-top:4px;min-height:49px}.lead-simple-form .lead-note{font-size:9px}.lead-result.error{color:#e99b9b}.lead-result{line-height:1.5}
 @media(hover:hover) and (pointer:fine){.ost-depth{transform-style:preserve-3d;transition:transform .45s cubic-bezier(.16,1,.3,1),box-shadow .45s,border-color .45s}.ost-depth:hover{transform:perspective(900px) rotateX(1.5deg) rotateY(-1.5deg) translateY(-4px);box-shadow:0 22px 55px -34px #000;border-color:rgba(236,207,160,.28)!important}}
 @media(max-width:600px){.lead-simple-form{padding:21px;border-radius:18px}.lead-simple-grid{grid-template-columns:1fr}.lead-simple-kicker{margin-bottom:17px}.lead-simple-kicker b{font-size:16px}}
 @media(prefers-reduced-motion:reduce){.ost-depth{transition:none!important;transform:none!important}}
@@ -1419,6 +1420,10 @@ html.no-anim .spark{display:none}
     <h2 class="k reveal">{{consult.title}}</h2>
     <a href="tel:{{consult.phone_raw}}" class="phone reveal">{{consult.phone}}</a>
     <p class="reveal">{{{consult.text|html}}}</p>
+    <div class="consult-messengers reveal" aria-label="Написать нам">
+      {{#if brand.telegram}}<a href="{{brand.telegram}}" target="_blank" rel="noopener noreferrer">Написать в Telegram ↗</a>{{/if}}
+      {{#if brand.max}}<a href="{{brand.max}}" target="_blank" rel="noopener noreferrer">Написать в MAX ↗</a>{{/if}}
+    </div>
   </div></div>
 </section>{{/if}}
 
@@ -1444,8 +1449,12 @@ html.no-anim .spark{display:none}
         <div class="lead-simple-choice"><span>Если удобно, выберите тип мебели</span><div class="choice-grid compact" role="group">
           <button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Кухня">Кухня</button><button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Шкаф">Шкаф</button><button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Гардеробная">Гардеробная</button><button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Прихожая">Прихожая</button><button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Гостиная">Гостиная</button>
         </div></div>
-        <input type="hidden" name="furniture_type" value=""><input type="hidden" name="city" value="">
-        <div class="lead-simple-city">Город можно указать прямо в сообщении — например: «Кухня в Батайске».</div>
+        <input type="hidden" name="furniture_type" value="">
+        <label class="lead-wide"><span>Город</span><select name="city"><option value="">Выберите город</option><option value="Ростов-на-Дону">Ростов-на-Дону</option><option value="Батайск">Батайск</option><option value="Азов">Азов</option></select></label>
+        <div class="lead-simple-choice lead-contact-choice"><span>Как удобно с вами связаться?</span><div class="choice-grid compact" role="group" aria-label="Предпочтительный способ связи">
+          <button type="button" class="choice is-selected" data-choice-name="contact_method" data-choice-value="Звонок" aria-pressed="true">Звонок</button><button type="button" class="choice" data-choice-name="contact_method" data-choice-value="Telegram" aria-pressed="false">Telegram</button><button type="button" class="choice" data-choice-name="contact_method" data-choice-value="MAX" aria-pressed="false">MAX</button>
+        </div></div>
+        <input type="hidden" name="contact_method" value="Звонок">
         <div class="lead-hp" aria-hidden="true"><input name="website" tabindex="-1" autocomplete="off"></div>
         <button class="btn btn-solid lead-submit" type="submit"><span class="lead-submit-text">{{lead_form.button}}</span><span class="lead-spinner" aria-hidden="true"></span></button>
         <p class="lead-note">{{lead_form.note}}</p><div class="lead-result" id="siteLeadResult" role="status" aria-live="polite"></div>
@@ -1860,9 +1869,9 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
   form.addEventListener('submit',async function(e){e.preventDefault();setResult('');var fd=new FormData(form),phone=String(fd.get('phone')||'').trim(),name=String(fd.get('name')||'').trim(),message=String(fd.get('message')||'').trim();
     if(!name){setResult('Укажите имя.',true);form.querySelector('[name="name"]').focus();return}if(phone.replace(/\D/g,'').length<7){setResult('Укажите номер телефона.',true);form.querySelector('[name="phone"]').focus();return}if(!message){setResult('Напишите, какую мебель вы хотите.',true);form.querySelector('[name="message"]').focus();return}if(String(fd.get('website')||''))return;
     btn.classList.add('loading');btn.disabled=true;var old=btn.querySelector('.lead-submit-text');if(old)old.textContent='Отправляем…';
-    try{var body={surname:String(fd.get('surname')||'').trim(),name:name,phone:phone,message:message,website:'',page:location.href,city:String(fd.get('city')||''),furniture_type:String(fd.get('furniture_type')||''),source:'site'};
+    try{var body={surname:String(fd.get('surname')||'').trim(),name:name,phone:phone,message:message,website:'',page:location.href,city:String(fd.get('city')||''),furniture_type:String(fd.get('furniture_type')||''),contact_method:String(fd.get('contact_method')||'Звонок'),source:'site'};
       var ctl=typeof AbortController!=='undefined'?new AbortController():null,timer=ctl?setTimeout(function(){try{ctl.abort()}catch(_){}},9000):null;var r=await fetch('/api/lead',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(body),signal:ctl?ctl.signal:undefined});if(timer)clearTimeout(timer);var raw=await r.text(),j={};try{j=JSON.parse(raw||'{}')}catch(_){}if(!r.ok||!j.ok)throw new Error(j.error||('Ошибка отправки ('+r.status+')'));
-      form.reset();form.querySelectorAll('.choice').forEach(function(x){x.classList.remove('is-selected');x.setAttribute('aria-pressed','false')});setResult('Заявка отправлена. Спасибо! Мы свяжемся с вами.');if(old)old.textContent='Заявка отправлена ✓';setTimeout(function(){if(old)old.textContent='Отправить заявку';btn.disabled=false;btn.classList.remove('loading')},2600);
+      form.reset();form.querySelectorAll('.choice').forEach(function(x){x.classList.remove('is-selected');x.setAttribute('aria-pressed','false')});setResult('Заявка отправлена. Спасибо! Предпочтительный способ связи: '+String(fd.get('contact_method')||'Звонок')+'. Мы свяжемся с вами.');if(old)old.textContent='Заявка отправлена ✓';setTimeout(function(){if(old)old.textContent='Отправить заявку';btn.disabled=false;btn.classList.remove('loading')},2600);
     }catch(err){setResult(err&&err.name==='AbortError'?'Сервер отвечает слишком долго. Попробуйте ещё раз.':(err&&err.message?err.message:'Не удалось отправить заявку. Попробуйте ещё раз.'),true);if(old)old.textContent='Отправить заявку';btn.disabled=false;btn.classList.remove('loading')} });
 })();
 </script>
@@ -2706,6 +2715,7 @@ def _add_lead(name, phone, message, page, ip="", extra=None):
         "status": extra.get("status") or "new", "responsible": extra.get("responsible") or "",
         "priority": extra.get("priority") or "normal", "source": extra.get("source") or "site",
         "city": extra.get("city") or "", "furniture_type": extra.get("furniture_type") or "",
+        "contact_method": extra.get("contact_method") or "Звонок",
         "notes": extra.get("notes") or "", "photo_url": extra.get("photo_url") or "",
         "attachments": extra.get("attachments") or [], "style": extra.get("style") or "", "color": extra.get("color") or "",
         "shape": extra.get("shape") or "", "sections_count": extra.get("sections_count") or "", "appliances": extra.get("appliances") or "",
@@ -3338,8 +3348,23 @@ def _local_city(data,slug):
 def render_city_page(slug):
     data=_json_clone(load_data());c=_local_city(data,slug)
     if not c:return None
-    dom=_domain(data).rstrip("/");url=dom+"/"+slug+"/";seo=data.setdefault("seo",{});seo.update({"title":c["title"],"description":c["description"],"keywords":c["keywords"],"canonical":url,"og_title":c["title"],"og_description":c["description"]});data["local_seo_current"]=c;data["hero"]["sub"]="Кухни на заказ и корпусная мебель в {} — по индивидуальным размерам и задаче клиента.".format(c["name"])
-    ctx=_normalize_context(data);html=render(_page_template(),ctx);html=_proxify_urls(html);return _inject_site_ui(html,data)
+    dom=_domain(data).rstrip("/");url=dom+"/"+slug+"/";seo=data.setdefault("seo",{});seo.update({"title":c["title"],"description":c["description"],"keywords":c["keywords"],"canonical":url,"og_title":c["title"],"og_description":c["description"]});data["local_seo_current"]=c
+    data["hero"]["sub"]="Кухни на заказ и корпусная мебель в {} — по индивидуальным размерам и задаче клиента.".format(c["name"])
+    # Локальный SEO-текст должен быть полезным и отличаться по городам, а не повторять ключи механически.
+    city_copy={
+      "rostov-na-donu":"Проектируем кухни на заказ в Ростове-на-Дону с учётом размеров помещения, расположения коммуникаций и привычек семьи. Помогаем продумать хранение, подобрать фасады и столешницу, согласовать размещение техники. Также изготавливаем шкафы, гардеробные, прихожие и другую корпусную мебель. Чтобы обсудить задачу, оставьте заявку и укажите удобный способ связи.",
+      "bataysk":"Изготавливаем кухни на заказ в Батайске и корпусную мебель под особенности конкретного помещения. При планировании учитываем проходы, углы, окна, розетки и места для встроенной техники. Можно обсудить современную, классическую или лаконичную кухню, а также шкаф, гардеробную или прихожую. Напишите, что хотите получить, и укажите город в форме заявки.",
+      "azov":"Кухни на заказ в Азове проектируем под размеры помещения и пожелания владельцев: продумываем рабочую поверхность, хранение, фасады и расположение техники. Помимо кухонь, можно обсудить изготовление шкафов, гардеробных, прихожих и мебели для гостиной. Оставьте короткое описание задачи — специалист свяжется с вами выбранным способом."
+    }
+    data["local_seo_current"]["body_copy"]=city_copy.get(slug,"")
+    ctx=_normalize_context(data);html=render(_page_template(),ctx);html=_proxify_urls(html)
+    # Дополнительный локальный текст — один блок на конкретной городской странице.
+    copy=data["local_seo_current"].get("body_copy","")
+    if copy:
+      block='<section class="panel local-seo-detail"><div class="wrap"><div class="content"><h2>Мебель под ваше помещение</h2><p>'+_escape(copy)+'</p><p><a class="btn btn-solid" href="#lead">Обсудить проект</a></p></div></div></section>'
+      if '</main>' in html: html=html.replace('</main>',block+'</main>',1)
+      elif '</body>' in html: html=html.replace('</body>',block+'</body>',1)
+    return _inject_site_ui(html,data)
 
 def render_site():
     """Готовый HTML кэшируется до смены данных — страница отдаётся мгновенно."""
@@ -3715,9 +3740,9 @@ ADMIN_SCHEMA = [
 
     {"id": "hero", "group": "Контент", "title": "Главный экран", "fields": [
         {"path": "hero.eyebrow", "label": "Надзаголовок", "type": "text"},
-        {"path": "hero.title_before", "label": "Заголовок (начало)", "type": "text"},
+        {"path": "hero.title_before", "label": "Заголовок (начало)", "type": "text", "hint": "Главный видимый заголовок первого экрана (H1 вместе с выделенной частью). Один основной смысл на странице."},
         {"path": "hero.title_em", "label": "Заголовок (золотые слова)", "type": "text"},
-        {"path": "hero.sub", "label": "Подзаголовок", "type": "textarea", "rows": 3, "ai": "hero_sub"},
+        {"path": "hero.sub", "label": "Подзаголовок", "type": "textarea", "rows": 3, "ai": "hero_sub", "hint": "Поясняет заголовок обычным языком: что делаете, для кого и в каких городах. Не дублируйте H1 дословно."},
         {"path": "hero.btn1", "label": "Кнопка 1 — текст", "type": "text"},
         {"path": "hero.btn1_href", "label": "Кнопка 1 — ссылка", "type": "text"},
         {"path": "hero.btn2", "label": "Кнопка 2 — текст", "type": "text"},
@@ -4308,18 +4333,16 @@ function renderLeadList(){
   var needle=String((q('#leadSearch')||{}).value||'').toLowerCase().trim(),filter=(q('#leadFilter')||{}).value||'all',statusFilter=(q('#leadStatusFilter')||{}).value||'all';
   var items=LEADS_CACHE.filter(function(it){if(filter==='new'&&it.read)return false;if(filter==='read'&&!it.read)return false;if(statusFilter!=='all'&&String(it.status||'new')!==statusFilter)return false;if(!needle)return true;return [it.name,it.phone,it.message,it.city,it.furniture_type,it.style,it.shape,it.at].join(' ').toLowerCase().indexOf(needle)>=0;});
   if(!items.length){out.innerHTML='<div class="info empty-leads"><strong>'+(LEADS_CACHE.length?'Ничего не найдено':'Пока заявок нет')+'</strong><span>'+(LEADS_CACHE.length?'Измените поиск или фильтр.':'Когда посетитель заполнит форму, обращение появится здесь.')+'</span></div>';return;}
-  var responsibleOptions=(window.LEAD_RESPONSIBLES||[]).map(function(e){return '<option value="'+esc(e.login||e.name)+'">'+esc(e.name||e.login)+'</option>'}).join('');
+  
   out.innerHTML=items.map(function(it){
     var cls=it.read?'':' unread',dt=esc(String(it.at||'').replace('T',' ')),name=esc(it.name||'Без имени'),phone=esc(it.phone||''),msg=esc(it.message||'Без комментария');
     var files=(it.attachments||[]).map(function(u,i){return '<a class="lead-file-link" href="'+esc(u)+'" target="_blank" rel="noopener">Вложение '+(i+1)+' ↗</a>'}).join(' ');
-    var meta=[it.city,it.furniture_type,it.style,it.color,it.shape,it.sections_count?('секций: '+it.sections_count):'',it.appliances,it.facade,it.countertop,it.handle,it.additional].filter(Boolean).map(esc).join(' · ');
+    var meta=[it.city,it.furniture_type,it.contact_method?('Связь: '+it.contact_method):'',it.style,it.color,it.shape,it.sections_count?('секций: '+it.sections_count):'',it.appliances,it.facade,it.countertop,it.handle,it.additional].filter(Boolean).map(esc).join(' · ');
     var actions='<div class="lead-actions">'+(it.read?'':'<button class="btn mini" data-lead-read="'+esc(it.id)+'">Прочитано</button>')+'<a class="btn mini btn-gold" href="tel:'+esc(phone)+'">Позвонить</a><button class="btn mini" data-copy-phone="'+esc(phone)+'">Копировать номер</button></div>';
-    var opts='<select data-lresp="'+esc(it.id)+'"><option value="">Ответственный</option>'+responsibleOptions+'</select>';var pri='<select data-lpriority="'+esc(it.id)+'"><option value="normal">Обычный приоритет</option><option value="high">Высокий приоритет</option><option value="low">Низкий приоритет</option></select>';
+    
     return '<article class="lead-card'+cls+'"><div class="lead-top"><div><div class="lead-name">'+name+'</div><a class="lead-phone" href="tel:'+esc(phone)+'">'+phone+'</a></div><span class="lead-date">'+dt+'</span></div><div class="lead-meta-line">'+(meta||'Параметры не указаны')+'</div><div class="lead-msg">'+msg+'</div>'+(files?'<div class="lead-files-admin">'+files+'</div>':'')+'<div class="lead-manage"><select data-lstatus="'+esc(it.id)+'"><option value="new">Новая</option><option value="in_work">В работе</option><option value="measurement">Замер</option><option value="calculation">Расчёт</option><option value="contract">Договор</option><option value="done">Завершена</option></select>'+opts+pri+'</div><div class="lead-note-edit"><input data-lnote="'+esc(it.id)+'" value="'+esc(it.notes||'')+'" placeholder="Внутренняя заметка…"><button class="btn mini" data-save-note="'+esc(it.id)+'">Сохранить заметку</button></div>'+actions+'</article>';
   }).join('');
   qa('[data-lstatus]').forEach(function(x){x.value=((LEADS_CACHE.filter(function(a){return a.id===x.dataset.lstatus})[0]||{}).status||'new');x.onchange=function(){api('/admin/api/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:x.dataset.lstatus,status:x.value})})}});
-  qa('[data-lresp]').forEach(function(x){var it=LEADS_CACHE.filter(function(a){return a.id===x.dataset.lresp})[0]||{};x.value=it.responsible||'';x.onchange=function(){api('/admin/api/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:x.dataset.lresp,responsible:x.value})})}});
-  qa('[data-lpriority]').forEach(function(x){var it=LEADS_CACHE.filter(function(a){return a.id===x.dataset.lpriority})[0]||{};x.value=it.priority||'normal';x.onchange=function(){api('/admin/api/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:x.dataset.lpriority,priority:x.value})})}});
   qa('[data-save-note]').forEach(function(b){b.onclick=function(){var i=q('[data-lnote=\"'+b.dataset.saveNote+'\"]');api('/admin/api/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:b.dataset.saveNote,notes:i?i.value:''})}).then(function(){toast('Заметка сохранена')})}});
   qa('[data-lead-read]').forEach(function(b){b.onclick=function(){api('/admin/api/leads/read',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:b.dataset.leadRead})}).then(loadLeads)}});
   qa('[data-copy-phone]').forEach(function(b){b.onclick=function(){var v=b.dataset.copyPhone||'';if(navigator.clipboard)navigator.clipboard.writeText(v).then(function(){toast('Номер скопирован')});else{var ta=document.createElement('textarea');ta.value=v;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();toast('Номер скопирован')}}});
@@ -4375,7 +4398,7 @@ function render(){
   if(TAB==='audit'){renderAudit();updateBar();refreshLeadBadge();return}
    if(TAB==='employees'){renderEmployees();updateBar();refreshLeadBadge();return}
   var tab=SCHEMA.filter(function(t){return t.id===TAB})[0]||SCHEMA[0];
-  var h='<h2>'+esc(tab.title)+'</h2>'+(tab.hint?'<p class="hint">'+tab.hint+'</p>':'');
+  var h='<div class="page-head"><div><span class="eyebrow-admin">РАЗДЕЛ НАСТРОЕК</span><h2>'+esc(tab.title)+'</h2>'+(tab.hint?'<p class="hint">'+tab.hint+'</p>':'')+'</div></div>'; 
   (tab.fields||[]).forEach(function(f){h+=fieldHTML(f,'')});
   (tab.lists||[]).forEach(function(l){h+=listHTML(l)});
   q('#main').innerHTML=stagger(h);
@@ -4403,7 +4426,7 @@ function fieldHTML(f,base,rawLabel){
     (f.buttons||[]).forEach(function(x){b+='<button class="btn '+(x.cls||'')+'" data-act="'+x.act+'">'+esc(x.label)+'</button>'});
     return b+'</div>';
   }
-  var v=getPath(DATA,p),inp; if(f.type==='select' && v && typeof v==='object'){v=String(v.value==null?(v.label||''):v.value)}
+  var v=getPath(DATA,p),inp; if(f.type==='select' && v && typeof v==='object'){v=(typeof v.value==='string'||typeof v.value==='number')?String(v.value):(typeof v.label==='string'?v.label:((f.options&&f.options[0]&&typeof f.options[0]==='object')?String(f.options[0].value||''):''))}
   if(f.type==='image'){
     return '<div class="field"><label>'+LBL+'</label><div class="img-row">'
       +'<input type="text" data-path="'+p+'" value="'+esc(v)+'" placeholder="https://... или загрузите файл">'
@@ -4623,7 +4646,7 @@ function load(){
     setDirty(false);render();setStatus('Готово · rev '+REV,'ok'); maybeRestoreDraft();
   }).catch(function(e){
     setStatus('Ошибка загрузки','bad');
-    q('#main').innerHTML='<h2>Не удалось загрузить данные</h2><p class="hint">'+esc(e.message)+'</p><p class="hint">Проверьте SUPABASE_URL и SUPABASE_SERVICE_KEY на хостинге, затем обновите страницу.</p>';
+    q('#main').innerHTML='<div class="page-head"><div><h2>Не удалось загрузить данные CMS</h2><p class="hint">'+esc(e.message)+'</p><p class="hint">Редактор не должен бесконечно показывать загрузку. Можно повторить запрос или открыть локальный снимок только для просмотра.</p></div></div><div class="actions"><button class="btn btn-gold" id="retryAdminLoad">Повторить загрузку</button><button class="btn" id="openCachedEditor">Открыть редактор из снимка</button></div><div class="info">Если повторная загрузка не работает, проверьте вкладку «Диагностика»: время ответа Supabase, доступность таблицы site_content и состояние сети.</div>';var retry=q('#retryAdminLoad');if(retry)retry.onclick=load;var cached=q('#openCachedEditor');if(cached)cached.onclick=function(){DATA=JSON.parse(JSON.stringify(__FALLBACK_DATA__));ORIG=JSON.parse(JSON.stringify(DATA));render();setStatus('Локальный снимок · изменения не сохранены в БД','bad');toast('Режим снимка: после правок нужна рабочая база',true)};
   });
 }
 
@@ -5094,7 +5117,7 @@ class Handler(BaseHTTPRequestHandler):
             phone = re.sub(r"\s+", " ", str(req.get("phone") or "").strip())[:80]
             message = str(req.get("message") or "").strip()[:1000]
             page = str(req.get("page") or "/").strip()[:300]
-            extra={k:req.get(k) for k in ("city","furniture_type","source")}
+            extra={k:req.get(k) for k in ("city","furniture_type","contact_method","source")}
             digits = re.sub(r"\D", "", phone)
             if not first_name:
                 self._json({"error": "Укажите имя"}, 400)
