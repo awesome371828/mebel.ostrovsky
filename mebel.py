@@ -57,6 +57,8 @@ SUPABASE_SERVICE = os.environ.get("SUPABASE_SERVICE_KEY", "").strip()
 BUCKET = os.environ.get("SUPABASE_BUCKET", "site-images")
 DATA_TABLE = os.environ.get("SUPABASE_TABLE", "site_content")
 EMPLOYEES_FILE = "employees.json"
+ERROR_LOG_FILE = "system_errors.json"
+ERROR_LOG_MAX = 250
 TWOFA_FILE = "admin_2fa.json"
 EMPLOYEE_ROLES = {"leader":"Руководитель","manager":"Менеджер","designer":"Дизайнер"}
 
@@ -4276,17 +4278,20 @@ function setPath(o,p,v){var a=p.split('.'),c=o;for(var i=0;i<a.length-1;i++){var
 function toast(m,bad){var t=q('#toast');t.textContent=m;t.classList.toggle('err',!!bad);t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show')},3000)}
 function setStatus(txt,cls){var el=q('#status');el.className='status '+(cls||'ok');el.textContent=txt}
 function setDirty(v){dirty=v;document.title=(v?'* ':'')+'Админка — Кухни Островский';var sb=q('#saveBtn');if(sb)sb.classList.toggle('pulse',v);updateBar();var act=q('nav.side a.active');if(act)act.classList.toggle('changed',tabChanged(SCHEMA.filter(function(t){return t.id===TAB})[0]||{}))}
-function api(url,options){
-  var opts=Object.assign({credentials:'same-origin',cache:'no-store'},options||{});
-  var ctl=typeof AbortController!=='undefined'?new AbortController():null;
-  var timer=ctl?setTimeout(function(){try{ctl.abort()}catch(e){}},10000):null;
-  if(ctl)opts.signal=ctl.signal;
-  return fetch(url,opts).then(function(r){
-    if(timer)clearTimeout(timer);
+function api(url,requestOptions){
+  var requestConfig={credentials:'same-origin',cache:'no-store'};
+  if(requestOptions&&typeof requestOptions==='object'){Object.keys(requestOptions).forEach(function(k){requestConfig[k]=requestOptions[k]})}
+  var controller=typeof AbortController!=='undefined'?new AbortController():null;
+  var requestTimer=controller?setTimeout(function(){try{controller.abort()}catch(e){}},10000):null;
+  if(controller)requestConfig.signal=controller.signal;
+  return fetch(url,requestConfig).then(function(r){
+    if(requestTimer)clearTimeout(requestTimer);
     if(r.status===401){location.href='/admin/login';throw new Error('Нужно войти')}
     return r.text().then(function(raw){var j={};try{j=JSON.parse(raw||'{}')}catch(e){throw new Error('Сервер вернул некорректный ответ ('+r.status+')')};if(!r.ok)throw new Error(j.error||j.message||('HTTP '+r.status));return j});
-  }).catch(function(e){if(timer)clearTimeout(timer);if(e&&e.name==='AbortError')throw new Error('Сервер админки не ответил за 10 секунд');throw e});
+  }).catch(function(e){if(requestTimer)clearTimeout(requestTimer);if(e&&e.name==='AbortError')throw new Error('Сервер админки не ответил за 10 секунд');throw e});
 }
+// Журнал клиентских ошибок: не перехватывает пароли/поля формы, передаёт только текст ошибки и URL страницы.
+(function(){var last='';function report(kind,msg,src,line){var item={kind:String(kind||'error').slice(0,40),message:String(msg||'').slice(0,700),source:String(src||location.pathname).slice(0,300),line:Number(line)||0,at:new Date().toISOString()};var sig=item.kind+'|'+item.message+'|'+item.source+'|'+item.line;if(sig===last)return;last=sig;try{fetch('/admin/api/error-log',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(item),keepalive:true}).catch(function(){})}catch(e){}}if(location.pathname.indexOf('/admin')===0){window.addEventListener('error',function(e){report('javascript',e.message,e.filename,e.lineno)});window.addEventListener('unhandledrejection',function(e){var r=e.reason;report('promise',r&&r.message?r.message:String(r||'Unhandled rejection'),location.pathname,0)})}})();
 function normColor(v){v=String(v||'').trim();return /^#[0-9a-f]{6}$/i.test(v)?v:'#000000'}
 
 function stagger(html){
@@ -4593,7 +4598,9 @@ function runDiagnostics(){
   if(out)out.innerHTML='<span class="diag-spin">Проверяем…</span>';
   api('/admin/api/diagnostics').then(function(j){
     var a=(j.checks||[]).map(function(x){return '<div class="diag-row '+(x.ok?'ok':'bad')+'"><b>'+(x.ok?'✓':'!')+'</b><span><strong>'+esc(x.name)+'</strong><small>'+esc(x.detail)+'</small></span></div>'}).join('');
-    if(out)out.innerHTML='<div class="diag-head"><b>'+(j.ok?'Система в порядке':'Найдены проблемы')+'</b><span>'+esc(String(j.ms||0))+' мс</span></div>'+a;
+    if(out)out.innerHTML='<div class="diag-head"><b>'+(j.ok?'Система в порядке':'Найдены проблемы')+'</b><span>'+esc(String(j.ms||0))+' мс</span></div>'+a+'<div class="actions"><button class="btn" id="refreshErrorJournal">Обновить журнал ошибок</button><button class="btn" id="clearErrorJournal">Очистить журнал</button></div><div id="errorJournal" class="diag-list">Загружаем журнал…</div>';
+    function journal(){api('/admin/api/error-log').then(function(x){var box=q('#errorJournal');if(!box)return;box.innerHTML=(x.items||[]).length?(x.items||[]).map(function(it){return '<div class="diag-row bad"><b>!</b><span><strong>'+esc(it.kind||'ошибка')+' · '+esc(it.received_at||it.at||'')+'</strong><small>'+esc(it.message||'')+'<br>Источник: '+esc(it.source||'')+(it.line?' · строка '+esc(it.line):'')+'</small></span></div>'}).join(''):'<div class="info">Ошибок в журнале нет.</div>'}).catch(function(e){var box=q('#errorJournal');if(box)box.textContent='Журнал недоступен: '+e.message})}
+    var rb=q('#refreshErrorJournal'),cb=q('#clearErrorJournal');if(rb)rb.onclick=journal;if(cb)cb.onclick=function(){if(!confirm('Очистить журнал ошибок?'))return;api('/admin/api/error-log/clear',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}).then(journal).catch(function(e){toast(e.message,true)})};journal();
   }).catch(function(e){if(out)out.textContent='Диагностика недоступна: '+e.message});
 }
 
@@ -4797,6 +4804,33 @@ def _delete_lead(lead_id):
         if not _save_leads(kept):
             return None
     return True
+
+def _error_log_read():
+    try:
+        path=os.path.join(ROOT,ERROR_LOG_FILE)
+        with open(path,"r",encoding="utf-8") as f: data=json.load(f)
+        return data if isinstance(data,list) else []
+    except Exception:
+        return []
+
+
+def _error_log_add(item):
+    """Persistent bounded diagnostics journal; never stores request bodies or secrets."""
+    try:
+        path=os.path.join(ROOT,ERROR_LOG_FILE)
+        rows=_error_log_read()
+        clean={k:str(item.get(k,""))[:700] for k in ("kind","message","source","at")}
+        try: clean["line"]=int(item.get("line") or 0)
+        except Exception: clean["line"]=0
+        clean["received_at"]=time.strftime("%Y-%m-%d %H:%M:%S")
+        rows.append(clean);rows=rows[-ERROR_LOG_MAX:]
+        tmp=path+".tmp"
+        with open(tmp,"w",encoding="utf-8") as f:json.dump(rows,f,ensure_ascii=False)
+        os.replace(tmp,path)
+        return True
+    except Exception as e:
+        print("[error-journal] {}".format(e),flush=True);return False
+
 
 class Handler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
@@ -5008,6 +5042,12 @@ class Handler(BaseHTTPRequestHandler):
                 out.append({"name": it.get("name"), "size": meta.get("size"), "at": it.get("created_at")})
             self._json({"items": out, "bucket": BACKUP_BUCKET})
             return
+        if path == "/admin/api/error-log":
+            if not self._admin():
+                self._json({"error":"no auth"},401);return
+            rows=_error_log_read()
+            self._json({"items":list(reversed(rows[-100:])),"total":len(rows)})
+            return
         if path == "/admin/api/diagnostics":
             if not self._admin():
                 self._json({"error": "no auth"}, 401)
@@ -5034,9 +5074,21 @@ class Handler(BaseHTTPRequestHandler):
                 checks.append({"name":"Заявки","ok":True,"detail":"{} всего / {} новых".format(len(leads),sum(1 for x in leads if not x.get("read")))})
             except Exception as e:
                 checks.append({"name":"Заявки","ok":False,"detail":str(e)})
+            try:
+                db_started=time.perf_counter()
+                db_data,db_ok=_fetch_from_supabase(timeout=3)
+                db_ms=round((time.perf_counter()-db_started)*1000)
+                checks.append({"name":"Supabase · чтение и задержка","ok":bool(db_ok),"detail":("ответ за {} мс".format(db_ms) if db_ok else "не удалось прочитать таблицу site_content за {} мс; проверьте ключи, RLS и доступность БД".format(db_ms))})
+            except Exception as e:
+                checks.append({"name":"Supabase · чтение и задержка","ok":False,"detail":str(e)[:300]})
+            try:
+                rows=_error_log_read()
+                checks.append({"name":"Журнал ошибок","ok":True,"detail":"{} записей сохранено; последние 100 доступны в разделе диагностики".format(len(rows))})
+            except Exception as e:
+                checks.append({"name":"Журнал ошибок","ok":False,"detail":str(e)[:300]})
             elapsed = round((time.perf_counter()-started)*1000)
-            checks.append({"name":"Скорость диагностики","ok":elapsed < 1500,"detail":"{} мс".format(elapsed)})
-            self._json({"ok":all(x.get("ok") for x in checks),"checks":checks,"ms":elapsed})
+            checks.append({"name":"Скорость диагностики","ok":elapsed < 5000,"detail":"{} мс".format(elapsed)})
+            self._json({"ok":all(x.get("ok") for x in checks),"checks":checks,"ms":elapsed,"error_count":len(_error_log_read())})
             return
         if path == "/admin/api/status":
             if not self._admin():
@@ -5095,6 +5147,23 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         path = self.path.split("?", 1)[0]
+        if path == "/admin/api/error-log/clear":
+            if not _can(_admin_user(self),"content_edit"):
+                self._json({"error":"нет прав"},403);return
+            try:
+                with open(os.path.join(ROOT,ERROR_LOG_FILE),"w",encoding="utf-8") as f:json.dump([],f)
+                self._json({"ok":True});return
+            except Exception as e:self._json({"error":"Не удалось очистить журнал: "+str(e)},500);return
+        if path == "/admin/api/error-log":
+            # The admin interface may report a small, sanitized error summary. Never accept stack dumps or form values.
+            if not self._admin():
+                self._json({"error":"no auth"},401);return
+            try: item=json.loads(self._body().decode("utf-8") or "{}")
+            except Exception: item={}
+            if not isinstance(item,dict):item={}
+            item["message"]=re.sub(r"(?i)(password|token|api[_-]?key|authorization)\s*[:=]\s*[^ ,;]+",r"\1=[REDACTED]",str(item.get("message") or ""))
+            ok=_error_log_add(item)
+            self._json({"ok":ok},200 if ok else 500);return
 
         if path == "/api/lead-upload":
             body=self._body()
