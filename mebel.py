@@ -48,7 +48,7 @@ from urllib.parse import parse_qs
 #  КОНФИГ
 # ============================================================
 PORT = int(os.environ.get("PORT", "8080"))
-DOMAIN = os.environ.get("DOMAIN", "https://кухниостровский.рф").rstrip("/")
+DOMAIN = "https://кухниостровский.рф"  # единый канонический домен сайта
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
 SUPABASE_URL = (os.environ.get("SUPABASE_URL") or "https://hliafkrpvmntpctmqwfu.supabase.co").rstrip("/")
@@ -1334,6 +1334,26 @@ html.no-anim .spark{display:none}
 <style id="customCss">{{{design.custom_css}}}</style>
 {{#if seo.metrika_id}}<script>(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js','ym');ym({{seo.metrika_id}},'init',{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});</script><noscript><div><img src="https://mc.yandex.ru/watch/{{seo.metrika_id}}" style="position:absolute;left:-9999px" alt=""></div></noscript>{{/if}}
 {{{code.head}}}
+<style id="ostSoftVisualPolish">
+:root{scroll-behavior:smooth}
+.site-lead-form .lead-consent{display:grid!important;grid-template-columns:18px minmax(0,1fr);align-items:start;gap:10px;padding:7px 0!important;border:0!important;background:transparent!important;border-radius:0!important;box-shadow:none!important}
+.site-lead-form .lead-consent input[type="checkbox"]{appearance:none;-webkit-appearance:none;display:grid;place-content:center;width:17px!important;height:17px!important;min-width:17px;flex:none;margin:1px 0 0!important;padding:0!important;border:1px solid rgba(236,207,160,.48)!important;border-radius:5px!important;background:rgba(255,255,255,.025)!important;box-shadow:none!important;cursor:pointer;transition:background .2s,border-color .2s,transform .2s}
+.site-lead-form .lead-consent input[type="checkbox"]::before{content:"";width:8px;height:5px;border:solid #17120a;border-width:0 0 2px 2px;transform:rotate(-45deg) scale(0);transition:transform .16s ease}
+.site-lead-form .lead-consent input[type="checkbox"]:checked{background:var(--gold,#d4af6a)!important;border-color:var(--gold,#d4af6a)!important}
+.site-lead-form .lead-consent input[type="checkbox"]:checked::before{transform:rotate(-45deg) scale(1)}
+.site-lead-form .lead-consent input[type="checkbox"]:focus-visible{outline:2px solid rgba(236,207,160,.65);outline-offset:3px}
+.site-lead-form .lead-consent span{font-size:11px!important;line-height:1.65!important;color:rgba(230,220,203,.76)!important;letter-spacing:0!important;text-transform:none!important}
+.site-lead-form .lead-legal-links{align-items:center;gap:10px 20px;margin:15px 0 9px!important}
+.site-lead-form .lead-legal-links a{font-size:10px;line-height:1.65}
+/* Менее «кирпичная» подача: меньше жёстких рамок, больше воздуха и мягкие переходы. */
+.site-lead-form,.lead-simple-form,.legal-card,.about-card,.work-card,.review-card{transition:border-color .3s ease,background-color .3s ease,box-shadow .3s ease}
+.site-lead-form input,.site-lead-form textarea,.site-lead-form select{border-radius:9px!important}
+.site-lead-form .lead-submit,.btn,.choice,.consult-messengers a,.footer-legal a{transition:transform .24s ease,background-color .24s ease,border-color .24s ease,color .24s ease,box-shadow .24s ease}
+.site-lead-form .lead-submit:hover,.btn:hover{transform:translateY(-1px)}
+.site-lead-form .lead-submit:active,.btn:active{transform:translateY(0) scale(.99)}
+@media(max-width:600px){.site-lead-form .lead-legal-links{display:grid;grid-template-columns:1fr;gap:8px}.site-lead-form .lead-consent{gap:9px}}
+@media(prefers-reduced-motion:reduce){:root{scroll-behavior:auto}.site-lead-form .lead-consent input[type="checkbox"]::before{transition:none}.site-lead-form,.lead-simple-form,.legal-card,.about-card,.work-card,.review-card,.btn,.choice,.consult-messengers a{transition:none!important}}
+</style>
 </head>
 <body>
 
@@ -2398,15 +2418,8 @@ def _normalize_context(data):
 
 
 def _domain(data=None):
-    dom = DOMAIN
-    if isinstance(data, dict):
-        seo = data.get("seo") or {}
-        dom = (seo.get("domain") or "").strip() or DOMAIN
-    dom = dom.rstrip("/")
-    if "//" not in dom:
-        dom = "https://" + dom
-    scheme, _, host = dom.partition("://")
-    return scheme + "://" + _punycode(host)
+    """Единый публичный адрес. Не берём устаревший домен из кэша CMS или env."""
+    return "https://кухниостровский.рф"
 
 
 def _host(data=None):
@@ -2488,7 +2501,7 @@ def _save_to_supabase(data):
 
 
 BACKUP_BUCKET = os.environ.get("SUPABASE_BACKUP_BUCKET", "site-backups")
-_bucket_state = {"checked": {}, "ok": {}}
+_bucket_state = {"checked": {}, "ok": {}, "reason": {}}
 _bucket_lock = threading.Lock()
 
 
@@ -2498,17 +2511,30 @@ def _bucket_ensure(name=None, public=True):
         if _bucket_state["checked"].get(name):
             return _bucket_state["ok"].get(name, False)
         _bucket_state["checked"][name] = True
-        if not (SUPABASE_URL and SUPABASE_SERVICE):
+        if not SUPABASE_URL:
+            _bucket_state["ok"][name] = False
+            _bucket_state["reason"][name] = "Не задан SUPABASE_URL"
+            return False
+        if not SUPABASE_SERVICE:
+            _bucket_state["ok"][name] = False
+            _bucket_state["reason"][name] = "Не задан SUPABASE_SERVICE_KEY: для управления Storage нужен service role key"
             return False
         base = SUPABASE_URL + "/storage/v1/bucket"
-        st, js, body = _http("GET", base + "/" + name, headers=_sb_headers())
+        st, js, body = _http("GET", base + "/" + urllib.parse.quote(name, safe=""), headers=_sb_headers(), timeout=5)
         if st == 200:
             _bucket_state["ok"][name] = True
+            _bucket_state["reason"][name] = "Бакет доступен"
             return True
-        st, js, body = _http("POST", base, payload={"id": name, "name": name, "public": bool(public)},
-                             headers=_sb_headers())
-        _bucket_state["ok"][name] = st in (200, 201)
-        print("[storage] создать бакет {}: HTTP {} {}".format(name, st, (body or b"")[:200]), flush=True)
+        if st not in (404,):
+            _bucket_state["reason"][name] = "Проверка бакета: HTTP {} — {}".format(st or "сетевая ошибка", (body or b"")[:180].decode("utf-8", "replace"))
+        st2, js2, body2 = _http("POST", base, payload={"id": name, "name": name, "public": bool(public)},
+                             headers=_sb_headers(), timeout=5)
+        _bucket_state["ok"][name] = st2 in (200, 201, 409)
+        if _bucket_state["ok"][name]:
+            _bucket_state["reason"][name] = "Бакет создан или уже существует"
+        else:
+            _bucket_state["reason"][name] = "Не удалось получить/создать бакет: HTTP {} — {}".format(st2 or "сетевая ошибка", (body2 or b"")[:220].decode("utf-8", "replace"))
+        print("[storage] бакет {}: HTTP {} {}".format(name, st2, (body2 or b"")[:200]), flush=True)
         return _bucket_state["ok"][name]
 
 
@@ -4412,7 +4438,7 @@ function refreshLeadBadge(){
   api('/admin/api/leads').then(function(j){var b=q('#leadBadge');if(!b)return;b.textContent=j.unread||0;b.style.display=(j.unread||0)?'inline-flex':'none'}).catch(function(){});
 }
 
-function renderOverview(){q('#main').innerHTML='<div class="page-head"><div><span class="eyebrow-admin">ЦЕНТР УПРАВЛЕНИЯ</span><h2>Обзор</h2><p class="hint">Сайт, заявки, версия, сохранение и GitHub.</p></div><div class="live-pill"><i></i> Система</div></div><div class="overview-grid"><article class="overview-card"><span>Сайт</span><b id="ovSite">…</b><small>сервер / база</small></article><article class="overview-card"><span>Заявки</span><b id="ovLeads">…</b><small>новые / всего</small></article><article class="overview-card"><span>Версия</span><b>rev '+REV+'</b><small>последняя публикация</small></article><article class="overview-card"><span>Сохранение</span><b>'+(dirty?'ВНИМАНИЕ':'ГОТОВО')+'</b><small>'+(dirty?'есть изменения':'всё сохранено')+'</small></article><article class="overview-card"><span>GitHub</span><b id="ovGit">…</b><small>mebel.py</small></article><article class="overview-card"><span>Анимации</span><b>'+(((DATA.animations||{}).safe_mode)?'SAFE':'FULL')+'</b><small>режим плавности</small></article></div><div class="actions"><button class="btn btn-gold" id="ovOpen">Открыть сайт</button><button class="btn" id="ovPreview">Предпросмотр</button><button class="btn" id="ovCheck">Проверить</button><button class="btn" id="ovDiag">Диагностика</button><button class="btn" id="ovLead">Заявки</button></div><div id="ovOut" class="info">Проверяем…</div>';q('#ovOpen').onclick=function(){window.open('/','_blank')};q('#ovPreview').onclick=function(){window.open('/?preview=1','_blank')};q('#ovCheck').onclick=function(){showStatus()};q('#ovDiag').onclick=function(){TAB='diagnostics';render()};q('#ovLead').onclick=function(){TAB='leads';render()};api('/admin/api/status').then(function(j){q('#ovSite').textContent=j.db_read?'Онлайн':'Ошибка';q('#ovGit').textContent=j.github&&j.github.configured?(j.github.last_ok===false?'Ошибка':'Подключён'):'Не настроен';q('#ovOut').innerHTML='<b>Готово.</b> Supabase: '+(j.db_read?'OK':'ошибка')+' · Storage: '+(j.storage?'OK':'ошибка')+' · GitHub: '+(j.github&&j.github.configured?'подключён':'не настроен')}).catch(function(e){q('#ovOut').textContent=e.message});api('/admin/api/leads').then(function(j){q('#ovLeads').textContent=(j.unread||0)+' / '+((j.items||[]).length)}).catch(function(){})}
+function renderOverview(){q('#main').innerHTML='<div class="page-head"><div><span class="eyebrow-admin">ЦЕНТР УПРАВЛЕНИЯ</span><h2>Обзор</h2><p class="hint">Сайт, заявки, версия, сохранение и GitHub.</p></div><div class="live-pill"><i></i> Система</div></div><div class="overview-grid"><article class="overview-card"><span>Сайт</span><b id="ovSite">…</b><small>сервер / база</small></article><article class="overview-card"><span>Заявки</span><b id="ovLeads">…</b><small>новые / всего</small></article><article class="overview-card"><span>Версия</span><b>rev '+REV+'</b><small>последняя публикация</small></article><article class="overview-card"><span>Сохранение</span><b>'+(dirty?'ВНИМАНИЕ':'ГОТОВО')+'</b><small>'+(dirty?'есть изменения':'всё сохранено')+'</small></article><article class="overview-card"><span>GitHub</span><b id="ovGit">…</b><small>mebel.py</small></article><article class="overview-card"><span>Анимации</span><b>'+(((DATA.animations||{}).safe_mode)?'SAFE':'FULL')+'</b><small>режим плавности</small></article></div><div class="actions"><button class="btn btn-gold" id="ovOpen">Открыть сайт</button><button class="btn" id="ovPreview">Предпросмотр</button><button class="btn" id="ovCheck">Проверить</button><button class="btn" id="ovDiag">Диагностика</button><button class="btn" id="ovLead">Заявки</button></div><div id="ovOut" class="info">Проверяем…</div>';q('#ovOpen').onclick=function(){window.open('/','_blank')};q('#ovPreview').onclick=function(){window.open('/?preview=1','_blank')};q('#ovCheck').onclick=function(){showStatus()};q('#ovDiag').onclick=function(){TAB='diagnostics';render()};q('#ovLead').onclick=function(){TAB='leads';render()};api('/admin/api/status').then(function(j){q('#ovSite').textContent=j.db_read?'Онлайн':'Ошибка';q('#ovGit').textContent=j.github&&j.github.configured?(j.github.last_ok===false?'Ошибка':'Подключён'):'Не настроен';q('#ovOut').innerHTML='<b>Готово.</b> Supabase: '+(j.db_read?'OK':'ошибка')+' · Storage: '+(j.storage?'OK':('ошибка — '+(j.storage_reason||'причина не получена')))+' · GitHub: '+(j.github&&j.github.configured?'подключён':'не настроен')}).catch(function(e){q('#ovOut').textContent=e.message});api('/admin/api/leads').then(function(j){q('#ovLeads').textContent=(j.unread||0)+' / '+((j.items||[]).length)}).catch(function(){})}
 function renderEmployees(){q('#main').innerHTML='<h2>Сотрудники и роли</h2><p class="hint">Только руководитель создаёт логины, пароли и права.</p><button class="btn btn-gold" id="leader2fa">Настроить 2FA руководителя</button><div class="item"><div class="field"><label>Логин</label><input id="eLogin"></div><div class="field"><label>Имя</label><input id="eName"></div><div class="field"><label>Роль</label><select id="eRole"><option value="manager">Менеджер</option><option value="designer">Дизайнер</option></select></div><div class="field"><label>Пароль</label><input id="ePass" type="password"></div><button class="btn btn-gold" id="eCreate">Создать сотрудника</button></div><div id="eList"></div>';api('/admin/api/employees').then(function(j){q('#eList').innerHTML=(j.items||[]).map(function(e){return '<div class="item"><b>'+esc(e.name||e.login)+'</b> · '+esc(e.role_title||e.role)+' · '+(e.disabled?'отключён':'активен')+'<div class="hint">Логин: '+esc(e.login)+' · 2FA: '+(e.twofa_enabled?'включён':'выключен')+'</div><button class="btn mini" data-e2fa="'+esc(e.id)+'">Выдать 2FA</button><button class="btn mini btn-red" data-ed="'+esc(e.id)+'">'+(e.disabled?'Включить':'Отключить')+'</button></div>'}).join('');qa('[data-e2fa]').forEach(function(b){b.onclick=function(){api('/admin/api/employees',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'setup_2fa',id:b.dataset.e2fa})}).then(function(x){alert('Секрет 2FA: '+x.secret)})}});qa('[data-ed]').forEach(function(b){b.onclick=function(){api('/admin/api/employees',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'update',id:b.dataset.ed,disabled:b.textContent.indexOf('Отключить')>=0})}).then(renderEmployees)}});});q('#leader2fa').onclick=function(){api('/admin/api/2fa').then(function(x){var code=prompt('Секрет 2FA руководителя: '+x.secret+'\nВведите код из приложения, чтобы включить 2FA:');if(code)api('/admin/api/2fa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'toggle',enabled:true,code:code})}).then(function(){toast('2FA включён')})})};q('#eCreate').onclick=function(){api('/admin/api/employees',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'create',login:q('#eLogin').value,name:q('#eName').value,role:q('#eRole').value,password:q('#ePass').value,permissions:['content_edit','leads_manage']})}).then(function(x){if(x.ok){toast('Сотрудник создан');renderEmployees()}else toast(x.error||'Ошибка',true)})}}
 function render(){
   var groups={},order=[];
@@ -4598,7 +4624,7 @@ function showStatus(){
     out('<b>Состояние</b>\n'
       +row(j.db_read,'Чтение Supabase: '+(j.db_read?'OK':'ошибка'))
       +row(j.db_write!==false,'Запись Supabase: '+(j.db_write===false?'была ошибка':'OK'))
-      +row(j.storage,'Хранилище картинок: '+(j.storage?('бакет '+j.bucket):'недоступно (картинки станут data-URL)'))
+      +row(j.storage,'Хранилище картинок: '+(j.storage?('бакет '+j.bucket):'недоступно: '+(j.storage_reason||'проверьте SUPABASE_SERVICE_KEY и права Storage')))
       +row(j.ai.yandex||j.ai.gigachat,'AI: '+(j.ai.yandex?'YandexGPT готов':'YandexGPT нет ключа')+', '+(j.ai.gigachat?'GigaChat готов':'GigaChat нет ключа'))
       +'\n<b>Контент</b>\n'
       +'<div>Размер данных: '+Math.round((j.size||0)/1024)+' КБ · работ: '+(j.counts.works||0)+' · отзывов: '+(j.counts.reviews||0)+' · услуг: '+(j.counts.services||0)+'</div>'
@@ -5508,7 +5534,9 @@ class Handler(BaseHTTPRequestHandler):
             counts[key] = len(items) if isinstance(items, list) else 0
         sm = build_sitemap(data)
         meta = _meta_of(data)
-        # Статус не должен ждать Supabase Storage: обзор админки обязан открываться мгновенно.
+        # Проверяем Storage при первом открытии статуса, чтобы показать причину ошибки, а не общий флаг.
+        if not _bucket_state["checked"].get(BUCKET):
+            _bucket_ensure(BUCKET)
         backups = 0
         return {
             "rev": meta["rev"], "at": meta["at"], "backups": backups,
@@ -5516,6 +5544,7 @@ class Handler(BaseHTTPRequestHandler):
             "db_write": _db_state.get("write"),
             "github": {"configured": bool(GITHUB_TOKEN and GITHUB_SYNC), "last_ok": _db_state.get("github")},
             "storage": bool(_bucket_state["ok"].get(BUCKET)) if _bucket_state["checked"].get(BUCKET) else None,
+            "storage_reason": _bucket_state["reason"].get(BUCKET, "Проверка Storage ещё не выполнялась"),
             "bucket": BUCKET,
             "ai": {"yandex": bool(YANDEX_API_KEY and FOLDER_ID), "gigachat": bool(GIGACHAT_AUTH_KEY)},
             "counts": counts,
