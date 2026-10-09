@@ -39,7 +39,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 import uuid
-from datetime import date
+from datetime import date, datetime, timezone
 from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs
@@ -162,6 +162,7 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
            'phone': '+7 (950) 846-53-97',
            'logo_url': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/logo/logo-256.jpg',
            'telegram': 'https://t.me/fanny161',
+           'max': 'https://max.ru/',
            'phone_raw': '+79508465397'},
  'nav': {'items': [{'label': 'Специалист', 'href': '#about'},
                    {'label': 'Работы', 'href': '#works'},
@@ -192,7 +193,7 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
  'about': {'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/bg/about.jpg',
            'name': 'Роман Островский',
            'role': 'Руководитель мебельной мастерской Островского',
-           'photo': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/about/roman.jpg',
+           'photo': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/hd/about/roman.jpg',
            'title': 'Кухни и мебель под ключ — с заботой о деталях',
            'kicker': 'О руководителе',
            'features': ['Кухни, шкафы, гардеробные и прихожие',
@@ -1319,6 +1320,10 @@ html.no-anim .spark{display:none}
 .panel .bg::before{transform:none!important}
 .lead-panel .lead-bg{opacity:.34!important;filter:saturate(.9) contrast(1.04);background-position:center!important}
 .lead-panel .lead-bg::after{background:linear-gradient(90deg,rgba(8,7,5,.94) 0%,rgba(8,7,5,.68) 48%,rgba(8,7,5,.72) 100%)!important}
+
+.consult-inline-link{color:var(--gold-soft)!important;text-decoration:none!important;border-bottom:1px solid rgba(236,207,160,.58);padding-bottom:1px;transition:color .22s,border-color .22s,text-shadow .22s}.consult-inline-link:hover,.consult-inline-link:focus-visible{color:#fff!important;border-color:#fff;text-shadow:0 0 18px rgba(236,207,160,.35);outline:none}
+.about-ip-link{margin:8px 0 0;font-size:12px}.lead-legal-links{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:16px 0 10px;font-size:10px;line-height:1.5}.lead-legal-links a,.footer-legal a{color:var(--gold-soft);text-decoration:none;border-bottom:1px solid rgba(236,207,160,.25);transition:color .2s,border-color .2s}.lead-legal-links a:hover,.footer-legal a:hover{color:#fff;border-color:var(--gold-soft)}.lead-consent{display:flex!important;align-items:flex-start;gap:9px;margin:8px 0 12px!important;color:#a99e8c;font:11px/1.5 var(--sans);text-transform:none!important;letter-spacing:0!important}.lead-consent input{width:15px!important;height:15px;flex:0 0 15px;margin:2px 0 0;accent-color:var(--gold);padding:0!important}.lead-consent span{display:inline!important;font-size:11px!important;letter-spacing:0!important;text-transform:none!important;color:#a99e8c!important}.footer-legal{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin:16px auto 0;font-size:11px}.legal-page{min-height:100vh;background:radial-gradient(ellipse at 80% 0,rgba(212,175,106,.12),transparent 42%),#0e0c09;color:#f5efe3;padding:34px 18px 70px;font:15px/1.75 Manrope,system-ui,sans-serif}.legal-wrap{max-width:900px;margin:0 auto}.legal-top{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:38px}.legal-top a,.legal-page a{color:#eccfa0}.legal-card{padding:clamp(22px,5vw,52px);border:1px solid rgba(236,207,160,.22);border-radius:22px;background:linear-gradient(145deg,rgba(31,25,17,.9),rgba(13,12,10,.96));box-shadow:0 24px 80px rgba(0,0,0,.22)}.legal-card h1,.legal-card h2{font-family:'Cormorant Garamond',Georgia,serif;line-height:1.12}.legal-card h1{font-size:clamp(34px,5vw,54px);margin:0 0 20px}.legal-card h2{font-size:25px;margin:30px 0 8px}.legal-card p,.legal-card li{color:#c9bdab}.legal-profile{display:flex;align-items:center;gap:20px;margin:0 0 28px}.legal-profile img{width:96px;height:96px;object-fit:cover;border-radius:50%;border:2px solid #d4af6a;box-shadow:0 0 0 7px rgba(212,175,106,.1)}.legal-profile strong{display:block;font-size:18px}.legal-note{font-size:12px;color:#a99e8c!important;border-top:1px solid rgba(236,207,160,.14);padding-top:18px;margin-top:28px}@media(max-width:600px){.lead-legal-links{flex-direction:column;align-items:flex-start}.legal-top{align-items:flex-start;flex-direction:column}.legal-profile{align-items:flex-start}.legal-profile img{width:76px;height:76px}}
+
 .lead-simple-form{max-width:560px;margin-left:auto;padding:30px;border:1px solid rgba(236,207,160,.18);border-radius:22px;background:linear-gradient(145deg,rgba(18,15,11,.86),rgba(8,8,7,.74));box-shadow:0 28px 80px -46px #000,inset 0 1px 0 rgba(255,255,255,.055);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
 .consult-messengers{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:20px}.consult-messengers a{display:inline-flex;align-items:center;gap:6px;padding:10px 15px;border:1px solid rgba(236,207,160,.25);border-radius:999px;color:#ecd09c;text-decoration:none;font-size:12px;transition:transform .25s,border-color .25s,background .25s}.consult-messengers a:hover{transform:translateY(-2px);border-color:rgba(236,207,160,.55);background:rgba(236,207,160,.07)}@media(prefers-reduced-motion:reduce){.consult-messengers a{transition:none}}
 .lead-simple-kicker{display:grid;grid-template-columns:36px 1fr;column-gap:10px;align-items:center;margin-bottom:22px}.lead-simple-kicker span{grid-row:span 2;color:var(--gold);font-size:11px;letter-spacing:.18em}.lead-simple-kicker b{font-size:18px;font-weight:600}.lead-simple-kicker small{color:#887d6e;font-size:11px}.lead-simple-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.lead-simple-form label{display:block;margin-bottom:14px}.lead-simple-form label>span{display:block;margin:0 0 7px;color:#b7aa97;font-size:10px;letter-spacing:.14em;text-transform:uppercase}.lead-simple-form input,.lead-simple-form textarea,.lead-simple-form select{width:100%;border:1px solid rgba(236,207,160,.14);background:rgba(255,255,255,.035);color:#f7f0e4;border-radius:11px;padding:13px 14px;outline:none;transition:border-color .25s,box-shadow .25s,background .25s;font:500 13px/1.4 var(--sans)}.lead-simple-form textarea{min-height:104px;resize:vertical}.lead-simple-form select{appearance:none;min-height:45px;color:#f7f0e4;background-color:#17140f}.lead-simple-form select option{background:#17140f;color:#f7f0e4}.lead-contact-choice{margin-top:4px}.lead-simple-form input:focus,.lead-simple-form textarea:focus,.lead-simple-form select:focus{border-color:rgba(236,207,160,.48);background:rgba(255,255,255,.055);box-shadow:0 0 0 3px rgba(236,207,160,.055)}.lead-simple-choice{margin:5px 0 17px}.lead-simple-choice>span{display:block;color:#8e8374;font-size:10px;letter-spacing:.08em;margin-bottom:9px}.lead-simple-choice .choice-grid{gap:6px}.lead-simple-choice .choice{min-height:35px;padding:8px 11px;font-size:11px}.lead-simple-city{color:#71685c;font-size:10px;line-height:1.5;margin:-2px 0 16px}.lead-simple-form .lead-submit{margin-top:4px;min-height:49px}.lead-simple-form .lead-note{font-size:9px}.lead-result.error{color:#e99b9b}.lead-result{line-height:1.5}
@@ -1396,6 +1401,7 @@ html.no-anim .spark{display:none}
         <div class="avatar"><img src="{{about.photo}}" width="130" height="130" loading="lazy" decoding="async" alt="{{about.name}}{{#if about.role}} — {{about.role}}{{/if}}"></div>
         <h3>{{about.name}}</h3>
         <div class="role">{{about.role}}</div>
+        <p class="about-ip-link"><a class="consult-inline-link" href="/ip">Сведения об ИП руководителя ↗</a></p>
         <div class="sep"></div>
         <p>{{{about.card_text|html}}}</p>
       </div>
@@ -1443,6 +1449,8 @@ html.no-anim .spark{display:none}
           <button type="button" class="choice is-selected" data-choice-name="contact_method" data-choice-value="Звонок" aria-pressed="true">Звонок</button><button type="button" class="choice" data-choice-name="contact_method" data-choice-value="Telegram" aria-pressed="false">Telegram</button><button type="button" class="choice" data-choice-name="contact_method" data-choice-value="MAX" aria-pressed="false">MAX</button>
         </div></div>
         <input type="hidden" name="contact_method" value="Звонок">
+        <div class="lead-legal-links"><a href="/privacy" target="_blank" rel="noopener">Политика конфиденциальности</a><a href="/personal-data-consent" target="_blank" rel="noopener">Согласие на обработку персональных данных</a></div>
+        <label class="lead-consent"><input type="checkbox" name="personal_data_consent" required><span>Согласен(на) на обработку персональных данных для ответа на заявку.</span></label>
         <div class="lead-hp" aria-hidden="true"><input name="website" tabindex="-1" autocomplete="off"></div>
         <button class="btn btn-solid lead-submit" type="submit"><span class="lead-submit-text">{{lead_form.button}}</span><span class="lead-spinner" aria-hidden="true"></span></button>
         <p class="lead-note">{{lead_form.note}}</p><div class="lead-result" id="siteLeadResult" role="status" aria-live="polite"></div>
@@ -1458,11 +1466,7 @@ html.no-anim .spark{display:none}
     <span class="kicker reveal" style="color:var(--gold-soft);letter-spacing:6px;text-transform:uppercase;font-size:12px;font-weight:600">{{consult.kicker}}</span>
     <h2 class="k reveal">{{consult.title}}</h2>
     <a href="tel:{{consult.phone_raw}}" class="phone reveal">{{consult.phone}}</a>
-    <p class="reveal">Позвоните или напишите нам в {{#if brand.telegram}}<a class="consult-inline-link" href="{{brand.telegram}}" target="_blank" rel="noopener noreferrer">Telegram</a>{{else}}Telegram{{/if}}{{#if brand.max}} или <a class="consult-inline-link" href="{{brand.max}}" target="_blank" rel="noopener noreferrer">MAX</a>{{/if}} — расскажем про кухни и мебель, всё обсудим и договоримся о бесплатном замере.</p>
-    <div class="consult-messengers reveal" aria-label="Написать нам">
-      {{#if brand.telegram}}<a href="{{brand.telegram}}" target="_blank" rel="noopener noreferrer">Написать в Telegram ↗</a>{{/if}}
-      {{#if brand.max}}<a href="{{brand.max}}" target="_blank" rel="noopener noreferrer">Написать в MAX ↗</a>{{/if}}
-    </div>
+    <p class="reveal">Позвоните или напишите нам в <a class="consult-inline-link" href="{{#if brand.max}}{{brand.max}}{{else}}https://max.ru/{{/if}}" target="_blank" rel="noopener noreferrer" aria-label="Открыть MAX">MAX</a> или <a class="consult-inline-link" href="{{#if brand.telegram}}{{brand.telegram}}{{else}}https://t.me/fanny161{{/if}}" target="_blank" rel="noopener noreferrer" aria-label="Написать в Telegram">Telegram</a> — расскажем про кухни и мебель, всё обсудим и договоримся о бесплатном замере.</p>
   </div></div>
 </section>{{/if}}
 
@@ -1658,6 +1662,7 @@ html.no-anim .spark{display:none}
   </div>{{/if}}
   <p>{{footer.line}}</p>
   <p style="margin-top:8px">© <span id="year">{{year}}</span> {{footer.copyright}}</p>
+  <nav class="footer-legal" aria-label="Правовая информация"><a href="/privacy">Политика конфиденциальности</a><span aria-hidden="true">·</span><a href="/personal-data-consent">Согласие на обработку персональных данных</a><span aria-hidden="true">·</span><a href="/ip">ИП руководителя</a></nav>
 </footer>{{/if}}
 
 {{#if sections.cookie}}<div class="cookie-bar" id="cookieBar">
@@ -1868,10 +1873,10 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
   var btn=form.querySelector('.lead-submit'),result=document.getElementById('siteLeadResult');
   function setResult(msg,bad){if(!result)return;result.textContent=msg||'';result.classList.toggle('error',!!bad)}
   form.querySelectorAll('[data-choice-name]').forEach(function(b){b.addEventListener('click',function(){var n=b.dataset.choiceName;form.querySelectorAll('[data-choice-name="'+n+'"]').forEach(function(x){x.classList.remove('is-selected');x.setAttribute('aria-pressed','false')});b.classList.add('is-selected');b.setAttribute('aria-pressed','true');var i=form.querySelector('[name="'+n+'"]');if(i)i.value=b.dataset.choiceValue||''})});
-  form.addEventListener('submit',async function(e){e.preventDefault();setResult('');var fd=new FormData(form),phone=String(fd.get('phone')||'').trim(),name=String(fd.get('name')||'').trim(),message=String(fd.get('message')||'').trim();
-    if(!name){setResult('Укажите имя.',true);form.querySelector('[name="name"]').focus();return}if(phone.replace(/\D/g,'').length<7){setResult('Укажите номер телефона.',true);form.querySelector('[name="phone"]').focus();return}if(!message){setResult('Напишите, какую мебель вы хотите.',true);form.querySelector('[name="message"]').focus();return}if(String(fd.get('website')||''))return;
+  form.addEventListener('submit',async function(e){e.preventDefault();setResult('');var fd=new FormData(form),phone=String(fd.get('phone')||'').trim(),name=String(fd.get('name')||'').trim(),message=String(fd.get('message')||'').trim(),consent=!!fd.get('personal_data_consent');
+    if(!name){setResult('Укажите имя.',true);form.querySelector('[name="name"]').focus();return}if(phone.replace(/\D/g,'').length<7){setResult('Укажите номер телефона.',true);form.querySelector('[name="phone"]').focus();return}if(!message){setResult('Напишите, какую мебель вы хотите.',true);form.querySelector('[name="message"]').focus();return}if(!consent){setResult('Для отправки заявки подтвердите согласие на обработку персональных данных.',true);form.querySelector('[name="personal_data_consent"]').focus();return}if(String(fd.get('website')||''))return;
     btn.classList.add('loading');btn.disabled=true;var old=btn.querySelector('.lead-submit-text');if(old)old.textContent='Отправляем…';
-    try{var body={surname:String(fd.get('surname')||'').trim(),name:name,phone:phone,message:message,website:'',page:location.href,city:String(fd.get('city')||''),furniture_type:String(fd.get('furniture_type')||''),contact_method:String(fd.get('contact_method')||'Звонок'),source:'site'};
+    try{var body={surname:String(fd.get('surname')||'').trim(),name:name,phone:phone,message:message,website:'',page:location.href,city:String(fd.get('city')||''),furniture_type:String(fd.get('furniture_type')||''),contact_method:String(fd.get('contact_method')||'Звонок'),personal_data_consent:consent,source:'site'};
       var ctl=typeof AbortController!=='undefined'?new AbortController():null,timer=ctl?setTimeout(function(){try{ctl.abort()}catch(_){}},9000):null;var r=await fetch('/api/lead',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(body),signal:ctl?ctl.signal:undefined});if(timer)clearTimeout(timer);var raw=await r.text(),j={};try{j=JSON.parse(raw||'{}')}catch(_){}if(!r.ok||!j.ok)throw new Error(j.error||('Ошибка отправки ('+r.status+')'));
       form.reset();form.querySelectorAll('.choice').forEach(function(x){x.classList.remove('is-selected');x.setAttribute('aria-pressed','false')});setResult('Заявка отправлена. Спасибо! Предпочтительный способ связи: '+String(fd.get('contact_method')||'Звонок')+'. Мы свяжемся с вами.');if(old)old.textContent='Заявка отправлена ✓';setTimeout(function(){if(old)old.textContent='Отправить заявку';btn.disabled=false;btn.classList.remove('loading')},2600);
     }catch(err){setResult(err&&err.name==='AbortError'?'Сервер отвечает слишком долго. Попробуйте ещё раз.':(err&&err.message?err.message:'Не удалось отправить заявку. Попробуйте ещё раз.'),true);if(old)old.textContent='Отправить заявку';btn.disabled=false;btn.classList.remove('loading')} });
@@ -2718,6 +2723,8 @@ def _add_lead(name, phone, message, page, ip="", extra=None):
         "priority": extra.get("priority") or "normal", "source": extra.get("source") or "site",
         "city": extra.get("city") or "", "furniture_type": extra.get("furniture_type") or "",
         "contact_method": extra.get("contact_method") or "Звонок",
+        "personal_data_consent": bool(extra.get("personal_data_consent")),
+        "personal_data_consent_at": extra.get("personal_data_consent_at") or "",
         "notes": extra.get("notes") or "", "photo_url": extra.get("photo_url") or "",
         "attachments": extra.get("attachments") or [], "style": extra.get("style") or "", "color": extra.get("color") or "",
         "shape": extra.get("shape") or "", "sections_count": extra.get("sections_count") or "", "appliances": extra.get("appliances") or "",
@@ -3437,6 +3444,8 @@ def build_sitemap(data):
         parts.append('    <image:image><image:loc>{}</image:loc><image:title>{}</image:title></image:image>'.format(
             _escape(url), _escape(str(w.get("alt") or brand))))
     parts.append('  </url>')
+    for legal_path in ("/privacy", "/personal-data-consent", "/ip"):
+        parts.append("  <url>\n    <loc>{}</loc>\n    <lastmod>{}</lastmod>\n    <changefreq>yearly</changefreq>\n    <priority>0.3</priority>\n  </url>".format(_escape(dom + legal_path), today))
     for it in (seo.get("extra_urls") or []):
         if not isinstance(it, dict):
             continue
@@ -3508,6 +3517,27 @@ p{color:%(muted)s;font-size:15px;line-height:1.7;margin-bottom:28px}
 </body>
 </html>
 """
+
+
+def _legal_page(path, data):
+    # Legal pages are starter text and require owner review before publication.
+    brand = data.get("brand") or {}
+    about = data.get("about") or {}
+    domain = _escape(_domain(data))
+    phone = _escape(brand.get("phone") or "+7 (950) 846-53-97")
+    name = "Островский Роман Геннадьевич"
+    avatar = "https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/hd/about/roman.jpg"
+    if path == "/ip":
+        title = "Индивидуальный предприниматель Островский Роман Геннадьевич"
+        body = f'''<div class="legal-profile"><img src="{avatar}" alt="Роман Островский — руководитель мебельной мастерской" width="96" height="96"><div><strong>{name}</strong><span>Руководитель мебельной мастерской Островского</span></div></div>
+        <h2>Сведения о предпринимателе</h2><p><b>Форма деятельности:</b> индивидуальный предприниматель (ИП).</p><p><b>ОГРНИП:</b> 324619600063820.</p><p><b>ИНН:</b> 110106046808.</p><p><b>Дата государственной регистрации:</b> 20 марта 2024 года.</p><p><b>Адрес регистрации:</b> Ростовская область, город Батайск.</p><p><b>Регистрирующий орган:</b> Межрайонная инспекция Федеральной налоговой службы № 26 по Ростовской области.</p><p><b>Налоговый орган по месту учёта:</b> Межрайонная инспекция ФНС России № 11 по Ростовской области.</p><h2>Связь по вопросам заказа</h2><p>Телефон: <a href="tel:+79508465397">{phone}</a>.</p><p>Telegram: <a href="https://t.me/fanny161" target="_blank" rel="noopener noreferrer">t.me/fanny161</a>.</p><p>Сайт: <a href="{domain}/">{domain}</a>.</p><p class="legal-note">Сведения приведены по информации, предоставленной владельцем сайта. Для подтверждения актуальности реквизитов используйте официальные сведения ЕГРИП ФНС России. Эта страница не является гарантией качества, результатом независимой проверки или юридическим заключением.</p>'''
+    elif path == "/personal-data-consent":
+        title = "Согласие на обработку персональных данных"
+        body = f'''<p>Отправляя форму на сайте {domain}, я свободно, своей волей и в своём интересе выражаю согласие индивидуальному предпринимателю Островскому Роману Геннадьевичу (ОГРНИП 324619600063820, ИНН 110106046808) на обработку персональных данных, которые я указываю в форме.</p><h2>Какие данные обрабатываются</h2><p>Фамилия и имя, номер телефона, текст обращения, выбранный город, тип мебели, предпочтительный способ связи, а также технические сведения, необходимые для защиты сайта и обработки заявки.</p><h2>Для чего нужны данные</h2><p>Чтобы принять и обработать обращение, связаться со мной по заявке, уточнить задачу и ответить на вопросы о кухнях и мебели на заказ.</p><h2>Какие действия возможны</h2><p>Сбор, запись, систематизация, хранение, уточнение, использование, передача техническим поставщикам, обеспечивающим работу сайта и хранилища заявок, блокирование и удаление данных в пределах, необходимых для указанных целей и требований законодательства.</p><h2>Срок и отзыв согласия</h2><p>Данные хранятся не дольше, чем это необходимо для обработки обращения и выполнения применимых требований закона. Я могу отозвать согласие, обратившись по телефону <a href="tel:+79508465397">{phone}</a>. Отзыв не влияет на законность обработки, осуществлённой до его получения; отдельные данные могут сохраняться, если этого требует закон.</p><p>Подробности указаны в <a href="/privacy">Политике конфиденциальности</a>.</p><p class="legal-note">Перед публикацией владельцу сайта следует проверить текст, фактические процессы обработки, используемые сервисы и порядок хранения данных на соответствие действующему законодательству.</p>'''
+    else:
+        title = "Политика конфиденциальности"
+        body = f'''<p>Настоящая политика описывает, как индивидуальный предприниматель Островский Роман Геннадьевич (ОГРНИП 324619600063820, ИНН 110106046808) обрабатывает данные посетителей сайта {domain}, когда они отправляют заявку или связываются с мастерской.</p><h2>Оператор и связь</h2><p>Оператор: Островский Роман Геннадьевич, индивидуальный предприниматель. Адрес регистрации по предоставленным сведениям: Ростовская область, город Батайск. Телефон для обращений по персональным данным: <a href="tel:+79508465397">{phone}</a>.</p><h2>Какие данные могут обрабатываться</h2><ul><li>имя и фамилия, если указаны;</li><li>номер телефона;</li><li>текст заявки, город, тип мебели и выбранный способ связи;</li><li>технические сведения о запросе, необходимые для работы сайта, безопасности и диагностики.</li></ul><h2>Цели и правовые основания</h2><p>Данные используются для приёма и обработки заявок, обратной связи, ответа на вопросы о мебели, обеспечения безопасности сайта и устранения технических ошибок. Основанием может быть согласие пользователя, необходимость ответа на обращение и иные основания, предусмотренные законом.</p><h2>Хранение и передача</h2><p>Доступ к заявкам ограничивается уполномоченными пользователями админ-панели. Для работы сайта могут использоваться технические поставщики хостинга, базы данных и файлового хранилища, в том числе Supabase. Передача ограничивается тем, что необходимо для работы сайта и обработки обращений. Фактические настройки размещения, резервного копирования и доступа должен подтвердить оператор.</p><h2>Сроки хранения</h2><p>Данные хранятся в течение времени, необходимого для ответа на обращение и исполнения применимых требований законодательства, после чего удаляются или обезличиваются, если отсутствуют законные основания для дальнейшего хранения.</p><h2>Права пользователя</h2><p>Пользователь может запросить сведения об обработке, уточнение или удаление данных, а также отозвать согласие, если обработка основана на согласии, направив обращение по телефону <a href="tel:+79508465397">{phone}</a>. Отзыв не отменяет обработку, уже выполненную законно, и не исключает хранения, обязательного по закону.</p><h2>Изменения политики</h2><p>Актуальная версия размещается на этой странице. Передача заявки означает, что пользователь ознакомился с политикой; отдельное согласие на обработку запрашивается в форме заявки.</p><p class="legal-note">Это базовый проект текста на основании сведений, предоставленных владельцем. Он не подтверждает автоматически полное соответствие сайта закону: перед публикацией необходимо проверить реальные процессы обработки, сроки хранения, трансграничную передачу и обязательные уведомления/регистрации, если они применимы.</p>'''
+    return '''<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="index,follow"><title>'''+_escape(title)+''' — Кухни Островский</title><meta name="description" content="Официальная информация сайта Кухни Островский: контакты, реквизиты и документы по персональным данным."><style>'''+'''*{box-sizing:border-box}body{margin:0}.legal-page{min-height:100vh;background:radial-gradient(ellipse at 80% 0,rgba(212,175,106,.12),transparent 42%),#0e0c09;color:#f5efe3;padding:34px 18px 70px;font:15px/1.75 system-ui,-apple-system,Segoe UI,sans-serif}.legal-wrap{max-width:900px;margin:0 auto}.legal-top{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:38px}.legal-top a,.legal-page a{color:#eccfa0}.legal-card{padding:clamp(22px,5vw,52px);border:1px solid rgba(236,207,160,.22);border-radius:22px;background:linear-gradient(145deg,rgba(31,25,17,.9),rgba(13,12,10,.96));box-shadow:0 24px 80px rgba(0,0,0,.22)}.legal-card h1,.legal-card h2{font-family:Georgia,serif;line-height:1.12}.legal-card h1{font-size:clamp(34px,5vw,54px);margin:0 0 20px}.legal-card h2{font-size:25px;margin:30px 0 8px}.legal-card p,.legal-card li{color:#c9bdab}.legal-profile{display:flex;align-items:center;gap:20px;margin:0 0 28px}.legal-profile img{width:96px;height:96px;object-fit:cover;border-radius:50%;border:2px solid #d4af6a;box-shadow:0 0 0 7px rgba(212,175,106,.1)}.legal-profile strong{display:block;font-size:18px}.legal-note{font-size:12px;color:#a99e8c!important;border-top:1px solid rgba(236,207,160,.14);padding-top:18px;margin-top:28px}@media(max-width:600px){.legal-top{align-items:flex-start;flex-direction:column}.legal-profile{align-items:flex-start}.legal-profile img{width:76px;height:76px}}</style></head><body><main class="legal-page"><div class="legal-wrap"><nav class="legal-top"><a href="/">← На главную</a><span>Кухни Островский · Ростов · Батайск · Азов</span></nav><article class="legal-card"><h1>'''+_escape(title)+'''</h1>'''+body+'''</article></div></main></body></html>'''
 
 
 def build_404(data):
@@ -4951,6 +4981,11 @@ class Handler(BaseHTTPRequestHandler):
             self._send(200, "ok", "text/plain; charset=utf-8")
             return
 
+        if path in ("/privacy", "/personal-data-consent", "/ip"):
+            legal_html = _legal_page(path, load_data())
+            self._send(200, legal_html, "text/html; charset=utf-8", "no-cache")
+            return
+
         if path == "/admin/login":
             self._send(200, ADMIN_LOGIN_HTML.replace("__ERROR__", ""), "text/html; charset=utf-8")
             return
@@ -5210,7 +5245,12 @@ class Handler(BaseHTTPRequestHandler):
             message = str(req.get("message") or "").strip()[:1000]
             page = str(req.get("page") or "/").strip()[:300]
             extra={k:req.get(k) for k in ("city","furniture_type","contact_method","source")}
+            extra["personal_data_consent"] = bool(req.get("personal_data_consent"))
+            extra["personal_data_consent_at"] = datetime.now(timezone.utc).isoformat() if extra["personal_data_consent"] else ""
             digits = re.sub(r"\D", "", phone)
+            if not extra.get("personal_data_consent"):
+                self._json({"error": "Подтвердите согласие на обработку персональных данных"}, 400)
+                return
             if not first_name:
                 self._json({"error": "Укажите имя"}, 400)
                 return
