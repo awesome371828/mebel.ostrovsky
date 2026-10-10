@@ -670,11 +670,11 @@ h1 em{font-style:italic}
 .sub{color:rgba(245,239,227,.9);font-size:clamp(16px,1.8vw,19.5px);font-weight:300;margin:24px 0 34px;max-width:580px;text-shadow:0 2px 16px rgba(0,0,0,.55);letter-spacing:.3px}
 .btn-row{display:flex;gap:16px;flex-wrap:wrap}
 .btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:15px 30px;font-size:13px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;transition:transform .4s cubic-bezier(.22,.61,.36,1),box-shadow .4s,filter .4s,background .4s,color .4s;cursor:pointer;border-radius:13px;border:none}
-.btn-solid{background:linear-gradient(135deg,var(--gold-soft),var(--gold) 55%,var(--gold-deep));color:#17120b;box-shadow:var(--shadow-gold);animation:btnGlow 3.6s ease-in-out infinite}
+.btn-solid{background:linear-gradient(135deg,#e6ca91,var(--gold) 58%,var(--gold-deep));color:#17120b;box-shadow:0 8px 22px -15px rgba(212,175,106,.55);animation:none}
 @keyframes btnGlow{0%,100%{box-shadow:0 16px 42px rgba(212,175,106,.26)}50%{box-shadow:0 24px 62px rgba(236,207,160,.5)}}
-.btn-solid:hover{transform:translateY(-4px);box-shadow:0 26px 60px rgba(212,175,106,.45)}
+.btn-solid:hover{transform:translateY(-2px);box-shadow:0 12px 28px -17px rgba(212,175,106,.65);filter:brightness(1.035)}
 .btn-line{border:1px solid rgba(255,255,255,.4);color:#fff;background:rgba(255,255,255,.04)}
-.btn-line:hover{background:rgba(255,255,255,.12);color:#fff;transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.btn-line:hover{background:rgba(255,255,255,.075);color:#fff;transform:translateY(-2px);box-shadow:0 12px 28px -20px rgba(0,0,0,.5)}
 .btn::after{content:"";position:absolute;top:0;left:-130%;width:55%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,.4),transparent);transform:skewX(-20deg);transition:left .7s ease}
 .btn:hover::after{left:145%}
 .shimmer{background:linear-gradient(90deg,var(--gold-soft),#fff 35%,var(--gold-soft) 70%);background-size:220% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shimmerMove 3.4s linear infinite}
@@ -914,7 +914,7 @@ header.solid{background:{{design.bg}}eb}
 
 /* кнопки: блик, отклик, свечение */
 .btn{transition:transform .42s cubic-bezier(.22,.61,.36,1),box-shadow .42s,filter .42s,background .42s,color .42s}
-.btn:hover{transform:translateY(-4px) scale(1.02)}
+.btn:hover{transform:translateY(-2px)}
 .btn:active{transform:translateY(-1px) scale(.985)}
 .btn-solid{overflow:hidden}
 .btn-solid::before{content:"";position:absolute;top:0;left:-40%;width:45%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);animation:shineMove 3.9s ease-in-out infinite;pointer-events:none;z-index:1}
@@ -1331,6 +1331,17 @@ html.no-anim .spark{display:none}
 @media(max-width:600px){.lead-simple-form{padding:21px;border-radius:18px}.lead-simple-grid{grid-template-columns:1fr}.lead-simple-kicker{margin-bottom:17px}.lead-simple-kicker b{font-size:16px}}
 @media(prefers-reduced-motion:reduce){.ost-depth{transition:none!important;transform:none!important}}
 </style>
+<style id="ostNavPolish">
+#menu a{position:relative;transition:color .22s ease,background .22s ease,border-color .22s ease;}
+#menu a.active{color:var(--gold-soft)!important;background:linear-gradient(90deg,rgba(236,207,160,.075),transparent);}
+#menu a.active:after{content:"";position:absolute;left:16px;right:16px;bottom:5px;height:1px;background:linear-gradient(90deg,transparent,var(--gold-soft),transparent);opacity:.85;}
+#menu a:focus-visible,.btn:focus-visible{outline:2px solid rgba(236,207,160,.8);outline-offset:3px}
+.btn{border-radius:999px;letter-spacing:.8px;font-weight:650;box-shadow:none;}
+.btn::after{opacity:.3}
+.btn:active{transform:translateY(0) scale(.99)}
+@media(max-width:820px){#menu a.active:after{left:20px;right:20px;bottom:2px}#menu a.active{border-radius:14px}}
+@media(prefers-reduced-motion:reduce){#menu a,.btn{transition:none!important}}
+</style>
 <style id="customCss">{{{design.custom_css}}}</style>
 {{#if seo.metrika_id}}<script>(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js','ym');ym({{seo.metrika_id}},'init',{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});</script><noscript><div><img src="https://mc.yandex.ru/watch/{{seo.metrika_id}}" style="position:absolute;left:-9999px" alt=""></div></noscript>{{/if}}
 {{{code.head}}}
@@ -1708,9 +1719,22 @@ function onScroll(){if(ticking)return;ticking=true;requestAnimationFrame(()=>{
   const sc=h.scrollHeight>h.clientHeight?h.scrollTop/(h.scrollHeight-h.clientHeight):0;
   if(progress)progress.style.width=(sc*100)+'%';
   if(header)header.classList.toggle('solid',h.scrollTop>40);
-  let current='';
-  ['about','works','reviews','services','process','cities','contacts','lead'].forEach(id=>{const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<=120)current=id;});
-  if(menu)menu.querySelectorAll('a[href^="#"]').forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+current));
+  /* Активный пункт определяется по фактическому расположению секций в DOM,
+     а не по порядку массива: так меню не путает «Руководитель» и «Заявку». */
+  const navLinks=menu?[...menu.querySelectorAll('a[href^="#"]')]:[];
+  const ids=navLinks.map(a=>(a.getAttribute('href')||'').slice(1)).filter(id=>id&&id!=='top');
+  const sections=ids.map(id=>document.getElementById(id)).filter(Boolean);
+  const anchorY=Math.min(window.innerHeight*.38,Math.max(105,header?header.getBoundingClientRect().height+28:105));
+  let activeSection=null, nearest=null, nearestDistance=Infinity;
+  sections.forEach(el=>{
+    const r=el.getBoundingClientRect();
+    if(r.top<=anchorY && r.bottom>anchorY){activeSection=el;}
+    const d=Math.abs(r.top-anchorY);if(d<nearestDistance){nearestDistance=d;nearest=el;}
+  });
+  if(!activeSection)activeSection=nearest;
+  if((window.innerHeight+window.scrollY)>=document.documentElement.scrollHeight-3)activeSection=sections[sections.length-1]||activeSection;
+  const current=activeSection?activeSection.id:'';
+  navLinks.forEach(a=>{const isActive=a.getAttribute('href')==='#'+current;a.classList.toggle('active',isActive);if(isActive)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current');});
   ticking=false;
 });}
 window.addEventListener('scroll',onScroll,{passive:true});onScroll();
@@ -4335,6 +4359,14 @@ header{background:rgba(7,14,22,.92)!important;border-bottom:1px solid rgba(150,1
 .saveBtn.pulse{box-shadow:0 0 0 4px rgba(236,207,160,.08),0 10px 35px -18px rgba(236,207,160,.55)}
 @media(max-width:820px){.admin-shell{background:#0a0b0d!important}.page-head{padding-bottom:14px}.field,.overview-card,.info,.item,.lead-card,.audit-row{border-radius:14px}}
 
+
+/* Кнопки админки: компактные, мягкие, без тяжёлого блеска и «кирпичной» геометрии. */
+.admin-shell .btn{border-radius:999px!important;min-height:36px;padding:9px 15px;letter-spacing:.25px;font-weight:600;box-shadow:0 5px 16px -13px #000;transition:transform .2s ease,background .2s ease,border-color .2s ease,color .2s ease!important}
+.admin-shell .btn:hover{transform:translateY(-1px)!important;box-shadow:0 8px 20px -15px #000!important}
+.admin-shell .btn:active{transform:scale(.985)!important}
+.admin-shell .btn-gold{box-shadow:0 8px 18px -14px rgba(216,182,119,.7)!important}
+.admin-shell nav.side a{border-radius:999px!important}
+@media(prefers-reduced-motion:reduce){.admin-shell .btn{transition:none!important}}
 </style></head><body>
 <header>
 <div class="brand"><span class="mark"></span>Кухни Островский<span>CMS</span><span class="status" id="status">Загрузка…</span><span class="status" id="revInfo" style="background:rgba(255,255,255,.05);color:#a2988a;border:1px solid rgba(255,255,255,.08)">rev —</span></div>
