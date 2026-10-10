@@ -164,14 +164,14 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
            'telegram': 'https://t.me/fanny161',
            'max': 'https://max.ru/',
            'phone_raw': '+79508465397'},
- 'nav': {'items': [{'label': 'Специалист', 'href': '#about'},
+ 'nav': {'items': [{'label': 'Руководитель', 'href': '#about'},
                    {'label': 'Работы', 'href': '#works'},
                    {'label': 'Отзывы', 'href': '#reviews'},
                    {'label': 'Услуги', 'href': '#services'},
                    {'label': 'Как работаем', 'href': '#process'},
                    {'label': 'Города', 'href': '#cities'},
                    {'label': 'Контакты', 'href': '#contacts'}, {'label': 'Заявка', 'href': '#lead'}],
-         'cta_label': 'Позвонить специалисту',
+         'cta_label': 'Связаться с руководителем',
          'cta_href': 'tel:+79508465397'},
  'hero': {'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w01.jpg', 'rotation_enabled': False, 'rotation_interval': 6500, 'rotation_images': ['https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w01.jpg','https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w04.jpg','https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w06.jpg'],
           'sub': 'Проектируем и изготавливаем кухни, шкафы, гардеробные и другую корпусную мебель в Ростове, Батайске и Азове — по '
@@ -1322,7 +1322,7 @@ html.no-anim .spark{display:none}
 .lead-panel .lead-bg::after{background:linear-gradient(90deg,rgba(8,7,5,.94) 0%,rgba(8,7,5,.68) 48%,rgba(8,7,5,.72) 100%)!important}
 
 .consult-inline-link{color:var(--gold-soft)!important;text-decoration:none!important;border-bottom:1px solid rgba(236,207,160,.58);padding-bottom:1px;transition:color .22s,border-color .22s,text-shadow .22s}.consult-inline-link:hover,.consult-inline-link:focus-visible{color:#fff!important;border-color:#fff;text-shadow:0 0 18px rgba(236,207,160,.35);outline:none}
-.about-ip-link{margin:8px 0 0;font-size:12px}.lead-legal-links{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:16px 0 10px;font-size:10px;line-height:1.5}.lead-legal-links a,.footer-legal a{color:var(--gold-soft);text-decoration:none;border-bottom:1px solid rgba(236,207,160,.25);transition:color .2s,border-color .2s}.lead-legal-links a:hover,.footer-legal a:hover{color:#fff;border-color:var(--gold-soft)}.lead-consent{display:flex!important;align-items:flex-start;gap:9px;margin:8px 0 12px!important;color:#a99e8c;font:11px/1.5 var(--sans);text-transform:none!important;letter-spacing:0!important}.lead-consent input{width:15px!important;height:15px;flex:0 0 15px;margin:2px 0 0;accent-color:var(--gold);padding:0!important}.lead-consent span{display:inline!important;font-size:11px!important;letter-spacing:0!important;text-transform:none!important;color:#a99e8c!important}.footer-legal{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin:16px auto 0;font-size:11px}.legal-page{min-height:100vh;background:radial-gradient(ellipse at 80% 0,rgba(212,175,106,.12),transparent 42%),#0e0c09;color:#f5efe3;padding:34px 18px 70px;font:15px/1.75 Manrope,system-ui,sans-serif}.legal-wrap{max-width:900px;margin:0 auto}.legal-top{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:38px}.legal-top a,.legal-page a{color:#eccfa0}.legal-card{padding:clamp(22px,5vw,52px);border:1px solid rgba(236,207,160,.22);border-radius:22px;background:linear-gradient(145deg,rgba(31,25,17,.9),rgba(13,12,10,.96));box-shadow:0 24px 80px rgba(0,0,0,.22)}.legal-card h1,.legal-card h2{font-family:'Cormorant Garamond',Georgia,serif;line-height:1.12}.legal-card h1{font-size:clamp(34px,5vw,54px);margin:0 0 20px}.legal-card h2{font-size:25px;margin:30px 0 8px}.legal-card p,.legal-card li{color:#c9bdab}.legal-profile{display:flex;align-items:center;gap:20px;margin:0 0 28px}.legal-profile img{width:96px;height:96px;object-fit:cover;border-radius:50%;border:2px solid #d4af6a;box-shadow:0 0 0 7px rgba(212,175,106,.1)}.legal-profile strong{display:block;font-size:18px}.legal-note{font-size:12px;color:#a99e8c!important;border-top:1px solid rgba(236,207,160,.14);padding-top:18px;margin-top:28px}@media(max-width:600px){.lead-legal-links{flex-direction:column;align-items:flex-start}.legal-top{align-items:flex-start;flex-direction:column}.legal-profile{align-items:flex-start}.legal-profile img{width:76px;height:76px}}
+.about-ip-link{margin:8px 0 0;font-size:12px}.lead-legal-links{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:16px 0 10px;font-size:10px;line-height:1.5}.lead-legal-links a,.footer-legal a{color:var(--gold-soft);text-decoration:none;border-bottom:1px solid rgba(236,207,160,.25);transition:color .2s,border-color .2s}.lead-legal-links a:hover,.footer-legal a:hover{color:#fff;border-color:var(--gold-soft)}.lead-consent{display:flex!important;align-items:flex-start;gap:9px;margin:8px 0 12px!important;color:#a99e8c;font:11px/1.5 var(--sans);text-transform:none!important;letter-spacing:0!important}.lead-consent input{width:15px!important;height:15px;flex:0 0 15px;margin:2px 0 0;accent-color:var(--gold);padding:0!important}.lead-consent span{display:inline!important;font-size:11px!important;letter-spacing:0!important;text-transform:none!important;color:#a99e8c!important}.footer-legal{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin:16px auto 0;font-size:11px}.legal-page{min-height:100vh;background:radial-gradient(ellipse at 80% 0,rgba(212,175,106,.12),transparent 42%),#0e0c09;color:#f5efe3;padding:34px 18px 70px;font:15px/1.75 Manrope,system-ui,sans-serif}.legal-wrap{max-width:900px;margin:0 auto}.legal-top{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:38px}.legal-top a,.legal-page a{color:#eccfa0}.legal-card{padding:clamp(22px,5vw,52px);border:1px solid rgba(236,207,160,.22);border-radius:22px;background:linear-gradient(145deg,rgba(31,25,17,.9),rgba(13,12,10,.96));box-shadow:0 24px 80px rgba(0,0,0,.22)}.legal-card h1,.legal-card h2{font-family:'Cormorant Garamond',Georgia,serif;line-height:1.12}.legal-card h1{font-size:clamp(34px,5vw,54px);margin:0 0 20px}.legal-card h2{font-size:25px;margin:30px 0 8px}.legal-card p,.legal-card li{color:#c9bdab}.legal-sections{display:grid;gap:14px;margin-top:26px}.legal-section{display:grid;grid-template-columns:48px minmax(0,1fr);gap:18px;padding:22px 24px;border:1px solid rgba(236,207,160,.15);border-radius:18px;background:linear-gradient(135deg,rgba(236,207,160,.055),rgba(255,255,255,.012));box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}.legal-section p{margin:0;line-height:1.9}.legal-index{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;border:1px solid rgba(236,207,160,.25);background:rgba(236,207,160,.08);color:#eccfa0;font-size:12px;font-weight:800}.legal-profile a{display:inline-block;margin-top:8px}.legal-profile span{display:block;color:#c9bdab;margin-top:4px}@media(max-width:600px){.legal-section{grid-template-columns:1fr;padding:17px;gap:10px}.legal-index{width:34px;height:34px}}.legal-profile{display:flex;align-items:center;gap:20px;margin:0 0 28px}.legal-profile img{width:96px;height:96px;object-fit:cover;border-radius:50%;border:2px solid #d4af6a;box-shadow:0 0 0 7px rgba(212,175,106,.1)}.legal-profile strong{display:block;font-size:18px}.legal-note{font-size:12px;color:#a99e8c!important;border-top:1px solid rgba(236,207,160,.14);padding-top:18px;margin-top:28px}@media(max-width:600px){.lead-legal-links{flex-direction:column;align-items:flex-start}.legal-top{align-items:flex-start;flex-direction:column}.legal-profile{align-items:flex-start}.legal-profile img{width:76px;height:76px}}
 
 .lead-simple-form{max-width:560px;margin-left:auto;padding:30px;border:1px solid rgba(236,207,160,.18);border-radius:22px;background:linear-gradient(145deg,rgba(18,15,11,.86),rgba(8,8,7,.74));box-shadow:0 28px 80px -46px #000,inset 0 1px 0 rgba(255,255,255,.055);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
 .consult-messengers{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:20px}.consult-messengers a{display:inline-flex;align-items:center;gap:6px;padding:10px 15px;border:1px solid rgba(236,207,160,.25);border-radius:999px;color:#ecd09c;text-decoration:none;font-size:12px;transition:transform .25s,border-color .25s,background .25s}.consult-messengers a:hover{transform:translateY(-2px);border-color:rgba(236,207,160,.55);background:rgba(236,207,160,.07)}@media(prefers-reduced-motion:reduce){.consult-messengers a{transition:none}}
@@ -1380,7 +1380,7 @@ html.no-anim .spark{display:none}
   {{/each}}{{#if nav.cta_label}}<li class="menu-call"><a href="{{nav.cta_href}}"><svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.4 2.1L8.1 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.6 2z"/></svg>{{nav.cta_label}}</a></li>{{/if}}
 </ul>
 <div class="scrim" id="scrim"></div>
-<nav class="section-rail" aria-label="Навигация по разделам"><a href="#top" aria-label="Главная"></a><a href="#about" aria-label="Специалист"></a><a href="#works" aria-label="Работы"></a><a href="#reviews" aria-label="Отзывы"></a><a href="#services" aria-label="Услуги"></a><a href="#contacts" aria-label="Контакты"></a></nav>
+<nav class="section-rail" aria-label="Навигация по разделам"><a href="#top" aria-label="Главная"></a><a href="#about" aria-label="Руководитель"></a><a href="#works" aria-label="Работы"></a><a href="#reviews" aria-label="Отзывы"></a><a href="#services" aria-label="Услуги"></a><a href="#process" aria-label="Как работаем"></a><a href="#cities" aria-label="Города"></a><a href="#contacts" aria-label="Контакты"></a><a href="#lead" aria-label="Заявка"></a></nav>
 
 <section class="panel panel--hero" id="top"{{#if hero.watermark}} data-watermark="{{hero.watermark}}"{{/if}}>
   <div class="bg" style="background-image:url('{{{hero.bg}}}')"></div>
@@ -1709,7 +1709,7 @@ function onScroll(){if(ticking)return;ticking=true;requestAnimationFrame(()=>{
   if(progress)progress.style.width=(sc*100)+'%';
   if(header)header.classList.toggle('solid',h.scrollTop>40);
   let current='';
-  ['about','works','reviews','services','process','cities','contacts'].forEach(id=>{const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<=120)current=id;});
+  ['about','works','reviews','services','process','cities','contacts','lead'].forEach(id=>{const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<=120)current=id;});
   if(menu)menu.querySelectorAll('a[href^="#"]').forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+current));
   ticking=false;
 });}
@@ -2336,9 +2336,9 @@ def _migrate(raw):
     nav = d.get("nav")
     if isinstance(nav, dict):
         items = nav.get("items") if isinstance(nav.get("items"), list) else []
-        if not any(isinstance(x, dict) and x.get("href") == "#lead" for x in items):
-            items.append({"label": "Заявка", "href": "#lead"})
-        nav["items"] = items
+        canonical = [("Руководитель", "#about"), ("Работы", "#works"), ("Отзывы", "#reviews"), ("Услуги", "#services"), ("Как работаем", "#process"), ("Города", "#cities"), ("Контакты", "#contacts"), ("Заявка", "#lead")]
+        old_by_href = {str(x.get("href")): x for x in items if isinstance(x, dict)}
+        nav["items"] = [{"label": label, "href": href, **{k:v for k,v in old_by_href.get(href, {}).items() if k not in ("label", "href")}} for label, href in canonical]
 
     contacts = d.get("contacts")
     if isinstance(contacts, dict) and "lines" not in contacts:
@@ -3578,13 +3578,15 @@ def _legal_page(path, data):
     if editable:
         title = str(editable.get("title") or title)
         raw_body = str(editable.get("body") or "")
-        # Render editable plain text safely; preserve blank-line paragraph breaks.
-        body = "".join("<p>" + _escape(par).replace("\n", "<br>") + "</p>" for par in raw_body.split("\n\n") if par.strip())
+        chunks = [x.strip() for x in raw_body.split("\n\n") if x.strip()]
+        body = '<div class="legal-sections">' + "".join('<section class="legal-section"><span class="legal-index">%02d</span><div><p>%s</p></div></section>' % (i+1, _escape(par).replace("\n", "<br>")) for i, par in enumerate(chunks)) + '</div>'
         if path == "/ip":
-            body += '<p><a href="https://www.rusprofile.ru/ip/324619600063820" target="_blank" rel="noopener noreferrer">Посмотреть на официальном сайте</a></p>'
+            body = '<div class="legal-profile"><img src="' + avatar + '" alt="Роман Островский — руководитель мебельной мастерской" width="112" height="112"><div><strong>Островский Роман Геннадьевич</strong><span>Индивидуальный предприниматель · Кухни Островский</span><a href="https://www.rusprofile.ru/ip/324619600063820" target="_blank" rel="noopener noreferrer">Посмотреть на официальном сайте</a></div></div>' + body
+        if path == "/privacy":
+            body += '<section class="legal-section"><span class="legal-index">+</span><div><h2>Учёт посещений сайта</h2><p>Для подсчёта посещаемости сайт может сохранять в браузере случайный идентификатор и учитывать посещённые страницы, время первого и последнего визита и источник перехода. Этот идентификатор не предназначен для установления имени посетителя. Посещения с разных браузеров или устройств могут учитываться отдельно. Записи аналитики ограничены последними 5 000 браузерными идентификаторами и хранятся в техническом файле сервера; фактический срок сохранения зависит от настроек и политики хранения хостинга. Сырые IP-адреса этим журналом посещений не сохраняются.</p></div></section>'
     body += '<p class="legal-note">Изменено: 10.10.2026</p>'
 
-    return '''<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="index,follow"><title>'''+_escape(title)+''' — Кухни Островский</title><meta name="description" content="Официальная информация сайта Кухни Островский: контакты, реквизиты и документы по персональным данным."><style>'''+'''*{box-sizing:border-box}body{margin:0}.legal-page{min-height:100vh;background:radial-gradient(ellipse at 80% 0,rgba(212,175,106,.12),transparent 42%),#0e0c09;color:#f5efe3;padding:34px 18px 70px;font:15px/1.75 system-ui,-apple-system,Segoe UI,sans-serif}.legal-wrap{max-width:900px;margin:0 auto}.legal-top{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:38px}.legal-top a,.legal-page a{color:#eccfa0}.legal-card{padding:clamp(22px,5vw,52px);border:1px solid rgba(236,207,160,.22);border-radius:22px;background:linear-gradient(145deg,rgba(31,25,17,.9),rgba(13,12,10,.96));box-shadow:0 24px 80px rgba(0,0,0,.22)}.legal-card h1,.legal-card h2{font-family:Georgia,serif;line-height:1.12}.legal-card h1{font-size:clamp(34px,5vw,54px);margin:0 0 20px}.legal-card h2{font-size:25px;margin:30px 0 8px}.legal-card p,.legal-card li{color:#c9bdab}.legal-profile{display:flex;align-items:center;gap:20px;margin:0 0 28px}.legal-profile img{width:96px;height:96px;object-fit:cover;border-radius:50%;border:2px solid #d4af6a;box-shadow:0 0 0 7px rgba(212,175,106,.1)}.legal-profile strong{display:block;font-size:18px}.legal-note{font-size:12px;color:#a99e8c!important;border-top:1px solid rgba(236,207,160,.14);padding-top:18px;margin-top:28px}@media(max-width:600px){.legal-top{align-items:flex-start;flex-direction:column}.legal-profile{align-items:flex-start}.legal-profile img{width:76px;height:76px}}</style></head><body><main class="legal-page"><div class="legal-wrap"><nav class="legal-top"><a href="/">← На главную</a><span>Кухни Островский · Ростов · Батайск · Азов</span></nav><article class="legal-card"><h1>'''+_escape(title)+'''</h1>'''+body+'''</article></div></main></body></html>'''
+    return '''<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="index,follow"><title>'''+_escape(title)+''' — Кухни Островский</title><meta name="description" content="Официальная информация сайта Кухни Островский: контакты, реквизиты и документы по персональным данным."><style>'''+'''*{box-sizing:border-box}body{margin:0}.legal-page{min-height:100vh;background:radial-gradient(ellipse at 80% 0,rgba(212,175,106,.12),transparent 42%),#0e0c09;color:#f5efe3;padding:34px 18px 70px;font:15px/1.75 system-ui,-apple-system,Segoe UI,sans-serif}.legal-wrap{max-width:900px;margin:0 auto}.legal-top{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:38px}.legal-top a,.legal-page a{color:#eccfa0}.legal-card{padding:clamp(22px,5vw,52px);border:1px solid rgba(236,207,160,.22);border-radius:22px;background:linear-gradient(145deg,rgba(31,25,17,.9),rgba(13,12,10,.96));box-shadow:0 24px 80px rgba(0,0,0,.22)}.legal-card h1,.legal-card h2{font-family:Georgia,serif;line-height:1.12}.legal-card h1{font-size:clamp(34px,5vw,54px);margin:0 0 20px}.legal-card h2{font-size:25px;margin:30px 0 8px}.legal-card p,.legal-card li{color:#c9bdab}.legal-sections{display:grid;gap:14px;margin-top:26px}.legal-section{display:grid;grid-template-columns:48px minmax(0,1fr);gap:18px;padding:22px 24px;border:1px solid rgba(236,207,160,.15);border-radius:18px;background:linear-gradient(135deg,rgba(236,207,160,.055),rgba(255,255,255,.012));box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}.legal-section p{margin:0;line-height:1.9}.legal-index{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;border:1px solid rgba(236,207,160,.25);background:rgba(236,207,160,.08);color:#eccfa0;font-size:12px;font-weight:800}.legal-profile a{display:inline-block;margin-top:8px}.legal-profile span{display:block;color:#c9bdab;margin-top:4px}@media(max-width:600px){.legal-section{grid-template-columns:1fr;padding:17px;gap:10px}.legal-index{width:34px;height:34px}}.legal-profile{display:flex;align-items:center;gap:20px;margin:0 0 28px}.legal-profile img{width:96px;height:96px;object-fit:cover;border-radius:50%;border:2px solid #d4af6a;box-shadow:0 0 0 7px rgba(212,175,106,.1)}.legal-profile strong{display:block;font-size:18px}.legal-note{font-size:12px;color:#a99e8c!important;border-top:1px solid rgba(236,207,160,.14);padding-top:18px;margin-top:28px}@media(max-width:600px){.legal-top{align-items:flex-start;flex-direction:column}.legal-profile{align-items:flex-start}.legal-profile img{width:76px;height:76px}}</style></head><body><main class="legal-page"><div class="legal-wrap"><nav class="legal-top"><a href="/">← На главную</a><span>Кухни Островский · Ростов · Батайск · Азов</span></nav><article class="legal-card"><h1>'''+_escape(title)+'''</h1>'''+body+'''</article></div></main></body></html>'''
 
 
 def build_404(data):
@@ -4480,6 +4482,7 @@ function refreshLeadBadge(){
 
 function renderOverview(){q('#main').innerHTML='<div class="page-head"><div><span class="eyebrow-admin">ЦЕНТР УПРАВЛЕНИЯ</span><h2>Обзор</h2><p class="hint">Сайт, заявки, версия, сохранение и GitHub.</p></div><div class="live-pill"><i></i> Система</div></div><div class="overview-grid"><article class="overview-card"><span>Сайт</span><b id="ovSite">…</b><small>сервер / база</small></article><article class="overview-card"><span>Заявки</span><b id="ovLeads">…</b><small>новые / всего</small></article><article class="overview-card"><span>Версия</span><b>rev '+REV+'</b><small>последняя публикация</small></article><article class="overview-card"><span>Сохранение</span><b>'+(dirty?'ВНИМАНИЕ':'ГОТОВО')+'</b><small>'+(dirty?'есть изменения':'всё сохранено')+'</small></article><article class="overview-card"><span>GitHub</span><b id="ovGit">…</b><small>mebel.py</small></article><article class="overview-card"><span>Анимации</span><b>'+(((DATA.animations||{}).safe_mode)?'SAFE':'FULL')+'</b><small>режим плавности</small></article></div><div class="actions"><button class="btn btn-gold" id="ovOpen">Открыть сайт</button><button class="btn" id="ovPreview">Предпросмотр</button><button class="btn" id="ovCheck">Проверить</button><button class="btn" id="ovDiag">Диагностика</button><button class="btn" id="ovLead">Заявки</button></div><div id="ovOut" class="info">Проверяем…</div>';q('#ovOpen').onclick=function(){window.open('/','_blank')};q('#ovPreview').onclick=function(){window.open('/?preview=1','_blank')};q('#ovCheck').onclick=function(){showStatus()};q('#ovDiag').onclick=function(){TAB='diagnostics';render()};q('#ovLead').onclick=function(){TAB='leads';render()};api('/admin/api/status').then(function(j){q('#ovSite').textContent=j.db_read?'Онлайн':'Ошибка';q('#ovGit').textContent=j.github&&j.github.configured?(j.github.last_ok===false?'Ошибка':'Подключён'):'Не настроен';q('#ovOut').innerHTML='<b>Готово.</b> Supabase: '+(j.db_read?'OK':'ошибка')+' · Storage: '+(j.storage?'OK':('ошибка — '+(j.storage_reason||'причина не получена')))+' · GitHub: '+(j.github&&j.github.configured?'подключён':'не настроен')}).catch(function(e){q('#ovOut').textContent=e.message});api('/admin/api/leads').then(function(j){q('#ovLeads').textContent=(j.unread||0)+' / '+((j.items||[]).length)}).catch(function(){})}
 function renderEmployees(){q('#main').innerHTML='<h2>Сотрудники и роли</h2><p class="hint">Только руководитель создаёт логины, пароли и права.</p><button class="btn btn-gold" id="leader2fa">Настроить 2FA руководителя</button><div class="item"><div class="field"><label>Логин</label><input id="eLogin"></div><div class="field"><label>Имя</label><input id="eName"></div><div class="field"><label>Роль</label><select id="eRole"><option value="manager">Менеджер</option><option value="designer">Дизайнер</option></select></div><div class="field"><label>Пароль</label><input id="ePass" type="password"></div><button class="btn btn-gold" id="eCreate">Создать сотрудника</button></div><div id="eList"></div>';api('/admin/api/employees').then(function(j){q('#eList').innerHTML=(j.items||[]).map(function(e){return '<div class="item"><b>'+esc(e.name||e.login)+'</b> · '+esc(e.role_title||e.role)+' · '+(e.disabled?'отключён':'активен')+'<div class="hint">Логин: '+esc(e.login)+' · 2FA: '+(e.twofa_enabled?'включён':'выключен')+'</div><button class="btn mini" data-e2fa="'+esc(e.id)+'">Выдать 2FA</button><button class="btn mini btn-red" data-ed="'+esc(e.id)+'">'+(e.disabled?'Включить':'Отключить')+'</button></div>'}).join('');qa('[data-e2fa]').forEach(function(b){b.onclick=function(){api('/admin/api/employees',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'setup_2fa',id:b.dataset.e2fa})}).then(function(x){alert('Секрет 2FA: '+x.secret)})}});qa('[data-ed]').forEach(function(b){b.onclick=function(){api('/admin/api/employees',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'update',id:b.dataset.ed,disabled:b.textContent.indexOf('Отключить')>=0})}).then(renderEmployees)}});});q('#leader2fa').onclick=function(){api('/admin/api/2fa').then(function(x){var code=prompt('Секрет 2FA руководителя: '+x.secret+'\nВведите код из приложения, чтобы включить 2FA:');if(code)api('/admin/api/2fa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'toggle',enabled:true,code:code})}).then(function(){toast('2FA включён')})})};q('#eCreate').onclick=function(){api('/admin/api/employees',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'create',login:q('#eLogin').value,name:q('#eName').value,role:q('#eRole').value,password:q('#ePass').value,permissions:['content_edit','leads_manage']})}).then(function(x){if(x.ok){toast('Сотрудник создан');renderEmployees()}else toast(x.error||'Ошибка',true)})}}
+function renderPeople(){q('#main').innerHTML='<div class="page-head"><div><span class="eyebrow-admin">АНАЛИТИКА ПОСЕЩЕНИЙ</span><h2>Люди</h2><p class="hint">Анонимные браузерные посетители и просмотренные страницы. Сайт не устанавливает личность человека и не собирает IP-адреса; один человек с разных браузеров/устройств может отображаться отдельно.</p></div><button class="btn btn-gold" id="peopleRefresh">Обновить</button></div><div class="overview-grid"><article class="overview-card"><span>Уникальные браузеры</span><b id="peopleUnique">…</b></article><article class="overview-card"><span>Просмотры страниц</span><b id="peopleViews">…</b></article><article class="overview-card"><span>За последние 24 часа</span><b id="peopleRecent">…</b></article></div><div id="peopleOut" class="info">Загружаем историю посещений…</div>';function load(){api('/admin/api/people').then(function(j){q('#peopleUnique').textContent=j.unique||0;q('#peopleViews').textContent=j.views||0;q('#peopleRecent').textContent=j.recent||0;var a=j.items||[];q('#peopleOut').innerHTML=a.length?a.map(function(v){return '<article class="item"><div class="item-head"><strong>Посетитель '+esc(v.visitor||'—')+'</strong><span class="status">'+esc(v.last_seen||'')+'</span></div><div class="hint">Последняя страница: <b>'+esc(v.path||'/')+'</b> · Просмотров: '+esc(v.views||1)+'</div><div class="hint">Первое посещение: '+esc(v.first_seen||'—')+' · Источник: '+esc(v.referrer||'прямой переход')+'</div></article>'}).join(''):'Пока нет записей. Новые посещения начнут отображаться после включения этой версии на сервере.'}).catch(function(e){q('#peopleOut').textContent='Не удалось загрузить аналитику: '+e.message})}q('#peopleRefresh').onclick=load;load()}
 function render(){
   var groups={},order=[];
   SCHEMA.forEach(function(t){if(!groups[t.group]){groups[t.group]=[];order.push(t.group)}groups[t.group].push(t)});
@@ -4487,11 +4490,12 @@ function render(){
   nav+='<div class="nav-group">Рабочее</div><a data-tab="overview" class="'+(TAB==='overview'?'active':'')+'"><span class="nav-ico">⌂</span><span class="cap">Обзор</span></a>';
   nav+='<a data-tab="leads" class="'+(TAB==='leads'?'active':'')+'"><span class="nav-ico">◉</span><span class="cap">Заявки</span><span id="leadBadge" class="status" style="display:none;padding:2px 7px;margin-left:auto;background:rgba(236,207,160,.15);color:#ecd09c;border:1px solid rgba(236,207,160,.25)">0</span></a>';
   nav+='<a data-tab="audit" class="'+(TAB==='audit'?'active':'')+'"><span class="nav-ico">◌</span><span class="cap">Журнал действий</span></a>';
+  nav+='<a data-tab="people" class="'+(TAB==='people'?'active':'')+'"><span class="nav-ico">♧</span><span class="cap">Люди</span></a>'; 
    nav+='<a data-tab="employees" class="'+(TAB==='employees'?'active':'')+'"><span class="nav-ico">♙</span><span class="cap">Сотрудники</span></a>';
   order.forEach(function(g){
     nav+='<div class="nav-group">'+esc(g)+'</div>';
     groups[g].forEach(function(t){
-      if(['overview','leads','audit','employees'].indexOf(t.id)>=0)return;
+      if(['overview','leads','audit','employees','people'].indexOf(t.id)>=0)return;
       var cls=(t.id===TAB?' active':'')+(tabChanged(t)?' changed':'');
       var icons={seo:'⌁',code:'</>',design:'✦',animations:'✦',brand:'◈',hero:'⌂',stats:'◫',about:'◎',consult:'◌',works:'▧',reviews:'☆',services:'✣',process:'↝',guarantees:'◇',cities:'⌖',cta:'↗',contacts:'⌂',footer:'▤',cookie:'◍',lead_settings:'✉',guide:'?',media:'▦',history:'↶'};
       nav+='<a data-tab="'+t.id+'" class="'+(cls.trim()||'')+'"><span class="nav-ico">'+(icons[t.id]||'•')+'</span><span class="cap">'+esc(t.title)+'</span></a>';
@@ -4509,6 +4513,7 @@ function render(){
   if(TAB==='overview'){renderOverview();updateBar();refreshLeadBadge();return}
   if(TAB==='leads'){renderLeads();updateBar();refreshLeadBadge();return}
   if(TAB==='audit'){renderAudit();updateBar();refreshLeadBadge();return}
+  if(TAB==='people'){renderPeople();updateBar();refreshLeadBadge();return}
    if(TAB==='employees'){renderEmployees();updateBar();refreshLeadBadge();return}
   var tab=SCHEMA.filter(function(t){return t.id===TAB})[0]||SCHEMA[0];
   var h='<div class="page-head"><div><span class="eyebrow-admin">РАЗДЕЛ НАСТРОЕК</span><h2>'+esc(tab.title)+'</h2>'+(tab.hint?'<p class="hint">'+tab.hint+'</p>':'')+'</div></div>'; 
@@ -4928,6 +4933,33 @@ def _error_log_add(item):
         print("[error-journal] {}".format(e),flush=True);return False
 
 
+VISITOR_LOG_PATH = os.path.join(ROOT, "visitor_log.json")
+VISITOR_LOG_LOCK = threading.Lock()
+def _visitor_log_read():
+    try:
+        with open(VISITOR_LOG_PATH, "r", encoding="utf-8") as f: data=json.load(f)
+        return data if isinstance(data,list) else []
+    except Exception: return []
+def _visitor_log_visit(visitor_id, path, referrer):
+    # Store only a random first-party browser identifier and page activity; never store raw IP or full user-agent.
+    now=datetime.now(timezone.utc).isoformat(timespec="seconds")
+    with VISITOR_LOG_LOCK:
+        rows=_visitor_log_read(); item=next((x for x in rows if x.get("visitor_id")==visitor_id),None)
+        if item is None:
+            item={"visitor_id":visitor_id,"first_seen":now,"last_seen":now,"views":0,"path":"/","referrer":""}; rows.append(item)
+        item["last_seen"]=now; item["path"]=(path or "/")[:180]; item["views"]=int(item.get("views") or 0)+1
+        if referrer and not item.get("referrer"):
+            from urllib.parse import urlsplit
+            try:
+                u=urlsplit(referrer); item["referrer"]=(u.netloc+u.path)[:180]
+            except Exception: pass
+        rows=sorted(rows,key=lambda x:str(x.get("last_seen","")),reverse=True)[:5000]
+        try:
+            tmp=VISITOR_LOG_PATH+".tmp"
+            with open(tmp,"w",encoding="utf-8") as f: json.dump(rows,f,ensure_ascii=False)
+            os.replace(tmp,VISITOR_LOG_PATH)
+        except Exception: pass
+
 class Handler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
     server_version = "OstrovskyCMS/2.0"
@@ -4968,6 +5000,8 @@ class Handler(BaseHTTPRequestHandler):
         ae = self.headers.get("Accept-Encoding", "") or ""
         extra = [("X-Content-Type-Options", "nosniff"),
                  ("Referrer-Policy", "strict-origin-when-cross-origin")]
+        visitor_cookie = getattr(self, "_visitor_cookie_header", None)
+        if visitor_cookie: extra.append(("Set-Cookie", visitor_cookie))
         if self.path.startswith("/admin"):
             extra.append(("X-Robots-Tag", "noindex, nofollow"))
         if gzip_ok and isinstance(body, str) and "gzip" in ae and len(data) > 700:
@@ -5030,6 +5064,17 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         path = self.path.split("?", 1)[0]
+        # Anonymous visitor analytics: ignore admin/API, health checks, assets and client portal.
+        if path not in ("/", "/healthz", "/favicon.ico") and (path.startswith("/admin") or path.startswith("/api/") or path.startswith("/client/") or path.startswith("/img")):
+            pass
+        elif not path.startswith(("/static/", "/assets/")) and not path.lower().endswith((".css", ".js", ".png", ".jpg", ".jpeg", ".webp", ".svg", ".ico", ".woff", ".woff2")):
+            cookies=SimpleCookie(); cookies.load(self.headers.get("Cookie", "")); c=cookies.get("site_visitor")
+            vid=c.value if c and re.fullmatch(r"[a-f0-9]{32}",c.value or "") else uuid.uuid4().hex
+            if not c or c.value != vid:
+                ck="site_visitor={}; Path=/; Max-Age=31536000; SameSite=Lax".format(vid)
+                if self._is_https(): ck += "; Secure"
+                self._visitor_cookie_header=ck
+            _visitor_log_visit(vid,path,self.headers.get("Referer", ""))
 
         # Единый адрес: www -> основной домен. Админка/локальный хост не трогаем.
         host = (self.headers.get("Host") or "").split(":", 1)[0].lower()
@@ -5094,6 +5139,15 @@ class Handler(BaseHTTPRequestHandler):
                 self._json({"error": "no auth"}, 401)
                 return
             self._json({"items": _storage_list(), "bucket": BUCKET})
+            return
+        if path == "/admin/api/people":
+            if not self._admin(): self._json({"error":"no auth"},401); return
+            rows=_visitor_log_read(); now=datetime.now(timezone.utc); recent=0
+            for x in rows:
+                try:
+                    if (now-datetime.fromisoformat(str(x.get("last_seen","")).replace("Z","+00:00"))).total_seconds() <= 86400: recent+=1
+                except Exception: pass
+            self._json({"items":[{"visitor":"Посетитель "+str(i+1),"first_seen":x.get("first_seen"),"last_seen":x.get("last_seen"),"views":x.get("views",1),"path":x.get("path","/"),"referrer":x.get("referrer","")} for i,x in enumerate(rows)],"unique":len(rows),"views":sum(int(x.get("views") or 0) for x in rows),"recent":recent})
             return
         if path == "/admin/api/leads":
             if not self._admin():
