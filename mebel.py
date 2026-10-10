@@ -824,6 +824,15 @@ h2.k{position:relative;font-size:clamp(32px,4.6vw,48px);color:#faf3e6;font-weigh
 footer{position:relative;background:linear-gradient(180deg,rgba(14,12,9,.4),rgba(10,8,6,.97));color:var(--muted);padding:52px 20px 60px;text-align:center;font-size:13px;border-top:1px solid rgba(255,255,255,.06)}
 footer::before{content:"";position:absolute;top:-1px;left:50%;transform:translateX(-50%);width:min(420px,72%);height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
 footer .flogo{font-family:var(--serif);font-size:28px;color:#fff;margin-bottom:8px;line-height:1.3;letter-spacing:.3px}
+.developer-credit{display:flex;justify-content:center;align-items:center;gap:5px;margin:22px auto 0;padding-top:15px;max-width:440px;border-top:1px solid rgba(236,207,160,.10);font-size:11px;letter-spacing:.025em;color:rgba(201,189,171,.68)}
+.developer-credit a{display:inline-flex;align-items:center;gap:4px;color:var(--gold-soft);text-decoration:none;transition:color .18s ease,opacity .18s ease}
+.developer-credit a span{font-size:12px;opacity:.65;transition:transform .18s ease,opacity .18s ease}
+.developer-credit a:hover{color:#fff}.developer-credit a:hover span{transform:translate(2px,-2px);opacity:1}
+/* Лёгкие микроанимации: без тяжёлых фильтров и постоянных перерисовок */
+.btn,.soc,.choice,.menu a,.work-card,.review-card,.svc,.step,.guar{transition:transform .18s ease,border-color .18s ease,background-color .18s ease,color .18s ease,box-shadow .18s ease}
+@media(max-width:700px){.developer-credit{margin-top:17px}.brand-ava-w::before,.rev-ava-w::after,.rev-stars,[data-watermark]::before{animation:none!important}.menu a:hover,.btn:hover,.choice:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){.developer-credit a,.developer-credit a span,.btn,.soc,.choice,.menu a,.work-card,.review-card,.svc,.step,.guar{transition:none!important}.developer-credit a:hover span{transform:none}}
+
 footer .flogo span{color:var(--gold-soft);font-size:13px;font-family:var(--sans);font-weight:500;letter-spacing:1px}
 .social-row{display:flex;justify-content:center;gap:14px;margin:22px 0 18px;flex-wrap:wrap}
 .soc{display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;min-width:46px;min-height:46px;border-radius:50%;border:1px solid rgba(236,207,160,.32);color:var(--gold-soft);background:rgba(212,175,106,.06);transition:transform .35s,background .35s,box-shadow .35s}
@@ -1694,6 +1703,7 @@ html.no-anim .spark{display:none}
   <p>{{footer.line}}</p>
   <p style="margin-top:8px">© <span id="year">{{year}}</span> {{footer.copyright}}</p>
   <nav class="footer-legal" aria-label="Правовая информация"><a href="/privacy">Политика конфиденциальности</a><span aria-hidden="true">·</span><a href="/personal-data-consent">Согласие на обработку персональных данных</a><span aria-hidden="true">·</span><a href="/ip">ИП руководителя</a></nav>
+  <div class="developer-credit">Сайт разработан <a href="https://t.me/flidges" target="_blank" rel="noopener noreferrer" aria-label="Написать разработчику сайта в Telegram">@flidges <span aria-hidden="true">↗</span></a></div>
 </footer>{{/if}}
 
 {{#if sections.cookie}}<div class="cookie-bar" id="cookieBar">
