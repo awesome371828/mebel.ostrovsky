@@ -591,6 +591,7 @@ window.IntersectionObserver=window.IntersectionObserver||function(cb){return{obs
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;overflow-x:hidden}
+html,body{touch-action:pan-y pinch-zoom;-webkit-overflow-scrolling:touch}body{overscroll-behavior-y:auto}
 section{scroll-margin-top:92px}
 body{font-family:var(--sans);color:var(--text);line-height:1.72;-webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative;min-height:100vh}
 body::before{content:"";position:fixed;inset:0;z-index:-2;background:
@@ -719,7 +720,7 @@ h2.k{position:relative;font-size:clamp(32px,4.6vw,48px);color:#faf3e6;font-weigh
 .consult .phone{display:inline-block;font-family:var(--sans);font-weight:800;font-size:clamp(30px,4.4vw,52px);letter-spacing:1px;margin-top:12px;white-space:nowrap;background:linear-gradient(120deg,var(--gold-soft),var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 7px 22px rgba(212,175,106,.35))}
 .consult p{color:var(--muted);font-size:15.5px;margin:30px auto 0;max-width:630px;line-height:1.82;overflow-wrap:break-word;letter-spacing:.2px}
 .carousel{position:relative;max-width:1120px;margin:0 auto}
-.car-track{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;touch-action:pan-x;padding:12px 8px 24px;scrollbar-width:none}
+.car-track{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;touch-action:pan-x pan-y;padding:12px 8px 24px;scrollbar-width:none}
 .car-track::-webkit-scrollbar{display:none}
 .car-nav{position:absolute;top:38%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:rgba(14,12,9,.68);border:1px solid rgba(236,207,160,.35);color:var(--gold-soft);font-size:21px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .4s,border-color .4s,background .4s;z-index:5;box-shadow:var(--shadow-md)}
 .car-nav:hover{background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:#17120b;transform:translateY(-50%) scale(1.08)}
@@ -3445,6 +3446,23 @@ def render_city_page(slug):
       elif '</body>' in html: html=html.replace('</body>',block+'</body>',1)
     return _inject_site_ui(html,data)
 
+def _maintenance_page(status):
+    title=_escape(str(status.get("title") or "Мы скоро вернёмся"))
+    message=_escape(str(status.get("message") or "На сайте идут плановые технические работы. Мы обновляем сервис, чтобы он работал ещё удобнее. Пожалуйста, зайдите немного позже."))
+    eta=_escape(str(status.get("eta") or "")); contact=_escape(str(status.get("contact") or "+7 (950) 846-53-97"))
+    paragraphs="".join("<p>"+line.strip()+"</p>" for line in message.splitlines() if line.strip())
+    return """<!doctype html><html lang='ru'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><meta name='robots' content='noindex,nofollow'><title>"""+title+" — Кухни Островский</title><style>*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(ellipse at 20% 0,rgba(212,175,106,.17),transparent 40%),radial-gradient(ellipse at 100% 100%,rgba(98,125,119,.12),transparent 42%),#0c0a07;color:#f5efe3;font:16px/1.8 system-ui,-apple-system,Segoe UI,sans-serif}.wrap{width:min(760px,100%)}.brand{color:#d9bd87;font-size:12px;letter-spacing:.2em;text-transform:uppercase}.card{margin-top:18px;padding:clamp(24px,6vw,56px);border:1px solid rgba(236,207,160,.24);border-radius:30px;background:linear-gradient(145deg,rgba(35,29,20,.9),rgba(13,12,10,.96));box-shadow:0 28px 80px #0008,inset 0 1px 0 #ffffff0b}.orb{width:54px;height:54px;border-radius:19px;display:grid;place-items:center;color:#17120b;background:linear-gradient(145deg,#f2d9a6,#bd9250);box-shadow:0 8px 30px #d4af6a25;font-size:25px}.eyebrow{color:#c7b18b;font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin:24px 0 6px}h1{font:600 clamp(34px,7vw,58px)/1.03 Georgia,serif;margin:0 0 20px;letter-spacing:-.02em}p{color:#c9bdab;margin:12px 0}.meta{margin-top:24px;padding:18px;border:1px solid #ecd09c24;border-radius:18px;background:#ffffff05;color:#c9bdab}.meta strong{color:#f5efe3}.contact{display:inline-flex;margin-top:22px;padding:12px 18px;border:1px solid #ecd09c66;border-radius:999px;color:#f2d9a6;text-decoration:none;transition:background .2s,transform .2s}.contact:hover{background:#ecd09c12;transform:translateY(-1px)}@media(prefers-reduced-motion:reduce){*{transition:none!important}}@media(max-width:480px){body{padding:15px}.card{border-radius:23px}}</style></head><body><main class='wrap'><div class='brand'>Кухни Островский · Ростов · Батайск · Азов</div><section class='card'><div class='orb' aria-hidden='true'>✦</div><div class='eyebrow'>Техническое обслуживание</div><h1>"""+title+"</h1>"+paragraphs+"<div class='meta'>"+("<p><strong>Ориентировочное возвращение:</strong> "+eta+"</p>" if eta else "")+"<p>По срочным вопросам можно связаться с мастерской.</p></div><a class='contact' href='tel:+79508465397'>Связаться: "+contact+"</a></section></main></body></html>"
+
+
+def _notice_inject(html, notice):
+    if not isinstance(notice,dict) or not notice.get("enabled"):
+        return html
+    title=_escape(str(notice.get("title") or "Возможны временные сбои"))
+    msg=_escape(str(notice.get("message") or "На сайте выполняются технические работы. Некоторые функции могут временно работать нестабильно."))
+    banner="<aside role='status' style=\"position:relative;z-index:9999;padding:10px 16px;text-align:center;background:linear-gradient(100deg,#302719,#1c1913);border-bottom:1px solid rgba(236,207,160,.3);color:#f2e6d1;font:13px/1.5 system-ui,sans-serif\"><strong>"+title+"</strong><span style=\"display:block;color:#c9bdab\">"+msg+"</span></aside>"
+    return html.replace("<body>","<body>"+banner,1) if "<body>" in html else html
+
+
 def render_site():
     """Готовый HTML кэшируется до смены данных — страница отдаётся мгновенно."""
     data = load_data()
@@ -3473,6 +3491,7 @@ def render_site():
     html = html.replace("</head>", cfg + "</head>", 1)
     html = _proxify_urls(html)
     html = _inject_site_ui(html, data)
+    html = _notice_inject(html, data.get("site_notice") or {})
     with _render_lock:
         _render_cache["sig"] = sig
         _render_cache["html"] = html
@@ -4150,6 +4169,20 @@ ADMIN_SCHEMA = [
         {"path":"legal_pages.ip.body","label":"ИП · основной текст","type":"textarea","rows":10,"hint":"Абзацы разделяйте пустой строкой."}
     ]},
 
+    {"id":"site_status","group":"Настройки сайта","title":"Режим обслуживания","hint":"Включайте только на время реальных технических работ. Админка останется доступна; посетители увидят отдельную страницу с сообщением и сроком обновления.","fields":[
+        {"type":"info","text":"<b>Как работает</b> — переключатель ниже показывает посетителям аккуратную страницу обслуживания вместо главной. Не забудьте выключить режим после завершения работ."},
+        {"path":"site_status.maintenance","label":"Публичный сайт на техработах","type":"check","chkLabel":"Включено: показывать страницу технических работ"},
+        {"path":"site_status.title","label":"Заголовок страницы","type":"text","hint":"Например: «Сайт временно обновляется»."},
+        {"path":"site_status.message","label":"Сообщение посетителям","type":"textarea","rows":5,"hint":"Напишите, что происходит и как связаться с мастерской, если клиенту нужно срочно обсудить заказ."},
+        {"path":"site_status.eta","label":"Ориентировочное время возвращения","type":"text","hint":"Необязательно. Указывайте только если срок известен; иначе оставьте пустым."},
+        {"path":"site_status.contact","label":"Контакт для срочной связи","type":"text","hint":"Например, телефон +7 (950) 846-53-97."}
+    ]},
+    {"id":"site_notice","group":"Настройки сайта","title":"Сообщение «Возможны сбои»","hint":"Текстовое уведомление для планового обновления или временных неполадок. Можно написать любое сообщение. Оно появляется сверху сайта, только когда включено.","fields":[
+        {"path":"site_notice.enabled","label":"Показывать уведомление","type":"check","chkLabel":"Включено"},
+        {"path":"site_notice.title","label":"Короткий заголовок","type":"text","hint":"Например: «Возможны временные сбои»."},
+        {"path":"site_notice.message","label":"Полный текст уведомления","type":"textarea","rows":5,"hint":"Можно указать, какие функции затронуты, что уже делается и что посетителю предпринять."}
+    ]},
+
     {"id": "diagnostics", "group": "Инструменты", "title": "Диагностика",
      "hint": "Одна кнопка проверяет CMS, рендер, Storage, заявки и скорость ответа.",
      "fields": [{"type":"buttons","buttons":[{"act":"diagnostics","label":"Полная диагностика","cls":"btn-gold"}]},{"type":"info","text":"<div id=\"diagnosticsOut\" class=\"info\">Диагностика запускается вручную и ничего не меняет.</div>"}]},
@@ -4210,6 +4243,7 @@ ADMIN_HTML = r"""<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><met
 :root{--g:#d4af6a;--gs:#eccfa0;--gd:#a37c3f;--bd:rgba(236,207,160,.14);--mut:#a2988a}
 html{scroll-behavior:smooth}
 body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#0c0a07;color:#f3ede2;line-height:1.55;min-height:100vh;overflow-x:hidden}
+html{min-height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y}body{touch-action:pan-y;overscroll-behavior-y:auto;-webkit-overflow-scrolling:touch}main,.main,.content,.workspace,.editor,.section-content{touch-action:pan-y;min-width:0}textarea,input,select{touch-action:pan-y}nav.side{overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
 body::before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(1100px 620px at 88% -14%,rgba(212,175,106,.13),transparent 60%),radial-gradient(900px 560px at -10% 30%,rgba(212,175,106,.07),transparent 58%),radial-gradient(1200px 700px at 50% 120%,rgba(163,124,63,.13),transparent 62%),linear-gradient(180deg,#0e0c08,#0a0806 55%,#0c0a07)}
 body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.45;background-image:radial-gradient(rgba(255,255,255,.04) 1px,transparent 1px);background-size:3px 3px}
 @keyframes fadeUp{from{opacity:0;transform:translate3d(0,14px,0)}to{opacity:1;transform:none}}
@@ -5309,6 +5343,10 @@ class Handler(BaseHTTPRequestHandler):
             return
 
         if path in ("/", "/index.html"):
+            status=(load_data().get("site_status") or {})
+            if status.get("maintenance"):
+                self._send(503, _maintenance_page(status), "text/html; charset=utf-8", "no-cache")
+                return
             html = render_site()
             if "cookiesAccepted=1" in (self.headers.get("Cookie") or ""):
                 html = re.sub(r'<div class="cookie-bar" id="cookieBar">.*?</div>\s*', "", html, count=1, flags=re.S)
