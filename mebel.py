@@ -829,6 +829,9 @@ footer .flogo{font-family:var(--serif);font-size:28px;color:#fff;margin-bottom:8
 .developer-credit a{display:inline-flex;align-items:center;gap:4px;color:var(--gold-soft);text-decoration:none;transition:color .18s ease,opacity .18s ease}
 .developer-credit a span{font-size:12px;opacity:.65;transition:transform .18s ease,opacity .18s ease}
 .developer-credit a:hover{color:#fff}.developer-credit a:hover span{transform:translate(2px,-2px);opacity:1}
+.hosting-credit{margin:10px auto 0;font-size:10px;letter-spacing:.025em;color:rgba(201,189,171,.52);line-height:1.6}
+.hosting-credit a{color:#36b95b;text-decoration:none;transition:color .18s ease}
+.hosting-credit a:hover{color:#62dc80}
 /* Лёгкие микроанимации: без тяжёлых фильтров и постоянных перерисовок */
 .btn,.soc,.choice,.menu a,.work-card,.review-card,.svc,.step,.guar{transition:transform .18s ease,border-color .18s ease,background-color .18s ease,color .18s ease,box-shadow .18s ease}
 @media(max-width:700px){.developer-credit{margin-top:17px}.brand-ava-w::before,.rev-ava-w::after,.rev-stars,[data-watermark]::before{animation:none!important}.menu a:hover,.btn:hover,.choice:hover{transform:none}}
@@ -1705,6 +1708,7 @@ html.no-anim .spark{display:none}
   <p style="margin-top:8px">© <span id="year">{{year}}</span> {{footer.copyright}}</p>
   <nav class="footer-legal" aria-label="Правовая информация"><a href="/privacy">Политика конфиденциальности</a><span aria-hidden="true">·</span><a href="/personal-data-consent">Согласие на обработку персональных данных</a><span aria-hidden="true">·</span><a href="/ip">ИП руководителя</a></nav>
   <div class="developer-credit">Сайт разработан <a href="https://t.me/flidges" target="_blank" rel="noopener noreferrer" aria-label="Написать разработчику сайта в Telegram">@flidges <span aria-hidden="true">↗</span></a></div>
+  <div class="hosting-credit">Сайт размещён на <a href="https://relaxdev.ru/" target="_blank" rel="noopener noreferrer">relaxdev.ru</a></div>
 </footer>{{/if}}
 
 {{#if sections.cookie}}<div class="cookie-bar" id="cookieBar">
