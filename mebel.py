@@ -2415,6 +2415,21 @@ def _migrate(raw):
         hero.setdefault("btn2_href", "#works")
         hero["rotation_enabled"] = False
 
+    # Update the six legacy service pictograms already stored in Supabase.
+    services = d.get("services")
+    if isinstance(services, dict) and isinstance(services.get("items"), list):
+        icon_updates = {
+            "M3 9h18M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9M3 9l2-4h14l2 4M8 9v2M12 9v2M16 9v2": "M3 9.5 12 4l9 5.5M5 10v9h14v-9M8 19v-5h8v5M3 21h18M8 10h.01M12 10h.01M16 10h.01",
+            "M3 3h18v18H3zM3 8h18M8 8v13M16 8v13": "M5 3.5h14a1.5 1.5 0 0 1 1.5 1.5v15H3.5V5A1.5 1.5 0 0 1 5 3.5ZM12 4v16M7.5 8h1M15.5 8h1M7.5 12h1M15.5 12h1",
+            "M12 3v18M3 12h18M5 5l14 14M19 5L5 19": "M4 20V8.5L12 3l8 5.5V20M4 20h16M8 20v-6h8v6M7 9h.01M17 9h.01",
+            "M14 6l4 4M5 19l7-7M17 3l4 4-4 4-1-1-1 1-4-4 1-1-1-1 4-4z": "M14.5 6.5a4.5 4.5 0 0 0-5.8 5.8L3 18l3 3 5.7-5.7a4.5 4.5 0 0 0 5.8-5.8l-2.7 2.7-3-3 2.7-2.7Z",
+            "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 3v18M3 12h18": "M4 7h16M4 17h16M7 4v6M11 4v3M15 4v6M19 14v6M4 4v16M20 4v16",
+            "M3 12a9 9 0 1 0 9-9M3 12h6M3 12l4-4M3 12l4 4": "M20 7v5h-5M20 12a8 8 0 1 1-2.3-5.7M4 17v-5h5"
+        }
+        for item in services["items"]:
+            if isinstance(item, dict) and str(item.get("icon") or "").strip() in icon_updates:
+                item["icon"] = icon_updates[str(item.get("icon") or "").strip()]
+
     nav = d.get("nav")
     if isinstance(nav, dict):
         items = nav.get("items") if isinstance(nav.get("items"), list) else []
