@@ -1433,6 +1433,11 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
     <a class="header-call" href="tel:+79508465397" aria-label="Позвонить в мастерскую: +7 950 846-53-97">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.4 2.1L8.1 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.6 1z"/></svg><span>+7 950 846-53-97</span>
     </a>
+    <div class="header-messengers" aria-label="Мессенджеры мастерской">
+      <a href="{{brand.telegram}}" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.7 4.4-3.2 15.1c-.2 1.1-.9 1.4-1.8.9l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.4-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.3 13.4l-4.7-1.5c-1-.3-1-1 .2-1.5L20.2 3c.9-.3 1.7.2 1.5 1.4z"/></svg></a>
+      <a href="{{brand.vk}}" target="_blank" rel="noopener noreferrer" aria-label="ВКонтакте"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 7.2h3.2c.2 4.1 1.9 5.8 3.2 6.2V7.2h3v3.6c1.3-.1 2.7-1.7 3.2-3.6h3.1c-.3 2.2-2 4-3.1 4.8 1.1.6 3.1 2.1 3.8 4.8h-3.4c-.6-1.8-2.1-3.2-3.6-3.3v3.3h-.4C6.7 16.8 3.7 13.4 3.5 7.2z"/></svg></a>
+      <a href="{{brand.max}}" target="_blank" rel="noopener noreferrer" aria-label="MAX"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 8.5 6h-3.2a6 6 0 1 1-1.7-2.1L13 9.5h8V2l-2.2 2.2A8.9 8.9 0 0 0 12 3z"/></svg></a>
+    </div>
   </div>
 </header>
 <ul class="menu" id="menu">
@@ -1607,6 +1612,13 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
       <div class="quiz-controls"><button type="button" class="quiz-back" id="quizBack" disabled>Назад</button><button type="button" class="quiz-next" id="quizNext">Продолжить <span aria-hidden="true">→</span></button><button type="submit" class="quiz-submit" id="quizSubmit" hidden>Отправить заявку <span aria-hidden="true">↗</span></button></div>
       <p class="quiz-status" id="quizStatus" role="status" aria-live="polite"></p>
     </form>
+    <div class="quiz-messengers" aria-label="Другие способы связи">
+      <span>Удобнее напрямую?</span>
+      <a href="tel:+79508465397" aria-label="Позвонить"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.4 2.1L8.1 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.6 1z"/></svg>Телефон</a>
+      <a href="{{brand.telegram}}" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><svg viewBox="0 0 24 24"><path d="m21.7 4.4-3.2 15.1c-.2 1.1-.9 1.4-1.8.9l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.4-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.3 13.4l-4.7-1.5c-1-.3-1-1 .2-1.5L20.2 3c.9-.3 1.7.2 1.5 1.4z"/></svg>Telegram</a>
+      <a href="{{brand.vk}}" target="_blank" rel="noopener noreferrer" aria-label="ВКонтакте"><svg viewBox="0 0 24 24"><path d="M3.5 7.2h3.2c.2 4.1 1.9 5.8 3.2 6.2V7.2h3v3.6c1.3-.1 2.7-1.7 3.2-3.6h3.1c-.3 2.2-2 4-3.1 4.8 1.1.6 3.1 2.1 3.8 4.8h-3.4c-.6-1.8-2.1-3.2-3.6-3.3v3.3h-.4C6.7 16.8 3.7 13.4 3.5 7.2z"/></svg>ВКонтакте</a>
+      <a href="{{brand.max}}" target="_blank" rel="noopener noreferrer" aria-label="MAX"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 8.5 6h-3.2a6 6 0 1 1-1.7-2.1L13 9.5h8V2l-2.2 2.2A8.9 8.9 0 0 0 12 3z"/></svg>MAX</a>
+    </div>
   </div></div>
 </section>
 
