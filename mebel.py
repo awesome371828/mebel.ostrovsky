@@ -517,13 +517,24 @@ window.IntersectionObserver=window.IntersectionObserver||function(cb){return{obs
   "image": "{{seo.og_image|json}}",
   "description": "{{seo.description|json}}",
   "telephone": "{{brand.phone_raw|json}}",
-  "priceRange": "₽₽",
-  "currenciesAccepted": "RUB",
-  "address": {"@type": "PostalAddress", "addressLocality": "{{seo.geo_placename|json}}", "addressRegion": "Ростовская область", "addressCountry": "RU"},
-  "geo": {"@type": "GeoCoordinates", "latitude": {{seo.geo_lat|json}}, "longitude": {{seo.geo_lon|json}}},
+  "founder": {"@type": "Person", "name": "Роман Островский"},
   "areaServed": [{{#each cities.items}}{"@type": "City", "name": "{{this.name|json}}"}{{#unless @last}},{{/unless}}{{/each}}],
   "sameAs": ["{{brand.vk|json}}"{{#if brand.telegram}}, "{{brand.telegram|json}}"{{/if}}],
   "contactPoint": {"@type": "ContactPoint", "telephone": "{{brand.phone_raw|json}}", "contactType": "customer service", "availableLanguage": "Russian"}
+},
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "@id": "{{seo.canonical|json}}#kitchens-service",
+  "name": "Изготовление кухонь и корпусной мебели на заказ под ключ",
+  "serviceType": "Проектирование, изготовление и установка кухонь и корпусной мебели на заказ",
+  "provider": {"@id": "{{seo.canonical|json}}#business"},
+  "areaServed": [
+    {"@type": "City", "name": "Ростов-на-Дону"},
+    {"@type": "City", "name": "Батайск"},
+    {"@type": "City", "name": "Азов"}
+  ],
+  "description": "Изготовление кухонь и корпусной мебели на заказ под ключ в Ростове-на-Дону, Батайске и Азове. Руководитель мастерской — Роман Островский."
 },
 {
   "@context": "https://schema.org",
@@ -1403,7 +1414,7 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
 @media(max-width:600px){.panel--hero{min-height:100svh!important}.panel--hero .content{padding-top:132px!important;padding-bottom:132px!important}.panel--hero .scroll-cue{left:50%!important;right:auto!important;bottom:18px!important;width:82px!important;height:82px!important;min-width:82px!important;min-height:82px!important;transform:translateX(-50%)!important}.rev-card{width:90vw;padding:22px!important}.car-nav{display:none}.stat,.svc,.guar,.step,.about-card,.rev-card,.car-slide,.city,.call-block{border-radius:20px!important}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}.stat,.svc,.guar,.step,.about-card,.rev-card,.car-slide,.btn{transition:none!important}}
 </style>
-</head>
+<link rel="stylesheet" href="/site-theme.css?v=20261109-r1"></head>
 <body>
 
 <div class="progress" id="progress"></div>
@@ -1421,6 +1432,9 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
       <span class="brand-txt"><span class="name">{{brand.name}}</span><span class="sub">{{brand.sub}}</span></span>
     </a>
     <button class="burger" id="burger" aria-label="Меню"><span></span><span></span><span></span></button>
+    <a class="header-call" href="tel:+79508465397" aria-label="Позвонить в мастерскую: +7 950 846-53-97">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.4 2.1L8.1 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.6 1z"/></svg><span>+7 950 846-53-97</span>
+    </a>
   </div>
 </header>
 <ul class="menu" id="menu">
@@ -1725,6 +1739,12 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
 
 {{#if sections.footer}}<footer>
   <div class="flogo">{{brand.name}}<span> · {{brand.sub}}</span></div>
+  <div class="footer-contact-icons" aria-label="Связаться с мастерской">
+    <a href="tel:+79508465397" aria-label="Позвонить по телефону +7 950 846-53-97" title="Телефон"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.4 2.1L8.1 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.6 1z"/></svg><span>Позвонить</span></a>
+    <a href="https://vk.com/mebel.ostrovsky" target="_blank" rel="noopener noreferrer" aria-label="Группа Кухни Островский во ВКонтакте" title="ВКонтакте"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 7.2h3.2c.2 4.1 1.9 5.8 3.2 6.2V7.2h3v3.6c1.3-.1 2.7-1.7 3.2-3.6h3.1c-.3 2.2-2 4-3.1 4.8 1.1.6 3.1 2.1 3.8 4.8h-3.4c-.6-1.8-2.1-3.2-3.6-3.3v3.3h-.4C6.7 16.8 3.7 13.4 3.5 7.2z"/></svg><span>ВКонтакте</span></a>
+    <a href="https://max.ru/" target="_blank" rel="noopener noreferrer" aria-label="Открыть мессенджер MAX" title="MAX"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 8.5 6h-3.2a6 6 0 1 1-1.7-2.1L13 9.5h8V2l-2.2 2.2A8.9 8.9 0 0 0 12 3z"/></svg><span>MAX</span></a>
+    <a href="https://t.me/fanny161" target="_blank" rel="noopener noreferrer" aria-label="Написать в Telegram" title="Telegram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.7 4.4-3.2 15.1c-.2 1.1-.9 1.4-1.8.9l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.4-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.3 13.4l-4.7-1.5c-1-.3-1-1 .2-1.5L20.2 3c.9-.3 1.7.2 1.5 1.4z"/></svg><span>Telegram</span></a>
+  </div>
   {{#if footer.socials}}<div class="social-row">
     {{#each footer.socials}}<a class="soc" href="{{this.href}}" title="{{this.label}}">{{{this.icon_svg}}}</a>
     {{/each}}
@@ -4374,7 +4394,7 @@ body{background:radial-gradient(ellipse at 50% 0%,rgba(215,189,139,.10),transpar
 .card button{border-radius:999px!important;background:linear-gradient(135deg,#E5D4B3,#C5A979)!important;color:#211B13!important;box-shadow:0 12px 28px rgba(0,0,0,.25)!important}
 </style>
 <style id="ostrovskyLoginEditorial2026">*{box-sizing:border-box}body{background:radial-gradient(ellipse at 50% 0%,rgba(216,194,155,.11),transparent 48%),#171816!important;color:#F7F5F0!important}.card{background:rgba(255,255,255,.055)!important;border:1px solid rgba(255,255,255,.14)!important;border-radius:24px!important;box-shadow:0 24px 64px rgba(0,0,0,.36)!important;backdrop-filter:blur(22px)!important}.card h1{color:#F7F5F0!important}.card p.sub,.card .hint{color:#C9C4BA!important}.card label{color:#D8C29B!important}.card input{background:rgba(0,0,0,.22)!important;border:1px solid rgba(255,255,255,.16)!important;border-radius:13px!important;color:#F7F5F0!important}.card input:focus{outline:none!important;border-color:#D8C29B!important;box-shadow:0 0 0 3px rgba(216,194,155,.12)!important}.card button{border-radius:999px!important;background:linear-gradient(135deg,#E8D8B8,#CDB58A)!important;color:#211D16!important;box-shadow:0 12px 28px rgba(0,0,0,.25)!important}</style>
-</head><body>
+<link rel="stylesheet" href="/site-theme.css?v=20261109-r1"></head><body>
 <form class="card" method="POST" action="/admin/login">
 <h1>Кухни Островский</h1><p class="sub">Панель управления сайтом</p>__ERROR__
 <label>Логин</label><input type="text" name="login" required autofocus autocomplete="username">
@@ -4645,7 +4665,7 @@ tr:hover td{background:#F8F6F1!important}
 @media(max-width:820px){.admin-shell nav.side{border-radius:18px!important}.admin-shell .field,.admin-shell .overview-card,.admin-shell .info,.admin-shell .item,.admin-shell .lead-card,.admin-shell .audit-row,.admin-shell .dash{border-radius:17px!important}}
 </style>
 <style id="ostrovskyAdminEditorial2026">:root{--ae-line:rgba(255,255,255,.12);--ae-text:#F7F5F0;--ae-muted:#C9C4BA;--ae-ease:cubic-bezier(.16,1,.3,1)}.admin-shell{background:radial-gradient(900px 520px at 82% -10%,rgba(216,194,155,.10),transparent 60%),#171816!important;color:var(--ae-text)!important}.admin-shell nav.side{background:rgba(255,255,255,.035)!important;border:1px solid var(--ae-line)!important;border-radius:22px!important;backdrop-filter:blur(18px)!important}.admin-shell .field,.admin-shell .overview-card,.admin-shell .info,.admin-shell .item,.admin-shell .lead-card,.admin-shell .audit-row,.admin-shell .dash,.admin-shell .preview-frame,.admin-shell .diag-row{background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.028))!important;border:1px solid var(--ae-line)!important;border-radius:20px!important;box-shadow:0 20px 40px rgba(0,0,0,.24)!important;backdrop-filter:blur(18px)!important;color:var(--ae-text)!important}.admin-shell .lead-card:hover,.admin-shell .overview-card:hover,.admin-shell .dash:hover{border-color:rgba(216,194,155,.34)!important;transform:translateY(-2px)}.admin-shell .page-head{border-color:var(--ae-line)!important}.admin-shell h1,.admin-shell h2,.admin-shell h3,.admin-shell strong{color:#F7F5F0}.admin-shell p,.admin-shell small,.admin-shell label,.admin-shell .muted,.admin-shell .hint{color:var(--ae-muted)}.admin-shell input,.admin-shell select,.admin-shell textarea,.admin-shell .lead-search{background:rgba(0,0,0,.20)!important;color:#F7F5F0!important;border:1px solid rgba(255,255,255,.16)!important;border-radius:12px!important}.admin-shell input:focus,.admin-shell select:focus,.admin-shell textarea:focus{outline:none!important;border-color:rgba(216,194,155,.7)!important;box-shadow:0 0 0 3px rgba(216,194,155,.10)!important}.admin-shell input::placeholder,.admin-shell textarea::placeholder{color:#A9A69E!important}.admin-shell .btn{border-radius:999px!important;transition:transform .35s var(--ae-ease)!important}.admin-shell .btn:hover{transform:translateY(-1px)}.admin-shell .btn-gold{background:linear-gradient(135deg,#E8D8B8,#CDB58A)!important;color:#211D16!important;border:1px solid rgba(232,216,184,.7)!important}.admin-shell nav.side a{border-radius:12px!important}.admin-shell table{border-collapse:separate!important;border-spacing:0 7px!important;color:#F7F5F0}.admin-shell th{color:#C9C4BA!important;font-weight:600}.admin-shell td{background:rgba(255,255,255,.035)!important;border-top:1px solid var(--ae-line)!important;border-bottom:1px solid var(--ae-line)!important}.admin-shell td:first-child{border-left:1px solid var(--ae-line)!important;border-radius:12px 0 0 12px}.admin-shell td:last-child{border-right:1px solid var(--ae-line)!important;border-radius:0 12px 12px 0}.admin-shell .status,.admin-shell .badge{border-radius:999px!important}@media(max-width:820px){.admin-shell nav.side{border-radius:18px!important}.admin-shell .field,.admin-shell .overview-card,.admin-shell .info,.admin-shell .item,.admin-shell .lead-card,.admin-shell .audit-row,.admin-shell .dash{border-radius:17px!important}}</style>
-</head><body>
+<link rel="stylesheet" href="/site-theme.css?v=20261109-r1"></head><body>
 <header>
 <div class="brand"><span class="mark"></span>Кухни Островский<span>CMS</span><span class="status" id="status">Загрузка…</span><span class="status" id="revInfo" style="background:rgba(255,255,255,.05);color:#a2988a;border:1px solid rgba(255,255,255,.08)">rev —</span></div>
 <div class="actions">
