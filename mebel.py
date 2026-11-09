@@ -457,7 +457,7 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
 }
 
 PAGE = r"""<!DOCTYPE html>
-<html lang="ru" class="js" data-build="2026-10-07-v10">
+<html lang="ru" class="js" data-build="2026-11-09-r1">
 <head>
 <meta charset="UTF-8">
 <script>/* шим: если браузер не умеет IntersectionObserver, показываем блоки сразу (без «мёртвых» скрытых секций) */
