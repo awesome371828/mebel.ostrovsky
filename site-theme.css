@@ -198,3 +198,50 @@ body:has(form.card) form.card button{border-radius:12px!important}
 .quiz-messengers svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 @media(max-width:900px){.header-messengers{display:none}}
 @media(max-width:600px){.quiz-messengers{gap:7px}.quiz-messengers a{padding:8px 10px;font-size:11px}}
+
+/* 2026-11-09 r2 — deterministic icon sizing, route backgrounds and readable admin */
+svg{max-width:48px!important;max-height:48px!important}
+.header-call svg,.header-messengers svg,.footer-contact-icons svg,.quiz-messengers svg,
+.contact-actions svg,.panel .svc svg,.panel .guar svg,.panel .c-ico svg,.social-row .soc svg{
+  display:block!important;flex:0 0 auto!important;max-width:28px!important;max-height:28px!important;
+}
+.header-call svg{width:17px!important;height:17px!important}
+.header-messengers svg,.footer-contact-icons svg,.quiz-messengers svg{width:20px!important;height:20px!important}
+.max-brand-icon{display:block!important;width:20px!important;height:20px!important;max-width:20px!important;max-height:20px!important;object-fit:contain!important;flex:0 0 20px!important;border-radius:5px}
+.header-messengers a:has(.max-brand-icon),.quiz-messengers a:has(.max-brand-icon),.footer-contact-icons a:has(.max-brand-icon){display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.header-messengers a:has(.max-brand-icon){width:36px;height:36px;padding:0}
+.panel{background:#121212!important;color:#F4F1EA!important}
+.panel>.bg{z-index:0!important;opacity:1!important;visibility:visible!important}
+.panel>.bg:after{background:linear-gradient(105deg,rgba(18,18,18,.70),rgba(18,18,18,.42) 55%,rgba(18,18,18,.66))!important}
+.panel--hero#top>.bg:after{background:linear-gradient(90deg,rgba(18,18,18,.76),rgba(18,18,18,.38) 60%,rgba(18,18,18,.16)),linear-gradient(0deg,rgba(18,18,18,.48),transparent 62%)!important}
+.panel .sec-head h2,.panel .about-body h2,.panel .contact-info h2,.panel h2{color:#fff!important;-webkit-text-fill-color:#fff!important}
+.panel .sec-head p,.panel .about-body p,.panel .contact-info>p,.panel .section-note{color:rgba(244,241,234,.82)!important}
+body.admin-shell{min-height:100vh!important;background:radial-gradient(900px 560px at 85% -10%,rgba(201,168,106,.12),transparent 60%),#101214!important;color:#F4F1EA!important}
+body.admin-shell .layout{background:transparent!important}
+body.admin-shell main{background:transparent!important;color:#F4F1EA!important}
+body.admin-shell h1,body.admin-shell h2,body.admin-shell h3,body.admin-shell .page-title{color:#F4F1EA!important}
+body.admin-shell p,body.admin-shell label,body.admin-shell .muted,body.admin-shell .hint{color:rgba(244,241,234,.78)!important}
+body.admin-shell nav.side{background:rgba(244,241,234,.055)!important;border:1px solid rgba(244,241,234,.12)!important;border-radius:16px!important}
+body.admin-shell nav.side a{color:#EAE6DD!important}
+body.admin-shell nav.side a.active{background:rgba(201,168,106,.15)!important;color:#F4F1EA!important;border-color:rgba(201,168,106,.35)!important}
+body.admin-shell .overview-card,body.admin-shell .dash,body.admin-shell .field,body.admin-shell .item,body.admin-shell .info,body.admin-shell .lead-card,body.admin-shell .audit-row,body.admin-shell .card,body.admin-shell .panel-card{
+  background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.035))!important;
+  border:1px solid rgba(244,241,234,.12)!important;border-radius:16px!important;
+  color:#F4F1EA!important;box-shadow:0 18px 46px rgba(0,0,0,.22)!important
+}
+body.admin-shell .dash b,body.admin-shell .lead-name,body.admin-shell .overview-card strong{color:#F4F1EA!important}
+body.admin-shell input,body.admin-shell textarea,body.admin-shell select{background:rgba(0,0,0,.28)!important;color:#F4F1EA!important;border:1px solid rgba(244,241,234,.18)!important;border-radius:12px!important}
+body.admin-shell input::placeholder,body.admin-shell textarea::placeholder{color:rgba(244,241,234,.48)!important}
+body.admin-shell button,body.admin-shell .btn{border-radius:12px!important}
+body.admin-shell header{background:rgba(16,18,20,.88)!important;color:#F4F1EA!important;border-bottom:1px solid rgba(244,241,234,.12)!important}
+body.admin-shell header .brand{color:#E8D8B8!important}
+body.admin-shell .page-head{border-color:rgba(244,241,234,.12)!important}
+.legal-page{min-height:100vh!important;background:radial-gradient(ellipse at 82% 0,rgba(201,168,106,.12),transparent 44%),#111315!important;color:#F4F1EA!important}
+.legal-page .legal-card{background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.035))!important;color:#F4F1EA!important;border:1px solid rgba(244,241,234,.14)!important;border-radius:20px!important;box-shadow:0 28px 80px rgba(0,0,0,.28)!important}
+.legal-page .legal-card h1,.legal-page .legal-card h2,.legal-page .legal-card h3{color:#F4F1EA!important}
+.legal-page .legal-card p,.legal-page .legal-card li,.legal-page .legal-profile span{color:rgba(244,241,234,.78)!important}
+.legal-page .legal-section{background:rgba(244,241,234,.045)!important;border:1px solid rgba(244,241,234,.1)!important;border-radius:16px!important}
+.legal-page a{color:#E8D8B8!important}
+@media(max-width:900px){body.admin-shell .layout{display:flex;flex-direction:column}body.admin-shell nav.side{width:100%;max-height:none}}
+@media(prefers-reduced-motion:reduce){.panel .car-slide img{transition:none!important}}
+
