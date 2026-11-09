@@ -245,3 +245,137 @@ body.admin-shell .page-head{border-color:rgba(244,241,234,.12)!important}
 @media(max-width:900px){body.admin-shell .layout{display:flex;flex-direction:column}body.admin-shell nav.side{width:100%;max-height:none}}
 @media(prefers-reduced-motion:reduce){.panel .car-slide img{transition:none!important}}
 
+
+
+/* ===== OSTR editorial system · final contrast + admin repair ===== */
+:root{
+  --linen:#F4F1EA;--graphite:#121212;--ink:#141414;
+  --gold:#C9A86A;--gold-pale:#E8D8B8;
+  --soft-glass:rgba(29,29,27,.78);
+  --soft-line:rgba(244,241,234,.14);
+  --soft-shadow:0 24px 64px rgba(0,0,0,.28);
+}
+html{background:#121212!important;scrollbar-gutter:stable}
+body{background:#121212!important;color:#F4F1EA}
+.panel{background:#121212!important;color:#F4F1EA!important}
+.panel>.bg{z-index:0!important;opacity:1!important;visibility:visible!important;transform:none!important;filter:none!important}
+.panel>.wrap,.panel .content{position:relative;z-index:2}
+.panel .about-card,.panel .svc,.panel .step,.panel .guar,.panel .city,
+.panel .stat,.panel .rev-card,.panel .call-block,.panel .empty,
+.panel .lead-shell,.project-quiz{
+  background:linear-gradient(145deg,rgba(43,43,40,.91),rgba(25,25,24,.88))!important;
+  color:#F4F1EA!important;
+  border:1px solid rgba(244,241,234,.13)!important;
+  border-radius:16px!important;
+  box-shadow:0 24px 64px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.045)!important;
+  backdrop-filter:blur(18px) saturate(120%)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(120%)!important;
+}
+.panel .about-card h3,.panel .svc h3,.panel .step h3,.panel .guar h3,
+.panel .rev-name,.panel .city-name,.panel .stat .num,.panel .step .n,
+.panel .lead-copy h2,.panel .lead-copy h3{color:#F7F5F0!important;-webkit-text-fill-color:#F7F5F0!important}
+.panel .about-card p,.panel .svc p,.panel .step p,.panel .guar p,
+.panel .city p,.panel .stat .lbl,.panel .rev-text,.panel .features li,
+.panel .call-block .cb-lab,.panel .call-block .cb-hint{color:#D2CDC3!important}
+.panel .stat .num,.panel .step .n{color:#E8D8B8!important;-webkit-text-fill-color:#E8D8B8!important}
+.panel .lead-shell{background:linear-gradient(145deg,rgba(42,42,39,.96),rgba(24,24,23,.94))!important}
+.panel .lead-copy h2,.panel .lead-copy p{color:#F4F1EA!important;-webkit-text-fill-color:#F4F1EA!important;text-shadow:none!important}
+.panel .site-lead-form{background:rgba(0,0,0,.22)!important;border:1px solid rgba(244,241,234,.12)!important;border-radius:16px!important}
+.panel .site-lead-form label span{color:#E8D8B8!important}
+.panel .site-lead-form input,.panel .site-lead-form textarea,.panel .site-lead-form select{
+  background:rgba(0,0,0,.30)!important;color:#F7F5F0!important;
+  border:1px solid rgba(244,241,234,.18)!important;border-radius:12px!important;
+}
+.panel .site-lead-form input::placeholder,.panel .site-lead-form textarea::placeholder{color:rgba(244,241,234,.48)!important}
+.panel .lead-note,.panel .lead-consent,.panel .lead-legal-links a{color:rgba(244,241,234,.72)!important}
+.project-quiz{max-width:900px;margin:30px auto 0}
+.quiz-field>span,.quiz-field legend,.quiz-step-label{color:#F4F1EA!important}
+.quiz-options label span{background:rgba(255,255,255,.055)!important;border-color:rgba(244,241,234,.16)!important}
+footer{background:#121212!important;color:#F4F1EA!important}
+footer .social-row{display:none!important}
+.footer-contact-icons{gap:10px!important}
+.footer-contact-icons a{border-radius:999px!important;background:rgba(255,255,255,.055)!important;border:1px solid rgba(244,241,234,.17)!important}
+.footer-contact-icons a:hover{background:rgba(201,168,106,.16)!important;border-color:#C9A86A!important}
+.max-brand-icon{width:20px!important;height:20px!important;max-width:20px!important;max-height:20px!important;object-fit:contain!important;border-radius:6px!important;display:block!important}
+.header-messengers a:has(.max-brand-icon){width:36px!important;height:36px!important;padding:0!important}
+.header-messengers a:has(.max-brand-icon) img{width:20px!important;height:20px!important;object-fit:contain!important;border-radius:6px!important}
+.header-messengers svg,.header-call svg,.footer-contact-icons svg,.quiz-messengers svg,.contact-actions svg,.social-row .soc svg{
+  width:20px!important;height:20px!important;max-width:20px!important;max-height:20px!important;
+  min-width:20px!important;min-height:20px!important;flex:0 0 20px!important;display:block!important;
+}
+.header-call svg{width:17px!important;height:17px!important;min-width:17px!important;min-height:17px!important;flex-basis:17px!important}
+.panel .svc svg,.panel .guar svg,.panel .c-ico svg{width:26px!important;height:26px!important;max-width:26px!important;max-height:26px!important}
+svg{overflow:visible}
+html body.admin-shell,body.admin-shell{
+  min-height:100vh!important;background:
+  radial-gradient(900px 560px at 82% -12%,rgba(201,168,106,.11),transparent 60%),
+  radial-gradient(700px 500px at 0% 100%,rgba(255,255,255,.025),transparent 60%),#111315!important;
+  color:#F4F1EA!important;
+}
+body.admin-shell header{background:rgba(17,19,21,.92)!important;color:#F4F1EA!important;border-bottom:1px solid rgba(244,241,234,.12)!important;backdrop-filter:blur(18px)!important}
+body.admin-shell .layout,body.admin-shell main,body.admin-shell #main{
+  background:transparent!important;background-color:transparent!important;color:#F4F1EA!important;
+}
+body.admin-shell nav.side{
+  background:linear-gradient(180deg,rgba(35,36,35,.92),rgba(23,24,24,.94))!important;
+  border:1px solid rgba(244,241,234,.12)!important;border-radius:18px!important;
+  box-shadow:0 20px 55px rgba(0,0,0,.22)!important;
+}
+body.admin-shell nav.side a{color:#D8D4CB!important;border-radius:12px!important}
+body.admin-shell nav.side a:hover,body.admin-shell nav.side a.active{
+  color:#F7F5F0!important;background:rgba(201,168,106,.12)!important;
+}
+body.admin-shell .page-head,body.admin-shell .page-head *{background-color:transparent}
+body.admin-shell h1,body.admin-shell h2,body.admin-shell h3,
+body.admin-shell .page-title,body.admin-shell strong{color:#F7F5F0!important}
+body.admin-shell p,body.admin-shell small,body.admin-shell label,
+body.admin-shell .muted,body.admin-shell .hint{color:rgba(244,241,234,.78)!important}
+body.admin-shell .field,body.admin-shell .overview-card,body.admin-shell .info,
+body.admin-shell .item,body.admin-shell .lead-card,body.admin-shell .audit-row,
+body.admin-shell .dash,body.admin-shell .preview-frame,body.admin-shell .diag-row,
+body.admin-shell .card,body.admin-shell .panel-card{
+  background:linear-gradient(145deg,rgba(43,43,40,.92),rgba(25,25,24,.90))!important;
+  color:#F4F1EA!important;border:1px solid rgba(244,241,234,.13)!important;
+  border-radius:16px!important;box-shadow:0 22px 54px rgba(0,0,0,.25)!important;
+  backdrop-filter:blur(16px)!important;-webkit-backdrop-filter:blur(16px)!important;
+}
+body.admin-shell .field>label,body.admin-shell .field label{color:#E8D8B8!important}
+body.admin-shell input,body.admin-shell textarea,body.admin-shell select,
+body.admin-shell .lead-search,body.admin-shell .lead-filter{
+  background:rgba(12,13,13,.72)!important;color:#F7F5F0!important;
+  border:1px solid rgba(244,241,234,.18)!important;border-radius:12px!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035)!important;
+}
+body.admin-shell input::placeholder,body.admin-shell textarea::placeholder{color:rgba(244,241,234,.48)!important}
+body.admin-shell input:focus,body.admin-shell textarea:focus,body.admin-shell select:focus{
+  outline:none!important;border-color:rgba(201,168,106,.72)!important;
+  box-shadow:0 0 0 3px rgba(201,168,106,.13)!important;
+}
+body.admin-shell .btn{border-radius:999px!important;transition:all .6s cubic-bezier(.16,1,.3,1)!important}
+body.admin-shell .btn-gold{background:linear-gradient(135deg,#E8D8B8,#C9A86A)!important;color:#211D16!important}
+body.admin-shell table{color:#F4F1EA!important}
+body.admin-shell th{color:#D2CDC3!important}
+body.admin-shell td{background:rgba(255,255,255,.035)!important;color:#F4F1EA!important;border-color:rgba(244,241,234,.12)!important}
+body.admin-shell .toast,body.admin-shell .modal-card,body.admin-shell .savebar{
+  background:rgba(27,28,27,.97)!important;color:#F4F1EA!important;
+  border:1px solid rgba(244,241,234,.14)!important;border-radius:16px!important;
+  box-shadow:0 24px 70px rgba(0,0,0,.4)!important;
+}
+body.admin-shell .skel{background:linear-gradient(90deg,rgba(255,255,255,.045),rgba(255,255,255,.11),rgba(255,255,255,.045))!important}
+body:has(form.card){background:radial-gradient(ellipse at 50% 0,rgba(201,168,106,.12),transparent 55%),#111315!important;color:#F4F1EA!important}
+body:has(form.card) form.card{background:linear-gradient(145deg,rgba(43,43,40,.94),rgba(25,25,24,.94))!important;color:#F4F1EA!important;border:1px solid rgba(244,241,234,.14)!important;border-radius:22px!important;box-shadow:0 28px 80px rgba(0,0,0,.4)!important}
+body:has(form.card) form.card h1{color:#F7F5F0!important}
+body:has(form.card) form.card label{color:#E8D8B8!important}
+body:has(form.card) form.card input{background:rgba(0,0,0,.3)!important;color:#fff!important;border:1px solid rgba(244,241,234,.17)!important;border-radius:12px!important}
+body:has(form.card) form.card button{border-radius:999px!important}
+.legal-page{background:radial-gradient(ellipse at 82% 0,rgba(201,168,106,.10),transparent 48%),#111315!important;color:#F4F1EA!important}
+.legal-page .legal-card{background:linear-gradient(145deg,rgba(43,43,40,.94),rgba(25,25,24,.92))!important;color:#F4F1EA!important;border:1px solid rgba(244,241,234,.13)!important;border-radius:18px!important;box-shadow:0 26px 70px rgba(0,0,0,.3)!important}
+.legal-page .legal-card h1,.legal-page .legal-card h2,.legal-page .legal-card h3{color:#F7F5F0!important}
+.legal-page .legal-card p,.legal-page .legal-card li,.legal-page .legal-profile span{color:rgba(244,241,234,.78)!important}
+.legal-page .legal-section{background:rgba(255,255,255,.035)!important;border:1px solid rgba(244,241,234,.1)!important;border-radius:16px!important}
+.legal-page a{color:#E8D8B8!important}
+@media(max-width:900px){
+  body.admin-shell .layout{display:flex;flex-direction:column}
+  body.admin-shell nav.side{width:100%;max-height:48vh;position:relative;top:auto}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
