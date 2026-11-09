@@ -5468,6 +5468,82 @@ class Handler(BaseHTTPRequestHandler):
         return self.headers.get("X-Forwarded-Proto", "").lower() == "https"
 
     def _send(self, code, body, ctype="text/plain; charset=utf-8", cache="no-cache", gzip_ok=True):
+        # One last, shared visual layer for every HTML surface: public pages,
+        # legal documents, maintenance/404, client portal, admin and login.
+        if isinstance(body, str) and "text/html" in (ctype or "").lower() and "</head>" in body.lower():
+            shared_theme = """<style id="ostrovsky-universal-quiet-luxury">
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+:root{color-scheme:light;--paper:#FDFBF7;--ivory:#F4F0E8;--ink:#24231F;--muted:#625E56;--line:#E6E1DA;--accent:#B85A38;--olive:#5F6F52;--ease:cubic-bezier(.16,1,.3,1);--r:4px}
+html{background:var(--paper);scroll-behavior:smooth;scroll-padding-top:96px}
+body{background:var(--paper)!important;color:var(--ink)!important;font-family:'DM Sans',Arial,sans-serif!important;font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.brand,.legal-title{font-family:'Manrope','DM Sans',Arial,sans-serif!important;letter-spacing:-.035em!important;color:var(--ink)!important}
+p,li,td,th,label,small{color:inherit}
+a{color:var(--accent);text-underline-offset:4px;text-decoration-thickness:1px}
+a:hover{color:var(--olive)}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent)!important;outline-offset:3px!important}
+img{max-width:100%;height:auto}
+hr{border:0;border-top:1px solid var(--line)}
+/* legal, policy, requisites, client-facing and maintenance documents */
+.legal-wrap,.legal-page,.legal-card,.wrap,.card{border-radius:var(--r)!important}
+.legal-wrap,.legal-page{max-width:940px!important;margin-inline:auto!important;padding:clamp(24px,5vw,72px)!important}
+.legal-card,.legal-content,.legal-document{background:var(--ivory)!important;border:0!important;box-shadow:none!important;border-radius:var(--r)!important;padding:clamp(22px,4vw,48px)!important}
+.legal-wrap h1,.legal-page h1,.legal-title{font-size:clamp(32px,5vw,54px)!important;line-height:1.08!important;margin:0 0 24px!important}
+.legal-wrap h2,.legal-page h2{font-size:clamp(19px,2.5vw,25px)!important;line-height:1.2!important;margin:34px 0 12px!important}
+.legal-wrap p,.legal-page p,.legal-content p{font-size:15px!important;line-height:1.85!important;color:#514E47!important;margin:0 0 16px!important}
+.legal-profile{display:flex!important;align-items:center!important;gap:18px!important;padding:18px 0!important;border-bottom:1px solid var(--line)!important;margin-bottom:28px!important}
+.legal-profile img{border-radius:4px!important;object-fit:cover!important}
+.legal-profile strong{display:block!important;color:var(--ink)!important;font-size:16px!important}
+.legal-profile span{display:block!important;color:var(--muted)!important;font-size:13px!important}
+.legal-wrap table,.legal-page table{width:100%!important;border-collapse:collapse!important;background:transparent!important}
+.legal-wrap td,.legal-wrap th,.legal-page td,.legal-page th{padding:14px 12px!important;text-align:left!important;border-bottom:1px solid var(--line)!important;color:var(--ink)!important;vertical-align:top!important}
+.legal-wrap th,.legal-page th{font-size:10px!important;letter-spacing:.12em!important;text-transform:uppercase!important;color:var(--muted)!important}
+.legal-wrap b,.legal-page b{color:var(--ink)!important}
+/* service / maintenance and 404 */
+body:has(.wrap .card) .card,body:has(.legal-wrap) .card{background:var(--ivory)!important;border:0!important;border-radius:4px!important;box-shadow:none!important}
+body:has(.wrap .card) h1{color:var(--ink)!important}
+body:has(.wrap .card) p{color:var(--muted)!important}
+body:has(.wrap .card) .brand,body:has(.wrap .card) .eyebrow{color:var(--olive)!important}
+body:has(.wrap .card) .contact{background:var(--olive)!important;color:var(--paper)!important;border:0!important;border-radius:3px!important}
+/* login page */
+body:has(form.card){background:var(--paper)!important;display:flex!important;align-items:center!important;justify-content:center!important;min-height:100vh!important}
+body:has(form.card):before{background:radial-gradient(ellipse at 80% 12%,rgba(95,111,82,.08),transparent 45%),var(--paper)!important}
+form.card{width:min(440px,100%)!important;background:var(--ivory)!important;border:0!important;border-radius:4px!important;box-shadow:none!important;padding:clamp(26px,5vw,46px)!important}
+form.card h1{font-size:27px!important;text-align:left!important}
+form.card p.sub{text-align:left!important;color:var(--muted)!important}
+form.card label{color:var(--muted)!important;letter-spacing:.1em!important;font-size:10px!important}
+form.card input{background:transparent!important;color:var(--ink)!important;border:0!important;border-bottom:1px solid #C9C1B6!important;border-radius:0!important;padding:13px 2px!important}
+form.card input:focus{border-bottom:2px solid var(--accent)!important}
+form.card button{background:var(--ink)!important;color:var(--paper)!important;border:0!important;border-radius:3px!important;box-shadow:none!important;text-transform:none!important;letter-spacing:0!important}
+form.card .hint{color:var(--muted)!important}
+form.card .err{background:#F5E8E2!important;color:#8D3E2C!important;border:0!important;border-radius:3px!important}
+/* admin workspace — keep all existing controls and data behaviour intact */
+body:has(#app),body:has(.workspace),body:has(nav.side){background:var(--paper)!important;color:var(--ink)!important}
+body:has(#app)::before,body:has(#app)::after,body:has(nav.side)::before,body:has(nav.side)::after{display:none!important}
+body:has(nav.side) header,body:has(#app) header{background:rgba(253,251,247,.96)!important;border-bottom:1px solid var(--line)!important;backdrop-filter:blur(16px)!important;box-shadow:none!important}
+body:has(nav.side) .brand,body:has(#app) .brand{color:var(--ink)!important}
+body:has(nav.side) .brand .mark,body:has(#app) .brand .mark{background:var(--olive)!important;box-shadow:none!important;animation:none!important}
+body:has(nav.side) nav.side,body:has(#app) nav.side{background:var(--ivory)!important;border-color:var(--line)!important}
+body:has(nav.side) .btn,body:has(#app) .btn{background:transparent!important;color:var(--ink)!important;border:1px solid var(--line)!important;border-radius:3px!important;box-shadow:none!important;transition:transform .24s var(--ease),opacity .24s var(--ease)!important}
+body:has(nav.side) .btn:hover,body:has(#app) .btn:hover{transform:translateY(-1px)!important;box-shadow:none!important}
+body:has(nav.side) .btn-gold,body:has(#app) .btn-gold{background:var(--olive)!important;color:var(--paper)!important;border-color:var(--olive)!important}
+body:has(nav.side) .btn-red,body:has(#app) .btn-red{background:#F7EAE5!important;color:#9A4935!important;border-color:#E9C9BD!important}
+body:has(nav.side) .overview-card,body:has(nav.side) .dash,body:has(nav.side) .lead-card,body:has(nav.side) .item,body:has(nav.side) .info,body:has(nav.side) .diag-row,body:has(nav.side) .field,body:has(nav.side) .preview-frame,body:has(#app) .overview-card,body:has(#app) .dash,body:has(#app) .lead-card,body:has(#app) .item,body:has(#app) .info{background:var(--ivory)!important;color:var(--ink)!important;border:0!important;border-top:1px solid var(--line)!important;border-radius:4px!important;box-shadow:none!important}
+body:has(nav.side) .muted,body:has(nav.side) .hint,body:has(#app) .muted{color:var(--muted)!important}
+body:has(nav.side) input,body:has(nav.side) textarea,body:has(nav.side) select,body:has(#app) input,body:has(#app) textarea,body:has(#app) select{background:#FDFBF7!important;color:var(--ink)!important;border:1px solid #D9D2C8!important;border-radius:3px!important}
+body:has(nav.side) table,body:has(#app) table{border-collapse:collapse!important}
+body:has(nav.side) th,body:has(nav.side) td,body:has(#app) th,body:has(#app) td{border-bottom:1px solid var(--line)!important;color:var(--ink)!important}
+body:has(nav.side) th,body:has(#app) th{color:var(--muted)!important;font-size:10px!important;letter-spacing:.1em!important;text-transform:uppercase!important}
+body:has(nav.side) a,body:has(#app) a{color:var(--accent)}
+body:has(nav.side) .btn-gold a,body:has(#app) .btn-gold a{color:var(--paper)}
+/* restrained transitions: no animated layout dimensions */
+a,button,.btn,.card,.overview-card,.dash,.lead-card,.item{transition:transform .32s var(--ease),opacity .32s var(--ease),color .2s ease,background-color .2s ease}
+@media(hover:hover) and (pointer:fine){.portfolio-card img,.car-slide img{transition:transform 900ms var(--ease)}.portfolio-card:hover img,.car-slide:hover img{transform:scale(1.025)}}
+@media(max-width:700px){.legal-wrap,.legal-page{padding:24px 18px!important}.legal-wrap td,.legal-wrap th,.legal-page td,.legal-page th{padding:10px 7px!important;font-size:13px!important}form.card{padding:26px 22px!important}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>"""
+            body = re.sub(r"</head>", lambda m: shared_theme + m.group(0), body, count=1, flags=re.I)
         data = body.encode("utf-8") if isinstance(body, str) else body
         etag = '"' + hashlib.sha256(data).hexdigest()[:20] + '"'
         if code == 200 and self.headers.get("If-None-Match") == etag:
