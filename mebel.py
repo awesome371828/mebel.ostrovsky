@@ -123,11 +123,9 @@ GITHUB_CMS_SNAPSHOT = {}
 DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/logo/logo-512.jpg', 'title': 'Кухни Островский — кухни на заказ в Ростове, Батайске и Азове | Мебель под ключ',
          'keywords': 'кухни на заказ Ростов-на-Дону, кухни на заказ Ростов, кухни Ростов, кухни Батайск, кухни на заказ Батайск, кухни Азов, кухни на заказ Азов, кухонный гарнитур Ростов, мебель на заказ Ростов, корпусная мебель Ростов, шкафы на заказ Ростов, гардеробные на заказ Ростов, прихожие на заказ Ростов, кухонный гарнитур Батайск, мебель на заказ Батайск, корпусная мебель Батайск, шкафы на заказ Батайск, гардеробные Батайск, прихожие Батайск, кухонный гарнитур Азов, мебель на заказ Азов, корпусная мебель Азов, шкафы на заказ Азов, гардеробные Азов, прихожие Азов, кухня по индивидуальным размерам Ростов, кухня по проекту Ростов, угловая кухня Ростов, прямая кухня Ростов, П-образная кухня Ростов, кухня с островом Ростов, современная кухня Ростов, классическая кухня Ростов, кухни Ростовская область, мебель на заказ Ростовская область',
          'og_image': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/logo/logo-512.jpg',
-         'description': 'Кухни на заказ в Ростове-на-Дону, Батайске и Азове от мастерской «Кухни Островский». Бесплатный замер и '
-                        '3D-проект, собственное производство, монтаж под ключ. ☎ +7 (950) 846-53-97',
+         'description': 'Изготовление кухонь и корпусной мебели на заказ под ключ в Ростове-на-Дону, Батайске и Азове. Руководитель мастерской — Роман Островский. Телефон: +7 (950) 846-53-97.',
          'og_title': 'Кухни Островский — кухни на заказ в Ростове, Батайске и Азове',
-         'og_description': 'Кухни и корпусная мебель под ключ. Бесплатный замер и 3D-проект, собственное производство, монтаж. ☎ +7 '
-                           '(950) 846-53-97',
+         'og_description': 'Кухни и корпусная мебель на заказ под ключ в Ростове-на-Дону, Батайске и Азове. Роман Островский · +7 (950) 846-53-97.',
          'domain': 'https://кухниостровский.рф',
          'canonical': 'https://кухниостровский.рф/',
          'robots_meta': 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1',
@@ -519,7 +517,7 @@ window.IntersectionObserver=window.IntersectionObserver||function(cb){return{obs
   "telephone": "{{brand.phone_raw|json}}",
   "founder": {"@type": "Person", "name": "Роман Островский"},
   "areaServed": [{{#each cities.items}}{"@type": "City", "name": "{{this.name|json}}"}{{#unless @last}},{{/unless}}{{/each}}],
-  "sameAs": ["{{brand.vk|json}}"{{#if brand.telegram}}, "{{brand.telegram|json}}"{{/if}}],
+  "sameAs": ["{{brand.vk|json}}"{{#if brand.telegram}}, "{{brand.telegram|json}}"{{/if}}{{#if brand.max}}, "{{brand.max|json}}"{{/if}}],
   "contactPoint": {"@type": "ContactPoint", "telephone": "{{brand.phone_raw|json}}", "contactType": "customer service", "availableLanguage": "Russian"}
 },
 {
@@ -1777,8 +1775,8 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
   <div class="footer-contact-icons" aria-label="Связаться с мастерской">
     <a href="tel:+79508465397" aria-label="Позвонить по телефону +7 950 846-53-97" title="Телефон"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.4 2.1L8.1 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.6 1z"/></svg><span>Позвонить</span></a>
     <a href="https://vk.com/mebel.ostrovsky" target="_blank" rel="noopener noreferrer" aria-label="Группа Кухни Островский во ВКонтакте" title="ВКонтакте"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 7.2h3.2c.2 4.1 1.9 5.8 3.2 6.2V7.2h3v3.6c1.3-.1 2.7-1.7 3.2-3.6h3.1c-.3 2.2-2 4-3.1 4.8 1.1.6 3.1 2.1 3.8 4.8h-3.4c-.6-1.8-2.1-3.2-3.6-3.3v3.3h-.4C6.7 16.8 3.7 13.4 3.5 7.2z"/></svg><span>ВКонтакте</span></a>
-    <a href="https://max.ru/" target="_blank" rel="noopener noreferrer" aria-label="Открыть мессенджер MAX" title="MAX"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 8.5 6h-3.2a6 6 0 1 1-1.7-2.1L13 9.5h8V2l-2.2 2.2A8.9 8.9 0 0 0 12 3z"/></svg><span>MAX</span></a>
-    <a href="https://t.me/fanny161" target="_blank" rel="noopener noreferrer" aria-label="Написать в Telegram" title="Telegram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.7 4.4-3.2 15.1c-.2 1.1-.9 1.4-1.8.9l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.4-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.3 13.4l-4.7-1.5c-1-.3-1-1 .2-1.5L20.2 3c.9-.3 1.7.2 1.5 1.4z"/></svg><span>Telegram</span></a>
+    <a href="{{brand.max}}" target="_blank" rel="noopener noreferrer" aria-label="Открыть мессенджер MAX" title="MAX"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 8.5 6h-3.2a6 6 0 1 1-1.7-2.1L13 9.5h8V2l-2.2 2.2A8.9 8.9 0 0 0 12 3z"/></svg><span>MAX</span></a>
+    <a href="{{brand.telegram}}" target="_blank" rel="noopener noreferrer" aria-label="Написать в Telegram" title="Telegram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.7 4.4-3.2 15.1c-.2 1.1-.9 1.4-1.8.9l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.4-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.3 13.4l-4.7-1.5c-1-.3-1-1 .2-1.5L20.2 3c.9-.3 1.7.2 1.5 1.4z"/></svg><span>Telegram</span></a>
   </div>
   {{#if footer.socials}}<div class="social-row">
     {{#each footer.socials}}<a class="soc" href="{{this.href}}" title="{{this.label}}">{{{this.icon_svg}}}</a>
