@@ -1440,10 +1440,10 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
 <ul class="menu" id="menu">
   <li class="sheet-handle"><span></span></li>
   {{#each nav.items}}<li><a href="{{this.href}}">{{this.label}}</a></li>
-  {{/each}}{{#if nav.cta_label}}<li class="menu-call"><a href="{{nav.cta_href}}"><svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.4 2.1L8.1 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.6 2z"/></svg>{{nav.cta_label}}</a></li>{{/if}}
+  {{/each}}<li><a href="#quiz">Рассчитать проект</a></li>{{#if nav.cta_label}}<li class="menu-call"><a href="{{nav.cta_href}}"><svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.4 2.1L8.1 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.6 2z"/></svg>{{nav.cta_label}}</a></li>{{/if}}
 </ul>
 <div class="scrim" id="scrim"></div>
-<nav class="section-rail" aria-label="Навигация по разделам"><a href="#top" aria-label="Главная"></a><a href="#about" aria-label="Руководитель"></a><a href="#works" aria-label="Работы"></a><a href="#reviews" aria-label="Отзывы"></a><a href="#services" aria-label="Услуги"></a><a href="#process" aria-label="Как работаем"></a><a href="#cities" aria-label="Города"></a><a href="#contacts" aria-label="Контакты"></a><a href="#lead" aria-label="Заявка"></a></nav>
+<nav class="section-rail" aria-label="Навигация по разделам"><a href="#top" aria-label="Главная"></a><a href="#about" aria-label="Руководитель"></a><a href="#works" aria-label="Работы"></a><a href="#reviews" aria-label="Отзывы"></a><a href="#services" aria-label="Услуги"></a><a href="#process" aria-label="Как работаем"></a><a href="#cities" aria-label="Города"></a><a href="#contacts" aria-label="Контакты"></a><a href="#quiz" aria-label="Рассчитать проект"></a><a href="#lead" aria-label="Заявка"></a></nav>
 
 <section class="panel panel--hero" id="top"{{#if hero.watermark}} data-watermark="{{hero.watermark}}"{{/if}}>
   <div class="bg" style="background-image:url('{{{hero.bg}}}')"></div>
@@ -1454,7 +1454,7 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
     <div class="btn-row">
       {{#if hero.btn1}}<a href="{{hero.btn1_href}}" class="btn btn-solid">{{hero.btn1}}</a>{{/if}}
       {{#if hero.btn2}}<a href="{{hero.btn2_href}}" class="btn btn-line">{{hero.btn2}}</a>{{/if}}
-      <a href="#lead" class="btn btn-line hero-calc">Рассчитать проект</a>
+      <a href="#quiz" class="btn btn-line hero-calc">Рассчитать проект</a>
     </div>
   </div></div>
   {{#if hero.scroll_cue}}<div class="scroll-cue">{{hero.scroll_cue}}<div class="line"></div></div>{{/if}}
@@ -5747,7 +5747,7 @@ class Handler(BaseHTTPRequestHandler):
             phone = re.sub(r"\s+", " ", str(req.get("phone") or "").strip())[:80]
             message = str(req.get("message") or "").strip()[:1000]
             page = str(req.get("page") or "/").strip()[:300]
-            extra={k:req.get(k) for k in ("city","furniture_type","contact_method","source")}
+            extra={k:req.get(k) for k in ("city","furniture_type","contact_method","source","style")}
             extra["personal_data_consent"] = bool(req.get("personal_data_consent"))
             extra["personal_data_consent_at"] = datetime.now(timezone.utc).isoformat() if extra["personal_data_consent"] else ""
             digits = re.sub(r"\D", "", phone)
