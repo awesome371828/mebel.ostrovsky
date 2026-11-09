@@ -1761,7 +1761,7 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
 {{#if sections.cookie}}<div class="cookie-bar" id="cookieBar">
   <p>{{cookie.text}}{{#if cookie.link_href}} <a href="{{cookie.link_href}}" style="color:var(--gold-soft)">{{cookie.link_label}}</a>.{{/if}}</p>
   <button class="btn btn-solid" id="cookieOk">{{cookie.button}}</button>
-</div>
+</div>{{/if}}
 
 <script>
 (function(){
