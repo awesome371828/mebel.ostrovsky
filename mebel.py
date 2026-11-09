@@ -3722,6 +3722,15 @@ def build_sitemap(data):
     parts.append('  </url>')
     for legal_path in ("/privacy", "/personal-data-consent", "/ip"):
         parts.append("  <url>\n    <loc>{}</loc>\n    <lastmod>{}</lastmod>\n    <changefreq>yearly</changefreq>\n    <priority>0.3</priority>\n  </url>".format(_escape(dom + legal_path), today))
+    local_seo = data.get("local_seo") or {}
+    if local_seo.get("enabled", True):
+        for city in (local_seo.get("cities") or []):
+            if not isinstance(city, dict):
+                continue
+            slug = re.sub(r"[^a-z0-9-]", "", str(city.get("slug") or "").lower())
+            if slug not in ("rostov-na-donu", "bataysk", "azov"):
+                continue
+            parts.append("  <url>\n    <loc>{}</loc>\n    <lastmod>{}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.85</priority>\n  </url>".format(_escape(dom + "/" + slug + "/"), today))
     for it in (seo.get("extra_urls") or []):
         if not isinstance(it, dict):
             continue
