@@ -3603,92 +3603,9 @@ def render_site():
     html = _proxify_urls(html)
     html = _inject_site_ui(html, data)
     html = _notice_inject(html, data.get("site_notice") or {})
-    # Apply the final public-site layer after CMS snippets and maintenance notice.
-    # This guarantees readable contrast and prevents late injected styles from
-    # overriding the hero layout.
-    html = html.replace("</body>", """<style id="ostrovsky-final-readable-layer">
-:root{--paper:#FDFBF7;--ivory:#F4F0E8;--ink:#24231F;--ink-soft:#514E47;--line:#E6E1DA;--olive:#5F6F52;--terracotta:#B85A38;--ease-luxury:cubic-bezier(.16,1,.3,1)}
-html{scroll-behavior:smooth;scroll-padding-top:100px}
-body{background:var(--paper)!important;color:var(--ink)!important;font-family:'DM Sans',Arial,sans-serif!important}
-#header{position:fixed!important;top:0!important;left:0!important;right:0!important;height:78px!important;z-index:500!important;background:rgba(36,35,31,.36)!important;box-shadow:none!important}
-#header.solid{background:rgba(253,251,247,.97)!important;box-shadow:0 1px 0 var(--line)!important;backdrop-filter:blur(18px)!important}
-#header .nav{height:78px!important;padding-inline:clamp(20px,5vw,84px)!important}
-#header .brand-txt .name{font-family:'Manrope',sans-serif!important;font-size:15px!important;letter-spacing:.08em!important;color:#FDFBF7!important;-webkit-text-fill-color:#FDFBF7!important;background:none!important}
-#header .brand-txt .sub{color:rgba(253,251,247,.78)!important}
-#header.solid .brand-txt .name{color:var(--ink)!important;-webkit-text-fill-color:var(--ink)!important}
-#header.solid .brand-txt .sub{color:var(--ink-soft)!important}
-#header.solid .burger span{background:var(--ink)!important}
-#menu{z-index:501!important}
-#menu a{color:rgba(253,251,247,.96)!important}
-#header.solid~#menu a{color:var(--ink)!important}
-.site-maintenance-notice{position:fixed!important;z-index:490!important;top:82px!important;left:clamp(16px,5vw,84px)!important;right:clamp(16px,5vw,84px)!important;width:auto!important;min-height:48px!important;margin:0!important;padding:8px 16px!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:12px!important;border:1px solid rgba(230,225,218,.9)!important;border-radius:3px!important;background:rgba(253,251,247,.98)!important;box-shadow:0 8px 26px rgba(36,35,31,.08)!important;color:var(--ink)!important;backdrop-filter:blur(18px)!important}
-.site-notice-dot{background:var(--olive)!important;box-shadow:0 0 0 4px rgba(95,111,82,.12)!important}
-.site-notice-copy strong{color:var(--ink)!important;font:600 12px/1.45 'DM Sans',Arial,sans-serif!important}
-.site-notice-copy>span{color:#5C584F!important;font:400 12px/1.5 'DM Sans',Arial,sans-serif!important}
-.panel{margin:0!important;padding:clamp(76px,9vw,132px) 0!important;min-height:0!important;background:linear-gradient(145deg,#292720,#191816)!important;color:#F7F5F0!important}
-.panel--hero#top{min-height:100svh!important;padding:0!important;display:flex!important;align-items:center!important;background:#55564F!important;overflow:hidden!important}
-#top>.bg{inset:0!important;background-size:cover!important;background-position:center 52%!important;transform:none!important;animation:none!important}
-#top>.bg:after{content:""!important;position:absolute!important;inset:0!important;background:linear-gradient(90deg,rgba(20,21,18,.78) 0%,rgba(20,21,18,.57) 42%,rgba(20,21,18,.2) 100%),linear-gradient(0deg,rgba(20,21,18,.38),transparent 62%)!important}
-#top>.wrap{width:100%!important;max-width:1680px!important;padding-inline:clamp(22px,5.4vw,92px)!important}
-#top .content{width:100%!important;max-width:900px!important;padding:clamp(188px,21vh,224px) 0 clamp(92px,12vh,124px)!important;transform:none!important}
-#top .eyebrow{display:inline-flex!important;position:relative!important;z-index:5!important;max-width:100%!important;margin:0 0 26px!important;padding:9px 13px!important;align-items:center!important;border-radius:2px!important;background:rgba(27,28,24,.68)!important;color:#FDFBF7!important;font:600 9px/1.55 'DM Sans',Arial,sans-serif!important;letter-spacing:.15em!important;text-shadow:0 1px 8px rgba(0,0,0,.45)!important}
-#top .eyebrow:before{background:#DED6CA!important;width:20px!important}
-#top .eyebrow:after{display:none!important}
-#heroTitle{display:block!important;position:relative!important;z-index:3!important;max-width:850px!important;margin:0!important;font-family:'Manrope',Arial,sans-serif!important;font-size:clamp(42px,5.15vw,82px)!important;font-weight:500!important;line-height:1.01!important;letter-spacing:-.058em!important;color:#FDFBF7!important;text-shadow:0 2px 22px rgba(0,0,0,.25)!important;overflow-wrap:normal!important;word-break:normal!important;text-wrap:balance!important}
-#heroTitle em,#heroTitle em.shimmer{font-style:normal!important;color:rgba(253,251,247,.86)!important;background:none!important;-webkit-text-fill-color:rgba(253,251,247,.86)!important;animation:none!important}
-#top .sub{max-width:430px!important;margin:26px 0 28px!important;color:rgba(253,251,247,.94)!important;font-size:14px!important;line-height:1.8!important;text-shadow:0 1px 8px rgba(0,0,0,.42)!important}
-#top .btn-row{gap:22px!important;align-items:center!important}
-#top .btn{min-height:48px!important;border-radius:3px!important;font:600 11px/1.2 'DM Sans',Arial,sans-serif!important;letter-spacing:.01em!important;text-transform:none!important}
-#top .btn-solid{background:#FDFBF7!important;color:#24231F!important;border:1px solid #FDFBF7!important;box-shadow:none!important}
-#top .btn-line{border:0!important;border-bottom:1px solid rgba(253,251,247,.72)!important;border-radius:0!important;background:transparent!important;color:#FDFBF7!important}
-#top .scroll-cue{color:rgba(253,251,247,.78)!important}
-.panel:not(#top) .bg{opacity:1!important}
-.panel:not(#top) .bg:after{background:linear-gradient(90deg,rgba(18,17,15,.58),rgba(18,17,15,.34) 55%,rgba(18,17,15,.60))!important}
-.sec-head h2,.about-body h2,.contact-info h2,.panel h2{font-family:'Manrope',Arial,sans-serif!important;color:#F7F5F0!important;-webkit-text-fill-color:#F7F5F0!important;font-weight:500!important;letter-spacing:-.045em!important;text-shadow:0 2px 18px rgba(0,0,0,.24)!important;line-height:1.08!important}
-.sec-head .kicker,.about-body .kicker,.contact-info .kicker{color:#E8D8B8!important;-webkit-text-fill-color:#E8D8B8!important;letter-spacing:.16em!important}
-.sec-head p,.about-body p,.contact-info>p,.stat .lbl,.svc p,.step p,.guar p,.city p,.rev-text{color:#D1CCC2!important}
-.stat,.about-card,.svc,.step,.guar,.city,.rev-card,.car-slide,.empty{background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.045))!important;border:1px solid rgba(255,255,255,.14)!important;border-radius:22px!important;box-shadow:0 22px 55px rgba(0,0,0,.24)!important;backdrop-filter:blur(18px) saturate(125%)!important;-webkit-backdrop-filter:blur(18px) saturate(125%)!important}
-.stat,.svc,.step,.guar,.city{border-top:1px solid rgba(255,255,255,.16)!important}
-.stat .num,.step .n{color:#E8D8B8!important;-webkit-text-fill-color:#E8D8B8!important;background:none!important;filter:none!important}
-.about-card h3,.svc h3,.step h3,.guar h3,.rev-name,.city .city-name{color:#F7F5F0!important}
-.features li{color:#D1CCC2!important}
-.features li:before{border-color:#D8C29B!important;background:rgba(216,194,155,.12)!important}
-.btn-solid{background:var(--olive)!important;color:var(--paper)!important;border:1px solid var(--olive)!important;box-shadow:none!important}
-.btn-line{color:#F7F5F0!important}
-.car-slide img{object-fit:cover!important;transition:transform 900ms var(--ease-luxury)!important}
-@media(hover:hover) and (pointer:fine){.car-slide:hover img{transform:scale(1.035)!important}}
-footer,.footer{background:#24231F!important;color:#FDFBF7!important}
-footer a,.footer a{color:#FDFBF7!important}
-.reveal{opacity:0;transform:translate3d(0,22px,0);transition:opacity 800ms var(--ease-luxury),transform 800ms var(--ease-luxury)}
-.reveal.visible,.reveal.is-visible,.reveal.in-view{opacity:1;transform:translate3d(0,0,0)}
-@media(max-width:900px){
- #menu{background:var(--paper)!important}
- #menu a,#header.solid~#menu a{color:var(--ink)!important}
- #header .burger span{background:#FDFBF7!important}
- #header.solid .burger span{background:var(--ink)!important}
- #top .content{padding:174px 0 108px!important;max-width:760px!important}
- #top>.bg{background-position:59% center!important}
- #heroTitle{font-size:clamp(40px,8.5vw,68px)!important;max-width:760px!important}
- .about,.contact-grid{grid-template-columns:1fr!important}
- .svc-grid,.steps,.city-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
-}
-@media(max-width:600px){
- .site-maintenance-notice{top:76px!important;left:12px!important;right:12px!important;min-height:44px!important;padding:7px 10px!important;justify-content:flex-start!important}
- .site-notice-copy strong{font-size:10px!important}.site-notice-copy>span{font-size:10px!important;line-height:1.35!important}
- #top .content{padding:164px 0 104px!important}
- #top>.bg{background-position:62% center!important}
- #top>.bg:after{background:linear-gradient(90deg,rgba(20,21,18,.84),rgba(20,21,18,.56) 72%,rgba(20,21,18,.35))!important}
- #top .eyebrow{font-size:8px!important;letter-spacing:.11em!important;margin-bottom:20px!important;max-width:calc(100vw - 44px)!important}
- #heroTitle{font-size:clamp(38px,10.5vw,56px)!important;line-height:1.03!important;letter-spacing:-.06em!important}
- #top .sub{font-size:13px!important;max-width:340px!important}
- #top .btn-row{gap:15px!important}
- #top .btn{padding:12px 14px!important;min-height:46px!important}
- .svc-grid,.steps,.city-grid,.stats,.guar-grid,.features{grid-template-columns:1fr!important}
- .panel{padding:72px 0!important}
- .sec-head{text-align:left!important}
-}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}.reveal{opacity:1!important;transform:none!important}}
-</style></body>""", 1)
+    # The public design system is loaded once from /site-theme.css after all template styles.
+    # Do not append another late inline layer: it previously overrode section backgrounds and
+    # caused scroll-dependent color/contrast regressions.
     with _render_lock:
         _render_cache["sig"] = sig
         _render_cache["html"] = html
