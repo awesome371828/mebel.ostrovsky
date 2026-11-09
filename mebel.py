@@ -1577,6 +1577,41 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
   </div></div>
 </section>{{/if}}
 
+<section class="panel panel--dark project-quiz-panel" id="quiz">
+  <div class="bg" style="background-image:url('{{{lead_form.bg}}}')"></div>
+  <div class="wrap"><div class="content">
+    <div class="sec-head reveal"><div class="kicker">НЕСКОЛЬКО ВОПРОСОВ</div><h2>Расскажите о вашей мебели</h2><p>Ответьте на вопросы — мастерская получит параметры проекта и сможет связаться с вами.</p></div>
+    <form class="project-quiz reveal" id="projectQuiz" novalidate>
+      <div class="quiz-progress"><span id="quizProgressBar"></span></div>
+      <div class="quiz-step is-active" data-quiz-step="0">
+        <div class="quiz-step-label"><b>01</b><span>Город и тип мебели</span></div>
+        <label class="quiz-field"><span>Где нужен проект?</span><select name="city" required><option value="">Выберите город</option><option>Ростов-на-Дону</option><option>Батайск</option><option>Азов</option></select></label>
+        <fieldset class="quiz-field"><legend>Что планируете изготовить?</legend><div class="quiz-options">
+          <label><input type="radio" name="furniture_type" value="Кухня" required><span>Кухню</span></label>
+          <label><input type="radio" name="furniture_type" value="Шкаф или гардеробную"><span>Шкаф / гардеробную</span></label>
+          <label><input type="radio" name="furniture_type" value="Прихожую"><span>Прихожую</span></label>
+          <label><input type="radio" name="furniture_type" value="Другая корпусная мебель"><span>Другую мебель</span></label>
+        </div></fieldset>
+      </div>
+      <div class="quiz-step" data-quiz-step="1" hidden>
+        <div class="quiz-step-label"><b>02</b><span>Пожелания к проекту</span></div>
+        <label class="quiz-field"><span>Предпочтительный стиль</span><select name="style"><option value="">Пока не определились</option><option>Современный</option><option>Классический</option><option>Минимализм</option><option>Другой / нужна консультация</option></select></label>
+        <label class="quiz-field"><span>Размеры или особенности помещения</span><input name="dimensions" maxlength="180" placeholder="Например: прямая кухня, длина примерно 3 метра"></label>
+        <label class="quiz-field"><span>Дополнительные пожелания</span><textarea name="details" rows="3" maxlength="700" placeholder="Материалы, техника, хранение и другие важные детали"></textarea></label>
+      </div>
+      <div class="quiz-step" data-quiz-step="2" hidden>
+        <div class="quiz-step-label"><b>03</b><span>Как с вами связаться</span></div>
+        <label class="quiz-field"><span>Ваше имя</span><input name="name" autocomplete="given-name" maxlength="80" required placeholder="Имя"></label>
+        <label class="quiz-field"><span>Номер телефона</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="40" required placeholder="+7 (___) ___-__-__"></label>
+        <label class="quiz-consent"><input type="checkbox" name="personal_data_consent" required><span>Согласен(на) на обработку персональных данных согласно <a href="/personal-data-consent" target="_blank" rel="noopener">условиям согласия</a> и <a href="/privacy" target="_blank" rel="noopener">политике конфиденциальности</a>.</span></label>
+        <label class="quiz-honeypot" aria-hidden="true">Сайт<input name="website" tabindex="-1" autocomplete="off"></label>
+      </div>
+      <div class="quiz-controls"><button type="button" class="quiz-back" id="quizBack" disabled>Назад</button><button type="button" class="quiz-next" id="quizNext">Продолжить <span aria-hidden="true">→</span></button><button type="submit" class="quiz-submit" id="quizSubmit" hidden>Отправить заявку <span aria-hidden="true">↗</span></button></div>
+      <p class="quiz-status" id="quizStatus" role="status" aria-live="polite"></p>
+    </form>
+  </div></div>
+</section>
+
 <div class="lightbox" id="lightbox">
   <button class="lb-close" id="lbClose" aria-label="Закрыть">×</button>
   <div class="lb-stage" id="lbStage">
@@ -2185,6 +2220,17 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
   if('requestIdleCallback' in window){requestIdleCallback(function(){imgs.slice(0,4).forEach(function(im){if(im.currentSrc){var x=new Image();x.src=im.currentSrc}})},{timeout:1200})}
   window.ostCopy=function(text){if(!text)return; if(navigator.clipboard){navigator.clipboard.writeText(text).then(function(){if(window.showToast)showToast('Скопировано')}).catch(function(){})}};
   window.ostShare=function(url,title){if(navigator.share){navigator.share({title:title||document.title,url:url}).catch(function(){})}else if(navigator.clipboard){navigator.clipboard.writeText(url).then(function(){if(window.showToast)showToast('Ссылка скопирована')})}};
+})();
+</script>
+<script>
+(function(){
+ var form=document.getElementById('projectQuiz');if(!form)return;
+ var steps=Array.prototype.slice.call(form.querySelectorAll('[data-quiz-step]')),index=0,bar=document.getElementById('quizProgressBar'),back=document.getElementById('quizBack'),next=document.getElementById('quizNext'),submit=document.getElementById('quizSubmit'),status=document.getElementById('quizStatus');
+ function show(){steps.forEach(function(s,i){s.hidden=i!==index;s.classList.toggle('is-active',i===index)});if(bar)bar.style.width=((index+1)/steps.length*100)+'%';back.disabled=index===0;next.hidden=index===steps.length-1;submit.hidden=index!==steps.length-1;status.textContent='Шаг '+(index+1)+' из '+steps.length;}
+ function valid(){var fields=steps[index].querySelectorAll('input[required],select[required],textarea[required]');for(var i=0;i<fields.length;i++){var f=fields[i];if(f.type==='radio'){if(!form.querySelector('input[name="'+f.name+'"]:checked')){status.textContent='Выберите один из вариантов.';return false;}continue;}if(f.type==='checkbox'&&!f.checked){status.textContent='Необходимо подтвердить согласие на обработку персональных данных.';return false;}if(!f.value.trim()){f.focus();status.textContent='Заполните обязательные поля.';return false;}}return true;}
+ next.addEventListener('click',function(){if(!valid())return;index=Math.min(index+1,steps.length-1);show()});back.addEventListener('click',function(){index=Math.max(0,index-1);show()});
+ form.addEventListener('submit',function(e){e.preventDefault();if(!valid())return;var d=new FormData(form),message=['Заявка с квиза сайта','Тип мебели: '+(d.get('furniture_type')||'не указан'),'Стиль: '+(d.get('style')||'не указан'),'Размеры: '+(d.get('dimensions')||'не указаны'),'Пожелания: '+(d.get('details')||'не указаны')].join('\n');var payload={name:d.get('name'),phone:d.get('phone'),message:message,city:d.get('city'),furniture_type:d.get('furniture_type'),style:d.get('style'),source:'quiz',page:location.pathname,personal_data_consent:d.get('personal_data_consent')==='on',website:d.get('website')||''};submit.disabled=true;submit.textContent='Отправляем…';status.textContent='Передаём заявку в мастерскую…';fetch('/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.error||'Не удалось отправить заявку');return j})}).then(function(){form.innerHTML='<div class="quiz-success"><span>✓</span><h3>Заявка отправлена</h3><p>Спасибо! Мастерская свяжется с вами по указанному номеру.</p></div>'}).catch(function(err){status.textContent=err.message;submit.disabled=false;submit.innerHTML='Повторить отправку <span aria-hidden="true">↗</span>'});});
+ show();
 })();
 </script>
 {{{code.body}}}
@@ -4778,14 +4824,15 @@ function renderLeadList(){
   var items=LEADS_CACHE.filter(function(it){if(filter==='new'&&it.read)return false;if(filter==='read'&&!it.read)return false;if(statusFilter!=='all'&&String(it.status||'new')!==statusFilter)return false;if(!needle)return true;return [it.name,it.phone,it.message,it.city,it.furniture_type,it.style,it.shape,it.at].join(' ').toLowerCase().indexOf(needle)>=0;});
   if(!items.length){out.innerHTML='<div class="info empty-leads"><strong>'+(LEADS_CACHE.length?'Ничего не найдено':'Пока заявок нет')+'</strong><span>'+(LEADS_CACHE.length?'Измените поиск или фильтр.':'Когда посетитель заполнит форму, обращение появится здесь.')+'</span></div>';return;}
   
-  out.innerHTML=items.map(function(it){
+  var renderedCards=items.map(function(it){
     var cls=it.read?'':' unread',dt=esc(String(it.at||'').replace('T',' ')),name=esc(it.name||'Без имени'),phone=esc(it.phone||''),msg=esc(it.message||'Без комментария');
     var files=(it.attachments||[]).map(function(u,i){return '<a class="lead-file-link" href="'+esc(u)+'" target="_blank" rel="noopener">Вложение '+(i+1)+' ↗</a>'}).join(' ');
     var meta=[it.city,it.furniture_type,it.contact_method?('Связь: '+it.contact_method):'',it.style,it.color,it.shape,it.sections_count?('секций: '+it.sections_count):'',it.appliances,it.facade,it.countertop,it.handle,it.additional].filter(Boolean).map(esc).join(' · ');
     var actions='<div class="lead-actions">'+(it.read?'':'<button class="btn mini" data-lead-read="'+esc(it.id)+'">Прочитано</button>')+'<a class="btn mini btn-gold" href="tel:'+esc(phone)+'">Позвонить</a><button class="btn mini" data-copy-phone="'+esc(phone)+'">Копировать номер</button><button class="btn mini lead-delete" data-delete-lead="'+esc(it.id)+'">Удалить навсегда</button></div>';
     
     return '<article class="lead-card'+cls+'"><div class="lead-top"><div><div class="lead-name">'+name+'</div><a class="lead-phone" href="tel:'+esc(phone)+'">'+phone+'</a></div><span class="lead-date">'+dt+'</span></div><div class="lead-meta-line">'+(meta||'Параметры не указаны')+'</div><div class="lead-msg">'+msg+'</div>'+(files?'<div class="lead-files-admin">'+files+'</div>':'')+'<div class="lead-manage"><label class="lead-status-label">Статус заявки<select data-lstatus="'+esc(it.id)+'"><option value="new">Новая</option><option value="in_work">В работе</option><option value="measurement">Замер</option><option value="calculation">Расчёт</option><option value="contract">Договор</option><option value="done">Завершена</option></select></label></div><div class="lead-note-edit"><input data-lnote="'+esc(it.id)+'" value="'+esc(it.notes||'')+'" placeholder="Внутренняя заметка…"><button class="btn mini" data-save-note="'+esc(it.id)+'">Сохранить заметку</button></div>'+actions+'</article>';
-  }).join('');
+  }).join('');  var statuses=[['new','Новые'],['in_work','В работе'],['measurement','Замер'],['calculation','Расчёт'],['contract','Договор'],['done','Завершены']];
+  out.innerHTML='<div class="lead-kanban">'+statuses.map(function(st){var group=items.filter(function(it){return String(it.status||'new')===st[0]});return '<section class="kanban-column" data-kanban-status="'+st[0]+'"><header><strong>'+st[1]+'</strong><span>'+group.length+'</span></header><div class="kanban-stack">'+(group.length?group.map(function(it){return renderedCards[items.indexOf(it)]}).join(''):'<div class="kanban-empty">Нет заявок</div>')+'</div></section>'}).join('')+'</div>';
   qa('[data-lstatus]').forEach(function(x){x.value=((LEADS_CACHE.filter(function(a){return a.id===x.dataset.lstatus})[0]||{}).status||'new');x.onchange=function(){var row=LEADS_CACHE.filter(function(a){return a.id===x.dataset.lstatus})[0]||{},prev=row.status||'new';x.disabled=true;api('/admin/api/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:x.dataset.lstatus,status:x.value})}).then(function(){toast('Статус сохранён');loadLeads()}).catch(function(e){x.value=prev;toast('Не удалось сохранить статус: '+e.message,true)}).finally(function(){x.disabled=false})}});
   qa('[data-save-note]').forEach(function(b){b.onclick=function(){var i=q('[data-lnote="'+b.dataset.saveNote+'"]');b.disabled=true;api('/admin/api/leads/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:b.dataset.saveNote,notes:i?i.value:''})}).then(function(){toast('Заметка сохранена');loadLeads()}).catch(function(e){toast('Не удалось сохранить заметку: '+e.message,true)}).finally(function(){b.disabled=false})}});
   qa('[data-delete-lead]').forEach(function(b){b.onclick=function(){var id=b.dataset.deleteLead;if(!id||!confirm('Удалить заявку навсегда? Это действие нельзя отменить.'))return;b.disabled=true;b.textContent='Удаляем…';api('/admin/api/leads/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})}).then(function(){LEADS_CACHE=LEADS_CACHE.filter(function(it){return String(it.id)!==String(id)});toast('Заявка удалена');loadLeads()}).catch(function(e){toast('Не удалось удалить заявку: '+e.message,true);b.disabled=false;b.textContent='Удалить навсегда'})}});
