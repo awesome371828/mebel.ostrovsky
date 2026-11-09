@@ -141,9 +141,10 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
  'code': {'head': '', 'body': ''},
  'lead_form': {'enabled': True, 'title': 'Оставить заявку', 'subtitle': 'Оставьте фамилию, имя и номер — напишите, какую мебель хотите.', 'button': 'Отправить заявку',
                'kicker': 'Связаться', 'note': 'Контакт нужен только для связи по заявке.', 'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w04.jpg'},
+ 'quiz': {'kicker': 'РАСЧЁТ ПРОЕКТА', 'title': 'Расскажите о вашей мебели', 'subtitle': 'Ответьте на несколько вопросов — мастерская получит параметры проекта и свяжется с вами.', 'step1_title': 'Город и тип мебели', 'step2_title': 'Пожелания к проекту', 'step3_title': 'Контактные данные', 'city_label': 'Где нужен проект?', 'type_label': 'Что планируете изготовить?', 'style_label': 'Предпочтительный стиль', 'dimensions_label': 'Размеры или особенности помещения', 'details_label': 'Дополнительные пожелания', 'name_label': 'Ваше имя', 'phone_label': 'Номер телефона', 'submit_label': 'Отправить расчёт', 'success_title': 'Данные проекта отправлены', 'success_text': 'Спасибо! Мастерская свяжется с вами по указанному номеру.', 'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w04.jpg'},
  'animations': {'enabled': True, 'parallax': False, 'hover3d': True, 'sparks': False, 'scroll_reveal': True,
                 'text_reveal': False, 'loader': False, 'safe_mode': True, 'smooth_scroll': True, 'intensity': 'calm'},
- 'sections': {'stats': True, 'about': True, 'consult': True, 'lead_form': True, 'works': True, 'reviews': True,
+ 'sections': {'stats': True, 'about': True, 'consult': True, 'quiz': True, 'works': True, 'reviews': True,
               'services': True, 'process': True, 'guarantees': True, 'cities': True, 'cta': True,
               'contacts': True, 'footer': True, 'cookie': True},
  'design': {'bg': '#0e0c09',
@@ -168,17 +169,16 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
                    {'label': 'Услуги', 'href': '#services'},
                    {'label': 'Как работаем', 'href': '#process'},
                    {'label': 'Города', 'href': '#cities'},
-                   {'label': 'Контакты', 'href': '#contacts'}, {'label': 'Заявка', 'href': '#lead'}],
-         'cta_label': 'Связаться с руководителем',
+                   {'label': 'Контакты', 'href': '#contacts'}],
+         'cta_label': 'Рассчитать проект',
          'cta_href': 'tel:+79508465397'},
  'hero': {'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w01.jpg', 'rotation_enabled': False, 'rotation_interval': 6500, 'rotation_images': ['https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w01.jpg','https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w04.jpg','https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w06.jpg'],
-          'sub': 'Проектируем и изготавливаем кухни, шкафы, гардеробные и другую корпусную мебель в Ростове, Батайске и Азове — по '
-                 'вашему проекту, от замера до монтажа.',
+          'sub': 'Создаем кухни и корпусную мебель «под ключ» в Ростове, Батайске и Азове. Индивидуальный проект от замера до монтажа.',
           'btn1': 'Получить консультацию',
           'btn2': 'Смотреть работы',
-          'eyebrow': 'Мебель и кухни на заказ',
-          'title_em': 'создаёт настроение',
-          'title_before': 'Мебель, которая ',
+          'eyebrow': 'Мебель, которая создаёт настроение',
+          'title_em': 'Батайске, Ростове-на-Дону и Азове',
+          'title_before': 'Кухни на заказ в ',
           'btn1_href': '#consult',
           'btn2_href': '#works',
           'watermark': 'Мебель',
@@ -324,22 +324,22 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
              'more_label': 'ВКонтакте',
              'more_href': 'https://vk.com/mebel.ostrovsky'},
  'services': {'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/bg/services.jpg',
-              'items': [{'icon': 'M3 9h18M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9M3 9l2-4h14l2 4M8 9v2M12 9v2M16 9v2',
+              'items': [{'icon': 'M3 9.5 12 4l9 5.5M5 10v9h14v-9M8 19v-5h8v5M3 21h18M8 10h.01M12 10h.01M16 10h.01',
                          'text': 'Проектируем кухню точно под ваш размер, стиль и привычки — от классики до минимализма.',
                          'title': 'Кухни на заказ'},
-                        {'icon': 'M3 3h18v18H3zM3 8h18M8 8v13M16 8v13',
+                        {'icon': 'M5 3.5h14a1.5 1.5 0 0 1 1.5 1.5v15H3.5V5A1.5 1.5 0 0 1 5 3.5ZM12 4v16M7.5 8h1M15.5 8h1M7.5 12h1M15.5 12h1',
                          'text': 'Шкафы-купе, гардеробные, тумбы и комоды — встроенные и отдельно стоящие.',
                          'title': 'Шкафы и гардеробные'},
-                        {'icon': 'M12 3v18M3 12h18M5 5l14 14M19 5L5 19',
+                        {'icon': 'M4 20V8.5L12 3l8 5.5V20M4 20h16M8 20v-6h8v6M7 9h.01M17 9h.01',
                          'text': 'Прихожие, стенки, гарнитуры под ТВ — аккуратно впишем в ваш интерьер.',
                          'title': 'Прихожие и стенки'},
-                        {'icon': 'M14 6l4 4M5 19l7-7M17 3l4 4-4 4-1-1-1 1-4-4 1-1-1-1 4-4z',
+                        {'icon': 'M14.5 6.5a4.5 4.5 0 0 0-5.8 5.8L3 18l3 3 5.7-5.7a4.5 4.5 0 0 0 5.8-5.8l-2.7 2.7-3-3 2.7-2.7Z',
                          'text': 'Профессиональная установка, аккуратная сборка и подключение техники.',
                          'title': 'Сборка и монтаж'},
-                        {'icon': 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 3v18M3 12h18',
+                        {'icon': 'M4 7h16M4 17h16M7 4v6M11 4v3M15 4v6M19 14v6M4 4v16M20 4v16',
                          'text': 'Выезжаем на замер, делаем планировку и 3D-проект — бесплатно.',
                          'title': 'Замер и проект'},
-                        {'icon': 'M3 12a9 9 0 1 0 9-9M3 12h6M3 12l4-4M3 12l4 4',
+                        {'icon': 'M20 7v5h-5M20 12a8 8 0 1 1-2.3-5.7M4 17v-5h5',
                          'text': 'Освежим фасады и фурнитуру существующей кухни — дешевле, чем новая.',
                          'title': 'Обновление мебели'}],
               'title': 'Услуги',
@@ -1412,7 +1412,7 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
 @media(max-width:600px){.panel--hero{min-height:100svh!important}.panel--hero .content{padding-top:132px!important;padding-bottom:132px!important}.panel--hero .scroll-cue{left:50%!important;right:auto!important;bottom:18px!important;width:82px!important;height:82px!important;min-width:82px!important;min-height:82px!important;transform:translateX(-50%)!important}.rev-card{width:90vw;padding:22px!important}.car-nav{display:none}.stat,.svc,.guar,.step,.about-card,.rev-card,.car-slide,.city,.call-block{border-radius:20px!important}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}.stat,.svc,.guar,.step,.about-card,.rev-card,.car-slide,.btn{transition:none!important}}
 </style>
-<link rel="stylesheet" href="/site-theme.css?v=20261109-r3"></head>
+<link rel="stylesheet" href="/site-theme.css?v=20261109-r4"></head>
 <body>
 
 <div class="progress" id="progress"></div>
@@ -1447,7 +1447,7 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
   {{/each}}<li><a href="#quiz">Рассчитать проект</a></li>{{#if nav.cta_label}}<li class="menu-call"><a href="{{nav.cta_href}}"><svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.4 2.1L8.1 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.6 2z"/></svg>{{nav.cta_label}}</a></li>{{/if}}
 </ul>
 <div class="scrim" id="scrim"></div>
-<nav class="section-rail" aria-label="Навигация по разделам"><a href="#top" aria-label="Главная"></a><a href="#about" aria-label="Руководитель"></a><a href="#works" aria-label="Работы"></a><a href="#reviews" aria-label="Отзывы"></a><a href="#services" aria-label="Услуги"></a><a href="#process" aria-label="Как работаем"></a><a href="#cities" aria-label="Города"></a><a href="#contacts" aria-label="Контакты"></a><a href="#quiz" aria-label="Рассчитать проект"></a><a href="#lead" aria-label="Заявка"></a></nav>
+<nav class="section-rail" aria-label="Навигация по разделам"><a href="#top" aria-label="Главная"></a><a href="#about" aria-label="Руководитель"></a><a href="#works" aria-label="Работы"></a><a href="#reviews" aria-label="Отзывы"></a><a href="#services" aria-label="Услуги"></a><a href="#process" aria-label="Как работаем"></a><a href="#cities" aria-label="Города"></a><a href="#contacts" aria-label="Контакты"></a><a href="#quiz" aria-label="Рассчитать проект"></a></nav>
 
 <section class="panel panel--hero" id="top"{{#if hero.watermark}} data-watermark="{{hero.watermark}}"{{/if}}>
   <div class="bg" style="background-image:url('{{{hero.bg}}}')"></div>
@@ -1461,9 +1461,9 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
       <a href="#quiz" class="btn btn-line hero-calc">Рассчитать проект</a>
     </div>
   </div></div>
-  {{#if hero.scroll_cue}}<div class="scroll-cue">{{hero.scroll_cue}}<div class="line"></div></div>{{/if}}
+  {{#if hero.scroll_cue}}<div class="scroll-cue">{{hero.scroll_cue}}</div>{{/if}}
 </section>
-{{#if local_seo_current}}<section class="panel panel--center local-seo-panel"><div class="wrap"><div class="content"><div class="kicker">{{local_seo_current.name}}</div><h2>{{local_seo_current.title}}</h2><p class="sub">{{local_seo_current.description}}</p><p class="local-seo-copy">Кухни на заказ, корпусная мебель и решения по индивидуальным размерам для жителей {{local_seo_current.name}}. Оставьте заявку на сайте, чтобы обсудить задачу.</p></div></div></section>{{/if}}
+{{#if local_seo_current}}<section class="panel panel--center local-seo-panel"><div class="wrap"><div class="content"><div class="kicker">{{local_seo_current.name}}</div><h2>{{local_seo_current.title}}</h2><p class="sub">{{local_seo_current.description}}</p><p class="local-seo-copy">Кухни на заказ, корпусная мебель и решения по индивидуальным размерам для жителей {{local_seo_current.name}}. Свяжитесь с мастерской, чтобы обсудить задачу и договориться о замере.</p></div></div></section>{{/if}}
 
 <div class="gold-divider"><i></i><b></b><i></i></div>
 
@@ -1508,44 +1508,6 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
 <div class="site-breadcrumbs"><div class="wrap"><a href="#top">Главная</a><span>›</span><span>Кухни и мебель на заказ</span></div></div>
 <div class="gold-divider"><i></i><b></b><i></i></div>
 
-{{#if sections.lead_form}}{{#if lead_form.enabled}}
-<section class="panel panel--center panel--dark lead-panel" id="lead">
-  <div class="bg lead-bg" style="background-image:url('{{{lead_form.bg}}}')"></div>
-  <div class="wrap"><div class="content lead-content">
-    <div class="lead-shell reveal">
-      <div class="lead-copy">
-        <span class="kicker">{{lead_form.kicker}}</span>
-        <h2 class="k">{{lead_form.title}}</h2>
-        <p>{{lead_form.subtitle}}</p>
-        <div class="lead-accent"><i></i><b></b><i></i></div>
-      </div>
-      <form class="site-lead-form lead-simple-form" id="siteLeadForm" autocomplete="on" novalidate>
-        <div class="lead-simple-kicker"><span>01</span><b>Оставьте контакты</b><small>Мы свяжемся и обсудим вашу задачу</small></div>
-        <div class="lead-simple-grid">
-          <label><span>Фамилия</span><input name="surname" maxlength="80" autocomplete="family-name" placeholder="Ваша фамилия"></label>
-          <label><span>Имя</span><input name="name" maxlength="80" autocomplete="given-name" placeholder="Ваше имя"></label>
-        </div>
-        <label class="lead-wide"><span>Номер телефона *</span><input name="phone" type="tel" maxlength="40" required inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__"></label>
-        <label class="lead-wide"><span>Что хотите?</span><textarea name="message" maxlength="700" required placeholder="Например: хочу кухню в современном стиле, светлую, с большим количеством хранения"></textarea></label>
-        <div class="lead-simple-choice"><span>Если удобно, выберите тип мебели</span><div class="choice-grid compact" role="group">
-          <button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Кухня">Кухня</button><button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Шкаф">Шкаф</button><button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Гардеробная">Гардеробная</button><button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Прихожая">Прихожая</button><button type="button" class="choice" data-choice-name="furniture_type" data-choice-value="Гостиная">Гостиная</button>
-        </div></div>
-        <input type="hidden" name="furniture_type" value="">
-        <label class="lead-wide"><span>Город</span><select name="city"><option value="">Выберите город</option><option value="Ростов-на-Дону">Ростов-на-Дону</option><option value="Батайск">Батайск</option><option value="Азов">Азов</option></select></label>
-        <div class="lead-simple-choice lead-contact-choice"><span>Как удобно с вами связаться?</span><div class="choice-grid compact" role="group" aria-label="Предпочтительный способ связи">
-          <button type="button" class="choice is-selected" data-choice-name="contact_method" data-choice-value="Звонок" aria-pressed="true">Звонок</button><button type="button" class="choice" data-choice-name="contact_method" data-choice-value="Telegram" aria-pressed="false">Telegram</button><button type="button" class="choice" data-choice-name="contact_method" data-choice-value="MAX" aria-pressed="false">MAX</button>
-        </div></div>
-        <input type="hidden" name="contact_method" value="Звонок">
-        <div class="lead-legal-links"><a href="/privacy" target="_blank" rel="noopener">Политика конфиденциальности</a><a href="/personal-data-consent" target="_blank" rel="noopener">Согласие на обработку персональных данных</a></div>
-        <label class="lead-consent"><input type="checkbox" name="personal_data_consent" required><span>Согласен(на) на обработку персональных данных для ответа на заявку.</span></label>
-        <div class="lead-hp" aria-hidden="true"><input name="website" tabindex="-1" autocomplete="off"></div>
-        <button class="btn btn-solid lead-submit" type="submit"><span class="lead-submit-text">{{lead_form.button}}</span><span class="lead-spinner" aria-hidden="true"></span></button>
-        <p class="lead-note">{{lead_form.note}}</p><div class="lead-result" id="siteLeadResult" role="status" aria-live="polite"></div>
-      </form>
-    </div>
-  </div></div>
-</section>
-{{/if}}{{/if}}
 <div class="gold-divider"><i></i><b></b><i></i></div>
 {{#if sections.consult}}<section class="panel panel--center panel--dark" id="consult">
   <div class="bg" style="background-image:url('{{{consult.bg}}}')"></div>
@@ -1581,16 +1543,16 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
   </div></div>
 </section>{{/if}}
 
-<section class="panel panel--dark project-quiz-panel" id="quiz">
-  <div class="bg" style="background-image:url('{{{lead_form.bg}}}')"></div>
+{{#if sections.quiz}}<section class="panel panel--dark project-quiz-panel" id="quiz">
+  <div class="bg" style="background-image:url('{{{quiz.bg}}}')"></div>
   <div class="wrap"><div class="content">
-    <div class="sec-head reveal"><div class="kicker">НЕСКОЛЬКО ВОПРОСОВ</div><h2>Расскажите о вашей мебели</h2><p>Ответьте на вопросы — мастерская получит параметры проекта и сможет связаться с вами.</p></div>
+    <div class="sec-head reveal"><div class="kicker">{{quiz.kicker}}</div><h2>{{quiz.title}}</h2><p>{{quiz.subtitle}}</p></div>
     <form class="project-quiz reveal" id="projectQuiz" novalidate>
       <div class="quiz-progress"><span id="quizProgressBar"></span></div>
       <div class="quiz-step is-active" data-quiz-step="0">
-        <div class="quiz-step-label"><b>01</b><span>Город и тип мебели</span></div>
-        <label class="quiz-field"><span>Где нужен проект?</span><select name="city" required><option value="">Выберите город</option><option>Ростов-на-Дону</option><option>Батайск</option><option>Азов</option></select></label>
-        <fieldset class="quiz-field"><legend>Что планируете изготовить?</legend><div class="quiz-options">
+        <div class="quiz-step-label"><b>01</b><span>{{quiz.step1_title}}</span></div>
+        <label class="quiz-field"><span>{{quiz.city_label}}</span><select name="city" required><option value="">Выберите город</option><option>Ростов-на-Дону</option><option>Батайск</option><option>Азов</option></select></label>
+        <fieldset class="quiz-field"><legend>{{quiz.type_label}}</legend><div class="quiz-options">
           <label><input type="radio" name="furniture_type" value="Кухня" required><span>Кухню</span></label>
           <label><input type="radio" name="furniture_type" value="Шкаф или гардеробную"><span>Шкаф / гардеробную</span></label>
           <label><input type="radio" name="furniture_type" value="Прихожую"><span>Прихожую</span></label>
@@ -1598,19 +1560,19 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
         </div></fieldset>
       </div>
       <div class="quiz-step" data-quiz-step="1" hidden>
-        <div class="quiz-step-label"><b>02</b><span>Пожелания к проекту</span></div>
-        <label class="quiz-field"><span>Предпочтительный стиль</span><select name="style"><option value="">Пока не определились</option><option>Современный</option><option>Классический</option><option>Минимализм</option><option>Другой / нужна консультация</option></select></label>
-        <label class="quiz-field"><span>Размеры или особенности помещения</span><input name="dimensions" maxlength="180" placeholder="Например: прямая кухня, длина примерно 3 метра"></label>
-        <label class="quiz-field"><span>Дополнительные пожелания</span><textarea name="details" rows="3" maxlength="700" placeholder="Материалы, техника, хранение и другие важные детали"></textarea></label>
+        <div class="quiz-step-label"><b>02</b><span>{{quiz.step2_title}}</span></div>
+        <label class="quiz-field"><span>{{quiz.style_label}}</span><select name="style"><option value="">Пока не определились</option><option>Современный</option><option>Классический</option><option>Минимализм</option><option>Другой / нужна консультация</option></select></label>
+        <label class="quiz-field"><span>{{quiz.dimensions_label}}</span><input name="dimensions" maxlength="180" placeholder="Например: прямая кухня, длина примерно 3 метра"></label>
+        <label class="quiz-field"><span>{{quiz.details_label}}</span><textarea name="details" rows="3" maxlength="700" placeholder="Материалы, техника, хранение и другие важные детали"></textarea></label>
       </div>
       <div class="quiz-step" data-quiz-step="2" hidden>
-        <div class="quiz-step-label"><b>03</b><span>Как с вами связаться</span></div>
-        <label class="quiz-field"><span>Ваше имя</span><input name="name" autocomplete="given-name" maxlength="80" required placeholder="Имя"></label>
-        <label class="quiz-field"><span>Номер телефона</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="40" required placeholder="+7 (___) ___-__-__"></label>
+        <div class="quiz-step-label"><b>03</b><span>{{quiz.step3_title}}</span></div>
+        <label class="quiz-field"><span>{{quiz.name_label}}</span><input name="name" autocomplete="given-name" maxlength="80" required placeholder="Имя"></label>
+        <label class="quiz-field"><span>{{quiz.phone_label}}</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="40" required placeholder="+7 (___) ___-__-__"></label>
         <label class="quiz-consent"><input type="checkbox" name="personal_data_consent" required><span>Согласен(на) на обработку персональных данных согласно <a href="/personal-data-consent" target="_blank" rel="noopener">условиям согласия</a> и <a href="/privacy" target="_blank" rel="noopener">политике конфиденциальности</a>.</span></label>
         <label class="quiz-honeypot" aria-hidden="true">Сайт<input name="website" tabindex="-1" autocomplete="off"></label>
       </div>
-      <div class="quiz-controls"><button type="button" class="quiz-back" id="quizBack" disabled>Назад</button><button type="button" class="quiz-next" id="quizNext">Продолжить <span aria-hidden="true">→</span></button><button type="submit" class="quiz-submit" id="quizSubmit" hidden>Отправить заявку <span aria-hidden="true">↗</span></button></div>
+      <div class="quiz-controls"><button type="button" class="quiz-back" id="quizBack" disabled>Назад</button><button type="button" class="quiz-next" id="quizNext">Продолжить <span aria-hidden="true">→</span></button><button type="submit" class="quiz-submit" id="quizSubmit" hidden>Отправить расчёт <span aria-hidden="true">↗</span></button></div>
       <p class="quiz-status" id="quizStatus" role="status" aria-live="polite"></p>
     </form>
     <div class="quiz-messengers" aria-label="Другие способы связи">
@@ -2473,7 +2435,7 @@ def _migrate(raw):
     nav = d.get("nav")
     if isinstance(nav, dict):
         items = nav.get("items") if isinstance(nav.get("items"), list) else []
-        canonical = [("Руководитель", "#about"), ("Работы", "#works"), ("Отзывы", "#reviews"), ("Услуги", "#services"), ("Как работаем", "#process"), ("Города", "#cities"), ("Контакты", "#contacts"), ("Заявка", "#lead")]
+        canonical = [("Руководитель", "#about"), ("Работы", "#works"), ("Отзывы", "#reviews"), ("Услуги", "#services"), ("Как работаем", "#process"), ("Города", "#cities"), ("Контакты", "#contacts")]
         old_by_href = {str(x.get("href")): x for x in items if isinstance(x, dict)}
         nav["items"] = [{"label": label, "href": href, **{k:v for k,v in old_by_href.get(href, {}).items() if k not in ("label", "href")}} for label, href in canonical]
 
@@ -2497,6 +2459,11 @@ def _migrate(raw):
     else:
         for k,v in (DEFAULT_DATA.get("lead_form") or {}).items():
             d["lead_form"].setdefault(k, v)
+    if not isinstance(d.get("quiz"), dict):
+        d["quiz"] = _json_clone(DEFAULT_DATA.get("quiz") or {})
+    else:
+        for k, v in (DEFAULT_DATA.get("quiz") or {}).items():
+            d["quiz"].setdefault(k, v)
     if not isinstance(d.get("legal_pages"), dict):
         d["legal_pages"] = _json_clone(DEFAULT_DATA.get("legal_pages") or {})
     else:
@@ -2512,6 +2479,16 @@ def _migrate(raw):
     else:
         for k,v in (DEFAULT_DATA.get("sections") or {}).items():
             d["sections"].setdefault(k, v)
+    d["sections"].pop("lead_form", None)
+    d["sections"]["quiz"] = True
+
+    # Migrate only former defaults; preserve intentional CMS edits.
+    if isinstance(hero, dict):
+        if hero.get("title_before") == "Мебель, которая " and hero.get("title_em") == "создаёт настроение":
+            hero["eyebrow"] = "Мебель, которая создаёт настроение"
+            hero["title_before"] = "Кухни на заказ в "
+            hero["title_em"] = "Батайске, Ростове-на-Дону и Азове"
+            hero["sub"] = "Создаем кухни и корпусную мебель «под ключ» в Ростове, Батайске и Азове. Индивидуальный проект от замера до монтажа."
 
     return d
 
@@ -3759,7 +3736,7 @@ def _legal_page(path, data):
             body += '<section class="legal-section"><span class="legal-index">+</span><div><h2>Учёт посещений сайта</h2><p>Для подсчёта посещаемости сайт может сохранять в браузере случайный идентификатор и учитывать посещённые страницы, время первого и последнего визита и источник перехода. Этот идентификатор не предназначен для установления имени посетителя. Посещения с разных браузеров или устройств могут учитываться отдельно. Записи аналитики ограничены последними 5 000 браузерными идентификаторами и хранятся в техническом файле сервера; фактический срок сохранения зависит от настроек и политики хранения хостинга. Сырые IP-адреса этим журналом посещений не сохраняются.</p></div></section>'
     body += '<p class="legal-note">Изменено: 10.10.2026</p>'
 
-    return '''<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="index,follow"><title>'''+_escape(title)+''' — Кухни Островский</title><meta name="description" content="Официальная информация сайта Кухни Островский: контакты, реквизиты и документы по персональным данным."><link rel="stylesheet" href="/site-theme.css?v=20261109-r3"><style>'''+'''*{box-sizing:border-box}body{margin:0}.legal-page{min-height:100vh;background:radial-gradient(ellipse at 80% 0,rgba(212,175,106,.12),transparent 42%),#0e0c09;color:#f5efe3;padding:34px 18px 70px;font:15px/1.75 system-ui,-apple-system,Segoe UI,sans-serif}.legal-wrap{max-width:900px;margin:0 auto}.legal-top{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:38px}.legal-top a,.legal-page a{color:#eccfa0}.legal-card{padding:clamp(22px,5vw,52px);border:1px solid rgba(236,207,160,.22);border-radius:22px;background:linear-gradient(145deg,rgba(31,25,17,.9),rgba(13,12,10,.96));box-shadow:0 24px 80px rgba(0,0,0,.22)}.legal-card h1,.legal-card h2{font-family:Georgia,serif;line-height:1.12}.legal-card h1{font-size:clamp(34px,5vw,54px);margin:0 0 20px}.legal-card h2{font-size:25px;margin:30px 0 8px}.legal-card p,.legal-card li{color:#c9bdab}.legal-sections{display:grid;gap:14px;margin-top:26px}.legal-section{display:grid;grid-template-columns:48px minmax(0,1fr);gap:18px;padding:22px 24px;border:1px solid rgba(236,207,160,.15);border-radius:18px;background:linear-gradient(135deg,rgba(236,207,160,.055),rgba(255,255,255,.012));box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}.legal-section p{margin:0;line-height:1.9}.legal-index{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;border:1px solid rgba(236,207,160,.25);background:rgba(236,207,160,.08);color:#eccfa0;font-size:12px;font-weight:800}.legal-profile a{display:inline-block;margin-top:8px}.legal-profile span{display:block;color:#c9bdab;margin-top:4px}@media(max-width:600px){.legal-section{grid-template-columns:1fr;padding:17px;gap:10px}.legal-index{width:34px;height:34px}}.legal-profile{display:flex;align-items:center;gap:20px;margin:0 0 28px}.legal-profile img{width:96px;height:96px;object-fit:cover;border-radius:50%;border:2px solid #d4af6a;box-shadow:0 0 0 7px rgba(212,175,106,.1)}.legal-profile strong{display:block;font-size:18px}.legal-note{font-size:12px;color:#a99e8c!important;border-top:1px solid rgba(236,207,160,.14);padding-top:18px;margin-top:28px}@media(max-width:600px){.legal-top{align-items:flex-start;flex-direction:column}.legal-profile{align-items:flex-start}.legal-profile img{width:76px;height:76px}}</style></head><body><main class="legal-page"><div class="legal-wrap"><nav class="legal-top"><a href="/">← На главную</a><span>Кухни Островский · Ростов · Батайск · Азов</span></nav><article class="legal-card"><h1>'''+_escape(title)+'''</h1>'''+body+'''</article></div></main></body></html>'''
+    return '''<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="index,follow"><title>'''+_escape(title)+''' — Кухни Островский</title><meta name="description" content="Официальная информация сайта Кухни Островский: контакты, реквизиты и документы по персональным данным."><link rel="stylesheet" href="/site-theme.css?v=20261109-r4"><style>'''+'''*{box-sizing:border-box}body{margin:0}.legal-page{min-height:100vh;background:radial-gradient(ellipse at 80% 0,rgba(212,175,106,.12),transparent 42%),#0e0c09;color:#f5efe3;padding:34px 18px 70px;font:15px/1.75 system-ui,-apple-system,Segoe UI,sans-serif}.legal-wrap{max-width:900px;margin:0 auto}.legal-top{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:38px}.legal-top a,.legal-page a{color:#eccfa0}.legal-card{padding:clamp(22px,5vw,52px);border:1px solid rgba(236,207,160,.22);border-radius:22px;background:linear-gradient(145deg,rgba(31,25,17,.9),rgba(13,12,10,.96));box-shadow:0 24px 80px rgba(0,0,0,.22)}.legal-card h1,.legal-card h2{font-family:Georgia,serif;line-height:1.12}.legal-card h1{font-size:clamp(34px,5vw,54px);margin:0 0 20px}.legal-card h2{font-size:25px;margin:30px 0 8px}.legal-card p,.legal-card li{color:#c9bdab}.legal-sections{display:grid;gap:14px;margin-top:26px}.legal-section{display:grid;grid-template-columns:48px minmax(0,1fr);gap:18px;padding:22px 24px;border:1px solid rgba(236,207,160,.15);border-radius:18px;background:linear-gradient(135deg,rgba(236,207,160,.055),rgba(255,255,255,.012));box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}.legal-section p{margin:0;line-height:1.9}.legal-index{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;border:1px solid rgba(236,207,160,.25);background:rgba(236,207,160,.08);color:#eccfa0;font-size:12px;font-weight:800}.legal-profile a{display:inline-block;margin-top:8px}.legal-profile span{display:block;color:#c9bdab;margin-top:4px}@media(max-width:600px){.legal-section{grid-template-columns:1fr;padding:17px;gap:10px}.legal-index{width:34px;height:34px}}.legal-profile{display:flex;align-items:center;gap:20px;margin:0 0 28px}.legal-profile img{width:96px;height:96px;object-fit:cover;border-radius:50%;border:2px solid #d4af6a;box-shadow:0 0 0 7px rgba(212,175,106,.1)}.legal-profile strong{display:block;font-size:18px}.legal-note{font-size:12px;color:#a99e8c!important;border-top:1px solid rgba(236,207,160,.14);padding-top:18px;margin-top:28px}@media(max-width:600px){.legal-top{align-items:flex-start;flex-direction:column}.legal-profile{align-items:flex-start}.legal-profile img{width:76px;height:76px}}</style></head><body><main class="legal-page"><div class="legal-wrap"><nav class="legal-top"><a href="/">← На главную</a><span>Кухни Островский · Ростов · Батайск · Азов</span></nav><article class="legal-card"><h1>'''+_escape(title)+'''</h1>'''+body+'''</article></div></main></body></html>'''
 
 
 def build_404(data):
@@ -4247,16 +4224,26 @@ ADMIN_SCHEMA = [
         {"path": "page404.button", "label": "Кнопка", "type": "text"},
      ]},
 
-    {"id": "lead_settings", "group": "Заявки", "title": "Форма заявки",
-     "hint": "Большой отдельный блок «Оставить заявку» находится сразу под консультацией. Заявки приходят прямо в админку.",
+    {"id": "project_quiz", "group": "Контент", "title": "Расчёт проекта",
+     "hint": "Единая форма расчёта проекта на сайте. Заголовки, подписи и фоновая фотография редактируются здесь.",
      "fields": [
-         {"path": "lead_form.enabled", "label": "Показывать блок на сайте", "type": "check", "chkLabel": "включено"},
-         {"path": "lead_form.title", "label": "Заголовок", "type": "text"},
-         {"path": "lead_form.kicker", "label": "Надзаголовок", "type": "text"},
-         {"path": "lead_form.subtitle", "label": "Подзаголовок", "type": "textarea", "rows": 2},
-         {"path": "lead_form.button", "label": "Текст кнопки", "type": "text"},
-         {"path": "lead_form.note", "label": "Подпись под кнопкой", "type": "text"},
-         {"path": "lead_form.bg", "label": "Фон блока заявки", "type": "image", "hint": "Одна фотография из работ. Не меняется автоматически."},
+         {"path": "quiz.kicker", "label": "Надзаголовок", "type": "text"},
+         {"path": "quiz.title", "label": "Заголовок", "type": "text"},
+         {"path": "quiz.subtitle", "label": "Описание", "type": "textarea", "rows": 2},
+         {"path": "quiz.step1_title", "label": "Шаг 1", "type": "text"},
+         {"path": "quiz.step2_title", "label": "Шаг 2", "type": "text"},
+         {"path": "quiz.step3_title", "label": "Шаг 3", "type": "text"},
+         {"path": "quiz.city_label", "label": "Подпись города", "type": "text"},
+         {"path": "quiz.type_label", "label": "Подпись типа мебели", "type": "text"},
+         {"path": "quiz.style_label", "label": "Подпись стиля", "type": "text"},
+         {"path": "quiz.dimensions_label", "label": "Подпись размеров", "type": "text"},
+         {"path": "quiz.details_label", "label": "Подпись пожеланий", "type": "text"},
+         {"path": "quiz.name_label", "label": "Подпись имени", "type": "text"},
+         {"path": "quiz.phone_label", "label": "Подпись телефона", "type": "text"},
+         {"path": "quiz.submit_label", "label": "Кнопка отправки", "type": "text"},
+         {"path": "quiz.success_title", "label": "Заголовок после отправки", "type": "text"},
+         {"path": "quiz.success_text", "label": "Текст после отправки", "type": "textarea", "rows": 2},
+         {"path": "quiz.bg", "label": "Фоновая фотография", "type": "image"}
      ]},
 
     {"id":"local_seo","group":"SEO и код","title":"SEO-страницы городов","hint":"Отдельные индексируемые страницы Ростова-на-Дону, Батайска и Азова.","fields":[{"type":"info","text":"Страницы: /rostov-na-donu/ · /bataysk/ · /azov/. Для запроса «кухни на заказ Батайск» используется отдельная Title, Description и текст страницы."}]},
@@ -4373,7 +4360,7 @@ body{background:radial-gradient(ellipse at 50% 0%,rgba(215,189,139,.10),transpar
 .card button{border-radius:999px!important;background:linear-gradient(135deg,#E5D4B3,#C5A979)!important;color:#211B13!important;box-shadow:0 12px 28px rgba(0,0,0,.25)!important}
 </style>
 <style id="ostrovskyLoginEditorial2026">*{box-sizing:border-box}body{background:radial-gradient(ellipse at 50% 0%,rgba(216,194,155,.11),transparent 48%),#171816!important;color:#F7F5F0!important}.card{background:rgba(255,255,255,.055)!important;border:1px solid rgba(255,255,255,.14)!important;border-radius:24px!important;box-shadow:0 24px 64px rgba(0,0,0,.36)!important;backdrop-filter:blur(22px)!important}.card h1{color:#F7F5F0!important}.card p.sub,.card .hint{color:#C9C4BA!important}.card label{color:#D8C29B!important}.card input{background:rgba(0,0,0,.22)!important;border:1px solid rgba(255,255,255,.16)!important;border-radius:13px!important;color:#F7F5F0!important}.card input:focus{outline:none!important;border-color:#D8C29B!important;box-shadow:0 0 0 3px rgba(216,194,155,.12)!important}.card button{border-radius:999px!important;background:linear-gradient(135deg,#E8D8B8,#CDB58A)!important;color:#211D16!important;box-shadow:0 12px 28px rgba(0,0,0,.25)!important}</style>
-<link rel="stylesheet" href="/site-theme.css?v=20261109-r3"></head><body>
+<link rel="stylesheet" href="/site-theme.css?v=20261109-r4"></head><body>
 <form class="card" method="POST" action="/admin/login">
 <h1>Кухни Островский</h1><p class="sub">Панель управления сайтом</p>__ERROR__
 <label>Логин</label><input type="text" name="login" required autofocus autocomplete="username">
@@ -4644,7 +4631,7 @@ tr:hover td{background:#F8F6F1!important}
 @media(max-width:820px){.admin-shell nav.side{border-radius:18px!important}.admin-shell .field,.admin-shell .overview-card,.admin-shell .info,.admin-shell .item,.admin-shell .lead-card,.admin-shell .audit-row,.admin-shell .dash{border-radius:17px!important}}
 </style>
 <style id="ostrovskyAdminEditorial2026">:root{--ae-line:rgba(255,255,255,.12);--ae-text:#F7F5F0;--ae-muted:#C9C4BA;--ae-ease:cubic-bezier(.16,1,.3,1)}.admin-shell{background:radial-gradient(900px 520px at 82% -10%,rgba(216,194,155,.10),transparent 60%),#171816!important;color:var(--ae-text)!important}.admin-shell nav.side{background:rgba(255,255,255,.035)!important;border:1px solid var(--ae-line)!important;border-radius:22px!important;backdrop-filter:blur(18px)!important}.admin-shell .field,.admin-shell .overview-card,.admin-shell .info,.admin-shell .item,.admin-shell .lead-card,.admin-shell .audit-row,.admin-shell .dash,.admin-shell .preview-frame,.admin-shell .diag-row{background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.028))!important;border:1px solid var(--ae-line)!important;border-radius:20px!important;box-shadow:0 20px 40px rgba(0,0,0,.24)!important;backdrop-filter:blur(18px)!important;color:var(--ae-text)!important}.admin-shell .lead-card:hover,.admin-shell .overview-card:hover,.admin-shell .dash:hover{border-color:rgba(216,194,155,.34)!important;transform:translateY(-2px)}.admin-shell .page-head{border-color:var(--ae-line)!important}.admin-shell h1,.admin-shell h2,.admin-shell h3,.admin-shell strong{color:#F7F5F0}.admin-shell p,.admin-shell small,.admin-shell label,.admin-shell .muted,.admin-shell .hint{color:var(--ae-muted)}.admin-shell input,.admin-shell select,.admin-shell textarea,.admin-shell .lead-search{background:rgba(0,0,0,.20)!important;color:#F7F5F0!important;border:1px solid rgba(255,255,255,.16)!important;border-radius:12px!important}.admin-shell input:focus,.admin-shell select:focus,.admin-shell textarea:focus{outline:none!important;border-color:rgba(216,194,155,.7)!important;box-shadow:0 0 0 3px rgba(216,194,155,.10)!important}.admin-shell input::placeholder,.admin-shell textarea::placeholder{color:#A9A69E!important}.admin-shell .btn{border-radius:999px!important;transition:transform .35s var(--ae-ease)!important}.admin-shell .btn:hover{transform:translateY(-1px)}.admin-shell .btn-gold{background:linear-gradient(135deg,#E8D8B8,#CDB58A)!important;color:#211D16!important;border:1px solid rgba(232,216,184,.7)!important}.admin-shell nav.side a{border-radius:12px!important}.admin-shell table{border-collapse:separate!important;border-spacing:0 7px!important;color:#F7F5F0}.admin-shell th{color:#C9C4BA!important;font-weight:600}.admin-shell td{background:rgba(255,255,255,.035)!important;border-top:1px solid var(--ae-line)!important;border-bottom:1px solid var(--ae-line)!important}.admin-shell td:first-child{border-left:1px solid var(--ae-line)!important;border-radius:12px 0 0 12px}.admin-shell td:last-child{border-right:1px solid var(--ae-line)!important;border-radius:0 12px 12px 0}.admin-shell .status,.admin-shell .badge{border-radius:999px!important}@media(max-width:820px){.admin-shell nav.side{border-radius:18px!important}.admin-shell .field,.admin-shell .overview-card,.admin-shell .info,.admin-shell .item,.admin-shell .lead-card,.admin-shell .audit-row,.admin-shell .dash{border-radius:17px!important}}</style>
-<link rel="stylesheet" href="/site-theme.css?v=20261109-r3"></head><body class="admin-shell">
+<link rel="stylesheet" href="/site-theme.css?v=20261109-r4"></head><body class="admin-shell">
 <header>
 <div class="brand"><span class="mark"></span>Кухни Островский<span>CMS</span><span class="status" id="status">Загрузка…</span><span class="status" id="revInfo" style="background:rgba(255,255,255,.05);color:#a2988a;border:1px solid rgba(255,255,255,.08)">rev —</span></div>
 <div class="actions">
