@@ -3516,7 +3516,7 @@ def render_city_page(slug):
     # Дополнительный локальный текст — один блок на конкретной городской странице.
     copy=data["local_seo_current"].get("body_copy","")
     if copy:
-      block='<section class="panel local-seo-detail"><div class="wrap"><div class="content"><h2>Мебель под ваше помещение</h2><p>'+_escape(copy)+'</p><p><a class="btn btn-solid" href="#lead">Обсудить проект</a></p></div></div></section>'
+      block='<section class="panel local-seo-detail"><div class="wrap"><div class="content"><h2>Мебель под ваше помещение</h2><p>'+_escape(copy)+'</p><p><a class="btn btn-solid" href="#quiz">Рассчитать проект</a></p></div></div></section>'
       if '</main>' in html: html=html.replace('</main>',block+'</main>',1)
       elif '</body>' in html: html=html.replace('</body>',block+'</body>',1)
     return _inject_site_ui(html,data)
