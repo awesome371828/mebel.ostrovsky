@@ -2459,7 +2459,6 @@ def _migrate(raw):
         for k,v in (DEFAULT_DATA.get("sections") or {}).items():
             d["sections"].setdefault(k, v)
     d["sections"].pop("lead_form", None)
-    d["sections"]["quiz"] = True
 
     # Migrate only former defaults; preserve intentional CMS edits.
     if isinstance(hero, dict):
