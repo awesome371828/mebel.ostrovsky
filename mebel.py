@@ -139,8 +139,6 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
          'robots': '',
          'extra_urls': []},
  'code': {'head': '', 'body': ''},
- 'lead_form': {'enabled': True, 'title': 'Оставить заявку', 'subtitle': 'Оставьте фамилию, имя и номер — напишите, какую мебель хотите.', 'button': 'Отправить заявку',
-               'kicker': 'Связаться', 'note': 'Контакт нужен только для связи по заявке.', 'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w04.jpg'},
  'quiz': {'kicker': 'РАСЧЁТ ПРОЕКТА', 'title': 'Расскажите о вашей мебели', 'subtitle': 'Ответьте на несколько вопросов — мастерская получит параметры проекта и свяжется с вами.', 'step1_title': 'Город и тип мебели', 'step2_title': 'Пожелания к проекту', 'step3_title': 'Контактные данные', 'city_label': 'Где нужен проект?', 'type_label': 'Что планируете изготовить?', 'style_label': 'Предпочтительный стиль', 'dimensions_label': 'Размеры или особенности помещения', 'details_label': 'Дополнительные пожелания', 'name_label': 'Ваше имя', 'phone_label': 'Номер телефона', 'submit_label': 'Отправить расчёт', 'success_title': 'Данные проекта отправлены', 'success_text': 'Спасибо! Мастерская свяжется с вами по указанному номеру.', 'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w04.jpg'},
  'animations': {'enabled': True, 'parallax': False, 'hover3d': True, 'sparks': False, 'scroll_reveal': True,
                 'text_reveal': False, 'loader': False, 'safe_mode': True, 'smooth_scroll': True, 'intensity': 'calm'},
@@ -1975,21 +1973,6 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
 <script id="siteRailScript">
 (function(){var links=[...document.querySelectorAll('.section-rail a')];if(!links.length)return;var ids=links.map(function(a){return (a.getAttribute('href')||'').slice(1)});function mark(){var y=window.scrollY+window.innerHeight*.42,active=ids[0];ids.forEach(function(id){var e=document.getElementById(id);if(e&&e.offsetTop<=y)active=id});links.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+active)})}window.addEventListener('scroll',mark,{passive:true});mark()})();
 </script>
-<script id="siteLeadScript">
-(function(){
-  var form=document.getElementById('siteLeadForm');if(!form)return;
-  var btn=form.querySelector('.lead-submit'),result=document.getElementById('siteLeadResult');
-  function setResult(msg,bad){if(!result)return;result.textContent=msg||'';result.classList.toggle('error',!!bad)}
-  form.querySelectorAll('[data-choice-name]').forEach(function(b){b.addEventListener('click',function(){var n=b.dataset.choiceName;form.querySelectorAll('[data-choice-name="'+n+'"]').forEach(function(x){x.classList.remove('is-selected');x.setAttribute('aria-pressed','false')});b.classList.add('is-selected');b.setAttribute('aria-pressed','true');var i=form.querySelector('[name="'+n+'"]');if(i)i.value=b.dataset.choiceValue||''})});
-  form.addEventListener('submit',async function(e){e.preventDefault();setResult('');var fd=new FormData(form),phone=String(fd.get('phone')||'').trim(),name=String(fd.get('name')||'').trim(),message=String(fd.get('message')||'').trim(),consent=!!fd.get('personal_data_consent');
-    if(!name){setResult('Укажите имя.',true);form.querySelector('[name="name"]').focus();return}if(phone.replace(/\D/g,'').length<7){setResult('Укажите номер телефона.',true);form.querySelector('[name="phone"]').focus();return}if(!message){setResult('Напишите, какую мебель вы хотите.',true);form.querySelector('[name="message"]').focus();return}if(!consent){setResult('Для отправки заявки подтвердите согласие на обработку персональных данных.',true);form.querySelector('[name="personal_data_consent"]').focus();return}if(String(fd.get('website')||''))return;
-    btn.classList.add('loading');btn.disabled=true;var old=btn.querySelector('.lead-submit-text');if(old)old.textContent='Отправляем…';
-    try{var body={surname:String(fd.get('surname')||'').trim(),name:name,phone:phone,message:message,website:'',page:location.href,city:String(fd.get('city')||''),furniture_type:String(fd.get('furniture_type')||''),contact_method:String(fd.get('contact_method')||'Звонок'),personal_data_consent:consent,source:'site'};
-      var ctl=typeof AbortController!=='undefined'?new AbortController():null,timer=ctl?setTimeout(function(){try{ctl.abort()}catch(_){}},9000):null;var r=await fetch('/api/lead',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(body),signal:ctl?ctl.signal:undefined});if(timer)clearTimeout(timer);var raw=await r.text(),j={};try{j=JSON.parse(raw||'{}')}catch(_){}if(!r.ok||!j.ok)throw new Error(j.error||('Ошибка отправки ('+r.status+')'));
-      form.reset();form.querySelectorAll('.choice').forEach(function(x){x.classList.remove('is-selected');x.setAttribute('aria-pressed','false')});setResult('Заявка отправлена. Спасибо! Предпочтительный способ связи: '+String(fd.get('contact_method')||'Звонок')+'. Мы свяжемся с вами.');if(old)old.textContent='Заявка отправлена ✓';setTimeout(function(){if(old)old.textContent='Отправить заявку';btn.disabled=false;btn.classList.remove('loading')},2600);
-    }catch(err){setResult(err&&err.name==='AbortError'?'Сервер отвечает слишком долго. Попробуйте ещё раз.':(err&&err.message?err.message:'Не удалось отправить заявку. Попробуйте ещё раз.'),true);if(old)old.textContent='Отправить заявку';btn.disabled=false;btn.classList.remove('loading')} });
-})();
-</script>
 <script id="beautyScript">
 (function(){
   var d=document;
@@ -2454,11 +2437,7 @@ def _migrate(raw):
     else:
         for k,v in (DEFAULT_DATA.get("animations") or {}).items():
             d["animations"].setdefault(k, v)
-    if not isinstance(d.get("lead_form"), dict):
-        d["lead_form"] = _json_clone(DEFAULT_DATA.get("lead_form") or {})
-    else:
-        for k,v in (DEFAULT_DATA.get("lead_form") or {}).items():
-            d["lead_form"].setdefault(k, v)
+    d.pop("lead_form", None)
     if not isinstance(d.get("quiz"), dict):
         d["quiz"] = _json_clone(DEFAULT_DATA.get("quiz") or {})
     else:
@@ -3910,7 +3889,7 @@ ADMIN_SCHEMA = [
          {"path": "sections.stats", "label": "Цифры (10+, 5.0, 9/10)", "type": "check"},
          {"path": "sections.about", "label": "О специалисте", "type": "check"},
          {"path": "sections.consult", "label": "Консультация", "type": "check"},
-         {"path": "sections.lead_form", "label": "Блок «Оставить заявку»", "type": "check"},
+         {"path": "sections.quiz", "label": "Расчёт проекта", "type": "check"},
          {"path": "sections.works", "label": "Работы", "type": "check"},
          {"path": "sections.reviews", "label": "Отзывы", "type": "check"},
          {"path": "sections.services", "label": "Услуги", "type": "check"},
