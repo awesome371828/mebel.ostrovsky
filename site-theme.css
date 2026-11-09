@@ -147,3 +147,42 @@ body:has(form.card) form.card button{border-radius:12px!important}
  .cookie-bar{left:10px!important;right:10px!important;bottom:10px!important;display:grid!important;grid-template-columns:1fr auto;gap:10px!important}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* Guided project quiz */
+.project-quiz{max-width:900px;margin:30px auto 0;padding:clamp(22px,4vw,42px);border:1px solid rgba(244,241,234,.16);border-radius:16px;background:linear-gradient(145deg,rgba(244,241,234,.12),rgba(244,241,234,.065));box-shadow:0 24px 65px rgba(0,0,0,.28);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.quiz-progress{height:5px;border-radius:999px;background:rgba(244,241,234,.18);overflow:hidden;margin-bottom:28px}
+.quiz-progress span{display:block;width:33.333%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#C9A86A,#E8D8B8);transition:width .6s cubic-bezier(.16,1,.3,1)}
+.quiz-step-label{display:flex;align-items:center;gap:14px;margin-bottom:22px;color:#fff;font-weight:700}
+.quiz-step-label b{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:rgba(201,168,106,.18);border:1px solid rgba(232,216,184,.35);color:#E8D8B8;font-size:12px}
+.quiz-field{display:block;margin:0 0 20px;border:0;padding:0}
+.quiz-field>span,.quiz-field legend{display:block;margin-bottom:9px;color:#F4F1EA;font-size:13px;font-weight:650}
+.quiz-field select,.quiz-field input,.quiz-field textarea{width:100%;min-height:48px;padding:13px 15px;border:1px solid rgba(244,241,234,.18);border-radius:12px;background:rgba(18,18,18,.5);color:#fff;font:inherit;outline:none}
+.quiz-field select:focus,.quiz-field input:focus,.quiz-field textarea:focus{border-color:#D8BD8B;box-shadow:0 0 0 3px rgba(201,168,106,.14)}
+.quiz-field option{color:#141414;background:#F4F1EA}
+.quiz-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.quiz-options label{position:relative;cursor:pointer}
+.quiz-options input{position:absolute;opacity:0;pointer-events:none}
+.quiz-options label span{display:flex;align-items:center;min-height:54px;padding:13px 16px;border:1px solid rgba(244,241,234,.18);border-radius:12px;background:rgba(244,241,234,.07);color:#F4F1EA;transition:all .6s cubic-bezier(.16,1,.3,1)}
+.quiz-options input:checked+span{background:rgba(201,168,106,.18);border-color:#D8BD8B;color:#fff;box-shadow:inset 0 0 0 1px rgba(201,168,106,.18)}
+.quiz-consent{display:flex;align-items:flex-start;gap:10px;margin:20px 0;color:rgba(244,241,234,.82);font-size:12px;line-height:1.55}
+.quiz-consent input{margin-top:3px;accent-color:#C9A86A}
+.quiz-consent a{color:#E8D8B8;text-decoration:underline;text-underline-offset:3px}
+.quiz-honeypot{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important}
+.quiz-controls{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+.quiz-controls button{min-height:46px;padding:12px 20px;border-radius:999px;font:650 13px/1.2 inherit;cursor:pointer}
+.quiz-back{border:1px solid rgba(244,241,234,.25);background:transparent;color:#F4F1EA}
+.quiz-back:disabled{opacity:.35;cursor:not-allowed}
+.quiz-next,.quiz-submit{margin-left:auto;border:1px solid #D8BD8B;background:linear-gradient(135deg,#E8D8B8,#C9A86A);color:#171511}
+.quiz-status{min-height:22px;margin-top:12px;color:#E8D8B8;font-size:12px}
+.quiz-success{text-align:center;padding:30px 12px;color:#F4F1EA}
+.quiz-success>span{display:grid;place-items:center;width:56px;height:56px;margin:0 auto 14px;border-radius:50%;background:rgba(201,168,106,.2);color:#E8D8B8;font-size:28px}
+.quiz-success h3{color:#fff!important;font:600 26px/1.2 'Manrope',system-ui,sans-serif}
+.quiz-success p{margin-top:10px;color:rgba(244,241,234,.78)}
+.lead-kanban{display:grid;grid-template-columns:repeat(6,minmax(270px,1fr));gap:14px;overflow-x:auto;padding:4px 2px 18px;align-items:start;scroll-snap-type:x proximity}
+.kanban-column{min-width:270px;max-height:calc(100vh - 240px);overflow:auto;overscroll-behavior:contain;padding:12px;border:1px solid rgba(244,241,234,.12);border-radius:16px;background:rgba(244,241,234,.045);scroll-snap-align:start}
+.kanban-column>header{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;padding:10px 10px 13px;margin:-2px -2px 10px;background:rgba(18,18,18,.94);backdrop-filter:blur(14px);color:#F4F1EA;border-bottom:1px solid rgba(244,241,234,.12)}
+.kanban-column>header span{display:grid;place-items:center;min-width:26px;height:26px;padding:0 7px;border-radius:999px;background:rgba(201,168,106,.18);color:#E8D8B8;font-size:11px;font-weight:700}
+.kanban-stack{display:grid;gap:10px}
+.kanban-empty{padding:22px 10px;text-align:center;color:rgba(244,241,234,.4);font-size:12px}
+.kanban-column .lead-card{margin:0!important}
+@media(max-width:700px){.quiz-options{grid-template-columns:1fr}.project-quiz{padding:20px}.quiz-controls button{padding:11px 15px}.lead-kanban{grid-template-columns:repeat(6,minmax(250px,82vw))}.kanban-column{max-height:none}}
