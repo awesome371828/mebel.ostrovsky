@@ -186,3 +186,15 @@ body:has(form.card) form.card button{border-radius:12px!important}
 .kanban-empty{padding:22px 10px;text-align:center;color:rgba(244,241,234,.4);font-size:12px}
 .kanban-column .lead-card{margin:0!important}
 @media(max-width:700px){.quiz-options{grid-template-columns:1fr}.project-quiz{padding:20px}.quiz-controls button{padding:11px 15px}.lead-kanban{grid-template-columns:repeat(6,minmax(250px,82vw))}.kanban-column{max-height:none}}
+
+.header-messengers{display:flex;align-items:center;gap:7px;margin-left:8px}
+.header-messengers a{display:grid;place-items:center;width:36px;height:36px;border:1px solid rgba(255,255,255,.28);border-radius:50%;color:#fff!important;background:rgba(255,255,255,.06)}
+.header-messengers svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+#header.solid .header-messengers a{color:var(--ink)!important;border-color:rgba(20,20,20,.14);background:rgba(20,20,20,.035)}
+.header-messengers a:hover{color:var(--gold-light)!important;border-color:var(--gold)!important;transform:translateY(-2px)}
+.quiz-messengers{display:flex;justify-content:center;align-items:center;gap:9px;flex-wrap:wrap;margin:20px auto 0;color:rgba(244,241,234,.64);font-size:12px}
+.quiz-messengers a{display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border:1px solid rgba(244,241,234,.16);border-radius:999px;color:#F4F1EA!important;background:rgba(244,241,234,.055)}
+.quiz-messengers a:hover{border-color:var(--gold);background:rgba(201,168,106,.14);transform:translateY(-2px)}
+.quiz-messengers svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:900px){.header-messengers{display:none}}
+@media(max-width:600px){.quiz-messengers{gap:7px}.quiz-messengers a{padding:8px 10px;font-size:11px}}
