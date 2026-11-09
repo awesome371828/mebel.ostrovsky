@@ -1581,7 +1581,7 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
       <a href="{{brand.max}}" target="_blank" rel="noopener noreferrer" aria-label="MAX"><img class="max-brand-icon" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLUf6ITLdqNnRT2GZcGVdQ4yh3OmzP1OxKTLNJhXx22Q&s=10" alt="" width="20" height="20" loading="lazy" decoding="async" referrerpolicy="no-referrer">MAX</a>
     </div>
   </div></div>
-</section>
+</section>{{/if}}
 
 <div class="lightbox" id="lightbox">
   <button class="lb-close" id="lbClose" aria-label="Закрыть">×</button>
