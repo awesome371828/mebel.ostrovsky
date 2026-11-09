@@ -169,7 +169,7 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
                    {'label': 'Города', 'href': '#cities'},
                    {'label': 'Контакты', 'href': '#contacts'}],
          'cta_label': 'Рассчитать проект',
-         'cta_href': 'tel:+79508465397'},
+         'cta_href': '#quiz'},
  'hero': {'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w01.jpg', 'rotation_enabled': False, 'rotation_interval': 6500, 'rotation_images': ['https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w01.jpg','https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w04.jpg','https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w06.jpg'],
           'sub': 'Создаем кухни и корпусную мебель «под ключ» в Ростове, Батайске и Азове. Индивидуальный проект от замера до монтажа.',
           'btn1': 'Получить консультацию',
@@ -2436,6 +2436,9 @@ def _migrate(raw):
         canonical = [("Руководитель", "#about"), ("Работы", "#works"), ("Отзывы", "#reviews"), ("Услуги", "#services"), ("Как работаем", "#process"), ("Города", "#cities"), ("Контакты", "#contacts")]
         old_by_href = {str(x.get("href")): x for x in items if isinstance(x, dict)}
         nav["items"] = [{"label": label, "href": href, **{k:v for k,v in old_by_href.get(href, {}).items() if k not in ("label", "href")}} for label, href in canonical]
+        if nav.get("cta_label") in ("Связаться с руководителем", "Рассчитать проект") and str(nav.get("cta_href") or "").startswith("tel:"):
+            nav["cta_label"] = "Рассчитать проект"
+            nav["cta_href"] = "#quiz"
 
     contacts = d.get("contacts")
     if isinstance(contacts, dict) and "lines" not in contacts:
