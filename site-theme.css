@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
 /* Кухни Островский · единая стабильная дизайн-система · 2026-11-09 */
 :root{
   color-scheme:light;
@@ -828,7 +829,7 @@ footer a,.footer-legal a{color:#e1c99e!important}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 
 /* OSTR r4 — deterministic typography, aligned navigation and coherent surfaces */
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
 :root{
   --studio-font-body:'DM Sans',Arial,sans-serif;
   --studio-font-display:'Manrope','DM Sans',Arial,sans-serif;
