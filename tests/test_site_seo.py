@@ -44,6 +44,9 @@ class SiteSeoTests(unittest.TestCase):
         self.assertIn("--ostr-bg:#151613", css)
         self.assertIn(".panel .svc", css)
         self.assertIn("body.admin-shell", css)
+        self.assertIn("--studio-teal:#579da3", css)
+        self.assertIn("#quiz .quiz-options", css)
+        self.assertNotIn("max-brand-icon", mebel.PAGE)
 
 
 if __name__ == "__main__":
