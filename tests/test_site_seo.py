@@ -68,5 +68,22 @@ class SiteSeoTests(unittest.TestCase):
         self.assertIn("SMjcyn3EjLZQPbqynA3RI8DJKygMgRWxAB_a3Jzl1mlA", mebel.PAGE)
 
 
+    def test_max_uses_one_real_image_and_consultation_points_to_max(self):
+        self.assertIn('class="max-mark" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMjcyn3EjLZQPbqynA3RI8DJKygMgRWxAB_a3Jzl1mlA&amp;s=10"', mebel.PAGE)
+        self.assertNotIn('class="max-mark"><svg', mebel.PAGE)
+        self.assertIn('class="consult-inline-link" href="{{#if brand.max}}', mebel.PAGE)
+        self.assertIn('aria-label="Написать в MAX">MAX</a> — расскажем про кухни', mebel.PAGE)
+        self.assertNotIn('aria-label="Написать в Telegram">Telegram</a> — расскажем про кухни', mebel.PAGE)
+
+    def test_theme_forces_leader_section_dark_and_disables_duplicate_max_pseudos(self):
+        css_path = pathlib.Path(__file__).resolve().parents[1] / "site-theme.css"
+        css = css_path.read_text(encoding="utf-8")
+        self.assertIn("#about>.bg{display:none!important", css)
+        self.assertIn(".quiz-max:before", css)
+        self.assertIn("content:none!important", css)
+        self.assertIn("OSTR r5 — deterministic dark leader panel", css)
+
+
+
 if __name__ == "__main__":
     unittest.main()
