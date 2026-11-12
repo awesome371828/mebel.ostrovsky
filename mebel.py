@@ -555,7 +555,8 @@ window.IntersectionObserver=window.IntersectionObserver||function(cb){return{obs
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    {"@type": "ListItem", "position": 1, "name": "Главная", "item": "{{seo.canonical|json}}"}
+    {"@type": "ListItem", "position": 1, "name": "Главная", "item": "{{domain|json}}/"}{{#if local_seo_current}},
+    {"@type": "ListItem", "position": 2, "name": "{{local_seo_current.name|json}}", "item": "{{seo.canonical|json}}"}{{/if}}
   ]
 },
 {
