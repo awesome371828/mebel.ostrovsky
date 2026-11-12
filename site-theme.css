@@ -974,7 +974,7 @@ p,li,label,small,.brand-txt .sub,.btn,.c-action{letter-spacing:normal}
  #header .logo{display:flex!important;align-items:center!important;flex:0 0 auto!important;min-width:0!important}
  #header .burger{display:none!important}
  #header .header-call{display:none!important}
- #header .header-messengers{position:absolute!important;left:clamp(420px,39vw,620px)!important;
+ #header .header-messengers{position:absolute!important;left:clamp(340px,30vw,470px)!important;
   right:auto!important;margin:0!important;z-index:8!important}
  #menu{
   position:fixed!important;top:14px!important;left:calc(50% - 110px)!important;
