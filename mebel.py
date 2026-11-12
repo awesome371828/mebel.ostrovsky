@@ -2553,6 +2553,11 @@ def _punycode(host):
         return host
 
 
+def _domain_ascii(data=None):
+    """ASCII/IDNA-форма канонического домена для HTTP Location headers."""
+    return "https://" + _punycode(_host(data))
+
+
 # ============================================================
 #  SUPABASE (REST + Storage, на стандартной библиотеке)
 # ============================================================
@@ -5376,7 +5381,7 @@ class Handler(BaseHTTPRequestHandler):
         if host.startswith("www.") and path not in ("/admin", "/admin/login"):
             target_host = _host(load_data()).lower()
             if target_host and _punycode(host[4:]) == _punycode(target_host):
-                loc = _domain(load_data()) + (self.path if self.path else "/")
+                loc = _domain_ascii(load_data()) + (self.path if self.path else "/")
                 self.send_response(301)
                 self.send_header("Location", loc)
                 self.send_header("Cache-Control", "public, max-age=3600")
@@ -5387,7 +5392,7 @@ class Handler(BaseHTTPRequestHandler):
         # Канонические URL: не оставляем дубли главной и городских страниц без завершающего слэша.
         if path == "/index.html":
             self.send_response(301)
-            self.send_header("Location", _domain(load_data()) + "/" + (("?" + self.path.split("?", 1)[1]) if "?" in self.path else ""))
+            self.send_header("Location", _domain_ascii(load_data()) + "/" + (("?" + self.path.split("?", 1)[1]) if "?" in self.path else ""))
             self.send_header("Cache-Control", "public, max-age=3600")
             self.send_header("Content-Length", "0")
             self.end_headers()
@@ -5589,7 +5594,7 @@ class Handler(BaseHTTPRequestHandler):
             if not path.endswith("/"):
                 query = ("?" + self.path.split("?", 1)[1]) if "?" in self.path else ""
                 self.send_response(301)
-                self.send_header("Location", _domain(load_data()) + "/" + city_slug + "/" + query)
+                self.send_header("Location", _domain_ascii(load_data()) + "/" + city_slug + "/" + query)
                 self.send_header("Cache-Control", "public, max-age=3600")
                 self.send_header("Content-Length", "0")
                 self.end_headers()
