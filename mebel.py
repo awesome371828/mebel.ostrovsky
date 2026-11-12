@@ -1433,7 +1433,7 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
     </a>
     <div class="header-messengers" aria-label="Мессенджеры мастерской">
       <a href="{{brand.telegram}}" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.7 4.4-3.2 15.1c-.2 1.1-.9 1.4-1.8.9l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.4-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.3 13.4l-4.7-1.5c-1-.3-1-1 .2-1.5L20.2 3c.9-.3 1.7.2 1.5 1.4z"/></svg></a>
-      <a class="max-link" href="{{#if brand.max}}{{brand.max}}{{else}}https://max.ru/{{/if}}" target="_blank" rel="noopener noreferrer" aria-label="Написать в MAX"><svg viewBox="0 0 24 24" aria-hidden="true" class="max-mark"><defs><linearGradient id="maxGrad" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#36C5F0"/><stop offset=".52" stop-color="#527BFA"/><stop offset="1" stop-color="#9B4DFF"/></linearGradient></defs><rect x="1" y="1" width="22" height="22" rx="7" fill="url(#maxGrad)"/><path d="M6 17V7h2.2l3.8 4.2L15.8 7H18v10h-2.5v-6.1L12 14.8l-3.5-3.9V17H6z" fill="#fff"/></svg></a>
+      <a class="max-link" href="{{#if brand.max}}{{brand.max}}{{else}}https://max.ru/{{/if}}" target="_blank" rel="noopener noreferrer" aria-label="Написать в MAX"><img class="max-mark" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMjcyn3EjLZQPbqynA3RI8DJKygMgRWxAB_a3Jzl1mlA&s=10" alt="" width="20" height="20" loading="lazy" decoding="async"></a>
       
       
     </div>
@@ -1513,7 +1513,7 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
     <span class="kicker reveal" style="color:var(--gold-soft);letter-spacing:6px;text-transform:uppercase;font-size:12px;font-weight:600">{{consult.kicker}}</span>
     <h2 class="k reveal">{{consult.title}}</h2>
     <a href="tel:{{consult.phone_raw}}" class="phone reveal">{{consult.phone}}</a>
-    <p class="reveal">Позвоните или напишите нам в <a class="consult-inline-link" href="{{#if brand.telegram}}{{brand.telegram}}{{else}}https://t.me/fanny161{{/if}}" target="_blank" rel="noopener noreferrer" aria-label="Написать в Telegram">Telegram</a> — расскажем про кухни и мебель, всё обсудим и договоримся о бесплатном замере.</p>
+    <p class="reveal">Позвоните или напишите нам в <a class="consult-inline-link" href="{{#if brand.max}}{{brand.max}}{{else}}https://max.ru/{{/if}}" target="_blank" rel="noopener noreferrer" aria-label="Написать в MAX">MAX</a> — расскажем про кухни и мебель, всё обсудим и договоримся о бесплатном замере.</p>
   </div></div>
 </section>{{/if}}
 
@@ -1578,7 +1578,7 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
       <a href="tel:+79508465397" aria-label="Позвонить"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.4 2.1L8.1 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.6 1z"/></svg>Телефон</a>
       <a href="{{brand.telegram}}" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><svg viewBox="0 0 24 24"><path d="m21.7 4.4-3.2 15.1c-.2 1.1-.9 1.4-1.8.9l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.4-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.3 13.4l-4.7-1.5c-1-.3-1-1 .2-1.5L20.2 3c.9-.3 1.7.2 1.5 1.4z"/></svg>Telegram</a>
       <a href="{{brand.vk}}" target="_blank" rel="noopener noreferrer" aria-label="ВКонтакте"><svg viewBox="0 0 24 24"><path d="M3.5 7.2h3.2c.2 4.1 1.9 5.8 3.2 6.2V7.2h3v3.6c1.3-.1 2.7-1.7 3.2-3.6h3.1c-.3 2.2-2 4-3.1 4.8 1.1.6 3.1 2.1 3.8 4.8h-3.4c-.6-1.8-2.1-3.2-3.6-3.3v3.3h-.4C6.7 16.8 3.7 13.4 3.5 7.2z"/></svg>ВКонтакте</a>
-       <a class="quiz-max" href="{{#if brand.max}}{{brand.max}}{{else}}https://max.ru/{{/if}}" target="_blank" rel="noopener noreferrer" aria-label="Написать в MAX"><svg viewBox="0 0 24 24" aria-hidden="true" class="max-mark"><defs><linearGradient id="maxGrad" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#36C5F0"/><stop offset=".52" stop-color="#527BFA"/><stop offset="1" stop-color="#9B4DFF"/></linearGradient></defs><rect x="1" y="1" width="22" height="22" rx="7" fill="url(#maxGrad)"/><path d="M6 17V7h2.2l3.8 4.2L15.8 7H18v10h-2.5v-6.1L12 14.8l-3.5-3.9V17H6z" fill="#fff"/></svg>MAX</a>
+       <a class="quiz-max" href="{{#if brand.max}}{{brand.max}}{{else}}https://max.ru/{{/if}}" target="_blank" rel="noopener noreferrer" aria-label="Написать в MAX"><img class="max-mark" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMjcyn3EjLZQPbqynA3RI8DJKygMgRWxAB_a3Jzl1mlA&s=10" alt="" width="20" height="20" loading="lazy" decoding="async">MAX</a>
 
     </div>
   </div></div>
@@ -2515,7 +2515,7 @@ def _normalize_context(data):
                     label = str(it.get("label") or it.get("name") or "").strip().lower()
                     href = str(it.get("href") or "").strip().lower()
                     if "max" in label or href.startswith(("https://max.ru", "http://max.ru")):
-                        it["icon_svg"] = '<svg viewBox="0 0 24 24" aria-hidden="true" class="max-mark"><defs><linearGradient id="maxGradIcon" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#36C5F0"/><stop offset=".52" stop-color="#527BFA"/><stop offset="1" stop-color="#9B4DFF"/></linearGradient></defs><rect x="1" y="1" width="22" height="22" rx="7" fill="url(#maxGradIcon)"/><path d="M6 17V7h2.2l3.8 4.2L15.8 7H18v10h-2.5v-6.1L12 14.8l-3.5-3.9V17H6z" fill="#fff"/></svg>'
+                        it["icon_svg"] = '<img class="max-mark" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMjcyn3EjLZQPbqynA3RI8DJKygMgRWxAB_a3Jzl1mlA&s=10" alt="" width="20" height="20" loading="lazy" decoding="async">'
                     else:
                         it["icon_svg"] = _icon_markup(it.get("icon"))
 
