@@ -2511,7 +2511,12 @@ def _normalize_context(data):
         if isinstance(items, list):
             for it in items:
                 if isinstance(it, dict):
-                    it["icon_svg"] = _icon_markup(it.get("icon"))
+                    label = str(it.get("label") or it.get("name") or "").strip().lower()
+                    href = str(it.get("href") or "").strip().lower()
+                    if "max" in label or href.startswith(("https://max.ru", "http://max.ru")):
+                        it["icon_svg"] = '<svg viewBox="0 0 24 24" aria-hidden="true" class="max-mark"><defs><linearGradient id="maxGradIcon" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#36C5F0"/><stop offset=".52" stop-color="#527BFA"/><stop offset="1" stop-color="#9B4DFF"/></linearGradient></defs><rect x="1" y="1" width="22" height="22" rx="7" fill="url(#maxGradIcon)"/><path d="M6 17V7h2.2l3.8 4.2L15.8 7H18v10h-2.5v-6.1L12 14.8l-3.5-3.9V17H6z" fill="#fff"/></svg>'
+                    else:
+                        it["icon_svg"] = _icon_markup(it.get("icon"))
 
     fix_icons((ctx.get("services") or {}).get("items"))
     fix_icons((ctx.get("guarantees") or {}).get("items"))
@@ -3799,21 +3804,7 @@ def _make_icons(data):
 
 
 def favicon_source(data=None):
-    """Откуда брать иконку: seo.favicon_url -> brand.logo_url -> FAVICON_URL."""
-    d = data if isinstance(data, dict) else None
-    if d is None:
-        try:
-            d = load_data()
-        except Exception:
-            d = None
-    urls = []
-    if isinstance(d, dict):
-        urls.append(str((d.get("seo") or {}).get("favicon_url") or "").strip())
-        urls.append(str((d.get("brand") or {}).get("logo_url") or "").strip())
-    urls.append(FAVICON_URL)
-    for u in urls:
-        if u:
-            return u
+    """Единый favicon и touch icon: CMS не может случайно подменить брендовый логотип."""
     return FAVICON_URL
 
 
