@@ -159,7 +159,6 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
            'phone': '+7 (950) 846-53-97',
            'logo_url': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/logo/logo-256.jpg',
            'telegram': 'https://t.me/fanny161',
-           'max': 'https://max.ru/',
            'phone_raw': '+79508465397'},
  'nav': {'items': [{'label': 'Руководитель', 'href': '#about'},
                    {'label': 'Работы', 'href': '#works'},
@@ -1435,8 +1434,8 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
     <div class="header-messengers" aria-label="Мессенджеры мастерской">
       <a href="{{brand.telegram}}" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.7 4.4-3.2 15.1c-.2 1.1-.9 1.4-1.8.9l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.4-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.3 13.4l-4.7-1.5c-1-.3-1-1 .2-1.5L20.2 3c.9-.3 1.7.2 1.5 1.4z"/></svg></a>
       <a href="{{brand.vk}}" target="_blank" rel="noopener noreferrer" aria-label="ВКонтакте"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 7.2h3.2c.2 4.1 1.9 5.8 3.2 6.2V7.2h3v3.6c1.3-.1 2.7-1.7 3.2-3.6h3.1c-.3 2.2-2 4-3.1 4.8 1.1.6 3.1 2.1 3.8 4.8h-3.4c-.6-1.8-2.1-3.2-3.6-3.3v3.3h-.4C6.7 16.8 3.7 13.4 3.5 7.2z"/></svg></a>
-      <a href="{{brand.max}}" target="_blank" rel="noopener noreferrer" aria-label="MAX" title="MAX"><img class="max-brand-icon" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLUf6ITLdqNnRT2GZcGVdQ4yh3OmzP1OxKTLNJhXx22Q&s=10" alt="" width="20" height="20" loading="lazy" decoding="async" referrerpolicy="no-referrer"></a>
-      <a href="{{brand.max}}" target="_blank" rel="noopener noreferrer" aria-label="MAX"><img class="max-brand-icon" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLUf6ITLdqNnRT2GZcGVdQ4yh3OmzP1OxKTLNJhXx22Q&s=10" alt="" width="20" height="20" loading="lazy" decoding="async" referrerpolicy="no-referrer"></a>
+      
+      
     </div>
   </div>
 </header>
@@ -1749,7 +1748,7 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
   <div class="footer-contact-icons" aria-label="Связаться с мастерской">
     <a href="tel:+79508465397" aria-label="Позвонить по телефону +7 950 846-53-97" title="Телефон"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.4 2.1L8.1 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.6 1z"/></svg><span>Позвонить</span></a>
     <a href="https://vk.com/mebel.ostrovsky" target="_blank" rel="noopener noreferrer" aria-label="Группа Кухни Островский во ВКонтакте" title="ВКонтакте"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 7.2h3.2c.2 4.1 1.9 5.8 3.2 6.2V7.2h3v3.6c1.3-.1 2.7-1.7 3.2-3.6h3.1c-.3 2.2-2 4-3.1 4.8 1.1.6 3.1 2.1 3.8 4.8h-3.4c-.6-1.8-2.1-3.2-3.6-3.3v3.3h-.4C6.7 16.8 3.7 13.4 3.5 7.2z"/></svg><span>ВКонтакте</span></a>
-    <a href="{{brand.max}}" target="_blank" rel="noopener noreferrer" aria-label="Открыть мессенджер MAX" title="MAX"><img class="max-brand-icon" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLUf6ITLdqNnRT2GZcGVdQ4yh3OmzP1OxKTLNJhXx22Q&s=10" alt="" width="20" height="20" loading="lazy" decoding="async" referrerpolicy="no-referrer"><span>MAX</span></a>
+    
     <a href="{{brand.telegram}}" target="_blank" rel="noopener noreferrer" aria-label="Написать в Telegram" title="Telegram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.7 4.4-3.2 15.1c-.2 1.1-.9 1.4-1.8.9l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.4-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.3 13.4l-4.7-1.5c-1-.3-1-1 .2-1.5L20.2 3c.9-.3 1.7.2 1.5 1.4z"/></svg><span>Telegram</span></a>
   </div>
   <p>{{footer.line}}</p>
