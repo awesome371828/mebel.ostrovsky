@@ -1115,3 +1115,72 @@ svg.max-mark{display:none!important}
  #about{padding-top:clamp(88px,14vw,120px)!important;padding-bottom:clamp(70px,12vw,100px)!important}
  #about .about{gap:26px!important}
 }
+
+
+/* OSTR r6 — restore desktop section navigation; eliminate residual light panels and duplicate MAX artwork */
+@media (min-width:901px){
+  #menu{
+    position:fixed!important;top:16px!important;left:calc(50% - 110px)!important;
+    right:calc(50% - 570px)!important;bottom:auto!important;
+    display:flex!important;visibility:visible!important;opacity:1!important;
+    flex-direction:row!important;align-items:center!important;justify-content:space-around!important;
+    width:auto!important;height:66px!important;min-height:66px!important;
+    margin:0!important;padding:0 8px!important;gap:clamp(2px,.45vw,8px)!important;
+    list-style:none!important;overflow:visible!important;transform:none!important;
+    background:transparent!important;border:0!important;border-radius:0!important;
+    box-shadow:none!important;z-index:1300!important
+  }
+  #menu li{display:flex!important;align-items:center!important;flex:0 1 auto!important;height:100%!important;min-width:0!important}
+  #menu li a{
+    display:flex!important;align-items:center!important;justify-content:center!important;
+    min-height:38px!important;height:auto!important;padding:8px clamp(3px,.42vw,7px)!important;
+    color:#f5f1e8!important;-webkit-text-fill-color:#f5f1e8!important;
+    font:600 clamp(10px,.67vw,12px)/1.2 var(--studio-font-body)!important;
+    white-space:nowrap!important;text-decoration:none!important;visibility:visible!important;opacity:1!important;
+    border-radius:8px!important;background:transparent!important
+  }
+  #menu li a:hover,#menu li a.active{background:rgba(223,201,159,.11)!important;color:#ead9b7!important}
+  #menu li.sheet-handle{display:none!important}
+}
+#about,#process{
+  position:relative!important;isolation:isolate!important;
+  background:#191a17!important;
+  background-image:linear-gradient(140deg,#292a24 0%,#20211d 52%,#151613 100%)!important;
+  color:#f5f1e8!important
+}
+#about>.bg,#process>.bg{display:none!important;visibility:hidden!important;opacity:0!important;background:none!important}
+#about:before,#about:after,#process:before,#process:after{content:none!important;display:none!important}
+#about .wrap,#about .content,#about .about,#about .about-body,
+#process .wrap,#process .content{background:transparent!important;background-image:none!important}
+#about .about-card{background:linear-gradient(145deg,#30312b 0%,#20211d 100%)!important;color:#f5f1e8!important}
+#about .about-card h3,#about .about-card .role,#about .about-card .about-ip-link,
+#about .about-body,#about .about-body h2,#about .about-body h3,#about .about-body li,
+#process .sec-head,#process .sec-head h2,#process .step,#process .step h3,#process .step p{
+  color:#f5f1e8!important;-webkit-text-fill-color:currentColor!important
+}
+#about .about-card p,#about .about-body p,#process .sec-head p,#process .step p{
+  color:rgba(245,241,232,.78)!important;-webkit-text-fill-color:rgba(245,241,232,.78)!important
+}
+#about .about-body .kicker,#process .kicker,#process .step .n{color:#dfc99f!important;-webkit-text-fill-color:#dfc99f!important}
+#process .step{background:linear-gradient(145deg,rgba(48,49,43,.96),rgba(31,32,28,.96))!important;
+  border:1px solid rgba(223,201,159,.18)!important;border-radius:18px!important;
+  box-shadow:0 16px 40px rgba(0,0,0,.2)!important}
+img.max-mark{
+  display:inline-block!important;visibility:visible!important;opacity:1!important;
+  background:transparent!important;background-image:none!important;
+  border:0!important;box-shadow:none!important;object-fit:contain!important
+}
+.max-mark{background:none!important;background-image:none!important}
+.max-link:before,.max-link:after,.quiz-max:before,.quiz-max:after,
+.footer-max:before,.footer-max:after,.c-action.c-max:before,.c-action.c-max:after{
+  content:none!important;display:none!important;background:none!important;background-image:none!important
+}
+.max-link img.max-mark,.quiz-max img.max-mark,.footer-max img.max-mark,.c-action.c-max img.max-mark{
+  width:21px!important;height:21px!important;min-width:21px!important;
+  margin:0!important;padding:0!important;flex:0 0 21px!important
+}
+@media(max-width:900px){
+  #menu li a{color:#f5f1e8!important;-webkit-text-fill-color:#f5f1e8!important}
+  #about,#process{padding-top:clamp(88px,14vw,120px)!important;padding-bottom:clamp(64px,10vw,92px)!important}
+  #process .steps{gap:12px!important}
+}
