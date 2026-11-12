@@ -53,5 +53,20 @@ class SiteSeoTests(unittest.TestCase):
         self.assertNotIn("max-brand-icon", mebel.PAGE)
 
 
+    def test_header_and_contact_layout_regressions_are_guarded(self):
+        css_path = pathlib.Path(__file__).resolve().parents[1] / "site-theme.css"
+        css = css_path.read_text(encoding="utf-8")
+        self.assertIn("actual DOM corrections", css)
+        self.assertIn("#contacts .contact-grid", css)
+        self.assertIn("#about>.bg:after", css)
+        self.assertIn("#menu.open", css)
+        self.assertIn("font-family:var(--studio-font-body)", css)
+
+    def test_footer_has_max_with_requested_brand_icon(self):
+        self.assertIn('class="footer-max"', mebel.PAGE)
+        self.assertIn('aria-label="Написать в MAX"', mebel.PAGE)
+        self.assertIn("SMjcyn3EjLZQPbqynA3RI8DJKygMgRWxAB_a3Jzl1mlA", mebel.PAGE)
+
+
 if __name__ == "__main__":
     unittest.main()
