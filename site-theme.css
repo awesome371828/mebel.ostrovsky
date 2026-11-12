@@ -1044,3 +1044,11 @@ p,li,label,small,.brand-txt .sub,.btn,.c-action{letter-spacing:normal}
  #contacts .call-block{padding:24px 18px!important}
  #contacts .call-block .cb-num{font-size:clamp(25px,7vw,36px)!important;white-space:normal!important}
 }
+
+/* MAX: use the supplied official-style image asset instead of the old inline placeholder */
+svg.max-mark{overflow:visible!important}
+svg.max-mark rect,svg.max-mark path,svg.max-mark defs{display:none!important}
+.header-messengers .max-link svg.max-mark,.quiz-messengers .quiz-max svg.max-mark{
+ background-image:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMjcyn3EjLZQPbqynA3RI8DJKygMgRWxAB_a3Jzl1mlA&s=10')!important;
+ background-position:center!important;background-repeat:no-repeat!important;background-size:contain!important
+}
