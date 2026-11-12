@@ -964,3 +964,82 @@ p,li,label,small,.brand-txt .sub,.btn,.c-action{letter-spacing:normal}
  html{scroll-behavior:auto!important}
  *,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
 }
+
+/* OSTR r4.1 — actual DOM corrections (menu is a sibling UL, contacts use #contacts) */
+@media(min-width:901px){
+ #header{display:block!important}
+ #header .wrap.nav{display:flex!important;align-items:center!important;justify-content:flex-start!important;
+  position:relative!important;width:100%!important;max-width:none!important;height:100%!important;
+  margin:0!important;padding:0!important;gap:0!important}
+ #header .logo{display:flex!important;align-items:center!important;flex:0 0 auto!important;min-width:0!important}
+ #header .burger{display:none!important}
+ #header .header-call{display:none!important}
+ #header .header-messengers{position:absolute!important;left:clamp(420px,39vw,620px)!important;
+  right:auto!important;margin:0!important;z-index:8!important}
+ #menu{
+  position:fixed!important;top:14px!important;left:calc(50% - 110px)!important;
+  right:calc(50% - 660px)!important;bottom:auto!important;
+  display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-evenly!important;
+  width:auto!important;height:76px!important;min-height:76px!important;margin:0!important;padding:0 12px!important;
+  overflow:visible!important;list-style:none!important;gap:clamp(5px,.8vw,14px)!important;
+  background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;
+  transform:none!important;z-index:120!important;backdrop-filter:none!important}
+ #menu li{display:flex!important;align-items:center!important;height:100%!important;margin:0!important;padding:0!important}
+ #menu li.sheet-handle{display:none!important}
+ #menu li a{display:flex!important;align-items:center!important;justify-content:center!important;
+  min-height:38px!important;padding:0 5px!important;font-size:clamp(10px,.72vw,12px)!important;
+  white-space:nowrap!important;border-radius:8px!important;color:#f5f1e8!important}
+ #menu li.menu-call{display:none!important}
+}
+#contacts .contact-grid{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(360px,.92fr)!important;
+ align-items:stretch!important;gap:clamp(28px,5vw,76px)!important}
+#contacts .contact-info,#contacts .call-block{min-width:0!important;width:100%!important;max-width:none!important}
+#contacts .call-block{height:100%!important;display:flex!important;flex-direction:column!important;justify-content:center!important}
+#contacts .contact-info .c-line{display:grid!important;grid-template-columns:48px minmax(0,1fr)!important;
+ align-items:center!important;gap:15px!important;margin:18px 0!important}
+#contacts .contact-info .c-ico{width:46px!important;height:46px!important;border-radius:14px!important;
+ display:grid!important;place-items:center!important;background:rgba(223,201,159,.08)!important;
+ border:1px solid rgba(223,201,159,.3)!important}
+#contacts .contact-info .c-ico svg{width:22px!important;height:22px!important;stroke:#dfc99f!important}
+#contacts .contact-info .lab{color:rgba(245,241,232,.56)!important;font-size:10px!important;letter-spacing:.18em!important}
+#contacts .contact-info .val{color:#f5f1e8!important;font-size:16px!important;line-height:1.45!important;overflow-wrap:anywhere!important}
+#about{background:linear-gradient(145deg,#252620,#191a17)!important}
+#about>.bg{opacity:.18!important}
+#about>.bg:after{background:rgba(18,19,16,.78)!important}
+#about .about{display:grid!important;grid-template-columns:minmax(300px,.85fr) minmax(0,1.15fr)!important;
+ align-items:center!important;gap:clamp(30px,5vw,76px)!important}
+#about .about-card{background:linear-gradient(145deg,#30312b,#23241f)!important;color:#f5f1e8!important}
+#about .about-card h3,#about .about-card .role{color:#f5f1e8!important}
+#about .about-card p{color:rgba(245,241,232,.76)!important}
+.footer-contact-icons .footer-max{display:inline-flex!important;align-items:center!important;gap:9px!important;
+ border-radius:12px!important;background:rgba(82,112,230,.13)!important;border:1px solid rgba(112,139,255,.32)!important;
+ color:#e1e7ff!important}
+.footer-contact-icons .footer-max .max-mark{width:20px!important;height:20px!important;border-radius:6px!important}
+.footer-contact-icons .footer-max:hover{background:rgba(82,112,230,.22)!important}
+@media(max-width:900px){
+ #header{display:block!important}
+ #header .wrap.nav{display:flex!important;align-items:center!important;width:100%!important;height:100%!important;margin:0!important;padding:0!important}
+ #header .burger{display:flex!important}
+ #header .header-call{display:inline-flex!important}
+ #header .header-messengers{position:static!important;margin-left:auto!important}
+ #menu{position:fixed!important;top:0!important;left:auto!important;right:0!important;bottom:0!important;
+  width:min(380px,88vw)!important;height:100dvh!important;min-height:100dvh!important;
+  display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;
+  padding:76px 22px 28px!important;gap:7px!important;list-style:none!important;overflow-y:auto!important;
+  background:rgba(25,26,23,.985)!important;border:1px solid var(--studio-border)!important;
+  border-radius:22px 0 0 22px!important;box-shadow:-18px 0 54px rgba(0,0,0,.34)!important;
+  transform:translateX(110%)!important;transition:transform .36s cubic-bezier(.2,.75,.2,1)!important;z-index:1000!important}
+ #menu.open{display:flex!important;transform:translateX(0)!important}
+ #menu li{display:block!important;width:100%!important}
+ #menu li.sheet-handle{display:block!important}
+ #menu li a{display:flex!important;justify-content:flex-start!important;width:100%!important;min-height:46px!important;
+  padding:10px 14px!important;font-size:14px!important;border-radius:10px!important}
+ #menu li.menu-call{display:block!important}
+ #contacts .contact-grid{grid-template-columns:1fr!important;gap:28px!important}
+ #about .about{grid-template-columns:1fr!important;gap:26px!important}
+}
+@media(max-width:600px){
+ #contacts .contact-info .val{font-size:14px!important}
+ #contacts .call-block{padding:24px 18px!important}
+ #contacts .call-block .cb-num{font-size:clamp(25px,7vw,36px)!important;white-space:normal!important}
+}
