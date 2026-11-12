@@ -11,6 +11,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+# Fail the image build early on syntax errors or broken SEO/theme regressions.
+RUN python -m py_compile mebel.py && python -m unittest discover -s tests -v
+
 EXPOSE 8080
 
 HEALTHCHECK --interval=60s --timeout=5s --start-period=10s \
