@@ -455,7 +455,7 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
 }
 
 PAGE = r"""<!DOCTYPE html>
-<html lang="ru" class="js" data-build="2026-11-09-r1">
+<html lang="ru" class="js" data-build="2026-11-12-r1">
 <head>
 <meta charset="UTF-8">
 <script>/* шим: если браузер не умеет IntersectionObserver, показываем блоки сразу (без «мёртвых» скрытых секций) */
@@ -1410,7 +1410,7 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
 @media(max-width:600px){.panel--hero{min-height:100svh!important}.panel--hero .content{padding-top:132px!important;padding-bottom:132px!important}.panel--hero .scroll-cue{left:50%!important;right:auto!important;bottom:18px!important;width:82px!important;height:82px!important;min-width:82px!important;min-height:82px!important;transform:translateX(-50%)!important}.rev-card{width:90vw;padding:22px!important}.car-nav{display:none}.stat,.svc,.guar,.step,.about-card,.rev-card,.car-slide,.city,.call-block{border-radius:20px!important}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}.stat,.svc,.guar,.step,.about-card,.rev-card,.car-slide,.btn{transition:none!important}}
 </style>
-<link rel="stylesheet" href="/site-theme.css?v=20261109-r4"></head>
+<link rel="stylesheet" href="/site-theme.css?v=20261112-r1"></head>
 <body>
 
 <div class="progress" id="progress"></div>
@@ -3732,7 +3732,7 @@ def _legal_page(path, data):
             body += '<section class="legal-section"><span class="legal-index">+</span><div><h2>Учёт посещений сайта</h2><p>Для подсчёта посещаемости сайт может сохранять в браузере случайный идентификатор и учитывать посещённые страницы, время первого и последнего визита и источник перехода. Этот идентификатор не предназначен для установления имени посетителя. Посещения с разных браузеров или устройств могут учитываться отдельно. Записи аналитики ограничены последними 5 000 браузерными идентификаторами и хранятся в техническом файле сервера; фактический срок сохранения зависит от настроек и политики хранения хостинга. Сырые IP-адреса этим журналом посещений не сохраняются.</p></div></section>'
     body += '<p class="legal-note">Изменено: 10.10.2026</p>'
 
-    return '''<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="index,follow"><title>'''+_escape(title)+''' — Кухни Островский</title><meta name="description" content="Официальная информация сайта Кухни Островский: контакты, реквизиты и документы по персональным данным."><link rel="stylesheet" href="/site-theme.css?v=20261109-r4"><style>'''+'''*{box-sizing:border-box}body{margin:0}.legal-page{min-height:100vh;background:radial-gradient(ellipse at 80% 0,rgba(212,175,106,.12),transparent 42%),#0e0c09;color:#f5efe3;padding:34px 18px 70px;font:15px/1.75 system-ui,-apple-system,Segoe UI,sans-serif}.legal-wrap{max-width:900px;margin:0 auto}.legal-top{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:38px}.legal-top a,.legal-page a{color:#eccfa0}.legal-card{padding:clamp(22px,5vw,52px);border:1px solid rgba(236,207,160,.22);border-radius:22px;background:linear-gradient(145deg,rgba(31,25,17,.9),rgba(13,12,10,.96));box-shadow:0 24px 80px rgba(0,0,0,.22)}.legal-card h1,.legal-card h2{font-family:Georgia,serif;line-height:1.12}.legal-card h1{font-size:clamp(34px,5vw,54px);margin:0 0 20px}.legal-card h2{font-size:25px;margin:30px 0 8px}.legal-card p,.legal-card li{color:#c9bdab}.legal-sections{display:grid;gap:14px;margin-top:26px}.legal-section{display:grid;grid-template-columns:48px minmax(0,1fr);gap:18px;padding:22px 24px;border:1px solid rgba(236,207,160,.15);border-radius:18px;background:linear-gradient(135deg,rgba(236,207,160,.055),rgba(255,255,255,.012));box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}.legal-section p{margin:0;line-height:1.9}.legal-index{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;border:1px solid rgba(236,207,160,.25);background:rgba(236,207,160,.08);color:#eccfa0;font-size:12px;font-weight:800}.legal-profile a{display:inline-block;margin-top:8px}.legal-profile span{display:block;color:#c9bdab;margin-top:4px}@media(max-width:600px){.legal-section{grid-template-columns:1fr;padding:17px;gap:10px}.legal-index{width:34px;height:34px}}.legal-profile{display:flex;align-items:center;gap:20px;margin:0 0 28px}.legal-profile img{width:96px;height:96px;object-fit:cover;border-radius:50%;border:2px solid #d4af6a;box-shadow:0 0 0 7px rgba(212,175,106,.1)}.legal-profile strong{display:block;font-size:18px}.legal-note{font-size:12px;color:#a99e8c!important;border-top:1px solid rgba(236,207,160,.14);padding-top:18px;margin-top:28px}@media(max-width:600px){.legal-top{align-items:flex-start;flex-direction:column}.legal-profile{align-items:flex-start}.legal-profile img{width:76px;height:76px}}</style></head><body><main class="legal-page"><div class="legal-wrap"><nav class="legal-top"><a href="/">← На главную</a><span>Кухни Островский · Ростов · Батайск · Азов</span></nav><article class="legal-card"><h1>'''+_escape(title)+'''</h1>'''+body+'''</article></div></main></body></html>'''
+    return '''<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="index,follow"><title>'''+_escape(title)+''' — Кухни Островский</title><meta name="description" content="Официальная информация сайта Кухни Островский: контакты, реквизиты и документы по персональным данным."><link rel="stylesheet" href="/site-theme.css?v=20261112-r1"><style>'''+'''*{box-sizing:border-box}body{margin:0}.legal-page{min-height:100vh;background:radial-gradient(ellipse at 80% 0,rgba(212,175,106,.12),transparent 42%),#0e0c09;color:#f5efe3;padding:34px 18px 70px;font:15px/1.75 system-ui,-apple-system,Segoe UI,sans-serif}.legal-wrap{max-width:900px;margin:0 auto}.legal-top{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:38px}.legal-top a,.legal-page a{color:#eccfa0}.legal-card{padding:clamp(22px,5vw,52px);border:1px solid rgba(236,207,160,.22);border-radius:22px;background:linear-gradient(145deg,rgba(31,25,17,.9),rgba(13,12,10,.96));box-shadow:0 24px 80px rgba(0,0,0,.22)}.legal-card h1,.legal-card h2{font-family:Georgia,serif;line-height:1.12}.legal-card h1{font-size:clamp(34px,5vw,54px);margin:0 0 20px}.legal-card h2{font-size:25px;margin:30px 0 8px}.legal-card p,.legal-card li{color:#c9bdab}.legal-sections{display:grid;gap:14px;margin-top:26px}.legal-section{display:grid;grid-template-columns:48px minmax(0,1fr);gap:18px;padding:22px 24px;border:1px solid rgba(236,207,160,.15);border-radius:18px;background:linear-gradient(135deg,rgba(236,207,160,.055),rgba(255,255,255,.012));box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}.legal-section p{margin:0;line-height:1.9}.legal-index{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;border:1px solid rgba(236,207,160,.25);background:rgba(236,207,160,.08);color:#eccfa0;font-size:12px;font-weight:800}.legal-profile a{display:inline-block;margin-top:8px}.legal-profile span{display:block;color:#c9bdab;margin-top:4px}@media(max-width:600px){.legal-section{grid-template-columns:1fr;padding:17px;gap:10px}.legal-index{width:34px;height:34px}}.legal-profile{display:flex;align-items:center;gap:20px;margin:0 0 28px}.legal-profile img{width:96px;height:96px;object-fit:cover;border-radius:50%;border:2px solid #d4af6a;box-shadow:0 0 0 7px rgba(212,175,106,.1)}.legal-profile strong{display:block;font-size:18px}.legal-note{font-size:12px;color:#a99e8c!important;border-top:1px solid rgba(236,207,160,.14);padding-top:18px;margin-top:28px}@media(max-width:600px){.legal-top{align-items:flex-start;flex-direction:column}.legal-profile{align-items:flex-start}.legal-profile img{width:76px;height:76px}}</style></head><body><main class="legal-page"><div class="legal-wrap"><nav class="legal-top"><a href="/">← На главную</a><span>Кухни Островский · Ростов · Батайск · Азов</span></nav><article class="legal-card"><h1>'''+_escape(title)+'''</h1>'''+body+'''</article></div></main></body></html>'''
 
 
 def build_404(data):
@@ -4356,7 +4356,7 @@ body{background:radial-gradient(ellipse at 50% 0%,rgba(215,189,139,.10),transpar
 .card button{border-radius:999px!important;background:linear-gradient(135deg,#E5D4B3,#C5A979)!important;color:#211B13!important;box-shadow:0 12px 28px rgba(0,0,0,.25)!important}
 </style>
 <style id="ostrovskyLoginEditorial2026">*{box-sizing:border-box}body{background:radial-gradient(ellipse at 50% 0%,rgba(216,194,155,.11),transparent 48%),#171816!important;color:#F7F5F0!important}.card{background:rgba(255,255,255,.055)!important;border:1px solid rgba(255,255,255,.14)!important;border-radius:24px!important;box-shadow:0 24px 64px rgba(0,0,0,.36)!important;backdrop-filter:blur(22px)!important}.card h1{color:#F7F5F0!important}.card p.sub,.card .hint{color:#C9C4BA!important}.card label{color:#D8C29B!important}.card input{background:rgba(0,0,0,.22)!important;border:1px solid rgba(255,255,255,.16)!important;border-radius:13px!important;color:#F7F5F0!important}.card input:focus{outline:none!important;border-color:#D8C29B!important;box-shadow:0 0 0 3px rgba(216,194,155,.12)!important}.card button{border-radius:999px!important;background:linear-gradient(135deg,#E8D8B8,#CDB58A)!important;color:#211D16!important;box-shadow:0 12px 28px rgba(0,0,0,.25)!important}</style>
-<link rel="stylesheet" href="/site-theme.css?v=20261109-r4"></head><body>
+<link rel="stylesheet" href="/site-theme.css?v=20261112-r1"></head><body>
 <form class="card" method="POST" action="/admin/login">
 <h1>Кухни Островский</h1><p class="sub">Панель управления сайтом</p>__ERROR__
 <label>Логин</label><input type="text" name="login" required autofocus autocomplete="username">
@@ -4627,7 +4627,7 @@ tr:hover td{background:#F8F6F1!important}
 @media(max-width:820px){.admin-shell nav.side{border-radius:18px!important}.admin-shell .field,.admin-shell .overview-card,.admin-shell .info,.admin-shell .item,.admin-shell .lead-card,.admin-shell .audit-row,.admin-shell .dash{border-radius:17px!important}}
 </style>
 <style id="ostrovskyAdminEditorial2026">:root{--ae-line:rgba(255,255,255,.12);--ae-text:#F7F5F0;--ae-muted:#C9C4BA;--ae-ease:cubic-bezier(.16,1,.3,1)}.admin-shell{background:radial-gradient(900px 520px at 82% -10%,rgba(216,194,155,.10),transparent 60%),#171816!important;color:var(--ae-text)!important}.admin-shell nav.side{background:rgba(255,255,255,.035)!important;border:1px solid var(--ae-line)!important;border-radius:22px!important;backdrop-filter:blur(18px)!important}.admin-shell .field,.admin-shell .overview-card,.admin-shell .info,.admin-shell .item,.admin-shell .lead-card,.admin-shell .audit-row,.admin-shell .dash,.admin-shell .preview-frame,.admin-shell .diag-row{background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.028))!important;border:1px solid var(--ae-line)!important;border-radius:20px!important;box-shadow:0 20px 40px rgba(0,0,0,.24)!important;backdrop-filter:blur(18px)!important;color:var(--ae-text)!important}.admin-shell .lead-card:hover,.admin-shell .overview-card:hover,.admin-shell .dash:hover{border-color:rgba(216,194,155,.34)!important;transform:translateY(-2px)}.admin-shell .page-head{border-color:var(--ae-line)!important}.admin-shell h1,.admin-shell h2,.admin-shell h3,.admin-shell strong{color:#F7F5F0}.admin-shell p,.admin-shell small,.admin-shell label,.admin-shell .muted,.admin-shell .hint{color:var(--ae-muted)}.admin-shell input,.admin-shell select,.admin-shell textarea,.admin-shell .lead-search{background:rgba(0,0,0,.20)!important;color:#F7F5F0!important;border:1px solid rgba(255,255,255,.16)!important;border-radius:12px!important}.admin-shell input:focus,.admin-shell select:focus,.admin-shell textarea:focus{outline:none!important;border-color:rgba(216,194,155,.7)!important;box-shadow:0 0 0 3px rgba(216,194,155,.10)!important}.admin-shell input::placeholder,.admin-shell textarea::placeholder{color:#A9A69E!important}.admin-shell .btn{border-radius:999px!important;transition:transform .35s var(--ae-ease)!important}.admin-shell .btn:hover{transform:translateY(-1px)}.admin-shell .btn-gold{background:linear-gradient(135deg,#E8D8B8,#CDB58A)!important;color:#211D16!important;border:1px solid rgba(232,216,184,.7)!important}.admin-shell nav.side a{border-radius:12px!important}.admin-shell table{border-collapse:separate!important;border-spacing:0 7px!important;color:#F7F5F0}.admin-shell th{color:#C9C4BA!important;font-weight:600}.admin-shell td{background:rgba(255,255,255,.035)!important;border-top:1px solid var(--ae-line)!important;border-bottom:1px solid var(--ae-line)!important}.admin-shell td:first-child{border-left:1px solid var(--ae-line)!important;border-radius:12px 0 0 12px}.admin-shell td:last-child{border-right:1px solid var(--ae-line)!important;border-radius:0 12px 12px 0}.admin-shell .status,.admin-shell .badge{border-radius:999px!important}@media(max-width:820px){.admin-shell nav.side{border-radius:18px!important}.admin-shell .field,.admin-shell .overview-card,.admin-shell .info,.admin-shell .item,.admin-shell .lead-card,.admin-shell .audit-row,.admin-shell .dash{border-radius:17px!important}}</style>
-<link rel="stylesheet" href="/site-theme.css?v=20261109-r4"></head><body class="admin-shell">
+<link rel="stylesheet" href="/site-theme.css?v=20261112-r1"></head><body class="admin-shell">
 <header>
 <div class="brand"><span class="mark"></span>Кухни Островский<span>CMS</span><span class="status" id="status">Загрузка…</span><span class="status" id="revInfo" style="background:rgba(255,255,255,.05);color:#a2988a;border:1px solid rgba(255,255,255,.08)">rev —</span></div>
 <div class="actions">
@@ -5375,10 +5375,23 @@ class Handler(BaseHTTPRequestHandler):
         host = (self.headers.get("Host") or "").split(":", 1)[0].lower()
         if host.startswith("www.") and path not in ("/admin", "/admin/login"):
             target_host = _host(load_data()).lower()
-            if target_host and host[4:] == target_host:
+            if target_host and _punycode(host[4:]) == _punycode(target_host):
                 loc = _domain(load_data()) + (self.path if self.path else "/")
-                self._redir(loc)
+                self.send_response(301)
+                self.send_header("Location", loc)
+                self.send_header("Cache-Control", "public, max-age=3600")
+                self.send_header("Content-Length", "0")
+                self.end_headers()
                 return
+
+        # Канонические URL: не оставляем дубли главной и городских страниц без завершающего слэша.
+        if path == "/index.html":
+            self.send_response(301)
+            self.send_header("Location", _domain(load_data()) + "/" + (("?" + self.path.split("?", 1)[1]) if "?" in self.path else ""))
+            self.send_header("Cache-Control", "public, max-age=3600")
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+            return
 
         if path == "/img":
             self._route_img()
@@ -5571,9 +5584,20 @@ class Handler(BaseHTTPRequestHandler):
                 html = re.sub(r'<div class="cookie-bar" id="cookieBar">.*?</div>\s*', "", html, count=1, flags=re.S)
             self._send(200, html, "text/html; charset=utf-8", "no-cache")
             return
-        if path.rstrip("/") in ("/rostov-na-donu","/bataysk","/azov"):
-            html=render_city_page(path.strip("/"));
-            if html:self._send(200,html,"text/html; charset=utf-8","no-cache");return
+        city_slug = path.strip("/")
+        if city_slug in ("rostov-na-donu", "bataysk", "azov"):
+            if not path.endswith("/"):
+                query = ("?" + self.path.split("?", 1)[1]) if "?" in self.path else ""
+                self.send_response(301)
+                self.send_header("Location", _domain(load_data()) + "/" + city_slug + "/" + query)
+                self.send_header("Cache-Control", "public, max-age=3600")
+                self.send_header("Content-Length", "0")
+                self.end_headers()
+                return
+            html = render_city_page(city_slug)
+            if html:
+                self._send(200, html, "text/html; charset=utf-8", "no-cache")
+                return
         if path == "/robots.txt":
             self._send(200, build_robots(load_data()), "text/plain; charset=utf-8", "public, max-age=3600")
             return
