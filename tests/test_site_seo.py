@@ -32,10 +32,12 @@ class SiteSeoTests(unittest.TestCase):
         self.assertIn(source, mebel.build_manifest(mebel.DEFAULT_DATA))
         self.assertIn(source, mebel.favicon_source(mebel.DEFAULT_DATA))
 
-    def test_max_links_are_removed_from_public_context(self):
+    def test_max_links_are_preserved_in_public_context(self):
         ctx = mebel._normalize_context(mebel.DEFAULT_DATA)
-        self.assertNotIn("max", ctx.get("brand", {}))
-        self.assertFalse(any("max.ru" in str(x.get("href", "")) for x in (ctx.get("footer", {}).get("socials") or []) if isinstance(x, dict)))
+        self.assertEqual(ctx.get("brand", {}).get("max"), "https://max.ru/")
+        self.assertTrue(any("max.ru" in str(x.get("href", "")) for x in (ctx.get("footer", {}).get("socials") or []) if isinstance(x, dict)))
+        self.assertIn('aria-label="Написать в MAX"', mebel.PAGE)
+        self.assertIn("quiz-max", mebel.PAGE)
 
     def test_theme_has_final_dark_palette(self):
         css_path = pathlib.Path(__file__).resolve().parents[1] / "site-theme.css"
@@ -44,7 +46,9 @@ class SiteSeoTests(unittest.TestCase):
         self.assertIn("--ostr-bg:#151613", css)
         self.assertIn(".panel .svc", css)
         self.assertIn("body.admin-shell", css)
-        self.assertIn("--studio-teal:#579da3", css)
+        self.assertIn("--studio-teal:#86b9b7", css)
+        self.assertIn(".section-rail{display:none!important}", css)
+        self.assertIn("r3 — coherent dark editorial system", css)
         self.assertIn("#quiz .quiz-options", css)
         self.assertNotIn("max-brand-icon", mebel.PAGE)
 
