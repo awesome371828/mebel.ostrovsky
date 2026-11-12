@@ -84,6 +84,26 @@ class SiteSeoTests(unittest.TestCase):
         self.assertIn("OSTR r5 — deterministic dark leader panel", css)
 
 
+    def test_navigation_restores_all_primary_sections_and_consultation(self):
+        self.assertIn('href="#about"', mebel.PAGE)
+        self.assertIn('href="#works"', mebel.PAGE)
+        self.assertIn('href="#reviews"', mebel.PAGE)
+        self.assertIn('href="#services"', mebel.PAGE)
+        self.assertIn('href="#process"', mebel.PAGE)
+        self.assertIn('href="#cities"', mebel.PAGE)
+        self.assertIn('href="#contacts"', mebel.PAGE)
+        self.assertIn('href="#consult">Консультация</a>', mebel.PAGE)
+
+    def test_leader_and_process_backgrounds_are_forced_dark(self):
+        css_path = pathlib.Path(__file__).resolve().parents[1] / "site-theme.css"
+        css = css_path.read_text(encoding="utf-8")
+        self.assertIn("#about>.bg,#process>.bg{display:none!important", css)
+        self.assertIn("#process .step{background:linear-gradient", css)
+        self.assertIn("img.max-mark{", css)
+        self.assertIn("background-image:none!important", css)
+        self.assertIn("visibility:visible!important", css)
+
+
 
 if __name__ == "__main__":
     unittest.main()
