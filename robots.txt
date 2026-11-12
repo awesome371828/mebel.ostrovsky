@@ -3,5 +3,5 @@ Allow: /
 Disallow: /admin
 Disallow: /admin/
 
-Host: кухниостровский.рф
-Sitemap: https://кухниостровский.рф/sitemap.xml
+Host: www.кухниостровский.рф
+Sitemap: https://www.кухниостровский.рф/sitemap.xml
