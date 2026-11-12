@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /admin
+Disallow: /admin/
 
-Host: кухниостровский.рф
+Host: xn--d1acufc.xn--80aswg
+Sitemap: https://xn--d1acufc.xn--80aswg/sitemap.xml
