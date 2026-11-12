@@ -26,6 +26,17 @@ class SiteSeoTests(unittest.TestCase):
             "https://www.xn--b1albebcsjatkdjj4a.xn--p1ai",
         )
 
+    def test_requested_favicon_is_used_everywhere(self):
+        source = "https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/logo/logo-256.jpg"
+        self.assertIn(source, mebel.PAGE)
+        self.assertIn(source, mebel.build_manifest(mebel.DEFAULT_DATA))
+        self.assertIn(source, mebel.favicon_source(mebel.DEFAULT_DATA))
+
+    def test_max_links_are_removed_from_public_context(self):
+        ctx = mebel._normalize_context(mebel.DEFAULT_DATA)
+        self.assertNotIn("max", ctx.get("brand", {}))
+        self.assertFalse(any("max.ru" in str(x.get("href", "")) for x in (ctx.get("footer", {}).get("socials") or []) if isinstance(x, dict)))
+
     def test_theme_has_final_dark_palette(self):
         css_path = pathlib.Path(__file__).resolve().parents[1] / "site-theme.css"
         css = css_path.read_text(encoding="utf-8")
