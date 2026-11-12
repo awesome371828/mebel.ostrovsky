@@ -108,7 +108,7 @@ def _b64_bytes(s):
     return _fav_bytes[s]
 
 
-FAVICON_URL = "https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/logo/logo-512.jpg"
+FAVICON_URL = "https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/logo/logo-256.jpg"
 
 # ============================================================
 #  АНИМАЦИИ (вставляются в page.html, если их там ещё нет)
@@ -455,7 +455,7 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
 }
 
 PAGE = r"""<!DOCTYPE html>
-<html lang="ru" class="js" data-build="2026-11-12-r1">
+<html lang="ru" class="js" data-build="2026-11-12-r2">
 <head>
 <meta charset="UTF-8">
 <script>/* шим: если браузер не умеет IntersectionObserver, показываем блоки сразу (без «мёртвых» скрытых секций) */
@@ -478,15 +478,15 @@ window.IntersectionObserver=window.IntersectionObserver||function(cb){return{obs
 <link rel="alternate" hreflang="x-default" href="{{seo.canonical}}">{{/if}}
 {{#if seo.yandex_verification}}<meta name="yandex-verification" content="{{seo.yandex_verification}}">{{/if}}
 {{#if seo.google_verification}}<meta name="google-site-verification" content="{{seo.google_verification}}">{{/if}}
-<link rel="shortcut icon" href="/favicon.ico">
-<link rel="icon" type="image/x-icon" href="/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/jpeg" sizes="any" href="{{favicon}}">
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="apple-touch-icon" sizes="any" href="{{favicon}}">
-<meta name="msapplication-TileImage" content="/apple-touch-icon.png">
+<link rel="shortcut icon" type="image/jpeg" href="https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/logo/logo-256.jpg">
+<link rel="icon" type="image/jpeg" sizes="256x256" href="https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/logo/logo-256.jpg">
+
+
+
+
+<link rel="apple-touch-icon" sizes="256x256" href="https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/logo/logo-256.jpg">
+
+<meta name="msapplication-TileImage" content="https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/logo/logo-256.jpg">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ru_RU">
@@ -1411,7 +1411,7 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
 @media(max-width:600px){.panel--hero{min-height:100svh!important}.panel--hero .content{padding-top:132px!important;padding-bottom:132px!important}.panel--hero .scroll-cue{left:50%!important;right:auto!important;bottom:18px!important;width:82px!important;height:82px!important;min-width:82px!important;min-height:82px!important;transform:translateX(-50%)!important}.rev-card{width:90vw;padding:22px!important}.car-nav{display:none}.stat,.svc,.guar,.step,.about-card,.rev-card,.car-slide,.city,.call-block{border-radius:20px!important}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}.stat,.svc,.guar,.step,.about-card,.rev-card,.car-slide,.btn{transition:none!important}}
 </style>
-<link rel="stylesheet" href="/site-theme.css?v=20261112-r1"></head>
+<link rel="stylesheet" href="/site-theme.css?v=20261112-r2"></head>
 <body>
 
 <div class="progress" id="progress"></div>
@@ -1514,7 +1514,7 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
     <span class="kicker reveal" style="color:var(--gold-soft);letter-spacing:6px;text-transform:uppercase;font-size:12px;font-weight:600">{{consult.kicker}}</span>
     <h2 class="k reveal">{{consult.title}}</h2>
     <a href="tel:{{consult.phone_raw}}" class="phone reveal">{{consult.phone}}</a>
-    <p class="reveal">Позвоните или напишите нам в <a class="consult-inline-link" href="{{#if brand.max}}{{brand.max}}{{else}}https://max.ru/{{/if}}" target="_blank" rel="noopener noreferrer" aria-label="Открыть MAX">MAX</a> или <a class="consult-inline-link" href="{{#if brand.telegram}}{{brand.telegram}}{{else}}https://t.me/fanny161{{/if}}" target="_blank" rel="noopener noreferrer" aria-label="Написать в Telegram">Telegram</a> — расскажем про кухни и мебель, всё обсудим и договоримся о бесплатном замере.</p>
+    <p class="reveal">Позвоните или напишите нам в <a class="consult-inline-link" href="{{#if brand.telegram}}{{brand.telegram}}{{else}}https://t.me/fanny161{{/if}}" target="_blank" rel="noopener noreferrer" aria-label="Написать в Telegram">Telegram</a> — расскажем про кухни и мебель, всё обсудим и договоримся о бесплатном замере.</p>
   </div></div>
 </section>{{/if}}
 
@@ -1579,7 +1579,7 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
       <a href="tel:+79508465397" aria-label="Позвонить"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.4 2.1L8.1 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.6 1z"/></svg>Телефон</a>
       <a href="{{brand.telegram}}" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><svg viewBox="0 0 24 24"><path d="m21.7 4.4-3.2 15.1c-.2 1.1-.9 1.4-1.8.9l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.4-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.3 13.4l-4.7-1.5c-1-.3-1-1 .2-1.5L20.2 3c.9-.3 1.7.2 1.5 1.4z"/></svg>Telegram</a>
       <a href="{{brand.vk}}" target="_blank" rel="noopener noreferrer" aria-label="ВКонтакте"><svg viewBox="0 0 24 24"><path d="M3.5 7.2h3.2c.2 4.1 1.9 5.8 3.2 6.2V7.2h3v3.6c1.3-.1 2.7-1.7 3.2-3.6h3.1c-.3 2.2-2 4-3.1 4.8 1.1.6 3.1 2.1 3.8 4.8h-3.4c-.6-1.8-2.1-3.2-3.6-3.3v3.3h-.4C6.7 16.8 3.7 13.4 3.5 7.2z"/></svg>ВКонтакте</a>
-      <a href="{{brand.max}}" target="_blank" rel="noopener noreferrer" aria-label="MAX"><img class="max-brand-icon" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLUf6ITLdqNnRT2GZcGVdQ4yh3OmzP1OxKTLNJhXx22Q&s=10" alt="" width="20" height="20" loading="lazy" decoding="async" referrerpolicy="no-referrer">MAX</a>
+
     </div>
   </div></div>
 </section>{{/if}}
@@ -2506,6 +2506,23 @@ def _icon_markup(value):
 def _normalize_context(data):
     """Готовит данные к рендеру: иконки, год, домен."""
     ctx = _json_clone(data)
+
+    def strip_max_links(value):
+        if isinstance(value, list):
+            kept = []
+            for item in value:
+                if isinstance(item, dict):
+                    label = str(item.get("label") or item.get("name") or "").strip().lower()
+                    href = str(item.get("href") or "").strip().lower()
+                    if label in ("max", "написать в max") or href.startswith(("https://max.ru", "http://max.ru")):
+                        continue
+                kept.append(strip_max_links(item))
+            return kept
+        if isinstance(value, dict):
+            return {k: strip_max_links(v) for k, v in value.items() if k != "max"}
+        return value
+
+    ctx = strip_max_links(ctx)
 
     def fix_icons(items):
         if isinstance(items, list):
@@ -3663,14 +3680,7 @@ def build_manifest(data):
         "background_color": design.get("bg", "#0e0c09"),
         "theme_color": design.get("bg", "#0e0c09"),
         "lang": "ru-RU",
-        "icons": [
-            {"src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"},
-            {"src": "/favicon.ico", "sizes": "16x16 32x32 48x48 64x64", "type": "image/x-icon", "purpose": "any"},
-            {"src": "/favicon-16x16.png", "sizes": "16x16", "type": "image/png", "purpose": "any"},
-            {"src": "/favicon-32x32.png", "sizes": "32x32", "type": "image/png", "purpose": "any"},
-            {"src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any"},
-            {"src": "/favicon-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
-        ],
+        "icons": [{"src": "https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/logo/logo-256.jpg", "sizes": "256x256", "type": "image/jpeg", "purpose": "any"}],
     }, ensure_ascii=False)
 
 
@@ -5907,27 +5917,8 @@ class Handler(BaseHTTPRequestHandler):
         self._send(200, blob, ct, "public, max-age=604800", gzip_ok=False)
 
     def _route_favicon(self, path):
-        """Иконки: сначала пробуем собрать из логотипа, иначе отдаём вшитые в файл."""
-        if path == "/favicon.svg":
-            self._send(200, favicon_svg(), "image/svg+xml", "public, max-age=86400", gzip_ok=False)
-            return
-        if path == "/favicon.ico":
-            get_favicon()
-            blob = _ic["ico"] or _b64_bytes(FAVICON_ICO_B64)
-            if blob:
-                self._send(200, blob, "image/x-icon", "public, max-age=86400", gzip_ok=False)
-            else:
-                self._redir(favicon_source())
-            return
-        key, fb = {"/favicon-16x16.png": ("png16", FAVICON_PNG32_B64),
-                   "/favicon-32x32.png": ("png32", FAVICON_PNG32_B64),
-                   "/apple-touch-icon.png": ("png180", FAVICON_PNG180_B64),
-                   "/favicon-192x192.png": ("png192", FAVICON_PNG180_B64)}[path]
-        if _ic.get(key) is None:
-            get_favicon()
-        blob = _ic.get(key) or _b64_bytes(fb)
-        if blob:
-            self._send(200, blob, "image/png", "public, max-age=86400", gzip_ok=False)
+        """Все legacy favicon URL перенаправляются на единый логотип бренда."""
+        self._redir("https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/logo/logo-256.jpg")
         else:
             self._redir(favicon_source())
 
