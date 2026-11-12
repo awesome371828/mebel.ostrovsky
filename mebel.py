@@ -2540,7 +2540,7 @@ def _normalize_context(data):
 
 def _domain(data=None):
     """Единый публичный адрес. Не берём устаревший домен из кэша CMS или env."""
-    return "https://кухниостровский.рф"
+    return "https://www.кухниостровский.рф"
 
 
 def _host(data=None):
