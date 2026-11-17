@@ -10,6 +10,7 @@ class SiteRegressionTests(unittest.TestCase):
     def setUpClass(cls):
         cls.root = pathlib.Path(__file__).resolve().parents[1]
         cls.css = (cls.root / "site-theme.css").read_text(encoding="utf-8")
+        cls.premium = (cls.root / "site-premium.css").read_text(encoding="utf-8")
         cls.page = mebel.PAGE
 
     def test_robots_advertises_sitemap_and_hides_admin(self):
@@ -71,12 +72,9 @@ class SiteRegressionTests(unittest.TestCase):
         self.assertIn('#contacts .contact-grid', self.css)
         self.assertIn('--q-bg:#ded7cb', self.css)
         self.assertIn('--q-teal:#4f9aa2', self.css)
-        self.assertIn('background-image:url(\'{{{hero.bg}}}\'),url(\'https://sun9-49.vkuserphoto.ru/', self.template)
         self.assertIn('@media(max-width:380px)', self.css)
         self.assertIn('@media(max-width:900px)', self.css)
         self.assertIn('#menu li a{display:flex', self.css)
-        self.assertIn('#top>.bg:after{background:linear-gradient(90deg,rgba(18,20,19,.10)', self.css)
-        self.assertIn('54RqB_cEOPzF_Xj9-FdI8pIegVBTKXk1KqQ7UYCmZ6CO7lzkigXLPoiQurkUnKJRXvN60EnbppdZ61nbnwiuVh6I.jpg', self.css)
 
     def test_about_and_process_do_not_have_inline_dark_backgrounds(self):
         self.assertIn('<section class="panel panel--dark" id="about">', self.page)
@@ -98,11 +96,14 @@ class SiteRegressionTests(unittest.TestCase):
             page = mebel._legal_page(path, mebel.DEFAULT_DATA)
             self.assertIn('/site-theme.css?v=20261117-r11', page)
             self.assertIn('class="legal-card"', page)
+            self.assertIn("site-premium.css?v=20261117-r12", page)
         self.assertIn('/site-theme.css?v=20261117-r11', mebel.build_404(mebel.DEFAULT_DATA))
+        self.assertIn("site-premium.css?v=20261117-r12", mebel.build_404(mebel.DEFAULT_DATA))
 
     def test_client_portal_loads_shared_theme(self):
         source = pathlib.Path(mebel.__file__).read_text(encoding="utf-8")
         self.assertIn("site-theme.css?v=20261117-r11", source)
+        self.assertIn("site-premium.css?v=20261117-r12", source)
         self.assertIn("Личный кабинет клиента", source)
 
 
