@@ -11,6 +11,7 @@ class SiteRegressionTests(unittest.TestCase):
         cls.root = pathlib.Path(__file__).resolve().parents[1]
         cls.css = (cls.root / "site-theme.css").read_text(encoding="utf-8")
         cls.premium = (cls.root / "site-premium.css").read_text(encoding="utf-8")
+        cls.redesign = (cls.root / "site-redesign.css").read_text(encoding="utf-8")
         cls.page = mebel.PAGE
 
     def test_robots_advertises_sitemap_and_hides_admin(self):
@@ -145,6 +146,19 @@ class SiteRegressionTests(unittest.TestCase):
         self.assertIn("site-theme.css?v=20261117-r11", source)
         self.assertIn("site-premium.css?v=20261117-r14", source)
         self.assertIn("Личный кабинет клиента", source)
+
+
+    def test_unified_redesign_is_loaded_last_and_keeps_content_legible(self):
+        self.assertIn('site-redesign.css?v=20261117-r1', self.page)
+        self.assertGreater(self.page.index('site-redesign.css?v=20261117-r1'), self.page.index('site-premium.css?v=20261117-r14'))
+        for selector in ('#heroTitle{', '#top .scroll-cue{', '#menu li a,#menu li a:visited',
+                         '#about .about{display:grid!important;', '#reviews .rev-card{',
+                         '#contacts .c-ico svg', '@media(max-width:560px)'):
+            self.assertIn(selector, self.redesign)
+        self.assertIn('visibility:visible!important', self.redesign)
+        self.assertIn('overflow-wrap:normal!important', self.redesign)
+        self.assertIn('height:auto!important', self.redesign)
+        self.assertIn('prefers-reduced-motion:reduce', self.redesign)
 
 
 if __name__ == "__main__":
