@@ -1633,3 +1633,9 @@ footer a{color:#f7f4ed!important}
 @media(max-width:900px){#about .about{grid-template-columns:1fr!important;gap:30px!important}#process .steps{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(max-width:600px){#header{height:70px!important}#process .steps{grid-template-columns:1fr!important}#process .step{min-height:0!important;padding:23px!important}.panel:not(#top){padding:68px 0!important}.panel .btn-row{gap:10px!important}.panel .btn{width:100%!important;justify-content:center!important}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* Explicitly supersede the former pale about/process section overrides. */
+#about,#process{background:#1b1b18!important;color:#f7f4ed!important}
+#about>.bg,#process>.bg{display:block!important;opacity:1!important;visibility:visible!important}
+#about>.bg:after,#process>.bg:after{background:linear-gradient(90deg,rgba(17,17,15,.9),rgba(17,17,15,.72) 58%,rgba(17,17,15,.62))!important}
+#about .about-body,#about .about-body h2,#about .about-body h3,#about .about-body p,#about .about-body li,#about .features li{color:#f7f4ed!important;-webkit-text-fill-color:#f7f4ed!important}
