@@ -62,17 +62,20 @@ class SiteRegressionTests(unittest.TestCase):
             self.assertIn('id="' + section_id + '"', self.page)
 
     def test_latest_theme_is_linked_and_uses_editorial_palette(self):
-        self.assertIn('/site-theme.css?v=20261117-r10', self.page)
+        self.assertIn('/site-theme.css?v=20261117-r11', self.page)
         self.assertIn('--ostr-bg:#f4f2ed', self.css)
         self.assertIn('--ostr-ink:#242621', self.css)
         self.assertIn('color-scheme:light', self.css)
         self.assertIn('#top.panel--hero', self.css)
         self.assertIn('#works .car-slide img', self.css)
         self.assertIn('#contacts .contact-grid', self.css)
-        self.assertIn('--q-bg:#f5f2ec', self.css)
-        self.assertIn('--q-teal:#4d9ca8', self.css)
-        self.assertIn('#top>.bg{background-image:url(', self.css)
+        self.assertIn('--q-bg:#ded7cb', self.css)
+        self.assertIn('--q-teal:#4f9aa2', self.css)
+        self.assertIn('background-image:url(\'{{{hero.bg}}}\'),url(\'https://sun9-49.vkuserphoto.ru/', self.template)
         self.assertIn('@media(max-width:380px)', self.css)
+        self.assertIn('@media(max-width:900px)', self.css)
+        self.assertIn('#menu li a{display:flex', self.css)
+        self.assertIn('#top>.bg:after{background:linear-gradient(90deg,rgba(18,20,19,.10)', self.css)
         self.assertIn('54RqB_cEOPzF_Xj9-FdI8pIegVBTKXk1KqQ7UYCmZ6CO7lzkigXLPoiQurkUnKJRXvN60EnbppdZ61nbnwiuVh6I.jpg', self.css)
 
     def test_about_and_process_do_not_have_inline_dark_backgrounds(self):
@@ -93,13 +96,13 @@ class SiteRegressionTests(unittest.TestCase):
     def test_legal_pages_and_404_load_the_shared_theme(self):
         for path in ("/ip", "/privacy", "/personal-data-consent"):
             page = mebel._legal_page(path, mebel.DEFAULT_DATA)
-            self.assertIn('/site-theme.css?v=20261117-r10', page)
+            self.assertIn('/site-theme.css?v=20261117-r11', page)
             self.assertIn('class="legal-card"', page)
-        self.assertIn('/site-theme.css?v=20261117-r10', mebel.build_404(mebel.DEFAULT_DATA))
+        self.assertIn('/site-theme.css?v=20261117-r11', mebel.build_404(mebel.DEFAULT_DATA))
 
     def test_client_portal_loads_shared_theme(self):
         source = pathlib.Path(mebel.__file__).read_text(encoding="utf-8")
-        self.assertIn("site-theme.css?v=20261117-r10", source)
+        self.assertIn("site-theme.css?v=20261117-r11", source)
         self.assertIn("Личный кабинет клиента", source)
 
 
