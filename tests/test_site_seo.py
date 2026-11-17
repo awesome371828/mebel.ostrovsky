@@ -88,6 +88,9 @@ class SiteRegressionTests(unittest.TestCase):
         self.assertIn("@media(max-width:380px)", self.premium)
         self.assertIn("prefers-reduced-motion:reduce", self.premium)
         self.assertNotIn("Фотографии работ скоро появятся", self.page)
+        self.assertNotIn("Отзывы появятся здесь совсем скоро", self.page)
+        self.assertNotIn(".img-failed::after", self.page)
+        self.assertIn('data-fallback="https://sun9-49.vkuserphoto.ru', self.page)
 
     def test_about_and_process_do_not_have_inline_dark_backgrounds(self):
         self.assertIn('<section class="panel panel--dark" id="about">', self.page)
