@@ -1015,8 +1015,7 @@ footer .flogo{background:linear-gradient(100deg,#fff 20%,var(--gold-soft) 55%,#f
 .rev-photo:hover img{transform:scale(1.07)}
 .img-fade{opacity:0}
 .img-ready{opacity:1;transition:opacity 1s cubic-bezier(.16,1,.3,1)}
-.img-failed{background:linear-gradient(135deg,rgba(212,175,106,.16),rgba(14,12,9,.9));display:flex;align-items:center;justify-content:center;min-height:120px}
-.img-failed::after{content:attr(data-alt);color:var(--muted);font-size:13px;text-align:center;padding:18px;font-family:var(--sans)}
+
 .car-slide{transition:transform .7s cubic-bezier(.16,1,.3,1),box-shadow .7s,border-color .7s}
 .svc,.step,.guar,.city,.rev-card,.about-card,.call-block,.stat{transition:transform .7s cubic-bezier(.16,1,.3,1),box-shadow .7s,border-color .7s,background .7s}
 .btn{transition:transform .55s cubic-bezier(.16,1,.3,1),box-shadow .55s,filter .55s,background .55s,color .55s}
@@ -1645,7 +1644,7 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
       <div class="car-dots" id="revDots"></div>
       <div class="swipe-hint">{{reviews.hint}}</div>
     </div>
-    {{else}}<p class="empty">Отзывы появятся здесь совсем скоро. Хотите стать первым — позвоните нам.</p>{{/if}}
+    {{/if}}
     {{#if reviews.more_label}}<p class="section-note">{{reviews.more_text}} <a href="{{reviews.more_href}}" target="_blank" rel="noopener">{{reviews.more_label}}</a></p>{{/if}}
   </div></div>
 </section>{{/if}}
