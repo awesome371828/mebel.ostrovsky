@@ -1456,7 +1456,7 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
 <nav class="section-rail" aria-label="Навигация по разделам"><a href="#top" aria-label="Главная"></a><a href="#about" aria-label="Руководитель"></a><a href="#works" aria-label="Работы"></a><a href="#reviews" aria-label="Отзывы"></a><a href="#services" aria-label="Услуги"></a><a href="#process" aria-label="Как работаем"></a><a href="#cities" aria-label="Города"></a><a href="#contacts" aria-label="Контакты"></a><a href="#quiz" aria-label="Рассчитать проект"></a></nav>
 
 <section class="panel panel--hero" id="top"{{#if hero.watermark}} data-watermark="{{hero.watermark}}"{{/if}}>
-  <div class="hero-photo" aria-hidden="true">{{#if hero.bg}}<img src="{{hero.bg}}" alt="" fetchpriority="high" decoding="async">{{else}}<img src="https://sun9-49.vkuserphoto.ru/s/v1/ig2/54RqB_cEOPzF_Xj9-FdI8pIegVBTKXk1KqQ7UYCmZ6CO7lzkigXLPoiQurkUnKJRXvN60EnbppdZ61nbnwiuVh6I.jpg?quality=95&as=1448x1086&from=bu&u=3cGCCyzcPcdydR6nNijaiupMvTquIwYh9wVg-sQITaM&cs=1448x0" alt="" fetchpriority="high" decoding="async">{{/if}}</div>
+  <div class="hero-photo" aria-hidden="true">{{#if hero.bg}}<img src="{{hero.bg}}" data-fallback="https://sun9-49.vkuserphoto.ru/s/v1/ig2/54RqB_cEOPzF_Xj9-FdI8pIegVBTKXk1KqQ7UYCmZ6CO7lzkigXLPoiQurkUnKJRXvN60EnbppdZ61nbnwiuVh6I.jpg?quality=95&amp;as=1448x1086&amp;from=bu&amp;u=3cGCCyzcPcdydR6nNijaiupMvTquIwYh9wVg-sQITaM&amp;cs=1448x0" alt="" fetchpriority="high" decoding="async">{{else}}<img src="https://sun9-49.vkuserphoto.ru/s/v1/ig2/54RqB_cEOPzF_Xj9-FdI8pIegVBTKXk1KqQ7UYCmZ6CO7lzkigXLPoiQurkUnKJRXvN60EnbppdZ61nbnwiuVh6I.jpg?quality=95&as=1448x1086&from=bu&u=3cGCCyzcPcdydR6nNijaiupMvTquIwYh9wVg-sQITaM&cs=1448x0" alt="" fetchpriority="high" decoding="async">{{/if}}</div>
   <div class="wrap hero-wrap"><div class="hero-layout">
     <div class="content hero-main">
       <span class="eyebrow">{{hero.eyebrow}}</span>
@@ -2104,18 +2104,18 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
     }
   }
 
-  /* 9. Плавное появление фото + аккуратная заглушка, если фото не открылось */
+  /* 9. Плавная загрузка изображений без текстовых и декоративных заглушек */
   all('img').forEach(function(im){
     if(im.classList.contains('rev-ava')||im.classList.contains('brand-ava')||im.closest('#lbStage'))return;
     if(!reduced){im.classList.add('img-fade');}
     function ready(){im.classList.remove('img-fade');im.classList.add('img-ready');}
     function failed(){
-      if(im.classList.contains('rev-ava')){im.parentNode&&im.parentNode.removeChild(im);return;}
+      var fallback=im.getAttribute('data-fallback');
+      if(fallback&&im.src!==fallback){im.removeAttribute('data-fallback');im.src=fallback;return;}
+      if(im.classList.contains('rev-ava')||im.closest('.car-slide')){var item=im.closest('.car-slide')||im;item.parentNode&&item.parentNode.removeChild(item);return;}
       im.style.display='none';
-      var p=im.parentNode;
-      if(p&&!p.classList.contains('img-failed')){p.classList.add('img-failed');p.setAttribute('data-alt',im.getAttribute('alt')||'Фото');}
     }
-    if(im.complete){ if(im.naturalWidth>0){ready();}else{failed();} }
+    if(im.complete){if(im.naturalWidth>0){ready();}else{failed();}}
     im.addEventListener('load',ready);
     im.addEventListener('error',failed);
   });
