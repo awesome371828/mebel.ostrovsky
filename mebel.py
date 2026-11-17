@@ -578,7 +578,7 @@ window.IntersectionObserver=window.IntersectionObserver||function(cb){return{obs
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{{design.fonts_url}}" rel="stylesheet">
-{{#if hero.bg}}<link rel="preload" as="image" fetchpriority="high" href="{{{hero.bg}}}">{{/if}}
+{{#if hero.bg}}<link rel="preload" as="image" fetchpriority="high" href="{{{hero.bg}}}">{{else}}<link rel="preload" as="image" fetchpriority="high" href="https://sun9-49.vkuserphoto.ru/s/v1/ig2/54RqB_cEOPzF_Xj9-FdI8pIegVBTKXk1KqQ7UYCmZ6CO7lzkigXLPoiQurkUnKJRXvN60EnbppdZ61nbnwiuVh6I.jpg?quality=95&amp;as=1448x1086&amp;from=bu&amp;u=3cGCCyzcPcdydR6nNijaiupMvTquIwYh9wVg-sQITaM&amp;cs=1448x0">{{/if}}
 <style>
 :root{
   --bg:#0e0c09;
