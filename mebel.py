@@ -1410,7 +1410,7 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}.stat,.svc,.guar,.step,.about-card,.rev-card,.car-slide,.btn{transition:none!important}}
 </style>
 <link rel="stylesheet" href="/site-theme.css?v=20261117-r11">
-<link rel="stylesheet" href="/site-premium.css?v=20261117-r14"></head>
+<link rel="stylesheet" href="/site-premium.css?v=20261117-r14"><link rel="stylesheet" href="/site-redesign.css?v=20261117-r1"></head>
 <body>
 
 <div class="progress" id="progress"></div>
