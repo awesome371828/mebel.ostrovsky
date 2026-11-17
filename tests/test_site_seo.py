@@ -80,7 +80,7 @@ class SiteRegressionTests(unittest.TestCase):
         self.assertIn('class="hero-photo"', self.page)
         self.assertIn('{{#if hero.bg}}<img src="{{hero.bg}}"', self.page)
         self.assertIn('class="hero-proof"', self.page)
-        self.assertIn("site-premium.css?v=20261117-r13", self.page)
+        self.assertIn("site-premium.css?v=20261117-r14", self.page)
         self.assertIn("54RqB_cEOPzF_Xj9-FdI8pIegVBTKXk1KqQ7UYCmZ6CO7lzkigXLPoiQurkUnKJRXvN60EnbppdZ61nbnwiuVh6I.jpg", self.page)
         self.assertIn("#top .hero-photo img{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important", self.premium)
         self.assertIn("#top .hero-layout{display:grid!important;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr)!important", self.premium)
@@ -110,7 +110,20 @@ class SiteRegressionTests(unittest.TestCase):
         for breakpoint in ("max-width:1280px", "max-width:1100px", "max-width:760px", "max-width:540px", "max-width:360px"):
             self.assertIn("@media(" + breakpoint + ")", premium)
         self.assertIn("prefers-reduced-motion:reduce", premium)
-        self.assertIn("site-premium.css?v=20261117-r13", self.page)
+        self.assertIn("site-premium.css?v=20261117-r14", self.page)
+
+
+    def test_hero_is_raised_and_scroll_cue_is_always_visible(self):
+        self.assertIn('aria-label="Листайте вниз"', self.page)
+        self.assertIn('else}}Листайте', self.page)
+        self.assertIn('#top.panel--hero{\n  align-items:center!important;', self.premium)
+        self.assertIn('#top .scroll-cue{\n  display:flex!important;', self.premium)
+
+    def test_review_cards_keep_text_visible_and_do_not_expand_blank(self):
+        self.assertIn('#reviews .rev-card{\n  display:flex!important;', self.premium)
+        self.assertIn('#reviews .rev-text.rv.in{', self.premium)
+        self.assertIn('opacity:1!important;', self.premium)
+        self.assertIn('aspect-ratio:16/9!important;', self.premium)
 
     def test_responsive_navigation_and_reduced_motion_rules_exist(self):
         self.assertIn('@media(max-width:860px)', self.css)
@@ -123,14 +136,14 @@ class SiteRegressionTests(unittest.TestCase):
             page = mebel._legal_page(path, mebel.DEFAULT_DATA)
             self.assertIn('/site-theme.css?v=20261117-r11', page)
             self.assertIn('class="legal-card"', page)
-            self.assertIn("site-premium.css?v=20261117-r13", page)
+            self.assertIn("site-premium.css?v=20261117-r14", page)
         self.assertIn('/site-theme.css?v=20261117-r11', mebel.build_404(mebel.DEFAULT_DATA))
-        self.assertIn("site-premium.css?v=20261117-r13", mebel.build_404(mebel.DEFAULT_DATA))
+        self.assertIn("site-premium.css?v=20261117-r14", mebel.build_404(mebel.DEFAULT_DATA))
 
     def test_client_portal_loads_shared_theme(self):
         source = pathlib.Path(mebel.__file__).read_text(encoding="utf-8")
         self.assertIn("site-theme.css?v=20261117-r11", source)
-        self.assertIn("site-premium.css?v=20261117-r13", source)
+        self.assertIn("site-premium.css?v=20261117-r14", source)
         self.assertIn("Личный кабинет клиента", source)
 
 
