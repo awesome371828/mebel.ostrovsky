@@ -62,7 +62,7 @@ class SiteRegressionTests(unittest.TestCase):
             self.assertIn('id="' + section_id + '"', self.page)
 
     def test_latest_theme_is_linked_and_uses_editorial_palette(self):
-        self.assertIn('/site-theme.css?v=20261117-r9', self.page)
+        self.assertIn('/site-theme.css?v=20261117-r10', self.page)
         self.assertIn('--ostr-bg:#f4f2ed', self.css)
         self.assertIn('--ostr-ink:#242621', self.css)
         self.assertIn('color-scheme:light', self.css)
@@ -88,13 +88,13 @@ class SiteRegressionTests(unittest.TestCase):
     def test_legal_pages_and_404_load_the_shared_theme(self):
         for path in ("/ip", "/privacy", "/personal-data-consent"):
             page = mebel._legal_page(path, mebel.DEFAULT_DATA)
-            self.assertIn('/site-theme.css?v=20261117-r9', page)
+            self.assertIn('/site-theme.css?v=20261117-r10', page)
             self.assertIn('class="legal-card"', page)
-        self.assertIn('/site-theme.css?v=20261117-r9', mebel.build_404(mebel.DEFAULT_DATA))
+        self.assertIn('/site-theme.css?v=20261117-r10', mebel.build_404(mebel.DEFAULT_DATA))
 
     def test_client_portal_loads_shared_theme(self):
         source = pathlib.Path(mebel.__file__).read_text(encoding="utf-8")
-        self.assertIn("site-theme.css?v=20261117-r9", source)
+        self.assertIn("site-theme.css?v=20261117-r10", source)
         self.assertIn("Личный кабинет клиента", source)
 
 
