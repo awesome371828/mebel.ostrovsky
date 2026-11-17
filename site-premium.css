@@ -61,8 +61,10 @@ footer p,footer a{color:rgba(247,243,236,.82)!important}
  #menu li a{padding-inline:8px!important;font-size:11px!important}
  #top .hero-layout{max-width:980px!important}
 }
-@media(max-width:900px){
+@media(max-width:1100px){
  #header{left:50%!important;transform:translateX(-50%)!important;top:10px!important;width:calc(100% - 28px)!important;max-width:540px!important;height:62px!important}
+ #header .burger{display:flex!important;flex-direction:column!important;justify-content:center!important;gap:5px!important;width:42px!important;height:42px!important;margin-left:auto!important}
+ #header .burger span{display:block!important;width:21px!important;height:2px!important;border-radius:2px!important}
  #header .header-call{display:none!important}
  #header .header-messengers{display:flex!important;margin-left:auto!important}
  #menu{top:82px!important;left:50%!important;right:auto!important;bottom:auto!important;transform:translateX(-50%)!important;width:calc(100% - 28px)!important;max-width:540px!important;display:none!important;flex-direction:column!important;align-items:stretch!important;max-height:calc(100dvh - 96px)!important;overflow:auto!important;border-radius:20px!important;background:rgba(37,39,36,.98)!important}
