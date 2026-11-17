@@ -1525,3 +1525,24 @@ body.admin-shell{background:var(--ostr-bg)!important;color:var(--ostr-ink)!impor
  html{scroll-behavior:auto!important}
  *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 }
+
+
+/* r8.1 — final contrast and header collision guards */
+@media(min-width:861px){
+  #header .header-call,#header .header-messengers{display:none!important}
+}
+#about .about-body,#about .about-body h2,#about .about-body h3,
+#about .about-body p,#about .about-body li,#about .features li{
+  color:var(--ostr-ink)!important;-webkit-text-fill-color:var(--ostr-ink)!important;
+  text-shadow:none!important
+}
+#about .about-body .kicker{color:var(--ostr-accent-dark)!important;-webkit-text-fill-color:var(--ostr-accent-dark)!important}
+#about .about-body p{color:var(--ostr-muted)!important;-webkit-text-fill-color:var(--ostr-muted)!important}
+#about .features li{color:var(--ostr-ink)!important;-webkit-text-fill-color:var(--ostr-ink)!important}
+.admin-login{background:var(--ostr-bg)!important;color:var(--ostr-ink)!important}
+.admin-login .card{background:var(--ostr-paper)!important;border:1px solid var(--ostr-line)!important;border-radius:6px!important;box-shadow:var(--ostr-shadow)!important}
+.admin-login .card h1{color:var(--ostr-ink)!important}
+.admin-login .card p.sub,.admin-login .card .hint{color:var(--ostr-muted)!important}
+.admin-login .card label{color:var(--ostr-accent-dark)!important}
+.admin-login .card input{background:#fff!important;color:var(--ostr-ink)!important;border:1px solid var(--ostr-line)!important;border-radius:4px!important}
+.admin-login .card button{background:var(--ostr-deep)!important;color:#fff!important;border-radius:4px!important}
