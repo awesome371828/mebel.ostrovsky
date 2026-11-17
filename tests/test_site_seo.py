@@ -69,6 +69,11 @@ class SiteRegressionTests(unittest.TestCase):
         self.assertIn('#top.panel--hero', self.css)
         self.assertIn('#works .car-slide img', self.css)
         self.assertIn('#contacts .contact-grid', self.css)
+        self.assertIn('--q-bg:#f5f2ec', self.css)
+        self.assertIn('--q-teal:#4d9ca8', self.css)
+        self.assertIn('#top>.bg{background-image:url(', self.css)
+        self.assertIn('@media(max-width:380px)', self.css)
+        self.assertIn('54RqB_cEOPzF_Xj9-FdI8pIegVBTKXk1KqQ7UYCmZ6CO7lzkigXLPoiQurkUnKJRXvN60EnbppdZ61nbnwiuVh6I.jpg', self.css)
 
     def test_about_and_process_do_not_have_inline_dark_backgrounds(self):
         self.assertIn('<section class="panel panel--dark" id="about">', self.page)
