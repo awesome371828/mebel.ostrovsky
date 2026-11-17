@@ -80,7 +80,7 @@ class SiteRegressionTests(unittest.TestCase):
         self.assertIn('class="hero-photo"', self.page)
         self.assertIn('{{#if hero.bg}}<img src="{{hero.bg}}"', self.page)
         self.assertIn('class="hero-proof"', self.page)
-        self.assertIn("site-premium.css?v=20261117-r12", self.page)
+        self.assertIn("site-premium.css?v=20261117-r13", self.page)
         self.assertIn("54RqB_cEOPzF_Xj9-FdI8pIegVBTKXk1KqQ7UYCmZ6CO7lzkigXLPoiQurkUnKJRXvN60EnbppdZ61nbnwiuVh6I.jpg", self.page)
         self.assertIn("#top .hero-photo img{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important", self.premium)
         self.assertIn("#top .hero-layout{display:grid!important;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr)!important", self.premium)
@@ -112,14 +112,14 @@ class SiteRegressionTests(unittest.TestCase):
             page = mebel._legal_page(path, mebel.DEFAULT_DATA)
             self.assertIn('/site-theme.css?v=20261117-r11', page)
             self.assertIn('class="legal-card"', page)
-            self.assertIn("site-premium.css?v=20261117-r12", page)
+            self.assertIn("site-premium.css?v=20261117-r13", page)
         self.assertIn('/site-theme.css?v=20261117-r11', mebel.build_404(mebel.DEFAULT_DATA))
-        self.assertIn("site-premium.css?v=20261117-r12", mebel.build_404(mebel.DEFAULT_DATA))
+        self.assertIn("site-premium.css?v=20261117-r13", mebel.build_404(mebel.DEFAULT_DATA))
 
     def test_client_portal_loads_shared_theme(self):
         source = pathlib.Path(mebel.__file__).read_text(encoding="utf-8")
         self.assertIn("site-theme.css?v=20261117-r11", source)
-        self.assertIn("site-premium.css?v=20261117-r12", source)
+        self.assertIn("site-premium.css?v=20261117-r13", source)
         self.assertIn("Личный кабинет клиента", source)
 
 
