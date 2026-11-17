@@ -101,6 +101,17 @@ class SiteRegressionTests(unittest.TestCase):
         self.assertNotIn('id="process" style="background:#191a17', self.page)
         self.assertIn('#about>.bg,#process>.bg{display:block!important;opacity:1!important;visibility:visible!important}', self.css)
 
+    def test_final_responsive_photo_design(self):
+        premium = (self.root / "site-premium.css").read_text(encoding="utf-8")
+        self.assertIn("#about .about{display:grid!important;grid-template-columns:minmax(280px,.72fr)", premium)
+        self.assertIn("#about .about-body{display:block!important;align-self:center!important", premium)
+        self.assertIn("#contacts .c-ico{display:none!important}", premium)
+        self.assertIn("#contacts .c-action svg{display:none!important}", premium)
+        for breakpoint in ("max-width:1280px", "max-width:1100px", "max-width:760px", "max-width:540px", "max-width:360px"):
+            self.assertIn("@media(" + breakpoint + ")", premium)
+        self.assertIn("prefers-reduced-motion:reduce", premium)
+        self.assertIn("site-premium.css?v=20261117-r13", self.page)
+
     def test_responsive_navigation_and_reduced_motion_rules_exist(self):
         self.assertIn('@media(max-width:860px)', self.css)
         self.assertIn('#menu.open', self.css)
