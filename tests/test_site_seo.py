@@ -76,6 +76,19 @@ class SiteRegressionTests(unittest.TestCase):
         self.assertIn('@media(max-width:900px)', self.css)
         self.assertIn('#menu li a{display:flex', self.css)
 
+    def test_hero_uses_real_full_bleed_photo_and_fact_panel(self):
+        self.assertIn('class="hero-photo"', self.page)
+        self.assertIn('{{#if hero.bg}}<img src="{{hero.bg}}"', self.page)
+        self.assertIn('class="hero-proof"', self.page)
+        self.assertIn("site-premium.css?v=20261117-r12", self.page)
+        self.assertIn("54RqB_cEOPzF_Xj9-FdI8pIegVBTKXk1KqQ7UYCmZ6CO7lzkigXLPoiQurkUnKJRXvN60EnbppdZ61nbnwiuVh6I.jpg", self.page)
+        self.assertIn("#top .hero-photo img{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important", self.premium)
+        self.assertIn("#top .hero-layout{display:grid!important;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr)!important", self.premium)
+        self.assertIn("@media(max-width:600px)", self.premium)
+        self.assertIn("@media(max-width:380px)", self.premium)
+        self.assertIn("prefers-reduced-motion:reduce", self.premium)
+        self.assertNotIn("Фотографии работ скоро появятся", self.page)
+
     def test_about_and_process_do_not_have_inline_dark_backgrounds(self):
         self.assertIn('<section class="panel panel--dark" id="about">', self.page)
         self.assertIn('<section class="panel panel--dark" id="process">', self.page)
