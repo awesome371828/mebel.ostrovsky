@@ -3700,7 +3700,7 @@ p{color:%(muted)s;font-size:15px;line-height:1.7;margin-bottom:28px}
 </style>
 <link rel="stylesheet" href="/site-theme.css?v=20261112-r8">
 </head>
-<body>
+<body class="error-page">
 <div class="card">
   <div class="code">404</div>
   <h1>%(title)s</h1>
@@ -4354,7 +4354,7 @@ body{background:radial-gradient(ellipse at 50% 0%,rgba(215,189,139,.10),transpar
 .card button{border-radius:999px!important;background:linear-gradient(135deg,#E5D4B3,#C5A979)!important;color:#211B13!important;box-shadow:0 12px 28px rgba(0,0,0,.25)!important}
 </style>
 <style id="ostrovskyLoginEditorial2026">*{box-sizing:border-box}body{background:radial-gradient(ellipse at 50% 0%,rgba(216,194,155,.11),transparent 48%),#171816!important;color:#F7F5F0!important}.card{background:rgba(255,255,255,.055)!important;border:1px solid rgba(255,255,255,.14)!important;border-radius:24px!important;box-shadow:0 24px 64px rgba(0,0,0,.36)!important;backdrop-filter:blur(22px)!important}.card h1{color:#F7F5F0!important}.card p.sub,.card .hint{color:#C9C4BA!important}.card label{color:#D8C29B!important}.card input{background:rgba(0,0,0,.22)!important;border:1px solid rgba(255,255,255,.16)!important;border-radius:13px!important;color:#F7F5F0!important}.card input:focus{outline:none!important;border-color:#D8C29B!important;box-shadow:0 0 0 3px rgba(216,194,155,.12)!important}.card button{border-radius:999px!important;background:linear-gradient(135deg,#E8D8B8,#CDB58A)!important;color:#211D16!important;box-shadow:0 12px 28px rgba(0,0,0,.25)!important}</style>
-<link rel="stylesheet" href="/site-theme.css?v=20261112-r8"></head><body>
+<link rel="stylesheet" href="/site-theme.css?v=20261112-r8"></head><body class="admin-login">
 <form class="card" method="POST" action="/admin/login">
 <h1>Кухни Островский</h1><p class="sub">Панель управления сайтом</p>__ERROR__
 <label>Логин</label><input type="text" name="login" required autofocus autocomplete="username">
@@ -5412,7 +5412,7 @@ class Handler(BaseHTTPRequestHandler):
             if not lead:
                 self._send(404,build_404(load_data()),"text/html; charset=utf-8");return
             status={"new":"Новая","in_work":"В работе","measurement":"Замер","calculation":"Расчёт","contract":"Договор","done":"Завершена"}.get(lead.get("status"),"В работе")
-            html="""<!doctype html><html lang='ru'><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Статус заказа — Кухни Островский</title><style>body{font-family:system-ui;background:#0d0b08;color:#f5efe3;margin:0;padding:30px}.card{max-width:760px;margin:40px auto;padding:30px;border:1px solid #5d4a2b;border-radius:18px;background:#17130d}h1{font-family:Georgia,serif}.status{font-size:28px;color:#ecd09c;margin:20px 0}.muted{color:#b9ad9a}</style><link rel='stylesheet' href='/site-theme.css?v=20261112-r8'><div class='card'><h1>Личный кабинет клиента</h1><p class='muted'>Кухни Островский</p><div class='status'>"""+_escape(status)+"</div><p>Заявка: "+_escape(lead.get("id"))+"</p><p>Город: "+_escape(lead.get("city") or "—")+"</p><p>Тип мебели: "+_escape(lead.get("furniture_type") or "—")+"</p><p>Сообщение: "+_escape(lead.get("message") or "—")+"</p>"+("<p><a style='color:#ecd09c' href='"+_escape(lead.get("photo_url"))+"' target='_blank'>Фото помещения</a></p>" if lead.get("photo_url") else "")+"<p class='muted'>Когда статус заявки изменится, обновите эту страницу.</p></div></html>"
+            html="""<!doctype html><html lang='ru'><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Статус заказа — Кухни Островский</title><body class='client-portal'><style>body{font-family:system-ui;background:#0d0b08;color:#f5efe3;margin:0;padding:30px}.card{max-width:760px;margin:40px auto;padding:30px;border:1px solid #5d4a2b;border-radius:18px;background:#17130d}h1{font-family:Georgia,serif}.status{font-size:28px;color:#ecd09c;margin:20px 0}.muted{color:#b9ad9a}</style><link rel='stylesheet' href='/site-theme.css?v=20261112-r8'><div class='card'><h1>Личный кабинет клиента</h1><p class='muted'>Кухни Островский</p><div class='status'>"""+_escape(status)+"</div><p>Заявка: "+_escape(lead.get("id"))+"</p><p>Город: "+_escape(lead.get("city") or "—")+"</p><p>Тип мебели: "+_escape(lead.get("furniture_type") or "—")+"</p><p>Сообщение: "+_escape(lead.get("message") or "—")+"</p>"+("<p><a style='color:#ecd09c' href='"+_escape(lead.get("photo_url"))+"' target='_blank'>Фото помещения</a></p>" if lead.get("photo_url") else "")+"<p class='muted'>Когда статус заявки изменится, обновите эту страницу.</p></div></html>"
             self._send(200,html,"text/html; charset=utf-8","no-cache");return
         if path == "/admin/logout":
             _drop_session(self._tok())
