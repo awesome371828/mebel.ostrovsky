@@ -1546,3 +1546,23 @@ body.admin-shell{background:var(--ostr-bg)!important;color:var(--ostr-ink)!impor
 .admin-login .card label{color:var(--ostr-accent-dark)!important}
 .admin-login .card input{background:#fff!important;color:var(--ostr-ink)!important;border:1px solid var(--ostr-line)!important;border-radius:4px!important}
 .admin-login .card button{background:var(--ostr-deep)!important;color:#fff!important;border-radius:4px!important}
+
+
+/* r8.2 — standalone page surfaces */
+.error-page{min-height:100vh!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:28px!important;background:var(--ostr-bg)!important;color:var(--ostr-ink)!important;text-align:center!important}
+.error-page .card{width:min(620px,100%)!important;padding:clamp(28px,6vw,64px)!important;border:1px solid var(--ostr-line)!important;border-radius:6px!important;background:var(--ostr-paper)!important;box-shadow:var(--ostr-shadow)!important}
+.error-page .code{font-family:var(--ostr-font)!important;font-size:clamp(76px,16vw,142px)!important;font-weight:750!important;line-height:1!important;background:none!important;-webkit-text-fill-color:var(--ostr-accent)!important;filter:none!important}
+.error-page h1{margin:18px 0 12px!important;color:var(--ostr-ink)!important;font-size:clamp(24px,4vw,36px)!important}
+.error-page p,.error-page .contacts{color:var(--ostr-muted)!important}
+.error-page .btn{display:inline-flex!important;align-items:center!important;justify-content:center!important;background:var(--ostr-deep)!important;color:#fff!important;border-radius:4px!important;box-shadow:none!important}
+.client-portal{min-height:100vh!important;padding:40px 18px!important;background:var(--ostr-bg)!important;color:var(--ostr-ink)!important}
+.client-portal .card{max-width:760px!important;margin:40px auto!important;padding:clamp(24px,5vw,46px)!important;border:1px solid var(--ostr-line)!important;border-radius:6px!important;background:var(--ostr-paper)!important;box-shadow:var(--ostr-shadow)!important}
+.client-portal h1{font-size:clamp(28px,4vw,42px)!important;color:var(--ostr-ink)!important}
+.client-portal .status{color:var(--ostr-accent-dark)!important;font-size:26px!important}
+.client-portal .muted{color:var(--ostr-muted)!important}
+.client-portal a{color:var(--ostr-accent-dark)!important}
+.admin-shell>header{background:var(--ostr-paper)!important;color:var(--ostr-ink)!important;border-bottom:1px solid var(--ostr-line)!important;box-shadow:0 6px 24px rgba(30,30,25,.05)!important}
+.admin-shell>header .brand,.admin-shell>header .brand span{color:var(--ostr-ink)!important}
+.admin-shell>header .btn{border:1px solid var(--ostr-line)!important;background:transparent!important;color:var(--ostr-ink)!important;border-radius:4px!important}
+.admin-shell>header .btn-gold{background:var(--ostr-deep)!important;color:#fff!important;border-color:var(--ostr-deep)!important}
+.admin-shell .side button,.admin-shell .side a{border-radius:4px!important}
