@@ -1469,7 +1469,7 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
       </div>
     </div>
     {{#if stats.items}}<aside class="hero-proof" aria-label="О мастерской">
-      <div class="hero-proof-label">Кухни и корпусная мебель на заказ</div>
+      <div class="hero-proof-label">Кухни и корпусная мебель по индивидуальным размерам</div>
       <div class="hero-proof-grid">{{#each stats.items}}<div class="hero-proof-item"><strong>{{this.prefix}}{{this.num}}{{#if this.decimal}}.{{this.decimal}}{{/if}}{{this.suffix}}</strong><span>{{this.label}}</span></div>{{/each}}</div>
       <a class="hero-proof-link" href="#about">О мастерской <span aria-hidden="true">↗</span></a>
     </aside>{{/if}}
@@ -1528,7 +1528,7 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
     <span class="kicker reveal" style="color:var(--gold-soft);letter-spacing:6px;text-transform:uppercase;font-size:12px;font-weight:600">{{consult.kicker}}</span>
     <h2 class="k reveal">{{consult.title}}</h2>
     <a href="tel:{{consult.phone_raw}}" class="phone reveal">{{consult.phone}}</a>
-    <p class="reveal">Позвоните или напишите нам в <a class="consult-inline-link" href="{{#if brand.max}}{{brand.max}}{{else}}https://max.ru/{{/if}}" target="_blank" rel="noopener noreferrer" aria-label="Написать в MAX">MAX</a> — расскажем про кухни и мебель, всё обсудим и договоримся о бесплатном замере.</p>
+    <p class="reveal">Напишите нам в <a class="consult-inline-link" href="{{#if brand.max}}{{brand.max}}{{else}}https://max.ru/{{/if}}" target="_blank" rel="noopener noreferrer" aria-label="Написать в MAX">MAX</a> или позвоните — обсудим задачу, подскажем по материалам и согласуем замер.</p>
   </div></div>
 </section>{{/if}}
 
@@ -1770,7 +1770,7 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
   </div>
   <p>{{footer.line}}</p>
   <p style="margin-top:8px">© <span id="year">{{year}}</span> {{footer.copyright}}</p>
-  <nav class="footer-legal" aria-label="Правовая информация"><a href="/privacy">Политика конфиденциальности</a><span aria-hidden="true">·</span><a href="/personal-data-consent">Согласие на обработку персональных данных</a><span aria-hidden="true">·</span><a href="/ip">ИП руководителя</a></nav>
+  <nav class="footer-legal" aria-label="Правовая информация"><a href="/privacy">Политика конфиденциальности</a><span aria-hidden="true">·</span><a href="/personal-data-consent">Согласие на обработку персональных данных</a><span aria-hidden="true">·</span><a href="/ip">Реквизиты ИП</a></nav>
   <div class="developer-credit">Сайт разработан <a href="https://t.me/flidges" target="_blank" rel="noopener noreferrer" aria-label="Написать разработчику сайта в Telegram">@flidges <span aria-hidden="true">↗</span></a></div>
   <div class="hosting-credit">Сайт размещён на <a href="https://relaxdev.ru/" target="_blank" rel="noopener noreferrer">relaxdev.ru</a></div>
 </footer>{{/if}}
