@@ -9,9 +9,9 @@ class SiteRegressionTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.root = pathlib.Path(__file__).resolve().parents[1]
-        cls.css = (cls.root / "site-theme.css").read_text(encoding="utf-8")
-        cls.premium = (cls.root / "site-premium.css").read_text(encoding="utf-8")
-        cls.redesign = (cls.root / "site-redesign.css").read_text(encoding="utf-8")
+        cls.css = mebel.THEME_CSS
+        cls.premium = mebel.THEME_CSS
+        cls.redesign = mebel.THEME_CSS
         cls.page = mebel.PAGE
 
     def test_robots_advertises_sitemap_and_hides_admin(self):
@@ -159,6 +159,24 @@ class SiteRegressionTests(unittest.TestCase):
         self.assertIn('overflow-wrap:normal!important', self.redesign)
         self.assertIn('height:auto!important', self.redesign)
         self.assertIn('prefers-reduced-motion:reduce', self.redesign)
+
+
+    def test_all_visual_styles_are_embedded_in_mebel_py(self):
+        source = pathlib.Path(mebel.__file__).read_text(encoding="utf-8")
+        self.assertIn("THEME_CSS =", source)
+        self.assertIn("OSTROVSKY_SINGLE_FILE_THEME_V1", mebel.THEME_CSS)
+        self.assertIn("#contacts .c-ico{display:flex!important", mebel.THEME_CSS)
+        self.assertIn("#process .step *{color:#f5f3ed!important", mebel.THEME_CSS)
+
+    def test_theme_links_are_inlined_before_html_is_sent(self):
+        html = '<html><head><link rel="stylesheet" href="/site-theme.css?v=1"><link rel="stylesheet" href="/site-premium.css?v=2"><link rel="stylesheet" href="/site-redesign.css?v=3"></head></html>'
+        rendered = mebel._inline_theme_styles(html)
+        self.assertIn('id="ostUnifiedTheme"', rendered)
+        self.assertEqual(rendered.count('<style id="ostUnifiedTheme">'), 1)
+        self.assertNotIn('href="/site-theme.css', rendered)
+        self.assertNotIn('href="/site-premium.css', rendered)
+        self.assertNotIn('href="/site-redesign.css', rendered)
+
 
 
 if __name__ == "__main__":
