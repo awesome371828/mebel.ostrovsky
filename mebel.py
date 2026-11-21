@@ -2001,7 +2001,7 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
   var lowEnd=(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4)||((navigator.deviceMemory||99)<=4);
   var safe=CFG.safe!==false;
   var heroCfg=window.__OST_HERO_ROTATION||null;/* Статичный фон первого экрана — без автоматической смены фото. */
-  var reduced=OFF||prefersReduced||(!CFG.enabled&&!FORCE);
+  var reduced=OFF; /* Анимации включены по умолчанию на основном домене; ?anim=0 — только ручное отключение. */
   var fine=!!CFG.hover3d&&!safe&&!touch&&!lowEnd;
   var parallax=!!CFG.parallax&&!safe&&!touch&&!lowEnd;
   if(reduced)d.documentElement.classList.add('no-anim');
@@ -2180,7 +2180,7 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
       io2.observe(track);
     });
   }
-  console.log('%cКухни Островский · сборка 2026-10-07-v10 · анимации включены'+(reduced?' (у вас в системе отключена анимация — принудительно: добавьте ?anim=1 к адресу)':''),'color:#d4af6a');
+  console.log('%cКухни Островский · сборка 2026-10-07-v10 · анимации включены'+(reduced?'':''),'color:#d4af6a');
 })();
 
 /* CMS UX: лёгкая предзагрузка ближайших фото + share/copy */
@@ -5499,6 +5499,102 @@ footer a,.footer a{color:#e1cda9!important}
 @media(max-width:900px){#top .hero-layout{grid-template-columns:1fr!important}#about .about{grid-template-columns:1fr!important}#about .about-body .features{grid-template-columns:1fr!important}#lead .lead-shell{grid-template-columns:1fr!important}#menu{border-radius:20px!important}}
 @media(max-width:600px){#header{height:70px!important}#top h1{font-size:clamp(38px,11vw,58px)!important}#about .about-card,#about .about-body{padding:22px!important;border-radius:18px!important}.panel:not(#top){padding-block:68px!important}.stat,.svc,.guar,.step,.rev-card,.city,.call-block{border-radius:18px!important}}
 """
+
+THEME_CSS += r"""
+
+/* OSTROVSKY_CONTRAST_HOTFIX_20261121 — последняя страховка контраста.
+   Светлые поверхности всегда получают тёмный текст независимо от старых CSS-слоёв. */
+:root{--q-bg:#f2f0e9;--q-paper:#fffefa;--q-paper2:#e9e6dc;--q-ink:#252720;--q-muted:#62675f;--q-green:#4f7770;--q-green-dark:#34554e;--q-line:rgba(37,39,32,.14)}
+html,body{color:#252720!important}
+#about .about-card,#about .about-body,
+#contacts .contact-info,#contacts .contact-grid,#contacts .contact-grid>*,
+#contacts .contact-item,#contacts .contact-row,#contacts .call-block,
+#consult .call-block,#quiz .quiz-shell,#lead .lead-shell{
+  background:#fffefa!important;color:#252720!important;border-color:rgba(37,39,32,.14)!important;
+}
+#about .about-card *,#about .about-body *,
+#contacts .contact-info *,#contacts .contact-grid *,#contacts .contact-item *,
+#contacts .contact-row *,#contacts .call-block *,
+#consult .call-block *,#quiz .quiz-shell *,#lead .lead-shell *{
+  color:#252720!important;-webkit-text-fill-color:#252720!important;
+  opacity:1!important;text-shadow:none!important;
+}
+#about .about-body .kicker,#about .about-card .role,
+#contacts .contact-info .kicker,#contacts .contact-item .label,
+#contacts .contact-row .label,#contacts .c-ico,
+#consult .call-block .kicker{color:#4f7770!important;-webkit-text-fill-color:#4f7770!important}
+#about .about-body p,#about .about-card p,
+#contacts .contact-info p,#contacts .contact-item small,
+#contacts .contact-item p,#contacts .contact-row p,
+#contacts .call-block p,#consult .call-block p,
+#lead .lead-shell p{color:#62675f!important;-webkit-text-fill-color:#62675f!important}
+#about .about-body a,#about .about-card a,
+#contacts a:not(.btn):not(.c-action),
+#consult a:not(.btn):not(.c-action){color:#34554e!important;-webkit-text-fill-color:#34554e!important}
+#about .about-body .features li{color:#4b5049!important;-webkit-text-fill-color:#4b5049!important}
+#contacts .btn-solid,#contacts .c-action,
+#consult .btn-solid,#consult .c-action,
+#lead .btn-solid,#lead .c-action{
+  background:#4f7770!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+#contacts .btn-solid *,#contacts .c-action *,
+#consult .btn-solid *,#consult .c-action *,
+#lead .btn-solid *,#lead .c-action *{color:#fff!important;-webkit-text-fill-color:#fff!important}
+#contacts input,#contacts textarea,#contacts select,
+#consult input,#consult textarea,#consult select,
+#quiz input,#quiz textarea,#quiz select,
+#lead input,#lead textarea,#lead select{
+  background:#fff!important;color:#252720!important;-webkit-text-fill-color:#252720!important;
+  border:1px solid rgba(37,39,32,.2)!important;
+}
+#contacts input::placeholder,#contacts textarea::placeholder,
+#consult input::placeholder,#consult textarea::placeholder,
+#quiz input::placeholder,#quiz textarea::placeholder,
+#lead input::placeholder,#lead textarea::placeholder{
+  color:#777b73!important;-webkit-text-fill-color:#777b73!important;opacity:1!important;
+}
+#contacts .contact-info h1,#contacts .contact-info h2,
+#contacts .contact-info h3,#contacts .call-block .cb-num,
+#contacts .call-block .cb-lab,#contacts .call-block .cb-hint{
+  color:#252720!important;-webkit-text-fill-color:#252720!important;
+}
+#contacts .call-block .cb-num{font-weight:750!important;letter-spacing:-.035em!important}
+#about .about-card,#about .about-body,#contacts .contact-info,
+#contacts .contact-grid>*,#contacts .call-block{box-shadow:0 18px 48px rgba(35,37,30,.085)!important}
+#about .about-card img,#about .about-card .avatar{opacity:1!important}
+#about .about-body .features li:before{color:#4f7770!important}
+#about .about-body h1,#about .about-body h2,#about .about-body h3,
+#about .about-card h1,#about .about-card h2,#about .about-card h3{
+  color:#252720!important;-webkit-text-fill-color:#252720!important;
+}
+#about .about-body .features,#about .about-body .features li{opacity:1!important;visibility:visible!important}
+#contacts .contact-grid{display:grid!important}
+#contacts .contact-grid>*{min-width:0!important}
+#contacts .c-ico svg,#contacts svg{opacity:1!important;visibility:visible!important}
+#contacts .c-action{min-height:46px!important}
+#contacts .contact-info,#contacts .call-block{isolation:isolate!important}
+#about .about-body .features li,#contacts .contact-info p{line-height:1.65!important}
+@media(max-width:900px){
+  #about .about,#contacts .contact-grid{grid-template-columns:1fr!important}
+}
+@media(prefers-reduced-motion:reduce){
+  html:not(.no-anim) *,html:not(.no-anim) *::before,html:not(.no-anim) *::after{
+    animation-duration:.8s!important;transition-duration:.6s!important;scroll-behavior:smooth!important;
+  }
+  html:not(.no-anim) .orb,
+  html:not(.no-anim) .panel--hero .bg::before,
+  html:not(.no-anim) .brand-ava-w::before,
+  html:not(.no-anim) .rev-ava-w::after,
+  html:not(.no-anim) .gold-divider i::after,
+  html:not(.no-anim) .gold-divider b,
+  html:not(.no-anim) .swipe-hint,
+  html:not(.no-anim) .scroll-cue,
+  html:not(.no-anim) .car-nav{
+    animation-iteration-count:infinite!important;
+  }
+}
+"""
+
 
 _THEME_LINK_RE = re.compile(r'<link\b(?=[^>]*href=["\']/?site-(?:theme|premium|redesign)\.css(?:\?[^"\']*)?["\'])[^>]*>', re.I)
 
