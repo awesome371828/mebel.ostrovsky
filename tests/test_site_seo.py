@@ -103,7 +103,7 @@ class SiteRegressionTests(unittest.TestCase):
         self.assertIn('#about>.bg,#process>.bg{display:block!important;opacity:1!important;visibility:visible!important}', self.css)
 
     def test_final_responsive_photo_design(self):
-        premium = (self.root / "site-premium.css").read_text(encoding="utf-8")
+        premium = mebel.THEME_CSS
         self.assertIn("#about .about{display:grid!important;grid-template-columns:minmax(280px,.72fr)", premium)
         self.assertIn("#about .about-body{display:block!important;align-self:center!important", premium)
         self.assertIn("#contacts .c-ico{display:none!important}", premium)
