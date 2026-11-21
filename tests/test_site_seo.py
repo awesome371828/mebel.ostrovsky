@@ -211,5 +211,27 @@ class SiteRegressionTests(unittest.TestCase):
         self.assertEqual(rendered.count('id="ostUnifiedTheme"'), 1)
 
 
+    def test_public_site_copy_is_consistent_and_polished(self):
+        ctx = mebel._normalize_context(mebel.DEFAULT_DATA)
+        self.assertEqual(ctx["hero"]["title_before"], "Кухни и мебель ")
+        self.assertEqual(ctx["hero"]["title_em"], "под ваши задачи")
+        self.assertIn("от замера до установки", ctx["hero"]["sub"])
+        self.assertEqual(ctx["about"]["kicker"], "О мастерской")
+        self.assertEqual(ctx["works"]["title"], "Мебель в реальных интерьерах")
+        self.assertEqual(ctx["contacts"]["title"], "Давайте обсудим вашу мебель")
+        self.assertEqual(ctx["quiz"]["submit_label"], "Отправить заявку")
+        self.assertEqual(ctx["stats"]["items"][1]["label"], "города работы")
+        self.assertEqual(ctx["local_seo"]["cities"][2]["title"], "Кухни и мебель на заказ в Азове — Кухни Островский")
+        self.assertIn("Я согласен(на)", mebel.PAGE)
+        self.assertIn("Пожалуйста, подтвердите согласие", mebel.PAGE)
+        self.assertNotIn("Удобнее напрямую?", mebel.PAGE)
+
+    def test_editorial_copy_does_not_rewrite_customer_testimonials(self):
+        ctx = mebel._normalize_context(mebel.DEFAULT_DATA)
+        self.assertEqual(ctx["reviews"]["items"][0]["name"], mebel.DEFAULT_DATA["reviews"]["items"][0]["name"])
+        self.assertEqual(ctx["reviews"]["items"][0]["text"], mebel.DEFAULT_DATA["reviews"]["items"][0]["text"])
+
+
+
 if __name__ == "__main__":
     unittest.main()
