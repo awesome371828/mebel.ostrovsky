@@ -377,7 +377,8 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
  'cta': {'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/bg/reviews.jpg',
          'text': 'Позвоните нам — бесплатно проконсультируем, посчитаем и запишем на замер.',
          'title': 'Готовы обсудить вашу мебель?',
-         'button': '📞 Позвонить специалисту'},
+         'button': '📞 Позвонить специалисту',
+         'phone_raw': '+79508465397'},
  'contacts': {'bg': 'https://hliafkrpvmntpctmqwfu.supabase.co/storage/v1/object/public/site-images/works/w12.jpg',
               'title': 'Создадим мебель, о которой вы мечтали',
               'kicker': 'Контакты',
@@ -389,12 +390,12 @@ DEFAULT_DATA = {'seo': {'favicon_url': 'https://hliafkrpvmntpctmqwfu.supabase.co
               'lines': [{'label': 'Регион работы',
                          'value': 'Ростов-на-Дону, Батайск, Азов',
                          'href': '',
-                         'icon': 'M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4'
-                                 '0 0 0 5z'},
+                         'icon': 'M12 21s-7-5.6-7-11a7 7 0 1 1 14 0c0 5.4-7 11-7 11z'
+                                 'M12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z'},
                         {'label': 'Сайт в VK',
                          'value': 'mebel.ostrovsky',
                          'href': 'https://vk.com/mebel.ostrovsky',
-                         'icon': 'M4 20h16M6 20V8l6-4 6 4v12'
+                         'icon': 'M14 19c-6 0-9.5-4.5-9.7-12h3c.1 5 2.5 8 4.3 8.8V7h3v5c1.8-.2 3.6-2.6 4.2-5h3c-.6 3.4-2.8 5.8-4.6 6.6 '
                                  '1.8.9 4.6 3.6 5.4 8.4h-3.4c-.6-2.5-2.4-4.4-4.3-4.9V19H14z'},
                         {'label': 'MAX',
                          'value': 'по номеру +7 (950) 846-53-97',
@@ -2505,10 +2506,22 @@ def _migrate(raw):
     return d
 
 
+_BROKEN_ICON_FIXES = {
+    # Регион работы: путь был склеен без пробела («18.40 0 0 5z») и не рисовался.
+    "M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.40 0 0 5z":
+        "M12 21s-7-5.6-7-11a7 7 0 1 1 14 0c0 5.4-7 11-7 11zM12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z",
+    # Сайт в VK: «v12» и «1.8.9…» склеились в «v121.8.9…», иконка рисовалась искажённой.
+    "M4 20h16M6 20V8l6-4 6 4v121.8.9 4.6 3.6 5.4 8.4h-3.4c-.6-2.5-2.4-4.4-4.3-4.9V19H14z":
+        "M14 19c-6 0-9.5-4.5-9.7-12h3c.1 5 2.5 8 4.3 8.8V7h3v5c1.8-.2 3.6-2.6 4.2-5h3c-.6 3.4-2.8 5.8-4.6 6.6 "
+        "1.8.9 4.6 3.6 5.4 8.4h-3.4c-.6-2.5-2.4-4.4-4.3-4.9V19H14z",
+}
+
+
 def _icon_markup(value):
     """Иконка может быть: только path (M3 9h18...), внутренностями svg (<circle/><path/>)
     или готовым <svg>. Возвращаем готовую разметку <svg>…</svg>."""
     v = str(value or "").strip()
+    v = _BROKEN_ICON_FIXES.get(v, v)
     if not v:
         return ""
     if "<svg" in v:
@@ -2551,6 +2564,12 @@ def _normalize_context(data):
             origin = "{}://{}".format(pr.scheme, pr.netloc)
     except Exception:
         origin = ""
+    # Если у блока нет своего номера для tel:, берём общий из brand, чтобы ссылка не была пустой.
+    brand_phone = str((ctx.get("brand") or {}).get("phone_raw") or "").strip()
+    for block_name in ("consult", "cta"):
+        block = ctx.get(block_name)
+        if isinstance(block, dict) and not str(block.get("phone_raw") or "").strip() and brand_phone:
+            block["phone_raw"] = brand_phone
     ctx["img_origin"] = origin
     ctx["year"] = str(date.today().year)
     ctx["domain"] = _domain(ctx)
