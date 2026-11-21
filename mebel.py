@@ -1471,7 +1471,7 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
     {{#if stats.items}}<aside class="hero-proof" aria-label="О мастерской">
       <div class="hero-proof-label">Кухни и корпусная мебель на заказ</div>
       <div class="hero-proof-grid">{{#each stats.items}}<div class="hero-proof-item"><strong>{{this.prefix}}{{this.num}}{{#if this.decimal}}.{{this.decimal}}{{/if}}{{this.suffix}}</strong><span>{{this.label}}</span></div>{{/each}}</div>
-      <a class="hero-proof-link" href="#about">Познакомиться с мастерской <span aria-hidden="true">↗</span></a>
+      <a class="hero-proof-link" href="#about">О мастерской <span aria-hidden="true">↗</span></a>
     </aside>{{/if}}
   </div></div>
   <div class="scroll-cue" aria-label="Листайте вниз"><span>{{#if hero.scroll_cue}}{{hero.scroll_cue}}{{else}}Листайте{{/if}}</span><i class="scroll-cue-arrow" aria-hidden="true">↓</i></div>
@@ -1501,7 +1501,7 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
         <div class="avatar"><img src="{{about.photo}}" width="130" height="130" loading="lazy" decoding="async" alt="{{about.name}}{{#if about.role}} — {{about.role}}{{/if}}"></div>
         <h3>{{about.name}}</h3>
         <div class="role">{{about.role}}</div>
-        <p class="about-ip-link"><a class="consult-inline-link" href="/ip">Сведения об ИП руководителя ↗</a></p>
+        <p class="about-ip-link"><a class="consult-inline-link" href="/ip">Реквизиты ИП ↗</a></p>
         <div class="sep"></div>
         <p>{{{about.card_text|html}}}</p>
       </div>
@@ -1569,12 +1569,12 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
           <label><input type="radio" name="furniture_type" value="Кухня" required><span>Кухню</span></label>
           <label><input type="radio" name="furniture_type" value="Шкаф или гардеробную"><span>Шкаф / гардеробную</span></label>
           <label><input type="radio" name="furniture_type" value="Прихожую"><span>Прихожую</span></label>
-          <label><input type="radio" name="furniture_type" value="Другая корпусная мебель"><span>Другую мебель</span></label>
+          <label><input type="radio" name="furniture_type" value="Другая корпусная мебель"><span>Другую корпусную мебель</span></label>
         </div></fieldset>
       </div>
       <div class="quiz-step" data-quiz-step="1" hidden>
         <div class="quiz-step-label"><b>02</b><span>{{quiz.step2_title}}</span></div>
-        <label class="quiz-field"><span>{{quiz.style_label}}</span><select name="style"><option value="">Пока не определились</option><option>Современный</option><option>Классический</option><option>Минимализм</option><option>Другой / нужна консультация</option></select></label>
+        <label class="quiz-field"><span>{{quiz.style_label}}</span><select name="style"><option value="">Пока не определились</option><option>Современный</option><option>Классический</option><option>Минимализм</option><option>Пока нужна консультация</option></select></label>
         <label class="quiz-field"><span>{{quiz.dimensions_label}}</span><input name="dimensions" maxlength="180" placeholder="Например: прямая кухня, длина примерно 3 метра"></label>
         <label class="quiz-field"><span>{{quiz.details_label}}</span><textarea name="details" rows="3" maxlength="700" placeholder="Материалы, техника, хранение и другие важные детали"></textarea></label>
       </div>
@@ -1582,14 +1582,14 @@ footer,.footer{background:#141412!important;color:#D1CCC2!important;border-top:1
         <div class="quiz-step-label"><b>03</b><span>{{quiz.step3_title}}</span></div>
         <label class="quiz-field"><span>{{quiz.name_label}}</span><input name="name" autocomplete="given-name" maxlength="80" required placeholder="Имя"></label>
         <label class="quiz-field"><span>{{quiz.phone_label}}</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="40" required placeholder="+7 (___) ___-__-__"></label>
-        <label class="quiz-consent"><input type="checkbox" name="personal_data_consent" required><span>Согласен(на) на обработку персональных данных согласно <a href="/personal-data-consent" target="_blank" rel="noopener">условиям согласия</a> и <a href="/privacy" target="_blank" rel="noopener">политике конфиденциальности</a>.</span></label>
+        <label class="quiz-consent"><input type="checkbox" name="personal_data_consent" required><span>Я согласен(на) на обработку персональных данных в соответствии с <a href="/personal-data-consent" target="_blank" rel="noopener">согласием на обработку персональных данных</a> и <a href="/privacy" target="_blank" rel="noopener">политике конфиденциальности</a>.</span></label>
         <label class="quiz-honeypot" aria-hidden="true">Сайт<input name="website" tabindex="-1" autocomplete="off"></label>
       </div>
       <div class="quiz-controls"><button type="button" class="quiz-back" id="quizBack" disabled>Назад</button><button type="button" class="quiz-next" id="quizNext">Продолжить <span aria-hidden="true">→</span></button><button type="submit" class="quiz-submit" id="quizSubmit" hidden>{{quiz.submit_label}} <span aria-hidden="true">↗</span></button></div>
       <p class="quiz-status" id="quizStatus" role="status" aria-live="polite"></p>
     </form>
     <div class="quiz-messengers" aria-label="Другие способы связи">
-      <span>Удобнее напрямую?</span>
+      <span>Хотите связаться напрямую?</span>
       <a href="tel:+79508465397" aria-label="Позвонить"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.4 2.1L8.1 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.6 1z"/></svg>Телефон</a>
       <a href="{{brand.telegram}}" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><svg viewBox="0 0 24 24"><path d="m21.7 4.4-3.2 15.1c-.2 1.1-.9 1.4-1.8.9l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.4-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.3 13.4l-4.7-1.5c-1-.3-1-1 .2-1.5L20.2 3c.9-.3 1.7.2 1.5 1.4z"/></svg>Telegram</a>
       <a href="{{brand.vk}}" target="_blank" rel="noopener noreferrer" aria-label="ВКонтакте"><svg viewBox="0 0 24 24"><path d="M3.5 7.2h3.2c.2 4.1 1.9 5.8 3.2 6.2V7.2h3v3.6c1.3-.1 2.7-1.7 3.2-3.6h3.1c-.3 2.2-2 4-3.1 4.8 1.1.6 3.1 2.1 3.8 4.8h-3.4c-.6-1.8-2.1-3.2-3.6-3.3v3.3h-.4C6.7 16.8 3.7 13.4 3.5 7.2z"/></svg>ВКонтакте</a>
@@ -2198,9 +2198,9 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
  var form=document.getElementById('projectQuiz');if(!form)return;
  var steps=Array.prototype.slice.call(form.querySelectorAll('[data-quiz-step]')),index=0,bar=document.getElementById('quizProgressBar'),back=document.getElementById('quizBack'),next=document.getElementById('quizNext'),submit=document.getElementById('quizSubmit'),status=document.getElementById('quizStatus');
  function show(){steps.forEach(function(s,i){s.hidden=i!==index;s.classList.toggle('is-active',i===index)});if(bar)bar.style.width=((index+1)/steps.length*100)+'%';back.disabled=index===0;next.hidden=index===steps.length-1;submit.hidden=index!==steps.length-1;status.textContent='Шаг '+(index+1)+' из '+steps.length;}
- function valid(){var fields=steps[index].querySelectorAll('input[required],select[required],textarea[required]');for(var i=0;i<fields.length;i++){var f=fields[i];if(f.type==='radio'){if(!form.querySelector('input[name="'+f.name+'"]:checked')){status.textContent='Выберите один из вариантов.';return false;}continue;}if(f.type==='checkbox'&&!f.checked){status.textContent='Необходимо подтвердить согласие на обработку персональных данных.';return false;}if(!f.value.trim()){f.focus();status.textContent='Заполните обязательные поля.';return false;}}return true;}
+ function valid(){var fields=steps[index].querySelectorAll('input[required],select[required],textarea[required]');for(var i=0;i<fields.length;i++){var f=fields[i];if(f.type==='radio'){if(!form.querySelector('input[name="'+f.name+'"]:checked')){status.textContent='Выберите один из предложенных вариантов.';return false;}continue;}if(f.type==='checkbox'&&!f.checked){status.textContent='Пожалуйста, подтвердите согласие на обработку персональных данных.';return false;}if(!f.value.trim()){f.focus();status.textContent='Пожалуйста, заполните обязательные поля.';return false;}}return true;}
  next.addEventListener('click',function(){if(!valid())return;index=Math.min(index+1,steps.length-1);show()});back.addEventListener('click',function(){index=Math.max(0,index-1);show()});
- form.addEventListener('submit',function(e){e.preventDefault();if(!valid())return;var d=new FormData(form),message=['Расчёт проекта с сайта','Тип мебели: '+(d.get('furniture_type')||'не указан'),'Стиль: '+(d.get('style')||'не указан'),'Размеры: '+(d.get('dimensions')||'не указаны'),'Пожелания: '+(d.get('details')||'не указаны')].join('\n');var payload={name:d.get('name'),phone:d.get('phone'),message:message,city:d.get('city'),furniture_type:d.get('furniture_type'),style:d.get('style'),source:'quiz',page:location.pathname,personal_data_consent:d.get('personal_data_consent')==='on',website:d.get('website')||''};submit.disabled=true;submit.textContent='Отправляем…';status.textContent='Передаём параметры проекта в мастерскую…';fetch('/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.error||'Не удалось отправить данные проекта');return j})}).then(function(){form.innerHTML='<div class="quiz-success"><span>✓</span><h3>{{quiz.success_title}}</h3><p>{{quiz.success_text}}</p></div>'}).catch(function(err){status.textContent=err.message;submit.disabled=false;submit.innerHTML='Повторить отправку <span aria-hidden="true">↗</span>'});});
+ form.addEventListener('submit',function(e){e.preventDefault();if(!valid())return;var d=new FormData(form),message=['Расчёт проекта с сайта','Тип мебели: '+(d.get('furniture_type')||'не указан'),'Стиль: '+(d.get('style')||'не указан'),'Размеры: '+(d.get('dimensions')||'не указаны'),'Пожелания: '+(d.get('details')||'не указаны')].join('\n');var payload={name:d.get('name'),phone:d.get('phone'),message:message,city:d.get('city'),furniture_type:d.get('furniture_type'),style:d.get('style'),source:'quiz',page:location.pathname,personal_data_consent:d.get('personal_data_consent')==='on',website:d.get('website')||''};submit.disabled=true;submit.textContent='Отправляем…';status.textContent='Отправляем вашу заявку…';fetch('/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.error||'Не удалось отправить заявку. Попробуйте ещё раз.');return j})}).then(function(){form.innerHTML='<div class="quiz-success"><span>✓</span><h3>{{quiz.success_title}}</h3><p>{{quiz.success_text}}</p></div>'}).catch(function(err){status.textContent=err.message;submit.disabled=false;submit.innerHTML='Попробовать ещё раз <span aria-hidden="true">↗</span>'});});
  show();
 })();
 </script>
@@ -2629,7 +2629,7 @@ def _apply_editorial_copy(ctx):
     service_items = (ctx.get("services") or {}).get("items") or []
     service_copy = [
         ("Кухни на заказ", "Разрабатываем проект с учётом планировки, техники, хранения и ваших повседневных привычек."),
-        ("Шкафы и гардеробные", "Изготавливаем встроенные и отдельностоящие шкафы, гардеробные, тумбы и комоды по вашим размерам."),
+        ("Шкафы и гардеробные", "Изготавливаем встроенные и отдельно стоящие шкафы, гардеробные, тумбы и комоды по вашим размерам."),
         ("Прихожие и мебель для гостиной", "Продумываем системы хранения, тумбы, стенки и мебель под телевизор в едином стиле."),
         ("Сборка и установка", "Доставляем мебель, собираем на месте и устанавливаем предусмотренные проектом элементы."),
         ("Замер и проектирование", "Снимаем размеры, обсуждаем планировку и готовим проект, чтобы заранее согласовать решение."),
@@ -2697,7 +2697,8 @@ def _apply_editorial_copy(ctx):
         if isinstance(city, dict) and city.get("slug") in local_copy:
             desc, keywords = local_copy[city["slug"]]
             city["description"], city["keywords"] = desc, keywords
-            city["title"] = "Кухни и мебель на заказ в {} — Кухни Островский".format(city.get("name") or "")
+            city_title = {"rostov-na-donu": "Ростове-на-Дону", "bataysk": "Батайске", "azov": "Азове"}.get(city.get("slug"), city.get("name") or "")
+            city["title"] = "Кухни и мебель на заказ в {} — Кухни Островский".format(city_title)
 
     return ctx
 
