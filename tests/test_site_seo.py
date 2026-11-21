@@ -190,5 +190,26 @@ class SiteRegressionTests(unittest.TestCase):
         self.assertIn("#about .about-body *", mebel.THEME_CSS)
 
 
+    def test_quhni_inspired_theme_is_the_final_embedded_public_theme(self):
+        source = pathlib.Path(mebel.__file__).read_text(encoding="utf-8")
+        self.assertIn("OSTROVSKY_QUHNI_INSPIRED_SYSTEM_20261121", source)
+        self.assertIn("THEME_CSS += r\"\"\"", source)
+        self.assertIn("--q-bg:#f4f2ed", mebel.THEME_CSS)
+        self.assertIn("--q-paper:#fffefa", mebel.THEME_CSS)
+        self.assertIn("--q-teal:#4f9aa2", mebel.THEME_CSS)
+        self.assertIn("#top .hero-photo img", mebel.THEME_CSS)
+        self.assertIn("#about .about-body", mebel.THEME_CSS)
+        self.assertIn("#contacts .contact-info", mebel.THEME_CSS)
+        self.assertIn("@media(max-width:600px)", mebel.THEME_CSS)
+
+    def test_embedded_theme_is_applied_to_every_html_response(self):
+        html = '<!doctype html><html><head><link rel="stylesheet" href="/site-theme.css"></head><body></body></html>'
+        rendered = mebel._inline_theme_styles(html)
+        self.assertIn("OSTROVSKY_QUHNI_INSPIRED_SYSTEM_20261121", rendered)
+        self.assertIn("--q-bg:#f4f2ed", rendered)
+        self.assertNotIn('href="/site-theme.css"', rendered)
+        self.assertEqual(rendered.count('id="ostUnifiedTheme"'), 1)
+
+
 if __name__ == "__main__":
     unittest.main()
