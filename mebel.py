@@ -5510,7 +5510,7 @@ def _inline_theme_styles(document):
     document = _THEME_LINK_RE.sub("", document)
     tag = '<style id="ostUnifiedTheme">' + THEME_CSS + '</style>'
     # Повторный проход не создаёт дубликатов темы.
-    document = re.sub(r'<style\\b[^>]*id=["\\']ostUnifiedTheme["\\'][^>]*>.*?</style>', "", document, flags=re.I | re.S)
+    document = re.sub(r'<style\b[^>]*id=["\']ostUnifiedTheme["\'][^>]*>.*?</style>', "", document, flags=re.I | re.S)
     return re.sub(r"</head>", lambda _m: tag + "</head>", document, count=1, flags=re.I)
 
 
