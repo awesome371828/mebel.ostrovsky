@@ -3777,6 +3777,111 @@ def _notice_inject(html, notice):
     return html.replace("<body>", "<body>" + banner, 1) if "<body>" in html else html
 
 
+
+_REFERENCE_DESIGN_CSS = r"""
+/* OSTROVSKY — editorial furniture studio redesign */
+:root{
+ --ost-bg:#f1efe9;--ost-paper:#f8f7f3;--ost-ink:#202721;--ost-muted:#68716a;
+ --ost-line:rgba(32,39,33,.14);--ost-dark:#202a24;--ost-dark-2:#29362e;
+ --ost-gold:#b18a58;--ost-gold-light:#d4b98e;--ost-radius:5px;
+ --ost-shadow:0 24px 70px rgba(25,31,26,.10);
+}
+html{scroll-behavior:smooth;scroll-padding-top:92px}
+body{background:var(--ost-bg)!important;color:var(--ost-ink)!important;font-family:Inter,"Manrope","Helvetica Neue",Arial,sans-serif!important;font-size:16px;line-height:1.65;letter-spacing:-.012em;overflow-x:hidden}
+body,body *{text-shadow:none!important}
+body p,body li,body small,body label{color:inherit}
+a{color:inherit}
+img{max-width:100%;height:auto}
+::selection{background:#c8ad83;color:#202721}
+.wrap,.container,.ost-container{width:min(1240px,calc(100% - 64px))!important;max-width:1240px!important;margin-inline:auto!important}
+header#header,.header,.site-header{background:rgba(241,239,233,.94)!important;color:var(--ost-ink)!important;border-bottom:1px solid var(--ost-line)!important;box-shadow:0 8px 30px rgba(25,31,26,.045)!important;backdrop-filter:blur(18px)!important}
+#header{position:sticky!important;top:0;z-index:1000}
+#header a,.header a,.site-header a{color:var(--ost-ink)!important}
+#logo img,.logo img{max-height:48px;object-fit:contain}
+#menu,.menu,.nav{gap:clamp(16px,2.4vw,34px)}
+#menu a,.nav a{font-size:12px!important;font-weight:650!important;letter-spacing:.09em!important;text-transform:uppercase;text-decoration:none!important;transition:color .2s ease}
+#menu a:hover,.nav a:hover{color:var(--ost-gold)!important}
+button,.btn,.button,a.btn{border-radius:2px!important;min-height:48px;padding:13px 22px!important;font-size:12px!important;font-weight:700!important;letter-spacing:.08em!important;text-transform:uppercase!important;box-shadow:none!important;transition:background .22s ease,color .22s ease,transform .22s ease,border-color .22s ease}
+.btn-primary,.button-primary,.btn.gold,.hero .btn:first-of-type{background:var(--ost-dark)!important;color:#fff!important;border:1px solid var(--ost-dark)!important}
+.btn-primary:hover,.button-primary:hover,.hero .btn:first-of-type:hover{background:var(--ost-gold)!important;border-color:var(--ost-gold)!important;transform:translateY(-2px)}
+.btn-secondary,.btn-outline,.button-outline{background:transparent!important;color:var(--ost-ink)!important;border:1px solid rgba(32,39,33,.4)!important}
+.btn-secondary:hover,.btn-outline:hover,.button-outline:hover{background:var(--ost-dark)!important;color:#fff!important}
+section{position:relative;isolation:isolate}
+section:not(.hero):not(#top){padding-block:clamp(66px,8vw,116px)!important}
+section h1,section h2,section h3{color:var(--ost-ink)!important;letter-spacing:-.045em!important;line-height:1.08!important;font-weight:550!important}
+section h1{font-size:clamp(42px,6.6vw,88px)!important}
+section h2{font-size:clamp(32px,4.4vw,58px)!important;margin:0 0 24px!important}
+section h3{font-size:clamp(20px,2vw,27px)!important}
+section p{font-size:15px;line-height:1.8;color:var(--ost-muted)!important}
+.kicker,.eyebrow,.section-kicker,.overline{font-size:10px!important;letter-spacing:.18em!important;text-transform:uppercase!important;font-weight:750!important;color:var(--ost-gold)!important}
+#top,.hero{min-height:min(780px,calc(100svh - 72px));padding:clamp(74px,10vw,142px) 0!important;background:var(--ost-dark)!important;color:#fff!important;overflow:hidden}
+#top:before,.hero:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(17,25,20,.82) 0%,rgba(17,25,20,.48) 52%,rgba(17,25,20,.12) 100%);z-index:-1}
+#top h1,.hero h1,#top h2,.hero h2,#top p,.hero p{color:#fff!important}
+#top h1,.hero h1{max-width:900px;font-size:clamp(48px,7.4vw,100px)!important;line-height:.98!important;letter-spacing:-.065em!important}
+#top p,.hero p{max-width:560px;color:rgba(255,255,255,.78)!important;font-size:clamp(15px,1.4vw,18px)!important}
+#top .btn-secondary,.hero .btn-secondary{color:#fff!important;border-color:rgba(255,255,255,.55)!important}
+#top .btn-secondary:hover,.hero .btn-secondary:hover{background:#fff!important;color:var(--ost-ink)!important}
+#top img,.hero img{object-fit:cover}
+#about,#services,#process,#reviews,#cities,#contacts{background:var(--ost-bg)!important}
+#consult,#works,#quiz{background:var(--ost-dark)!important;color:#fff!important}
+#consult h1,#consult h2,#consult h3,#consult p,#works h1,#works h2,#works h3,#works p,#quiz h1,#quiz h2,#quiz h3,#quiz p{color:#fff!important}
+#about .wrap,#services .wrap,#process .wrap,#reviews .wrap,#cities .wrap,#contacts .wrap{position:relative}
+#about img,#consult img,#works img,#services img,#process img,#reviews img{border-radius:2px!important}
+.panel,.card,.service-card,.work-card,.review-card,.feature-card,.step-card,.quiz-card,.contact-card{
+ background:var(--ost-paper)!important;border:1px solid var(--ost-line)!important;border-radius:3px!important;
+ box-shadow:0 12px 36px rgba(25,31,26,.055)!important;color:var(--ost-ink)!important;overflow:hidden
+}
+#works .panel,#works .card,#works .work-card,#consult .panel,#consult .card{background:#29362e!important;border-color:rgba(255,255,255,.12)!important;color:#fff!important}
+#works .panel p,#works .card p,#consult .panel p,#consult .card p{color:rgba(255,255,255,.72)!important}
+#works{overflow:hidden}
+#works .work-card img,#works .card img,#works .carousel img,#works .work img{aspect-ratio:4/3;object-fit:cover;display:block}
+#carTrack{display:flex!important;gap:18px!important;overflow-x:auto!important;scroll-snap-type:x mandatory!important;scroll-behavior:smooth!important;overscroll-behavior-inline:contain;padding:8px 2px 22px!important;scrollbar-width:thin;scrollbar-color:var(--ost-gold) transparent}
+#carTrack>*{flex:0 0 clamp(270px,36vw,430px)!important;min-width:0!important;scroll-snap-align:start!important}
+#carTrack img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}
+#carPrev,#carNext,#revPrev,#revNext{width:48px!important;height:48px!important;min-height:48px!important;padding:0!important;border:1px solid rgba(255,255,255,.34)!important;background:transparent!important;color:#fff!important;border-radius:50%!important}
+#carPrev:hover,#carNext:hover,#revPrev:hover,#revNext:hover{background:var(--ost-gold)!important;border-color:var(--ost-gold)!important}
+#carDots,#revDots{display:flex;justify-content:center;gap:8px;margin-top:16px}
+#carDots button,#revDots button{width:7px!important;height:7px!important;min-height:7px!important;padding:0!important;border:0!important;border-radius:50%!important;background:rgba(255,255,255,.35)!important}
+#carDots button.active,#revDots button.active{width:24px!important;border-radius:8px!important;background:var(--ost-gold)!important}
+#revTrack{display:flex!important;gap:18px!important;overflow-x:auto!important;scroll-snap-type:x mandatory!important;scroll-behavior:smooth!important}
+#revTrack>*{flex:0 0 min(420px,85vw)!important;scroll-snap-align:start}
+#quiz input,#quiz select,#quiz textarea,#contacts input,#contacts select,#contacts textarea,form input,form select,form textarea{
+ width:100%;min-height:50px;padding:13px 15px!important;border:1px solid var(--ost-line)!important;border-radius:2px!important;
+ background:#fff!important;color:var(--ost-ink)!important;font:inherit!important;box-shadow:none!important
+}
+#quiz input:focus,#quiz select:focus,#quiz textarea:focus,#contacts input:focus,#contacts textarea:focus,form input:focus,form textarea:focus{outline:2px solid rgba(177,138,88,.3)!important;border-color:var(--ost-gold)!important}
+#quiz label,#contacts label,form label{color:var(--ost-ink)!important;font-size:13px!important}
+#contacts a{color:var(--ost-ink)!important}
+footer,.footer{background:#18221c!important;color:rgba(255,255,255,.78)!important;border:0!important;padding-block:56px 30px!important}
+footer h2,footer h3,footer p,footer a,.footer h2,.footer h3,.footer p,.footer a{color:inherit!important}
+footer a:hover,.footer a:hover{color:var(--ost-gold-light)!important}
+#cookieBar{background:var(--ost-dark)!important;color:#fff!important;border:1px solid rgba(255,255,255,.16)!important;box-shadow:var(--ost-shadow)!important}
+#cookieBar *{color:inherit}
+#cookieOk{background:var(--ost-gold)!important;color:#18221c!important}
+#lightbox{background:rgba(12,17,14,.96)!important}
+#lightbox img{max-width:92vw;max-height:86vh;object-fit:contain}
+hr{border:0;border-top:1px solid var(--ost-line)}
+:focus-visible{outline:2px solid var(--ost-gold)!important;outline-offset:3px}
+@media(max-width:760px){
+ .wrap,.container,.ost-container{width:calc(100% - 36px)!important}
+ #top,.hero{min-height:660px;min-height:min(760px,calc(100svh - 64px));padding:90px 0 72px!important}
+ #top h1,.hero h1{font-size:clamp(42px,12vw,66px)!important}
+ section:not(.hero):not(#top){padding-block:64px!important}
+ #menu{background:var(--ost-paper)!important;color:var(--ost-ink)!important}
+ #menu a{color:var(--ost-ink)!important}
+ #carTrack>*{flex-basis:86vw!important}
+ #carPrev,#carNext{width:42px!important;height:42px!important;min-height:42px!important}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+"""
+def _apply_reference_design(html):
+    if "ostReferenceEditorial2026" in html:
+        return html
+    style = '<style id="ostReferenceEditorial2026">' + _REFERENCE_DESIGN_CSS + '</style>'
+    if "</head>" in html:
+        html = html.replace("</head>", style + "</head>", 1)
+    return html
+
 def render_site():
     """Готовый HTML кэшируется до смены данных — страница отдаётся мгновенно."""
     data = load_data()
@@ -3805,6 +3910,7 @@ def render_site():
     html = html.replace("</head>", cfg + "</head>", 1)
     html = _proxify_urls(html)
     html = _inline_theme_styles(html)  # Встраиваем CSS из mebel.py; внешних theme-файлов нет.
+    html = _apply_reference_design(html)
     html = _inject_site_ui(html, data)
     html = _notice_inject(html, data.get("site_notice") or {})
     # Единая публичная тема встроена в HTML из THEME_CSS в mebel.py; отдельных CSS-файлов нет.
