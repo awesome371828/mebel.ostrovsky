@@ -1994,6 +1994,8 @@ const y=document.getElementById('year');if(y)y.textContent=new Date().getFullYea
 (function(){
   var d=document;
   var CFG=window.__OST_ANIM||{enabled:true,parallax:false,hover3d:false,sparks:true,scroll:true,text:true,safe:true,intensity:'full'};
+  /* Базовые анимации не зависят от query-параметра или сохранённого флага старой CMS. */
+  CFG.enabled=true;CFG.scroll=true;CFG.text=true;CFG.sparks=true;
   var OFF=/[?&]anim=0/.test(location.search);
   var FORCE=/[?&]anim=1/.test(location.search);
   var prefersReduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
