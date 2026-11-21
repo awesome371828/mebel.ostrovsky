@@ -3557,7 +3557,7 @@ def render_city_page(slug):
       "azov":"Кухни на заказ в Азове проектируем под размеры помещения и пожелания владельцев: продумываем рабочую поверхность, хранение, фасады и расположение техники. Помимо кухонь, можно обсудить изготовление шкафов, гардеробных, прихожих и мебели для гостиной. Оставьте короткое описание задачи — специалист свяжется с вами выбранным способом."
     }
     data["local_seo_current"]["body_copy"]=city_copy.get(slug,"")
-    ctx=_normalize_context(data);html=render(_page_template(),ctx);html=_proxify_urls(html)
+    ctx=_normalize_context(data);html=render(_page_template(),ctx);html=_proxify_urls(html);html=_inline_theme_styles(html)
     # Дополнительный локальный текст — один блок на конкретной городской странице.
     copy=data["local_seo_current"].get("body_copy","")
     if copy:
@@ -3616,11 +3616,10 @@ def render_site():
     hero_cfg=data.get('hero') or {};hero_imgs=hero_cfg.get('rotation_images') or [];cfg = '<script>window.__OST_ANIM={enabled:' + str(anim_enabled).lower() + ',parallax:' + str(anim_parallax).lower() + ',hover3d:' + str(anim_hover).lower() + ',sparks:' + str(anim_sparks).lower() + ',scroll:' + str(anim_scroll).lower() + ',text:' + str(anim_text).lower() + ',safe:' + str(anim_safe).lower() + ',intensity:' + json.dumps(anim_mode, ensure_ascii=False) + '};window.__OST_HERO_ROTATION='+json.dumps({'enabled':False,'interval':int(hero_cfg.get('rotation_interval') or 6500),'images':hero_imgs},ensure_ascii=False)+';</script>'
     html = html.replace("</head>", cfg + "</head>", 1)
     html = _proxify_urls(html)
+    html = _inline_theme_styles(html)  # Встраиваем CSS из mebel.py; внешних theme-файлов нет.
     html = _inject_site_ui(html, data)
     html = _notice_inject(html, data.get("site_notice") or {})
-    # The public design system is loaded once from /site-theme.css after all template styles.
-    # Do not append another late inline layer: it previously overrode section backgrounds and
-    # caused scroll-dependent color/contrast regressions.
+    # Единая публичная тема встроена в HTML из THEME_CSS в mebel.py; отдельных CSS-файлов нет.
     with _render_lock:
         _render_cache["sig"] = sig
         _render_cache["html"] = html
