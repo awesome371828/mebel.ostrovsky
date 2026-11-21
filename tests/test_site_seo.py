@@ -179,5 +179,16 @@ class SiteRegressionTests(unittest.TestCase):
 
 
 
+    def test_public_pages_apply_embedded_theme_and_animations_are_default_on(self):
+        source = pathlib.Path(mebel.__file__).read_text(encoding="utf-8")
+        self.assertIn("html = _inline_theme_styles(html)", source)
+        self.assertIn("html=_inline_theme_styles(html)", source)
+        self.assertIn("OSTROVSKY_CONTRAST_HOTFIX_20261121", source)
+        self.assertIn("var reduced=OFF;", source)
+        self.assertNotIn("var reduced=OFF||prefersReduced", source)
+        self.assertIn("#contacts .contact-info *", mebel.THEME_CSS)
+        self.assertIn("#about .about-body *", mebel.THEME_CSS)
+
+
 if __name__ == "__main__":
     unittest.main()
