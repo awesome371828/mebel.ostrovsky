@@ -2700,6 +2700,15 @@ def _apply_editorial_copy(ctx):
             city_title = {"rostov-na-donu": "Ростове-на-Дону", "bataysk": "Батайске", "azov": "Азове"}.get(city.get("slug"), city.get("name") or "")
             city["title"] = "Кухни и мебель на заказ в {} — Кухни Островский".format(city_title)
 
+    # На городских страницах сохраняем уникальные метаданные конкретного города.
+    current_city = ctx.get("local_seo_current")
+    if isinstance(current_city, dict):
+        put("seo.title", current_city.get("title") or copy["seo.title"])
+        put("seo.description", current_city.get("description") or copy["seo.description"])
+        put("seo.keywords", current_city.get("keywords") or "")
+        put("seo.og_title", current_city.get("title") or copy["seo.og_title"])
+        put("seo.og_description", current_city.get("description") or copy["seo.og_description"])
+
     return ctx
 
 
